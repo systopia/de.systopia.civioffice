@@ -49,9 +49,19 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
             true
         );
 
+        // add form elements
+        $this->add(
+            'select',
+            'active_user_backend',
+            E::ts("Active Backend (current user)"),
+            $active_backend_list,
+            true
+        );
+
         // set defaults
         $this->setDefaults([
-            'active_backend' => Civi::settings()->get('civioffice_active_backend')
+            'active_backend'      => Civi::settings()->get('civioffice_active_backend'),
+            'active_user_backend' => Civi::contactSettings()->get('civioffice_active_backend'),
        ]);
 
 
@@ -75,6 +85,7 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
 
         // store settings
         Civi::settings()->set('civioffice_active_backend', $values['active_backend']);
+        Civi::contactSettings()->set('civioffice_active_backend', $values['active_user_backend']);
 
 
         CRM_Core_Session::setStatus(

@@ -18,21 +18,18 @@ use CRM_Civioffice_ExtensionUtil as E;
 /**
  * CiviOffice abstract backend
  */
-abstract class CRM_Civioffice_Backend
+abstract class CRM_Civioffice_DocumentStore
 {
-    /** @var CRM_Civioffice_Backend the currently active (default) backend  */
-    protected static $active_backend = null;
-
     /**
      * Get a list of available backends
      *
      * @return array
      *   list of CRM_Civioffice_Backend instances
      */
-    public static function getBackends() {
+    public static function getDocumentStores() {
 
         $backends = [
-            new CRM_Civioffice_Backend_LocalLibreOfficeConverter(),
+            new CRM_Civioffice_DocumentStore_LocalDocumentStore(),
         ];
 
         // todo: call symfony event to collect more backend implementations
