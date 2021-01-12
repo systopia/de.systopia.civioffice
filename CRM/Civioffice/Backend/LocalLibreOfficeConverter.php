@@ -1,6 +1,6 @@
 <?php
 /*-------------------------------------------------------+
-| SYSTOPIA OnlyOffice Integration                        |
+| SYSTOPIA CiviOffice Integration                        |
 | Copyright (C) 2020 SYSTOPIA                            |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
