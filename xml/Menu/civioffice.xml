@@ -6,4 +6,16 @@
     <title>CiviOffice Settings</title>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/admin/civioffice/LocalLibreOfficeConverter</path>
+    <page_callback>CRM_Civioffice_Form_LocalLibreOfficeConverterSettings</page_callback>
+    <title>LocalLibreOfficeConverterSettings</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/admin/civioffice/LocalDocumentStore</path>
+    <page_callback>CRM_Civioffice_Form_LocalDocumentStoreSettings</page_callback>
+    <title>LocalDocumentStoreSettings</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
