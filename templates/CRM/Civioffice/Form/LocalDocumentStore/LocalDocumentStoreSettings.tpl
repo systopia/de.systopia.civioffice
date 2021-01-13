@@ -1,5 +1,7 @@
 {* HEADER *}
 
+{crmScope extensionKey='de.systopia.civioffice'}
+
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="top"}
 </div>
