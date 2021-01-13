@@ -16,7 +16,7 @@
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
- * CiviOffice abstract backend
+ * CiviOffice abstract Document Store
  */
 abstract class CRM_Civioffice_DocumentStore
 {
