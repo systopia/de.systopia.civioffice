@@ -20,4 +20,9 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 abstract class CRM_Civioffice_Backend_LibreOfficeConverter extends CRM_Civioffice_Backend
 {
+    public abstract function getRootFolder();
+
+    public abstract function getDirectories($path);
+
+    public abstract function getFiles($path);
 }
