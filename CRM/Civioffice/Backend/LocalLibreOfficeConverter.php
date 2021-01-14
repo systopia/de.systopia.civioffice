@@ -18,7 +18,7 @@ use CRM_Civioffice_ExtensionUtil as E;
 /**
  * (Local)
  */
-class CRM_Civioffice_Backend_LocalLibreOfficeConverter extends CRM_Civioffice_Backend_LibreOfficeConverter
+class CRM_Civioffice_Backend_LocalLibreOfficeConverter
 {
     const MIN_UNOCONV_VERSION = '6.0'; // todo: determine
 
