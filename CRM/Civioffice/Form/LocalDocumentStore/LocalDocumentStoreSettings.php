@@ -7,7 +7,7 @@ use CRM_Civioffice_ExtensionUtil as E;
  *
  * @see https://docs.civicrm.org/dev/en/latest/framework/quickform/
  */
-class CRM_Civioffice_Form_LocalDocumentStoreSettings extends CRM_Core_Form {
+class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends CRM_Core_Form {
   public function buildQuickForm() {
 
     // add form elements
