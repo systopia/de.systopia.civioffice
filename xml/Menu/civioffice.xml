@@ -9,13 +9,13 @@
   <item>
     <path>civicrm/admin/civioffice/LocalLibreOfficeConverter</path>
     <page_callback>CRM_Civioffice_Form_LocalLibreOfficeConverter_LocalLibreOfficeConverterSettings</page_callback>
-    <title>LocalLibreOfficeConverterSettings</title>
+    <title>LocalLibreOfficeConverter Settings</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
   <item>
     <path>civicrm/admin/civioffice/LocalDocumentStore</path>
     <page_callback>CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings</page_callback>
-    <title>LocalDocumentStoreSettings</title>
+    <title>LocalDocumentStore Settings</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
 </menu>
