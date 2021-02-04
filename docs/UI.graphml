@@ -13,24 +13,16 @@
   <key attr.name="description" attr.type="string" for="edge" id="d9"/>
   <key for="edge" id="d10" yfiles.type="edgegraphics"/>
   <graph edgedefault="directed" id="G">
-    <data key="d0"/>
+    <data key="d0" xml:space="preserve"/>
     <node id="n0" yfiles.foldertype="group">
-      <data key="d5"/>
       <data key="d6">
         <y:ProxyAutoBoundsNode>
           <y:Realizers active="0">
             <y:GenericGroupNode configuration="com.yworks.bpmn.Artifact.withShadow">
-              <y:Geometry height="960.3526999999999" width="2259.1109687499975" x="-1449.849118749998" y="-829.7642937500007"/>
+              <y:Geometry height="776.4773081504702" width="2264.0143125326513" x="-977.4015406249963" y="-620.8896939589871"/>
               <y:Fill hasColor="false" transparent="false"/>
               <y:BorderStyle color="#000000" type="dashed_dotted" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="1127.5554843749987" y="952.3526999999999">
-                <y:LabelModel>
-                  <y:SmartNodeLabelModel distance="4.0"/>
-                </y:LabelModel>
-                <y:ModelParameter>
-                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.5" nodeRatioX="0.0" nodeRatioY="0.5" offsetX="0.0" offsetY="-4.0" upX="0.0" upY="-1.0"/>
-                </y:ModelParameter>
-              </y:NodeLabel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="69.35546875" x="1097.3294218913256" xml:space="preserve" y="754.5085581504702">Settings UI<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.5" nodeRatioX="0.0" nodeRatioY="0.5" offsetX="0.0" offsetY="-4.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:StyleProperties>
                 <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.line.color" value="#000000"/>
                 <y:Property class="java.lang.Boolean" name="com.yworks.bpmn.FillColorDependsOnType" value="false"/>
@@ -40,7 +32,7 @@
               </y:StyleProperties>
               <y:State autoResize="true" closed="false" closedHeight="80.0" closedWidth="100.0"/>
               <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
-              <y:BorderInsets bottom="276" bottomF="276.2666249999998" left="155" leftF="155.1021812500005" right="1093" rightF="1093.3103187499985" top="190" topF="189.54447500000003"/>
+              <y:BorderInsets bottom="92" bottomF="92.3912331504701" left="155" leftF="155.1021812500005" right="1098" rightF="1098.213662532652" top="190" topF="189.54447500000003"/>
             </y:GenericGroupNode>
             <y:GenericGroupNode configuration="com.yworks.bpmn.Artifact.withShadow">
               <y:Geometry height="80.0" width="100.0" x="912.9438500000006" y="-362.15987500000017"/>
@@ -70,25 +62,22 @@
       </data>
       <graph edgedefault="directed" id="n0:">
         <node id="n0::n0">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="142.00139999999993" width="250.79999999999995" x="-1279.7469374999976" y="-505.56461875000014"/>
+              <y:Geometry height="142.00139999999993" width="250.79999999999995" x="-807.2993593749958" y="-296.69001895898657"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="59.875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="163.140625" x="43.82968749999998" xml:space="preserve" y="41.06319999999994">Civi
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="45.90625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="171.958984375" x="39.420507812499864" xml:space="preserve" y="48.04757499999994">Civi
 "Verwaltungsconsole":
-- Document Store Settings
-- Converter Settings<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+- CiviOffice general Settings<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:Shape type="rectangle"/>
             </y:ShapeNode>
           </data>
         </node>
         <node id="n0::n1">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="132.62639999999993" width="296.39999999999986" x="-595.4484687499989" y="-293.3046187500005"/>
+              <y:Geometry height="132.62639999999993" width="296.39999999999986" x="-123.00089062499717" y="-84.43001895898692"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="45.90625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="132.935546875" x="81.73222656249993" xml:space="preserve" y="43.360074999999966">Converter Settings UI
@@ -99,61 +88,65 @@
           </data>
         </node>
         <node id="n0::n2">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="142.00139999999993" width="250.79999999999995" x="-966.648468749999" y="-505.5646187500002"/>
+              <y:Geometry height="142.00139999999993" width="250.79999999999995" x="-494.2008906249972" y="-296.6900189589866"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="130.52734375" x="60.13632812499998" xml:space="preserve" y="62.016324999999995">CiviOffice Settings UI<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.9375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="152.212890625" x="49.29355468749998" xml:space="preserve" y="55.031949999999966">CiviOffice Settings UI
+- Liste der Komponenten<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:Shape type="rectangle"/>
             </y:ShapeNode>
           </data>
         </node>
         <node id="n0::n3">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="142.00139999999993" width="296.39999999999986" x="-595.4484687499989" y="-625.2198187500006"/>
+              <y:Geometry height="142.00139999999993" width="296.39999999999986" x="-123.00089062499717" y="-416.34521895898706"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.9375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="187.43359375" x="54.48320312499993" xml:space="preserve" y="55.031949999999966">Document Store Settings UI
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.9375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="187.43359375" x="54.48320312499993" xml:space="preserve" y="55.03194999999994">Document Store Settings UI
 - Verfügbare Document Stores<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:Shape type="rectangle3d"/>
             </y:ShapeNode>
           </data>
         </node>
         <node id="n0::n4">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="132.62639999999993" width="296.39999999999986" x="-595.4484687499989" y="-455.93101875000036"/>
+              <y:Geometry height="132.62639999999993" width="296.39999999999986" x="-123.00089062499717" y="-247.0564189589868"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="142.837890625" x="76.78105468749993" xml:space="preserve" y="57.328824999999966">Office Suite Settings UI<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="142.837890625" x="76.78105468749993" xml:space="preserve" y="57.32882499999994">Office Suite Settings UI<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:Shape type="rectangle3d"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <node id="n0::n5">
+          <data key="d6">
+            <y:ShapeNode>
+              <y:Geometry height="129.91380000000026" width="235.7369278996864" x="-647.140794491246" y="-83.07371895898709"/>
+              <y:Fill color="#FFCC00" transparent="false"/>
+              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="59.875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="196.978515625" x="19.379206137343203" xml:space="preserve" y="35.01940000000013">(nachrangig, aber zu bedenken)
+Nutzerauswahl / Gruppen
+- Berechtigungen für
+spezielle Tempates<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+              <y:Shape type="rectangle"/>
             </y:ShapeNode>
           </data>
         </node>
       </graph>
     </node>
     <node id="n1" yfiles.foldertype="group">
-      <data key="d5"/>
       <data key="d6">
         <y:ProxyAutoBoundsNode>
           <y:Realizers active="0">
             <y:GenericGroupNode configuration="com.yworks.bpmn.Artifact.withShadow">
-              <y:Geometry height="797.6277687499994" width="2095.013906250003" x="-1416.3078437499987" y="229.18714375000008"/>
+              <y:Geometry height="883.2487381792059" width="2099.881484375003" x="-1459.3352045291263" y="323.55200856844255"/>
               <y:Fill hasColor="false" transparent="false"/>
               <y:BorderStyle color="#000000" type="dashed_dotted" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="1045.5069531250015" y="789.6277687499994">
-                <y:LabelModel>
-                  <y:SmartNodeLabelModel distance="4.0"/>
-                </y:LabelModel>
-                <y:ModelParameter>
-                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.5" nodeRatioX="0.0" nodeRatioY="0.5" offsetX="0.0" offsetY="-4.0" upX="0.0" upY="-1.0"/>
-                </y:ModelParameter>
-              </y:NodeLabel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="47.48828125" x="1026.1966015625014" xml:space="preserve" y="861.2799881792062">User UI<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.5" nodeRatioX="0.0" nodeRatioY="0.5" offsetX="0.0" offsetY="-4.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:StyleProperties>
                 <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.line.color" value="#000000"/>
                 <y:Property class="java.lang.Boolean" name="com.yworks.bpmn.FillColorDependsOnType" value="false"/>
@@ -163,7 +156,7 @@
               </y:StyleProperties>
               <y:State autoResize="true" closed="false" closedHeight="80.0" closedWidth="100.0"/>
               <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
-              <y:BorderInsets bottom="127" bottomF="126.953125" left="171" leftF="170.8984375" right="183" rightF="183.10546875000023" top="66" topF="65.91796875"/>
+              <y:BorderInsets bottom="118" bottomF="117.99406478578885" left="148" leftF="147.64828103774812" right="342" rightF="341.76982820663557" top="144" topF="144.27633068181882"/>
             </y:GenericGroupNode>
             <y:GenericGroupNode configuration="com.yworks.bpmn.Artifact.withShadow">
               <y:Geometry height="80.0" width="100.0" x="-239.20458749999875" y="885.7893437499994"/>
@@ -193,13 +186,14 @@
       </data>
       <graph edgedefault="directed" id="n1:">
         <node id="n1::n0">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="181.2000000000001" width="296.39999999999986" x="-926.4094062499987" y="400.0972999999997"/>
+              <y:Geometry height="181.2000000000001" width="296.39999999999986" x="-964.5691889041262" y="572.820526750261"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="101.78125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="261.232421875" x="17.583789062499932" xml:space="preserve" y="39.70937500000002">(Optional
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="129.71875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="261.232421875" x="17.583789062499932" xml:space="preserve" y="25.740625000000023">Eher nicht notwendig
+
+(Optional
 vorerst durch die Einstellungen festgelegt)
 
 Auswahl:
@@ -219,13 +213,12 @@ Auswahl:
           </data>
         </node>
         <node id="n1::n1">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="181.2000000000001" width="296.39999999999986" x="-576.8094062499988" y="400.0972999999997"/>
+              <y:Geometry height="181.2000000000001" width="296.39999999999986" x="-551.7042860828096" y="572.820526750261"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="45.90625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="267.35546875" x="14.522265624999932" xml:space="preserve" y="67.64687500000002">Document Store
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="45.90625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="267.35546875" x="14.522265624999932" xml:space="preserve" y="67.64687500000002">Document Store (Auswahl des Dokuments)
 - Mitgelieferte Variante aus dem OO-Projekt
 - Document Store aus Office Suite<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="106.99999999999989" y="57.39999999999992">
@@ -241,15 +234,15 @@ Auswahl:
           </data>
         </node>
         <node id="n1::n2">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="181.2000000000001" width="296.39999999999986" x="184.20059375000415" y="703.6617874999995"/>
+              <y:Geometry height="181.2000000000001" width="296.39999999999986" x="-12.623548360758946" y="892.6066819618595"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.9375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="215.875" x="40.26249999999982" xml:space="preserve" y="74.63125000000002">Download Übersicht
-- ggf. Option um zip File zu löschen<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="106.99999999999977" y="57.39999999999992">
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="45.90625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="215.875" x="40.26249999999993" xml:space="preserve" y="67.64687500000002">Download Übersicht
+- ggf. Option um zip File zu löschen
+- Zurück zur Suche (Button)<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="106.99999999999989" y="57.39999999999998">
                 <y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
                 </y:LabelModel>
@@ -262,10 +255,9 @@ Auswahl:
           </data>
         </node>
         <node id="n1::n3">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="181.2000000000001" width="296.39999999999986" x="-748.5854062499945" y="643.0617874999994"/>
+              <y:Geometry height="181.2000000000001" width="296.39999999999986" x="-407.3498451214721" y="892.6066819618595"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="73.84375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="229.4921875" x="33.45390624999993" xml:space="preserve" y="53.67812500000002">Editor
@@ -273,7 +265,7 @@ Auswahl:
 
 Dokumente werden hier vorher 
 also unabh. vom Workflow bearbeitet<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="106.99999999999977" y="57.39999999999998">
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="106.99999999999989" y="57.39999999999998">
                 <y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
                 </y:LabelModel>
@@ -286,15 +278,13 @@ also unabh. vom Workflow bearbeitet<y:LabelModel><y:SmartNodeLabelModel distance
           </data>
         </node>
         <node id="n1::n4">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="181.2000000000001" width="296.39999999999986" x="-181.26340624999716" y="521.3472999999996"/>
+              <y:Geometry height="181.2000000000001" width="296.39999999999986" x="-768.8970133555367" y="892.6066819618595"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="45.90625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="191.494140625" x="52.45292968749982" xml:space="preserve" y="67.64687500000002">Editor
-- Aufruf durch Documen Store
-- als möglicher Zwischenschritt<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.9375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="184.193359375" x="56.10332031249993" xml:space="preserve" y="74.63125000000002">Editor (inline)
+- Aufruf durch Documen Store<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="106.99999999999989" y="57.39999999999998">
                 <y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
@@ -308,13 +298,12 @@ also unabh. vom Workflow bearbeitet<y:LabelModel><y:SmartNodeLabelModel distance
           </data>
         </node>
         <node id="n1::n5">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="181.20000000000005" width="250.79999999999995" x="-1230.4094062499987" y="553.5972999999994"/>
+              <y:Geometry height="181.20000000000005" width="278.91773458725174" x="-1296.6869234913781" y="726.3205267502608"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="59.875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="144.443359375" x="53.17832031249998" xml:space="preserve" y="60.66250000000002">Einstiegspunkt:
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="59.875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="144.443359375" x="67.23718760612587" xml:space="preserve" y="60.66250000000002">Einstiegspunkt:
 
 Kontakte auswählen
 Aktion: "PDF erzeugen"<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
@@ -323,28 +312,33 @@ Aktion: "PDF erzeugen"<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:L
           </data>
         </node>
         <node id="n1::n6">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="181.20000000000005" width="250.79999999999995" x="-1230.4094062499987" y="310.1051125000001"/>
+              <y:Geometry height="181.20000000000005" width="278.91773458725174" x="-1296.6869234913781" y="482.82833925026137"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="45.90625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="173.517578125" x="38.64121093749998" xml:space="preserve" y="67.64687500000002">Einstiegspunkt:
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="101.78125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="260.53515625" x="9.191289168625872" xml:space="preserve" y="39.70937500000002">Einstiegspunkt:
 Andere Einstiegspunkte und
-Verwendungen in Civi?<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+spätere Verwendungen in Civi?
+
+- Spendendankesbriefe
+- Mitgliedschaften?
+- Für einzelnen Kontakt? (empfehlenswert)<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:Shape type="rectangle"/>
             </y:ShapeNode>
           </data>
         </node>
         <node id="n1::n7">
-          <data key="d5"/>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="181.2000000000001" width="296.39999999999986" x="184.20059375000392" y="400.0972999999997"/>
+              <y:Geometry height="181.2000000000001" width="296.39999999999986" x="-12.623548360758946" y="572.820526750261"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="144.109375" x="76.14531250000005" xml:space="preserve" y="81.61562500000005">Runner mit Ladebalken<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="106.99999999999989" y="57.39999999999998">
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="59.875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="172.50390625" x="61.94804687499993" xml:space="preserve" y="60.66250000000002">Runner mit Ladebalken
+Vorabversion:
+Download poppt auf, sobald
+Files bereit stehen<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="106.99999999999989" y="57.39999999999992">
                 <y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
                 </y:LabelModel>
@@ -359,10 +353,11 @@ Verwendungen in Civi?<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:La
       </graph>
     </node>
     <edge id="n0::e0" source="n0::n2" target="n0::n3">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:Path sx="0.0" sy="0.0" tx="-140.56323448929027" ty="-9.917349379570851">
+            <y:Point x="-243.21383244971105" y="-225.68931895898663"/>
+          </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
           <y:BendStyle smoothed="false"/>
@@ -370,10 +365,11 @@ Verwendungen in Civi?<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:La
       </data>
     </edge>
     <edge id="n0::e1" source="n0::n2" target="n0::n1">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="-147.80414999999994" ty="-60.6821749999998"/>
+          <y:Path sx="0.0" sy="0.0" tx="-148.19663085937486" ty="0.0">
+            <y:Point x="-243.21383244971105" y="-225.68931895898663"/>
+          </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
           <y:BendStyle smoothed="false"/>
@@ -381,7 +377,6 @@ Verwendungen in Civi?<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:La
       </data>
     </edge>
     <edge id="n1::e0" source="n1::n5" target="n1::n0">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -392,7 +387,6 @@ Verwendungen in Civi?<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:La
       </data>
     </edge>
     <edge id="n1::e1" source="n1::n0" target="n1::n1">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -402,34 +396,11 @@ Verwendungen in Civi?<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:La
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n1::e2" source="n1::n1" target="n1::n4">
-      <data key="d9"/>
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="n1::e3" source="n1::n4" target="n1::n7">
-      <data key="d9"/>
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="n1::e4" source="n1::n1" target="n1::n7">
-      <data key="d9"/>
+    <edge id="n1::e2" source="n1::n1" target="n1::n7">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="-21.859406249998983" y="490.6972999999997"/>
+            <y:Point x="-60.01918890412651" y="663.420526750261"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -437,7 +408,50 @@ Verwendungen in Civi?<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:La
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n1::e5" source="n1::n6" target="n1::n0">
+    <edge id="n1::e3" source="n1::n6" target="n1::n0">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="n1::e4" source="n1::n7" target="n1::n2">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="n0::e2" source="n0::n0" target="n0::n2">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="n0::e3" source="n0::n2" target="n0::n4">
+      <data key="d9"/>
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
+            <y:Point x="-243.21383244971105" y="-225.68931895898663"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="n1::e5" source="n1::n1" target="n1::n4">
       <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
@@ -448,7 +462,7 @@ Verwendungen in Civi?<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:La
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n1::e6" source="n1::n7" target="n1::n2">
+    <edge id="n1::e6" source="n1::n1" target="n1::n3">
       <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
@@ -459,7 +473,7 @@ Verwendungen in Civi?<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:La
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n0::e2" source="n0::n2" target="n0::n4">
+    <edge id="n1::e7" source="n1::n3" target="n1::n1">
       <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
@@ -470,7 +484,7 @@ Verwendungen in Civi?<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:La
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n0::e3" source="n0::n0" target="n0::n2">
+    <edge id="n1::e8" source="n1::n4" target="n1::n1">
       <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
