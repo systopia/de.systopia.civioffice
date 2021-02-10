@@ -18,10 +18,10 @@ use CRM_Civioffice_ExtensionUtil as E;
 /**
  * CiviOffice abstract Document Store
  */
-abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeComponent
+abstract class CRM_Civioffice_Editor extends CRM_Civioffice_OfficeComponent
 {
     /**
-     * Get a list of available documents
+     * Get URL of the editor
      *
      * @param string $path
      *   path, or null for root
@@ -29,7 +29,7 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
      * @return array
      *   list of CRM_Civioffice_Document objects
      */
-    public abstract function getDocuments($path = null) : array;
+    public abstract function getURL() : string;
 
     /**
      * Get a list of paths under the given paths,

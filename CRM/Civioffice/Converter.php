@@ -16,12 +16,35 @@
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
- * CiviOffice abstract Document Store
+ * CiviOffice Converter
  */
-abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeComponent
+abstract class CRM_Civioffice_Converter extends CRM_Civioffice_OfficeComponent
 {
     /**
-     * Get a list of available documents
+     * Get the output/generated mime types for this converter
+     *
+     * @return array
+     *   list of mime types
+     */
+    public abstract function getOutputMimeTypes() : array;
+
+    /**
+     * Convert the list of documents to the given mime type
+     *
+     * @param array $documents
+     *   list of CRM_Civioffice_Document objects
+     *
+     * @param string $target_mime_type
+     *   mime type to convert to
+     *
+     * @return array
+     *   list of CRM_Civioffice_Document objects
+     */
+    public abstract function convert(array $documents, string $target_mime_type) : array;
+
+
+    /**
+     * Get URL of the editor
      *
      * @param string $path
      *   path, or null for root
@@ -29,7 +52,7 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
      * @return array
      *   list of CRM_Civioffice_Document objects
      */
-    public abstract function getDocuments($path = null) : array;
+    public abstract function getURL() : string;
 
     /**
      * Get a list of paths under the given paths,

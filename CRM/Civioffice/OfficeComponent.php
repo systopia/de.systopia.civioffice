@@ -16,66 +16,66 @@
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
- * CiviOffice abstract backend
+ * abstract CiviOffice component
  */
-abstract class CRM_Civioffice_LocalDocumentStore
+abstract class CRM_Civioffice_OfficeComponent
 {
+    /** @var string component ID */
+    protected $id;
+
+    /** @var string component name */
+    protected $name;
+
     /**
-     * Get a list of available input mime types
+     * Get a list of document mime types supported by this component
      *
      * @return array
-     *   list of available input mime types
+     *   list of mime types as strings
      */
-    public static function getSupportedMimeTypes() {
+    abstract public function getSupportedMimeTypes() : string;
 
-        $mimeTypes = [
-            'docx',
-        ];
-
-        return $mimeTypes;
-    }
 
     /**
-     * is read only?
+     * Get the URL to configure this component
      *
-     * @return true|false
-     *   is read only?
+     * @return string
+     *   URL
      */
-    public static function isReadOnly()
-    {
-
-    }
+    abstract public function getConfigPageURL() : string;
 
     /**
-     * Is this backend currently available?
+     * Is this component ready, i.e. properly
+     *   configured and connected
      *
      * @return boolean
-     *   is this backend ready for use
+     *   URL
      */
-    public abstract function isReady();
+    abstract public function isReady() : bool;
 
     /**
-     * Get a human-readable name
+     * Get the generic component ID
      *
      * @return string
-     *   name string
+     *   ID
      */
-    public abstract function getName();
+    public function getID() {
+        return $this->id;
+    }
 
     /**
-     * Get an internal ID
+     * Get the (localised) component name
      *
      * @return string
-     *   id string
+     *   ID
      */
-    public abstract function getID();
+    public function getName() {
+        return $this->name;
+    }
 
-    /**
-     * Get the URL for the backend's main configuration page
-     *
-     * @return string
-     *   link to the config page
-     */
-    public abstract function getConfigPage();
 
+    protected function __construct($id, $name)
+    {
+        $this->name = $name;
+        $this->id = $id;
+    }
 }

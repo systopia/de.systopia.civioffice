@@ -16,11 +16,66 @@
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
- * Document store based on a local folder
+ * CiviOffice abstract backend
  */
-class CRM_Civioffice_DocumentStore_LocalDocumentStore extends CRM_Civioffice_DocumentStore
+abstract class CRM_Civioffice_LocalDocumentStore
 {
+    /**
+     * Get a list of available input mime types
+     *
+     * @return array
+     *   list of available input mime types
+     */
+    public static function getSupportedMimeTypes() {
 
+        $mimeTypes = [
+            'docx',
+        ];
 
+        return $mimeTypes;
+    }
+
+    /**
+     * is read only?
+     *
+     * @return true|false
+     *   is read only?
+     */
+    public static function isReadOnly()
+    {
+
+    }
+
+    /**
+     * Is this backend currently available?
+     *
+     * @return boolean
+     *   is this backend ready for use
+     */
+    public abstract function isReady();
+
+    /**
+     * Get a human-readable name
+     *
+     * @return string
+     *   name string
+     */
+    public abstract function getName();
+
+    /**
+     * Get an internal ID
+     *
+     * @return string
+     *   id string
+     */
+    public abstract function getID();
+
+    /**
+     * Get the URL for the backend's main configuration page
+     *
+     * @return string
+     *   link to the config page
+     */
+    public abstract function getConfigPage();
 
 }
