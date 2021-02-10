@@ -29,6 +29,15 @@ abstract class CRM_Civioffice_Document
     /** @var string uri */
     protected $uri;
 
+    
+    protected function __construct($document_store, $mime_type, $uri)
+    {
+        $this->uri = $uri;
+        $this->$mime_type = $mime_type;
+        $this->$document_store = $document_store;
+    }
+
+
     /**
      * Get the document store containing this file
      *

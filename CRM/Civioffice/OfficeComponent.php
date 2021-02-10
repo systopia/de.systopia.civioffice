@@ -26,13 +26,20 @@ abstract class CRM_Civioffice_OfficeComponent
     /** @var string component name */
     protected $name;
 
+
+    protected function __construct($id, $name)
+    {
+        $this->name = $name;
+        $this->id = $id;
+    }
+
     /**
      * Get a list of document mime types supported by this component
      *
      * @return array
      *   list of mime types as strings
      */
-    abstract public function getSupportedMimeTypes() : string;
+    abstract public function getSupportedMimeTypes() : array;
 
 
     /**
@@ -73,9 +80,4 @@ abstract class CRM_Civioffice_OfficeComponent
     }
 
 
-    protected function __construct($id, $name)
-    {
-        $this->name = $name;
-        $this->id = $id;
-    }
 }

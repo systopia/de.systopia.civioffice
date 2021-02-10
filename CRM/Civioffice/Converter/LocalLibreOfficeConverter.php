@@ -16,9 +16,9 @@
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
- * (Local)
+ *
  */
-class CRM_Civioffice_Backend_LocalLibreOfficeConverter
+class CRM_Civioffice_Converter_LocalLibreOfficeConverter extends CRM_Civioffice_Converter
 {
     const MIN_UNOCONV_VERSION = '6.0'; // todo: determine
 
@@ -31,9 +31,9 @@ class CRM_Civioffice_Backend_LocalLibreOfficeConverter
      * @param string $unoconv_path
      *   path to the local unoconv file
      */
-    public function __construct($unoconv_path = '/usr/bin/unoconv')
+    public function __construct( $unoconv_path = '/usr/bin/unoconv')
     {
-        // todo: detect?
+        parent::__construct('unoconv-local', E::ts("Local Universal Converter"));
         $this->unoconv_path = $unoconv_path;
     }
 
@@ -43,7 +43,7 @@ class CRM_Civioffice_Backend_LocalLibreOfficeConverter
      * @return boolean
      *   is this backend ready for use
      */
-    public function isReady()
+    public function isReady() : bool
     {
         // todo: test if the binary is there
         try {
@@ -61,37 +61,56 @@ class CRM_Civioffice_Backend_LocalLibreOfficeConverter
     }
 
     /**
-     * Get a human-readable name
+     * Get the output/generated mime types for this converter
      *
-     * @return string
-     *   name string
+     * @return array
+     *   list of mime types
      */
-    public function getName()
+    public function getOutputMimeTypes() : array
     {
-        return E::ts("Local LibreOffice Converter (unoconv)");
+        return ['application/pdf'];
     }
 
     /**
-     * Get an internal ID
+     * Get a list of document mime types supported by this component
      *
-     * @return string
-     *   id string
+     * @return array
+     *   list of mime types as strings
      */
-    public function getID()
+    public function getSupportedMimeTypes() : array
     {
-        return 'unoconv-local';
+        return ['application/vnd.openxmlformats-officedocument.wordprocessingm'];
     }
 
     /**
-     * Get the URL for the backend's main configuration page
+     * Convert the list of documents to the given mime type
      *
-     * @return string
-     *   link to the config page
+     * @param array $documents
+     *   list of CRM_Civioffice_Document objects
+     *
+     * @param string $target_mime_type
+     *   mime type to convert to
+     *
+     * @return array
+     *   list of CRM_Civioffice_Document objects
      */
-    public function getConfigPage()
+    public function convert(array $documents, string $target_mime_type) : array
     {
-        return null;
+        // todo: implement
+
+        return [];
     }
 
+    /**
+     * Get the URL to configure this component
+     *
+     * @return string
+     *   URL
+     */
+    public function getConfigPageURL() : string
+    {
+        // TODO:
+        return '';
+    }
 
 }

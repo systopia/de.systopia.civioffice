@@ -42,36 +42,4 @@ abstract class CRM_Civioffice_Converter extends CRM_Civioffice_OfficeComponent
      */
     public abstract function convert(array $documents, string $target_mime_type) : array;
 
-
-    /**
-     * Get URL of the editor
-     *
-     * @param string $path
-     *   path, or null for root
-     *
-     * @return array
-     *   list of CRM_Civioffice_Document objects
-     */
-    public abstract function getURL() : string;
-
-    /**
-     * Get a list of paths under the given paths,
-     *   i.e. subdirectories
-     *
-     * @param string $path
-     *   path, or null for root
-     *
-     * @return array
-     *   list of strings representing paths
-     */
-    public abstract function getPaths($path = null) : array;
-
-    /**
-     * Get a list of paths under the given paths,
-     *   i.e. subdirectories
-     *
-     * @return boolean
-     *   is this document store read only
-     */
-    public abstract function isReadOnly() : bool;
 }
