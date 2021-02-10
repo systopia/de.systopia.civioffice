@@ -29,10 +29,14 @@ abstract class CRM_Civioffice_Document
     /** @var string uri */
     protected $uri;
 
-    
-    protected function __construct($document_store, $mime_type, $uri)
+    /** @var string name */
+    protected $name;
+
+
+    protected function __construct($document_store, $mime_type, $uri, $name)
     {
         $this->uri = $uri;
+        $this->name = $name;
         $this->$mime_type = $mime_type;
         $this->$document_store = $document_store;
     }
@@ -70,6 +74,18 @@ abstract class CRM_Civioffice_Document
     {
         return $this->uri;
     }
+
+    /**
+     * Get the file's name
+     *
+     * @return string
+     *   name
+     */
+    public function getName() : string
+    {
+        return $this->name;
+    }
+
 
     /**
      * Get the (binary) content of the file

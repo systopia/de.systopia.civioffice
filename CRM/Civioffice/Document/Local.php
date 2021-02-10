@@ -29,7 +29,7 @@ class CRM_Civioffice_Document_Local extends CRM_Civioffice_Document
     public function __construct($document_store, $mime_type, $local_path, $readonly)
     {
         $uri = 'local::' . $local_path;
-        parent::__construct($document_store, $mime_type, $uri);
+        parent::__construct($document_store, $mime_type, $uri, basename($local_path));
         $this->local_path = $local_path;
         $this->$readonly = $readonly;
     }

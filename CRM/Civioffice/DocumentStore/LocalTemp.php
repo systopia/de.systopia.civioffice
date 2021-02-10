@@ -20,7 +20,7 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStore_Local
 {
-    public function __construct($id, $name, $mime_type, $temp_folder = null)
+    public function __construct($mime_type, $temp_folder = null)
     {
         // create tmp folder
         if (empty($temp_folder)) {
@@ -31,7 +31,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
             mkdir($temp_folder);
         }
 
-        parent::__construct($id, $name, $temp_folder, $mime_type, false, false);
+        parent::__construct($temp_folder, E::ts("Temporary Files"), $temp_folder, $mime_type, false, false);
     }
 
     /**

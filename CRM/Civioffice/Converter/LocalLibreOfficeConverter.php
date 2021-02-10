@@ -25,6 +25,9 @@ class CRM_Civioffice_Converter_LocalLibreOfficeConverter extends CRM_Civioffice_
     /** @var string path to the unoconv binary */
     protected $unoconv_path = '/usr/bin/unoconv';
 
+    /** @var \CRM_Civioffice_DocumentStore temp store for converted files  */
+    protected $temp_store = null;
+
     /**
      * constructor
      *
@@ -35,6 +38,7 @@ class CRM_Civioffice_Converter_LocalLibreOfficeConverter extends CRM_Civioffice_
     {
         parent::__construct('unoconv-local', E::ts("Local Universal Converter"));
         $this->unoconv_path = $unoconv_path;
+        $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp('application/pdf');
     }
 
     /**
@@ -96,9 +100,17 @@ class CRM_Civioffice_Converter_LocalLibreOfficeConverter extends CRM_Civioffice_
      */
     public function convert(array $documents, string $target_mime_type) : array
     {
-        // todo: implement
+        $conversions = [];
+        foreach ($documents as $original_document) {
+            /** @var $original_document CRM_Civioffice_Document */
+            $converted_document = $this->temp_store->addFile($original_document->getName());
 
-        return [];
+            // todo: implement
+            // todo: call converter $original_document->getURI() => $converted_document->getURI()
+            $conversions[] = $converted_document;
+        }
+
+        return $conversions;
     }
 
     /**
