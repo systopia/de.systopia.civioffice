@@ -157,4 +157,28 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
         // todo: active
         return file_exists($this->local_path) && is_dir($this->local_path);
     }
+
+    /**
+     * Get a given document
+     *
+     * @param string $uri
+     *   document URI
+     *
+     * @return CRM_Civioffice_Document|null
+     *   list of CRM_Civioffice_Document objects
+     */
+    public function getDocumentByURI($uri)
+    {
+        if (substr($uri, 0, 7) == 'local::') {
+            // this is potentially one of ours:
+            $path = substr($uri, 7);
+            // todo: disallow '..' for security
+            $full_path = $this->local_path . DIRECTORY_SEPARATOR . $path;
+            if (file_exists($full_path)) {
+                // todo: check for mime type
+                return new CRM_Civioffice_Document_Local($this, $this->mime_type, $full_path, $this->readonly);
+            }
+        }
+        return null;
+    }
 }

@@ -51,4 +51,16 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
      *   is this document store read only
      */
     public abstract function isReadOnly() : bool;
+
+    /**
+     * Get a given document
+     *
+     * @param string $uri
+     *   document URI
+     *
+     * @return CRM_Civioffice_Document|null
+     *   list of CRM_Civioffice_Document objects
+     */
+    public abstract function getDocumentByURI($uri) : CRM_Civioffice_Document;
+
 }

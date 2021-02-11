@@ -82,4 +82,43 @@ class CRM_Civioffice_Configuration
         return [];
     }
 
+    /**
+     * Find/get the converter with the given URI
+     *
+     * @param string $converter_id
+     *   converter URI
+     *
+     * @return CRM_Civioffice_Converter|null
+     */
+    public function getConverter($converter_id)
+    {
+        $converters = self::getConverters(false);
+        foreach ($converters as $converter) {
+            if ($converter_id == $converter->getID()) {
+                return $converter;
+            }
+        }
+        return null; // not found
+    }
+
+    /**
+     * Get the document with the given URI
+     *
+     * @param string $document_uri
+     *   document URI
+     *
+     * @return \CRM_Civioffice_Document|null
+     */
+    public function getDocument($document_uri)
+    {
+        $stores = self::getDocumentStores(false);
+        foreach ($stores as $store) {
+            // see if this one has the file
+            $document = $store->getDocumentByURI($document_uri);
+            if ($document) {
+                return $document;
+            }
+        }
+        return null; // not found
+    }
 }
