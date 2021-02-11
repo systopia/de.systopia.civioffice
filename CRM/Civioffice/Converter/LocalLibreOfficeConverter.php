@@ -36,7 +36,7 @@ class CRM_Civioffice_Converter_LocalLibreOfficeConverter extends CRM_Civioffice_
      */
     public function __construct( $unoconv_path = '/usr/bin/unoconv')
     {
-        parent::__construct('unoconv-local', E::ts("Local Universal Converter"));
+        parent::__construct('unoconv-local', E::ts("Local Universal Office Converter"));
         $this->unoconv_path = $unoconv_path;
         $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp('application/pdf');
     }
