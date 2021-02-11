@@ -21,7 +21,7 @@ use CRM_Civioffice_ExtensionUtil as E;
 class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
 {
     /** @var string local folder this store has access to */
-    protected $local_path;
+    protected $base_folder;
 
     /** @var string mime_type */
     protected $mime_type;
@@ -32,10 +32,10 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     /** @var boolean should there be subfolders? */
     protected $subfolders;
 
-    public function __construct($id, $name, $local_path, $mime_type, $readonly, $subfolders)
+    public function __construct($id, $name, $base_folder, $mime_type, $readonly, $subfolders)
     {
         parent::__construct($id, $name);
-        $this->local_path = $local_path;
+        $this->base_folder = $base_folder;
         $this->mime_type = $mime_type;
         $this->readonly = $readonly;
         $this->subfolders = $subfolders;
@@ -57,9 +57,9 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
         }
 
         // todo: santise path ../..
-        $full_path = $this->local_path;
+        $full_path = $this->base_folder;
         if ($path) {
-            $full_path = $this->local_path . DIRECTORY_SEPARATOR . $path;
+            $full_path = $this->base_folder . DIRECTORY_SEPARATOR . $path;
         }
 
         $file_list = scandir($full_path);
@@ -70,8 +70,8 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
             }
             // todo: filter for files (not dirs)
             // todo: check for mime type
-            $local_path = $full_path . DIRECTORY_SEPARATOR . $file;
-            $documents[] = new CRM_Civioffice_Document_Local($this, $this->mime_type, $local_path, $this->readonly);
+            $base_folder = substr($full_path . DIRECTORY_SEPARATOR . $file, strlen($this->base_folder) + 1);
+            $documents[] = new CRM_Civioffice_Document_Local($this, $this->mime_type, $base_folder, $this->readonly);
         }
 
         return $documents;
@@ -91,9 +91,9 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
         $paths = [];
 
         if ($this->subfolders) {
-            $full_path = $this->local_path;
+            $full_path = $this->base_folder;
             if ($path) {
-                $full_path = $this->local_path . DIRECTORY_SEPARATOR . $path;
+                $full_path = $this->base_folder . DIRECTORY_SEPARATOR . $path;
             }
 
             $file_list = scandir($full_path);
@@ -155,7 +155,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     public function isReady() : bool
     {
         // todo: active
-        return file_exists($this->local_path) && is_dir($this->local_path);
+        return file_exists($this->base_folder) && is_dir($this->base_folder);
     }
 
     /**
@@ -173,10 +173,11 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
             // this is potentially one of ours:
             $path = substr($uri, 7);
             // todo: disallow '..' for security
-            $full_path = $this->local_path . DIRECTORY_SEPARATOR . $path;
+            $full_path = $this->base_folder . DIRECTORY_SEPARATOR . $path;
             if (file_exists($full_path)) {
                 // todo: check for mime type
-                return new CRM_Civioffice_Document_Local($this, $this->mime_type, $full_path, $this->readonly);
+                $local_path = substr($full_path, strlen($this->base_folder) + 1);
+                return new CRM_Civioffice_Document_Local($this, $this->mime_type, $local_path, $this->readonly);
             }
         }
         return null;
