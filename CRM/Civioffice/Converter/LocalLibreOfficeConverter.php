@@ -106,6 +106,18 @@ class CRM_Civioffice_Converter_LocalLibreOfficeConverter extends CRM_Civioffice_
             $converted_document = $this->temp_store->addFile($original_document->getName());
 
             // todo: implement
+
+            /*
+             *
+             * Command:
+             * -f = format
+             *      example: pdf
+             * -o = output directory
+             *      example: ./output_folder_for_pdf_files
+             * unoconv -f pdf -o ./output_folder_for_pdf_files *.docx
+             *
+             */
+
             // todo: call converter $original_document->getURI() => $converted_document->getURI()
             $conversions[] = $converted_document;
         }
