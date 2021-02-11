@@ -73,9 +73,10 @@ abstract class CRM_Civioffice_OfficeComponent
      * Get the (localised) component name
      *
      * @return string
-     *   ID
+     *   name
      */
-    public function getName() {
+    public function getName(): string
+    {
         return $this->name;
     }
 
