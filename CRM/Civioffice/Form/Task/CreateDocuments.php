@@ -41,6 +41,15 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             []
         );
 
+        $this->add(
+            'select',
+            'target_mime_type',
+            E::ts("Document Type"),
+            [
+                'application/pdf' => E::ts("PDF"),
+            ]
+        );
+
         $this->addButtons(
             [
                 [
@@ -64,6 +73,8 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         $converter = $config->getConverter($values['converter_id']);
         $document = $config->getDocument($values['document_uri']);
 
+        // test: simply run
+        $converter->convert([$document], $values['target_mime_type']);
 
 
         parent::postProcess();

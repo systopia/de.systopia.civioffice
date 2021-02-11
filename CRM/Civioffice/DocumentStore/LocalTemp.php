@@ -24,7 +24,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
     {
         // create tmp folder
         if (empty($temp_folder)) {
-            $temp_folder = tempnam(sys_get_temp_dir(),'civioffice');
+            $temp_folder = tempnam(sys_get_temp_dir(),'civioffice_');
             if (file_exists($temp_folder)) {
                 unlink($temp_folder);
             }
@@ -46,7 +46,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
      */
     public function addFile($file_name, $content = null) : CRM_Civioffice_Document_LocalTempfile
     {
-        $file_path = $this->local_path . DIRECTORY_SEPARATOR . $file_name;
+        $file_path = $this->base_folder . DIRECTORY_SEPARATOR . $file_name;
         return new CRM_Civioffice_Document_LocalTempfile($this, $this->mime_type, $file_path);
     }
 
