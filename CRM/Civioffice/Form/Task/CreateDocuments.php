@@ -74,8 +74,12 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         $document = $config->getDocument($values['document_uri']);
 
         // test: simply run
-        $converter->convert([$document], $values['target_mime_type']);
+        $documents = $converter->convert([$document], $values['target_mime_type']);
 
+        // test 2: zip
+
+
+        // test 3: download
 
         parent::postProcess();
     }

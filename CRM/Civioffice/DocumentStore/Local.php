@@ -182,4 +182,15 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
         }
         return null;
     }
+
+    /**
+     * Return the (local) base folder
+     *
+     * @return string
+     *   local base folder
+     */
+    public function getBaseFolder() : string
+    {
+        return $this->base_folder;
+    }
 }

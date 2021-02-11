@@ -101,9 +101,10 @@ class CRM_Civioffice_Converter_LocalUnoconv extends CRM_Civioffice_Converter
     public function convert(array $documents, string $target_mime_type) : array
     {
         $conversions = [];
+        // todo: convert as a batch
         foreach ($documents as $original_document) {
             /** @var $original_document CRM_Civioffice_Document */
-            $converted_document = $this->temp_store->addFile($original_document->getName());
+            $converted_document = $this->temp_store->addFile($original_document->getName() . '.pdf');
 
             // todo: implement
 
@@ -123,7 +124,10 @@ class CRM_Civioffice_Converter_LocalUnoconv extends CRM_Civioffice_Converter
              *
              */
 
-            
+            $command = "{$this->unoconv_path} -f pdf -o '{$converted_document->getAbsolutePath()}' '{$original_document->getAbsolutePath()}'";
+            Civi::log()->debug("Running: '{$command}'");
+            exec($command);
+            Civi::log()->debug("Done.");
 
             // todo: call converter $original_document->getURI() => $converted_document->getURI()
             $conversions[] = $converted_document;

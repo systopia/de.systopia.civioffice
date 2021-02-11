@@ -73,6 +73,17 @@ class CRM_Civioffice_Document_Local extends CRM_Civioffice_Document
         return $this->local_path;
     }
 
+    /**
+     * get the file's (local) path
+     *
+     * @return string
+     *   path
+     */
+    public function getAbsolutePath() : string
+    {
+        return $this->document_store->getBaseFolder() . DIRECTORY_SEPARATOR . $this->local_path;
+    }
+
 
     /**
      * Can this file be edited?

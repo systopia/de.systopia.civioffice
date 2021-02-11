@@ -66,6 +66,16 @@ class CRM_Civioffice_Document_LocalTempfile extends CRM_Civioffice_Document
         return $this->local_path;
     }
 
+    /**
+     * get the file's (local) path
+     *
+     * @return string
+     *   path
+     */
+    public function getAbsolutePath() : string
+    {
+        return $this->local_path;
+    }
 
     /**
      * Can this file be edited?
