@@ -38,12 +38,12 @@ class CRM_Civioffice_Configuration
     /**
      * Get the list of active document stores
      *
-     * @param boolean $active_only
+     * @param boolean $only_show_active
      *   return only active objects
      *
      * @return array
      */
-    public function getDocumentStores($active_only = true) : array
+    public function getDocumentStores($only_show_active = true) : array
     {
         // todo: get from config
         return [
@@ -55,12 +55,12 @@ class CRM_Civioffice_Configuration
     /**
      * Get the list of active document stores
      *
-     * @param boolean $active_only
+     * @param boolean $only_show_active
      *   return only active objects
      *
      * @return array
      */
-    public function getConverters($active_only = true) : array
+    public function getConverters($only_show_active = true) : array
     {
         // todo: get from config
         return [
