@@ -42,4 +42,13 @@ abstract class CRM_Civioffice_Converter extends CRM_Civioffice_OfficeComponent
      */
     public abstract function convert(array $documents, string $target_mime_type) : array;
 
+
+    public function resolveTokens($token_names, $entity_id, $entity_type) : array {
+        return [];
+    }
+
+    public function replaceAllTokens($string, $entity_id, $entity_type) : string {
+        return $string;
+    }
+
 }
