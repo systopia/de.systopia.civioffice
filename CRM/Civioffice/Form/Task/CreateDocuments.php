@@ -9,6 +9,8 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
 {
     public function buildQuickForm()
     {
+        $this->setTitle(E::ts("CiviOffice - Generate Documents"));
+
         $config = CRM_Civioffice_Configuration::getConfig();
 
         // add list of converters
@@ -22,7 +24,8 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             'converter_id',
             E::ts("Converter"),
             $converter_list,
-            []
+            true,
+            ['class' => 'crm-select2 huge']
         );
 
         // build document list
@@ -38,7 +41,8 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             'document_uri',
             E::ts("Document"),
             $document_list,
-            []
+            true,
+            ['class' => 'crm-select2 huge']
         );
 
         $this->add(
@@ -47,21 +51,13 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             E::ts("Document Type"),
             [
                 'application/pdf' => E::ts("PDF"),
-            ]
+            ],
+            true,
+            ['class' => 'crm-select2']
         );
 
-        $this->addButtons(
-            [
-                [
-                    'type' => 'submit',
-                    'name' => E::ts('Generate'),
-                    'isDefault' => true,
-                ],
-            ]
-        );
-
-        // export form elements
-        parent::buildQuickForm();
+        // add buttons
+        CRM_Core_Form::addDefaultButtons(E::ts("Generate %1 Files", [1 => count($this->_contactIds)]));
     }
 
 
