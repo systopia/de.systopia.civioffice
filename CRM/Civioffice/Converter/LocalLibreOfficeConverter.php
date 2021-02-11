@@ -108,13 +108,18 @@ class CRM_Civioffice_Converter_LocalLibreOfficeConverter extends CRM_Civioffice_
             // todo: implement
 
             /*
+             * unoconv manpage: https://linux.die.net/man/1/unoconv
              *
              * Command:
              * -f = format
              *      example: pdf
              * -o = output directory
              *      example: ./output_folder_for_pdf_files
-             * unoconv -f pdf -o ./output_folder_for_pdf_files *.docx
+             *
+             * might be interesting if file gets instantly added to a zip file instead of writing and reading it again
+             * --stdout = Print converted output file to stdout.
+             * unoconv -f pdf -o ./output_folder_for_pdf_files FOLDER/PATH/TO/FILENAME/*.docx
+             *      example: unoconv -f pdf --stdout FOLDER/PATH/TO/FILENAME.docx
              *
              */
 
