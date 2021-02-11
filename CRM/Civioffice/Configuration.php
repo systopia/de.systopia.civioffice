@@ -64,7 +64,7 @@ class CRM_Civioffice_Configuration
     {
         // todo: get from config
         return [
-            new CRM_Civioffice_Converter_LocalLibreOfficeConverter()
+            new CRM_Civioffice_Converter_LocalUnoconv()
         ];
     }
 
