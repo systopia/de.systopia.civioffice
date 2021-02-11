@@ -61,6 +61,6 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
      * @return CRM_Civioffice_Document|null
      *   list of CRM_Civioffice_Document objects
      */
-    public abstract function getDocumentByURI($uri) : CRM_Civioffice_Document;
+    public abstract function getDocumentByURI($uri);
 
 }
