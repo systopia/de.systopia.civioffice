@@ -65,6 +65,9 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
         $file_list = scandir($full_path);
         $documents = [];
         foreach ($file_list as $file) {
+            if (preg_match("/^[.].*$/", $file)) {
+                continue; // we don't want anything that starts with . (including . and ..)
+            }
             // todo: filter for files (not dirs)
             // todo: check for mime type
             $local_path = $full_path . DIRECTORY_SEPARATOR . $file;

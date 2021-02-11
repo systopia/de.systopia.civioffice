@@ -47,7 +47,7 @@ class CRM_Civioffice_Configuration
     {
         // todo: get from config
         return [
-            new CRM_Civioffice_DocumentStore_Local('test', "Test", '/tmp/civioffice', 'application/vnd.openxmlformats-officedocument.wordprocessingm', false, true)
+            new CRM_Civioffice_DocumentStore_Local('test', "Test", '/var/civioffice', 'application/vnd.openxmlformats-officedocument.wordprocessingm', false, true)
         ];
     }
 

@@ -37,8 +37,8 @@ abstract class CRM_Civioffice_Document
     {
         $this->uri = $uri;
         $this->name = $name;
-        $this->$mime_type = $mime_type;
-        $this->$document_store = $document_store;
+        $this->mime_type = $mime_type;
+        $this->document_store = $document_store;
     }
 
 
