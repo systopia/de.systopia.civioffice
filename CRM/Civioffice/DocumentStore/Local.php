@@ -38,7 +38,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
         $this->local_path = $local_path;
         $this->mime_type = $mime_type;
         $this->readonly = $readonly;
-        $this->$subfolders = $subfolders;
+        $this->subfolders = $subfolders;
     }
 
     /**
