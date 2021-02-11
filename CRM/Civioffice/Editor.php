@@ -23,11 +23,8 @@ abstract class CRM_Civioffice_Editor extends CRM_Civioffice_OfficeComponent
     /**
      * Get URL of the editor
      *
-     * @param string $path
-     *   path, or null for root
-     *
-     * @return array
-     *   list of CRM_Civioffice_Document objects
+     * @return string
+     *   url path of the editor
      */
     public abstract function getURL() : string;
 
