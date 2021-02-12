@@ -21,7 +21,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         }
         $this->add(
             'select',
-            'converter_id',
+            'document_renderer_id',
             E::ts("Document Renderer"),
             $document_renderer_list,
             true,

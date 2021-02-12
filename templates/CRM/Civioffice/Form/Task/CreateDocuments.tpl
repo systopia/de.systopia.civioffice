@@ -17,8 +17,8 @@
 {crmScope extensionKey='de.systopia.civioffice'}
 
   <div class="crm-section">
-    <div class="label">{$form.converter_id.label}</div>
-    <div class="content">{$form.converter_id.html}</div>
+    <div class="label">{$form.document_renderer_id.label}</div>
+    <div class="content">{$form.document_renderer_id.html}</div>
     <div class="clear"></div>
   </div>
 
