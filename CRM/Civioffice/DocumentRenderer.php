@@ -16,12 +16,12 @@
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
- * CiviOffice Converter
+ * CiviOffice Document Renderer
  */
-abstract class CRM_Civioffice_Converter extends CRM_Civioffice_OfficeComponent
+abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
 {
     /**
-     * Get the output/generated mime types for this converter
+     * Get the output/generated mime types for this document renderer
      *
      * @return array
      *   list of mime types
@@ -40,7 +40,7 @@ abstract class CRM_Civioffice_Converter extends CRM_Civioffice_OfficeComponent
      * @return array
      *   list of CRM_Civioffice_Document objects
      */
-    public abstract function convert(array $documents, string $target_mime_type) : array;
+    public abstract function render(array $documents, string $target_mime_type) : array;
 
 
     public function resolveTokens($token_names, $entity_id, $entity_type) : array {

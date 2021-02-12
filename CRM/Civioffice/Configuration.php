@@ -60,11 +60,11 @@ class CRM_Civioffice_Configuration
      *
      * @return array
      */
-    public function getConverters($only_show_active = true) : array
+    public function getDocumentRenderers($only_show_active = true) : array
     {
         // todo: get from config
         return [
-            new CRM_Civioffice_Converter_LocalUnoconv()
+            new CRM_Civioffice_DocumentRenderer_LocalUnoconv()
         ];
     }
 
@@ -83,19 +83,19 @@ class CRM_Civioffice_Configuration
     }
 
     /**
-     * Find/get the converter with the given URI
+     * Find/get the document renderer with the given URI
      *
-     * @param string $converter_id
-     *   converter URI
+     * @param string $document_renderer_id
+     *   document renderer URI
      *
-     * @return CRM_Civioffice_Converter|null
+     * @return CRM_Civioffice_DocumentRenderer|null
      */
-    public function getConverter($converter_id)
+    public function getDocumentRenderer(string $document_renderer_id)
     {
-        $converters = self::getConverters(false);
-        foreach ($converters as $converter) {
-            if ($converter_id == $converter->getID()) {
-                return $converter;
+        $document_renderers = self::getDocumentRenderers(false);
+        foreach ($document_renderers as $dr) {
+            if ($document_renderer_id == $dr->getID()) {
+                return $dr;
             }
         }
         return null; // not found

@@ -18,7 +18,7 @@ use CRM_Civioffice_ExtensionUtil as E;
 /**
  *
  */
-class CRM_Civioffice_Converter_LocalUnoconv extends CRM_Civioffice_Converter
+class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_DocumentRenderer
 {
     const MIN_UNOCONV_VERSION = '6.0'; // todo: determine
 
@@ -65,7 +65,7 @@ class CRM_Civioffice_Converter_LocalUnoconv extends CRM_Civioffice_Converter
     }
 
     /**
-     * Get the output/generated mime types for this converter
+     * Get the output/generated mime types for this document renderer
      *
      * @return array
      *   list of mime types
@@ -98,7 +98,7 @@ class CRM_Civioffice_Converter_LocalUnoconv extends CRM_Civioffice_Converter
      * @return array
      *   list of CRM_Civioffice_Document objects
      */
-    public function convert(array $documents, string $target_mime_type) : array
+    public function render(array $documents, string $target_mime_type) : array
     {
         $conversions = [];
         // todo: convert as a batch

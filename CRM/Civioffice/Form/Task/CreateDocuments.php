@@ -13,17 +13,17 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
 
         $config = CRM_Civioffice_Configuration::getConfig();
 
-        // add list of converters
-        $converter_list = [];
-        foreach ($config->getConverters() as $converter) {
-            /** @var CRM_Civioffice_Converter $converter */
-            $converter_list[$converter->getID()] = $converter->getName();
+        // add list of document renderers
+        $document_renderer_list = [];
+        foreach ($config->getDocumentRenderers() as $dr) {
+            /** @var CRM_Civioffice_DocumentRenderer $dr */
+            $document_renderer_list[$dr->getID()] = $dr->getName();
         }
         $this->add(
             'select',
             'converter_id',
-            E::ts("Converter"),
-            $converter_list,
+            E::ts("Document Renderer"),
+            $document_renderer_list,
             true,
             ['class' => 'crm-select2 huge']
         );
@@ -66,13 +66,13 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         $values = $this->exportValues();
 
         $config = CRM_Civioffice_Configuration::getConfig();
-        $converter = $config->getConverter($values['converter_id']);
+        $document_renderer = $config->getDocumentRenderer($values['document_renderer_id']);
         $document = $config->getDocument($values['document_uri']);
 
         // run for all contacts
-        // todo: $converter->generate($document, $values['target_mime_type'], $this->_contactIds, 'Contact');
+        // todo: $document_renderer->generate($document, $values['target_mime_type'], $this->_contactIds, 'Contact');
         foreach ($this->_contactIds as $contactId) {
-            $documents = $converter->convert([$document], $values['target_mime_type']);
+            $documents = $document_renderer->render([$document], $values['target_mime_type']);
         }
 
         // test 2: zip
