@@ -1,7 +1,7 @@
 {*-------------------------------------------------------+
 | SYSTOPIA CiviOffice Integration                        |
 | Copyright (C) 2020 SYSTOPIA                            |
-| Author: B. Endres (endres@systopia.de)                 |
+| Author: J. Franz (franz@systopia.de)                   |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
 | Affero GPL license. You can redistribute it and/or     |
