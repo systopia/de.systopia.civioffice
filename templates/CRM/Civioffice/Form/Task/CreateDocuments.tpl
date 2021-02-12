@@ -12,6 +12,8 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*}
 
+{* HEADER *}
+
 {crmScope extensionKey='de.systopia.civioffice'}
 
   <div class="crm-section">
