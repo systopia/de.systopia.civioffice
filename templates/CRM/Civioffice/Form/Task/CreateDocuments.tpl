@@ -34,6 +34,12 @@
     <div class="clear"></div>
   </div>
 
+  <div class="crm-section">
+    <div class="label">{$form.batch_size.label}</div>
+    <div class="content">{$form.batch_size.html}</div>
+    <div class="clear"></div>
+  </div>
+
   {* FOOTER *}
   <div class="crm-submit-buttons">
     {include file="CRM/common/formButtons.tpl" location="bottom"}

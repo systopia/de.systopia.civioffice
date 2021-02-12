@@ -56,6 +56,17 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             ['class' => 'crm-select2']
         );
 
+        $batch_size = [5, 10, 20, 30, 40, 50];
+
+        $this->add(
+            'select',
+            'batch_size',
+            E::ts("Batch size"),
+            $batch_size,
+            true,
+            ['class' => 'crm-select2 huge']
+        );
+
         // add buttons
         CRM_Core_Form::addDefaultButtons(E::ts("Generate %1 Files", [1 => count($this->_contactIds)]));
     }
@@ -64,6 +75,8 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
     public function postProcess()
     {
         $values = $this->exportValues();
+
+        $batch_size = $values['batch_size'];
 
         $config = CRM_Civioffice_Configuration::getConfig();
         $document_renderer = $config->getDocumentRenderer($values['document_renderer_id']);
