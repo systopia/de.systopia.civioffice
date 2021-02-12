@@ -46,6 +46,7 @@ class CRM_Civioffice_Configuration
     public function getDocumentStores($only_show_active = true) : array
     {
         // todo: get from config
+        // todo: filter for $only_show_active
         return [
             new CRM_Civioffice_DocumentStore_Local('test', "Test", '/var/civioffice', 'application/vnd.openxmlformats-officedocument.wordprocessingm', false, true)
         ];
@@ -63,6 +64,7 @@ class CRM_Civioffice_Configuration
     public function getDocumentRenderers($only_show_active = true) : array
     {
         // todo: get from config
+        // todo: filter for $only_show_active
         return [
             new CRM_Civioffice_DocumentRenderer_LocalUnoconv()
         ];
@@ -79,6 +81,7 @@ class CRM_Civioffice_Configuration
     public function getEditors($active_only = true) : array
     {
         // todo: get from config
+        // todo: filter for $only_show_active
         return [];
     }
 
