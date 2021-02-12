@@ -12,5 +12,5 @@
 - runner
 - download page + zip
 - token replacement
- - from OnlyOffice
- - from eventcommunication & co
+  - from OnlyOffice
+  - from eventcommunication & co
