@@ -26,6 +26,7 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
         // add backends
         $active_backend_list = []; // plain list of
         $backend_implementations = [];
+        /*
         $backends = CRM_Civioffice_Backend::getBackends();
         foreach ($backends as $backend) {
             if ($backend->isReady()) {
@@ -38,6 +39,7 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
                 'config_url' => $backend->getConfigPage()
             ];
         }
+        */
         $this->assign('backends', $backend_implementations);
 
         // add form elements
