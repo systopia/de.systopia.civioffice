@@ -1,8 +1,4 @@
 #TODO
-- [J] refactor converter -> document renderer
-- [J] fix config page?
-- [J] refactor path naming confusion
-- [J] add batch size parameter
 - config page:
   [document stores]
   [converter]
