@@ -26,7 +26,6 @@ abstract class CRM_Civioffice_OfficeComponent
     /** @var string component name */
     protected $name;
 
-
     protected function __construct($id, $name)
     {
         $this->name = $name;
@@ -80,5 +79,15 @@ abstract class CRM_Civioffice_OfficeComponent
         return $this->name;
     }
 
+    /**
+     * Get the (localised) component description
+     *
+     * @return string
+     *   name
+     */
+    public function getDescription(): string
+    {
+        return '';
+    }
 
 }

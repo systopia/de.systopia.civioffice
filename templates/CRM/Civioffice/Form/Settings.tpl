@@ -13,38 +13,29 @@
 +-------------------------------------------------------*}
 
 {* HEADER *}
-
 {crmScope extensionKey='de.systopia.civioffice'}
 
-<div class="crm-section">
-  <div class="label">{$form.active_backend.label}</div>
-  <div class="content">{$form.active_backend.html}</div>
-  <div class="clear"></div>
-</div>
 
-<div class="crm-section">
-  <div class="label">{$form.active_user_backend.label}</div>
-  <div class="content">{$form.active_user_backend.html}</div>
-  <div class="clear"></div>
-</div>
-
-<h3>{ts}CiviOffice Backends{/ts}</h3>
+<h3>{ts}CiviOffice Document Stores{/ts}</h3>
+<div id="help">{ts}Document Stores blablablabl{/ts}</div>
 
 <table>
   <thead>
     <tr>
       <th>{ts}Name{/ts}</th>
+      <th>{ts}Description{/ts}</th>
       <th>{ts}Ready to use{/ts}</th>
       <th>{ts}Config{/ts}</th>
     </tr>
   </thead>
   <tbody>
-{foreach from=$backends item=backend}
-    <tr>
-      <td>{$backend.name}</td>
-      <td>{if $backend.is_ready}{ts}Yes{/ts}{else}{ts}No{/ts}{/if}</td>
-      <td>{if $backend.config_url}
-            <a class="button crm-popup" href="{$backend.config_url}">{ts}configure{/ts}</a>
+{foreach from=$ui_components.document_stores item=component}
+    <tr class="{if not $component.is_ready}disabled{/if}">
+      <td>{$component.name}</td>
+      <td>{$component.description}</td>
+      <td>{if $component.is_ready}{ts}Yes{/ts}{else}{ts}No{/ts}{/if}</td>
+      <td>{if $component.config_url}
+            <a class="button crm-popup" href="{$component.config_url}">{ts}configure{/ts}</a>
           {else}
             {ts}no configuration available{/ts}
           {/if}
@@ -54,23 +45,26 @@
   </tbody>
 </table>
 
-<h3>{ts}CiviOffice DocumentStores{/ts}</h3>
+<h3>{ts}CiviOffice Document Renderers{/ts}</h3>
+<div id="help">{ts}Documen tRenderers blablablabl{/ts}</div>
 
 <table>
   <thead>
   <tr>
     <th>{ts}Name{/ts}</th>
+    <th>{ts}Description{/ts}</th>
     <th>{ts}Ready to use{/ts}</th>
     <th>{ts}Config{/ts}</th>
   </tr>
   </thead>
   <tbody>
-  {foreach from=$backends item=backend}
+  {foreach from=$ui_components.document_renderers item=component}
     <tr>
-      <td>{$backend.name}</td>
-      <td>{if $backend.is_ready}{ts}Yes{/ts}{else}{ts}No{/ts}{/if}</td>
-      <td>{if $backend.config_url}
-          <a class="button crm-popup" href="{$backend.config_url}">{ts}configure{/ts}</a>
+      <td>{$component.name}</td>
+      <td>{$component.description}</td>
+      <td>{if $component.is_ready}{ts}Yes{/ts}{else}{ts}No{/ts}{/if}</td>
+      <td>{if $component.config_url}
+          <a class="button crm-popup" href="{$component.config_url}">{ts}configure{/ts}</a>
         {else}
           {ts}no configuration available{/ts}
         {/if}
@@ -80,9 +74,38 @@
   </tbody>
 </table>
 
-  {* FOOTER *}
-<div class="crm-submit-buttons">
-{include file="CRM/common/formButtons.tpl" location="bottom"}
-</div>
+
+<h3>{ts}CiviOffice Document Editors{/ts}</h3>
+<div id="help">{ts}Document Editors blablablabl{/ts}</div>
+
+  <table>
+  <thead>
+  <tr>
+    <th>{ts}Name{/ts}</th>
+    <th>{ts}Description{/ts}</th>
+    <th>{ts}Ready to use{/ts}</th>
+    <th>{ts}Config{/ts}</th>
+  </tr>
+  </thead>
+  <tbody>
+  {foreach from=$ui_components.document_editors item=component}
+    <tr>
+      <td>{$component.name}</td>
+      <td>{$component.description}</td>
+      <td>{if $component.is_ready}{ts}Yes{/ts}{else}{ts}No{/ts}{/if}</td>
+      <td>{if $component.config_url}
+          <a class="button crm-popup" href="{$component.config_url}">{ts}configure{/ts}</a>
+        {else}
+          {ts}no configuration available{/ts}
+        {/if}
+      </td>
+    </tr>
+  {/foreach}
+  </tbody>
+</table>
+
+{*<div class="crm-submit-buttons">*}
+{*{include file="CRM/common/formButtons.tpl" location="bottom"}*}
+{*</div>*}
 
 {/crmScope}

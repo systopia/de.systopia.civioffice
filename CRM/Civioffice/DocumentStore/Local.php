@@ -20,6 +20,8 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
 {
+    const SETTING_NAME = 'civioffice_store_local_static_path';
+
     /** @var string local folder this store has access to */
     protected $base_folder;
 
@@ -32,10 +34,10 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     /** @var boolean should there be subfolders? */
     protected $subfolders;
 
-    public function __construct($id, $name, $base_folder, $mime_type, $readonly, $subfolders)
+    public function __construct($id, $name, $mime_type, $readonly, $subfolders)
     {
         parent::__construct($id, $name);
-        $this->base_folder = $base_folder;
+        $this->base_folder = Civi::settings()->get(self::SETTING_NAME);
         $this->mime_type = $mime_type;
         $this->readonly = $readonly;
         $this->subfolders = $subfolders;
@@ -141,8 +143,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
      */
     public function getConfigPageURL() : string
     {
-        // todo:
-        return 'tood';
+        return CRM_Utils_System::url('civicrm/admin/civioffice/LocalDocumentStore');
     }
 
     /**
@@ -193,4 +194,16 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     {
         return $this->base_folder;
     }
+
+    /**
+     * Get the (localised) component description
+     *
+     * @return string
+     *   name
+     */
+    public function getDescription(): string
+    {
+        return E::ts("All documents at '%1'", [1 => $this->base_folder]);
+    }
+
 }

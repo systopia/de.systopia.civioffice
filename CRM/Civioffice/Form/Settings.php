@@ -23,49 +23,28 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
 
     public function buildQuickForm()
     {
-        // add backends
-        $active_backend_list = []; // plain list of
-        $backend_implementations = [];
-        /*
-        $backends = CRM_Civioffice_Backend::getBackends();
-        foreach ($backends as $backend) {
-            if ($backend->isReady()) {
-                $active_backend_list[$backend->getID()] = $backend->getName();
+        self::setTitle(E::ts("CiviOffice Configuration"));
+
+        $basic_elements = [
+            'document_stores'    => CRM_Civioffice_Configuration::getDocumentStores(false),
+            'document_renderers' => CRM_Civioffice_Configuration::getDocumentRenderers(false),
+            'document_editors'   => CRM_Civioffice_Configuration::getEditors(false),
+        ];
+
+        $ui_components = [];
+        foreach ($basic_elements as $element_type => $components) {
+            foreach ($components as $instance) {
+                /** @var $instance CRM_Civioffice_OfficeComponent */
+                $ui_components[$element_type][] = [
+                    'id'          => $instance->getID(),
+                    'name'        => $instance->getName(),
+                    'description' => $instance->getDescription(),
+                    'config_url'  => $instance->getConfigPageURL(),
+                    'is_ready'    => $instance->isReady()
+                ];
             }
-            $backend_implementations[$backend->getID()] = [
-                'id'         => $backend->getID(),
-                'name'       => $backend->getName(),
-                'is_ready'   => $backend->isReady(),
-                'config_url' => $backend->getConfigPage()
-            ];
         }
-        */
-        $this->assign('backends', $backend_implementations);
-
-        // add form elements
-        $this->add(
-            'select',
-            'active_backend',
-            E::ts("Active Backend"),
-            $active_backend_list,
-            true
-        );
-
-        // add form elements
-        $this->add(
-            'select',
-            'active_user_backend',
-            E::ts("Active Backend (current user)"),
-            $active_backend_list,
-            true
-        );
-
-        // set defaults
-        $this->setDefaults([
-            'active_backend'      => Civi::settings()->get('civioffice_active_backend'),
-            'active_user_backend' => Civi::contactSettings()->get('civioffice_active_backend'),
-       ]);
-
+        $this->assign('ui_components', $ui_components);
 
         $this->addButtons(
             [
@@ -84,10 +63,6 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
     public function postProcess()
     {
         $values = $this->exportValues();
-
-        // store settings
-        Civi::settings()->set('civioffice_active_backend', $values['active_backend']);
-        Civi::contactSettings()->set('civioffice_active_backend', $values['active_user_backend']);
 
 
         CRM_Core_Session::setStatus(
