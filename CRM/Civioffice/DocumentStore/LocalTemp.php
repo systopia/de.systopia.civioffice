@@ -24,6 +24,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
     {
         // create tmp folder
         if (empty($temp_folder)) {
+            // create temp folder with random postfix like: /tmp/civioffice_yssE0h
             $temp_folder = tempnam(sys_get_temp_dir(),'civioffice_');
             if (file_exists($temp_folder)) {
                 unlink($temp_folder);
