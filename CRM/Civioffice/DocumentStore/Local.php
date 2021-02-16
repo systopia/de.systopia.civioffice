@@ -171,12 +171,12 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     {
         if (substr($uri, 0, 7) == 'local::') {
             // this is potentially one of ours:
-            $path = substr($uri, 7);
+            $file_name_with_ending = substr($uri, 7);
             // todo: disallow '..' for security
-            $full_path = $this->base_folder . DIRECTORY_SEPARATOR . $path;
-            if (file_exists($full_path)) {
+            $absolute_path_with_file_name = $this->base_folder . DIRECTORY_SEPARATOR . $file_name_with_ending;
+            if (file_exists($absolute_path_with_file_name)) {
                 // todo: check for mime type
-                $local_path = substr($full_path, strlen($this->base_folder) + 1);
+                $local_path = substr($absolute_path_with_file_name, strlen($this->base_folder) + 1);
                 return new CRM_Civioffice_Document_Local($this, $this->mime_type, $local_path, $this->readonly);
             }
         }
