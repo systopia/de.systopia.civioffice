@@ -24,7 +24,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     const SETTING_NAME = 'civioffice_unoconv_binary_path';
 
     /** @var string path to the unoconv binary */
-    protected $unoconv_path = '/usr/bin/unoconv';
+    protected $unoconv_path;
 
     /** @var \CRM_Civioffice_DocumentStore temp store for converted files  */
     protected $temp_store = null;
