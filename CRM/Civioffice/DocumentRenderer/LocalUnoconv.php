@@ -41,10 +41,10 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     }
 
     /**
-     * Is this backend currently available?
+     * Is this renderer currently available?
      *
      * @return boolean
-     *   is this backend ready for use
+     *   is this renderer ready for use
      */
     public function isReady() : bool
     {
