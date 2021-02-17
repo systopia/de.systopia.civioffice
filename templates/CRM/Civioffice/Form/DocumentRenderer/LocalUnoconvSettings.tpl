@@ -15,6 +15,7 @@
 {crmScope extensionKey='de.systopia.civioffice'}
 
   <div class="crm-section">
+    <div class="help">{ts}Path to unoconv binary description text.<br>For example: /usr/bin/unoconv{/ts}</div>
     <div class="label">{$form.unoconv_binary_path.label}</div>
     <div class="content">{$form.unoconv_binary_path.html}</div>
     <div class="clear"></div>
