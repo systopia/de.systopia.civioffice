@@ -144,7 +144,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      */
     public function getConfigPageURL() : string
     {
-        return CRM_Utils_System::url('civicrm/admin/civioffice/settings/LocalUnoconvSettings');
+        return CRM_Utils_System::url('civicrm/admin/civioffice/settings/LocalUnoconv');
     }
 
 }
