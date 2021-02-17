@@ -146,4 +146,14 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         return CRM_Utils_System::url('civicrm/admin/civioffice/settings/LocalUnoconv');
     }
 
+    /**
+     * Get the (localised) component description
+     *
+     * @return string
+     *   name
+     */
+    public function getDescription(): string
+    {
+        return E::ts("Un oconv binary path at: '%1'", [1 => $this->unoconv_path]);
+    }
 }
