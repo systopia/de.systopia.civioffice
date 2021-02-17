@@ -9,10 +9,10 @@
     <icon>admin/small/rela_type.png</icon>
   </item>
   <item>
-    <path>civicrm/admin/civioffice/LocalLibreOfficeConverter</path>
-    <page_callback>CRM_Civioffice_Form_LocalLibreOfficeConverter_LocalLibreOfficeConverterSettings</page_callback>
-    <title>LocalLibreOfficeConverter Settings</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <path>civicrm/admin/civioffice/settings/LocalUnoconv</path>
+    <page_callback>CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings</page_callback>
+    <title>LocalUnoconv Settings</title>
+    <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
     <path>civicrm/admin/civioffice/LocalDocumentStore</path>
