@@ -143,7 +143,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
      */
     public function getConfigPageURL() : string
     {
-        return CRM_Utils_System::url('civicrm/admin/civioffice/LocalDocumentStore');
+        return CRM_Utils_System::url('civicrm/admin/civioffice/settings/LocalDocumentStore');
     }
 
     /**
