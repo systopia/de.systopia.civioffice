@@ -43,7 +43,8 @@ class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends 
      * Validate input data
      * @return bool
      */
-    public function validate() {
+    public function validate(): bool
+    {
         parent::validate();
 
         // verify that the folder is 1) there, 2) readable
