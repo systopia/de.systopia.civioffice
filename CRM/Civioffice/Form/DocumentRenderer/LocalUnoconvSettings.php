@@ -10,69 +10,63 @@ use CRM_Civioffice_ExtensionUtil as E;
 class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core_Form {
   public function buildQuickForm() {
 
-    // add form elements
-    $this->add(
-      'select', // field type
-      'favorite_color', // field name
-      'Favorite Color', // field label
-      $this->getColorOptions(), // list of options
-      TRUE // is required
-    );
-    $this->addButtons(array(
-      array(
-        'type' => 'submit',
-        'name' => E::ts('Submit'),
-        'isDefault' => TRUE,
-      ),
-    ));
+      // add form elements
+      $this->add(
+          'text',
+          'unoconv_binary_path',
+          E::ts("path to the unoconv binary"),
+          [],
+          true
+      );
 
-    // export form elements
-    $this->assign('elementNames', $this->getRenderableElementNames());
-    parent::buildQuickForm();
+      $this->setDefaults(
+          [
+              'unoconv_binary_path' => Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::SETTING_NAME),
+          ]
+      );
+
+      $this->addButtons(
+          [
+              [
+                  'type' => 'submit',
+                  'name' => E::ts('Save'),
+                  'isDefault' => true,
+              ],
+          ]
+      );
+
+      parent::buildQuickForm();
   }
+
+    /**
+     * Validate input data
+     * @return bool
+     */
+    public function validate(): bool
+    {
+        parent::validate();
+        return true; //fixme debug
+        // todo: check if binary is there?
+
+        // verify that the folder is 1) there, 2) readable
+        if (!empty($this->_submitValues['unoconv_binary_path'])) {
+            $local_folder = $this->_submitValues['local_folder'];
+            if (!is_dir($local_folder)) {
+                $this->_errors['unoconv_binary_path'] = E::ts("This is not a folder");
+            } else {
+                if (!is_readable($local_folder)) {
+                    $this->_errors['unoconv_binary_path'] = E::ts("This folder cannot be accessed");
+                }
+            }
+        }
+
+        return (0 == count($this->_errors));
+    }
 
   public function postProcess() {
-    $values = $this->exportValues();
-    $options = $this->getColorOptions();
-    CRM_Core_Session::setStatus(E::ts('You picked color "%1"', array(
-      1 => $options[$values['favorite_color']],
-    )));
-    parent::postProcess();
-  }
+      $values = $this->exportValues();
 
-  public function getColorOptions() {
-    $options = array(
-      '' => E::ts('- select -'),
-      '#f00' => E::ts('Red'),
-      '#0f0' => E::ts('Green'),
-      '#00f' => E::ts('Blue'),
-      '#f0f' => E::ts('Purple'),
-    );
-    foreach (array('1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e') as $f) {
-      $options["#{$f}{$f}{$f}"] = E::ts('Grey (%1)', array(1 => $f));
-    }
-    return $options;
+      // save to settings
+      Civi::settings()->set(CRM_Civioffice_DocumentRenderer_LocalUnoconv::SETTING_NAME, $values['unoconv_binary_path']);
   }
-
-  /**
-   * Get the fields/elements defined in this form.
-   *
-   * @return array (string)
-   */
-  public function getRenderableElementNames() {
-    // The _elements list includes some items which should not be
-    // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
-    // items don't have labels.  We'll identify renderable by filtering on
-    // the 'label'.
-    $elementNames = array();
-    foreach ($this->_elements as $element) {
-      /** @var HTML_QuickForm_Element $element */
-      $label = $element->getLabel();
-      if (!empty($label)) {
-        $elementNames[] = $element->getName();
-      }
-    }
-    return $elementNames;
-  }
-
 }

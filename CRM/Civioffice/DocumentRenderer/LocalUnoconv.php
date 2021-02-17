@@ -21,6 +21,7 @@ use CRM_Civioffice_ExtensionUtil as E;
 class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_DocumentRenderer
 {
     const MIN_UNOCONV_VERSION = '6.0'; // todo: determine
+    const SETTING_NAME = 'civioffice_unoconv_binary_path';
 
     /** @var string path to the unoconv binary */
     protected $unoconv_path = '/usr/bin/unoconv';
@@ -31,13 +32,11 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     /**
      * constructor
      *
-     * @param string $unoconv_path
-     *   path to the local unoconv file
      */
-    public function __construct( $unoconv_path = '/usr/bin/unoconv')
+    public function __construct()
     {
         parent::__construct('unoconv-local', E::ts("Local Universal Office Converter (unoconv)"));
-        $this->unoconv_path = $unoconv_path;
+        $this->unoconv_path = Civi::settings()->get(self::SETTING_NAME);
         $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp('application/pdf');
     }
 
