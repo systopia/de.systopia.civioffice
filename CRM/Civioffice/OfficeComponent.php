@@ -87,7 +87,7 @@ abstract class CRM_Civioffice_OfficeComponent
      */
     public function getDescription(): string
     {
-        return '';
+        return '- empty -';
     }
 
 }

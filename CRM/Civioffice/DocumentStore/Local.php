@@ -203,7 +203,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
      */
     public function getDescription(): string
     {
-        return E::ts("All documents at '%1'", [1 => $this->base_folder]);
+        return E::ts("All documents at: '%1'", [1 => $this->base_folder]);
     }
 
 }
