@@ -42,7 +42,6 @@ class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends 
     /**
      * Validate input data
      * @return bool
-     * @throws \CiviCRM_API3_Exception
      */
     public function validate() {
         parent::validate();
