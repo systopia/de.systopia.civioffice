@@ -15,6 +15,7 @@
 {crmScope extensionKey='de.systopia.civioffice'}
 
 <div class="crm-section">
+  <div class="help">{ts}Path to temp folder description text.<br>For example: /var/civioffice{/ts}</div>
   <div class="label">{$form.local_folder.label}</div>
   <div class="content">{$form.local_folder.html}</div>
   <div class="clear"></div>
