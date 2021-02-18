@@ -48,7 +48,7 @@ class CRM_Civioffice_Configuration
         // todo: get from config
         // todo: filter for $only_show_active
         return [
-            new CRM_Civioffice_DocumentStore_Local('test', "Local Folder", 'application/vnd.openxmlformats-officedocument.wordprocessingm', false, true)
+            new CRM_Civioffice_DocumentStore_Local('test', "Local Folder", CRM_Civioffice_MimeType::DOCX, false, true)
         ];
     }
 

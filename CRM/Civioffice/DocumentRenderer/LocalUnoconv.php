@@ -37,7 +37,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     {
         parent::__construct('unoconv-local', E::ts("Local Universal Office Converter (unoconv)"));
         $this->unoconv_path = Civi::settings()->get(self::SETTING_NAME);
-        $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp('application/pdf');
+        $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::PDF);
     }
 
     /**
@@ -71,7 +71,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      */
     public function getOutputMimeTypes() : array
     {
-        return ['application/pdf'];
+        return [CRM_Civioffice_MimeType::PDF];
     }
 
     /**
@@ -82,7 +82,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      */
     public function getSupportedMimeTypes() : array
     {
-        return ['application/vnd.openxmlformats-officedocument.wordprocessingm'];
+        return [CRM_Civioffice_MimeType::DOCX];
     }
 
     /**
