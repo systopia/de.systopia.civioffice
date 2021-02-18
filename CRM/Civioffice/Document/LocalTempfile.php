@@ -25,6 +25,7 @@ class CRM_Civioffice_Document_LocalTempfile extends CRM_Civioffice_Document
 
     public function __construct($document_store, $mime_type, $local_path)
     {
+        #todo check if path is writable?
         touch($local_path);
         $uri = 'localtmp::' . $local_path;
         parent::__construct($document_store, $mime_type, $uri, basename($local_path));
