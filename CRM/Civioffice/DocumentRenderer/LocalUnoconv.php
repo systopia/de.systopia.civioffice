@@ -101,9 +101,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     {
         $conversions = [];
         // todo: convert as a batch
-        foreach ($documents as $original_document) {
-            /** @var $original_document CRM_Civioffice_Document */
-            $converted_document = $this->temp_store->addFile($original_document->getName() . '.pdf');
+        foreach ($documents as $source_document) {
+            /** @var $source_document CRM_Civioffice_Document */
+            $converted_document = $this->temp_store->addFile($source_document->getName() . '.pdf');
 
             // todo: implement
 
