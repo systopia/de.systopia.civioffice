@@ -57,6 +57,12 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             if (!empty($result_code)) {
                 return false;
             }
+
+            $output_line_with_version = $output[0];
+            // todo: test for $MIN_UNOCONV_VERSION version
+            if(strpos($output_line_with_version, 'unoconv') === false) {
+                return false;
+            }
         } catch (Exception $ex) {
             return false;
         }
