@@ -41,11 +41,19 @@ abstract class CRM_Civioffice_Editor extends CRM_Civioffice_OfficeComponent
     public abstract function getPaths($path = null) : array;
 
     /**
-     * Get a list of paths under the given paths,
-     *   i.e. subdirectories
+     * Is this document able to be inline edited?
+     *
+     * @param $document
      *
      * @return boolean
      *   is this document store read only
      */
-    public abstract function isReadOnly() : bool;
+    public abstract function canInlineEdit($document) : bool;
+
+    /**
+     * Is this editor able to be included in other sites e.g. as an inline frame?
+     *
+     * @return boolean
+     */
+    public abstract function ableToBeIncludedAsInlineFrame() : bool;
 }
