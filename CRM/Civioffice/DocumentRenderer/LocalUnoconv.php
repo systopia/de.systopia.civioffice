@@ -42,13 +42,13 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
     /**
      * Is this renderer currently available?
+     * Tests if the binary is there and responding
      *
      * @return boolean
      *   is this renderer ready for use
      */
     public function isReady() : bool
     {
-        // todo: test if the binary is there
         try {
             exec("{$this->unoconv_path} --version", $output, $result_code);
 
