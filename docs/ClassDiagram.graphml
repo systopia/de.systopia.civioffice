@@ -60,7 +60,8 @@ getDocumentByURI($uri)
             <y:AttributeLabel xml:space="preserve"/>
             <y:MethodLabel xml:space="preserve">getOutputMimeTypes()
 renderDocuments($document, $target_mime_type, $entity_ids, $entity_type)
-</y:MethodLabel>
+resolveTokens($token_names, $entity_id, $entity_type)
+replaceAllTokens($string, $entity_id, $entity_type)</y:MethodLabel>
           </y:UML>
         </y:UMLClassNode>
       </data>
@@ -108,7 +109,7 @@ renderDocuments($document, $target_mime_type, $entity_ids, $entity_type)
             <y:MethodLabel xml:space="preserve">getURL()
 getInlineUrl()
 canInedit($document)
-isInlineCapable()
+ableToBeIncludedAsInlineFrame()
 </y:MethodLabel>
           </y:UML>
         </y:UMLClassNode>
@@ -152,7 +153,7 @@ getId()
 getName()
 getConfigPageURL()
 isReady()
-</y:MethodLabel>
+getDescription()</y:MethodLabel>
           </y:UML>
         </y:UMLClassNode>
       </data>
