@@ -135,8 +135,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             exec($command, $exec_output, $exec_return_code);
             Civi::log()->debug("Done.");
 
-            exec("ls -la {$folderPath}", $exec_folder_out, $exec_folder_return_code);
-
             // todo: call converter $source_document->getURI() => $converted_document->getURI()
             $conversions[] = $converted_document;
         }
