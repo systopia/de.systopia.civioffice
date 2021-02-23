@@ -129,11 +129,13 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
              *
              */
 
-            $command = "{$this->unoconv_path} -f pdf -o '{$converted_document->getAbsolutePath()}' '{$original_document->getAbsolutePath()}'";
+            $command = "{$this->unoconv_path} -f pdf -o '{$folderPathLong}' '{$source_document->getAbsolutePath()}'";
             Civi::log()->debug("Running: '{$command}'");
             // 251 = Help or version information printed
             exec($command, $exec_output, $exec_return_code);
             Civi::log()->debug("Done.");
+
+            exec("ls -la {$folderPath}", $exec_folder_out, $exec_folder_return_code);
 
             // todo: call converter $source_document->getURI() => $converted_document->getURI()
             $conversions[] = $converted_document;
