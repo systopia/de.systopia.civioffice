@@ -43,11 +43,11 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
     public abstract function render(array $documents, string $target_mime_type) : array;
 
 
-    public function resolveTokens($token_names, $entity_id, $entity_type) : array {
+    public function resolveTokens($token_names, $entity_id, $entity_type = 'contact') : array {
         return [];
     }
 
-    public function replaceAllTokens($string, $entity_id, $entity_type) : string {
+    public function replaceAllTokens($string, $entity_id, $entity_type = 'contact') : string {
         return $string;
     }
 
