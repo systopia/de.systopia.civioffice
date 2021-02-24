@@ -32,8 +32,9 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
             }
             mkdir($temp_folder);
         }
-
-        parent::__construct($temp_folder, E::ts("Temporary Files"), $mime_type, false, false);
+        $this->base_folder = $temp_folder;
+        
+        parent::__construct("tmp:{$this->base_folder}", E::ts("Temporary Files"), $mime_type, false, false);
     }
 
     /**
