@@ -127,13 +127,16 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
              * unoconv -f pdf -o ./output_folder_for_pdf_files FOLDER/PATH/TO/FILENAME/*.docx
              *      example: unoconv -f pdf --stdout FOLDER/PATH/TO/FILENAME.docx
              *
+             * -v for verbose mode. Returns target file format and target filepath
              */
 
-            $command = "{$this->unoconv_path} -f pdf -o '{$converted_document->getAbsolutePath()}' '{$source_document->getAbsolutePath()}'";
+            $command = "{$this->unoconv_path} -v -f pdf -o '{$converted_document->getAbsolutePath()}' '{$source_document->getAbsolutePath()}'";
             Civi::log()->debug("CiviOffice: Running command: '{$command}'");
             // 251 = Help or version information printed
             exec($command, $exec_output, $exec_return_code);
-            Civi::log()->debug("CiviOffice: Done.");
+            Civi::log()->debug("CiviOffice: Command done.");
+
+            if($exec_return_code != 0) Civi::log()->debug("CiviOffice: Return code 0 expected but {$exec_return_code} given");
 
             // todo: call converter $source_document->getURI() => $converted_document->getURI()
             $conversions[] = $converted_document;
