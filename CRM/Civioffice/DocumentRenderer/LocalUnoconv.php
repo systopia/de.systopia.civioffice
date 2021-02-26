@@ -63,6 +63,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             if(strpos($output_line_with_version, 'unoconv') === false) {
                 return false;
             }
+
+            #todo: check if folders are there and writable: /var/www/.cache/ and /var/www/.config
+
         } catch (Exception $ex) {
             return false;
         }
