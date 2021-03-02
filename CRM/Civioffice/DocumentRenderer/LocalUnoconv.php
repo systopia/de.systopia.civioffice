@@ -145,7 +145,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             Civi::log()->debug("CiviOffice: Running command: '{$command}'");
             // 251 = Help or version information printed
             exec($command, $exec_output, $exec_return_code);
-            Civi::log()->debug("CiviOffice: Command done.");
+            Civi::log()->debug("CiviOffice: Finished command: '{$command}'");
 
             if($exec_return_code != 0) Civi::log()->debug("CiviOffice: Return code 0 expected but {$exec_return_code} given");
 
