@@ -73,22 +73,63 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
     {
         $values = $this->exportValues();
 
+        $document_id = $values['document_uri'];
+
+        $contact_counts = count($this->_contactIds);
+        $target_mime_type = $values['target_mime_type'];
+
+        // Initialize a queue.
+        $queue = CRM_Queue_Service::singleton()->create(
+          [
+              'type' => 'Sql',
+              'name' => 'document_task_' . CRM_Core_Session::singleton()->getLoggedInContactId(),
+              'reset' => true
+          ]
+        );
+
+        // #todo batching: array with n IDs
         $batch_size = $values['batch_size'];
 
-        $config = CRM_Civioffice_Configuration::getConfig();
-        $document_renderer = $config->getDocumentRenderer($values['document_renderer_id']);
-        $document = $config->getDocument($values['document_uri']);
+
 
         // run for all contacts
-        // todo: $document_renderer->generate($document, $values['target_mime_type'], $this->_contactIds, 'Contact');
         foreach ($this->_contactIds as $contactId) {
-            $documents = $document_renderer->render([$document], $values['target_mime_type']);
+
+            $entity_IDs = [$contactId];
+
+            // #todo todo: temp_folder, local_document_path
+            // Add an initialisation queue item.
+            $queue->createItem(
+                $job = new CRM_Civioffice_GenerateConversionJob(
+                    $values['document_renderer_id'],
+                    $document_id,
+                    $entity_IDs,
+                    $target_mime_type,
+                    'contact',
+                    E::ts('Initialized')
+                )
+            );
         }
 
-        // test 2: zip
 
+        // Start a runner on the queue.
+        $download_link = CRM_Utils_System::url(
+            'civicrm/contact/search?reset=1', // contact search page
+            '' // example: "tmp_folder={$temp_folder}&return_url={$return_link}"
+        );
 
-        // test 3: download
+        $runner = new CRM_Queue_Runner(
+          [
+              'title' => E::ts(
+                  "Generating %1 files",
+                  [1 => $contact_counts]
+              ),
+              'queue' => $queue,
+              'errorMode' => CRM_Queue_Runner::ERROR_ABORT,
+              'onEndUrl' => $download_link
+          ]
+        );
+        $runner->runAllViaWeb();
 
         parent::postProcess();
     }
