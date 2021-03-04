@@ -124,4 +124,28 @@ class CRM_Civioffice_Configuration
         }
         return null; // not found
     }
+
+
+    /**
+     * Get the home folder of the current user (usually webserver)
+     *
+     * @return string
+     */
+    public static function getHomeFolder()
+    {
+        // try environment
+        if (!empty($_SERVER['HOME'])) {
+            return $_SERVER['HOME'];
+        }
+
+        // try via shell
+        $user_name = get_current_user();
+        exec("eval echo \"~{$user_name}\"", $eval_output);
+        if (!empty($eval_output[0])) {
+            return $eval_output[0];
+        }
+
+        // todo: what else to check?
+        return '';
+    }
 }

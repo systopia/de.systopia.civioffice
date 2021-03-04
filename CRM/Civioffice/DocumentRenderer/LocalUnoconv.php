@@ -37,6 +37,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     {
         parent::__construct('unoconv-local', E::ts("Local Universal Office Converter (unoconv)"));
         $this->unoconv_path = Civi::settings()->get(self::SETTING_NAME);
+        if (empty($this->unoconv_path)) {
+            $this->unoconv_path = '/usr/bin/unoconv'; // default value
+        }
         $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::PDF);
     }
 
@@ -64,20 +67,23 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 return false;
             }
 
+            // get webserver user home path
+            $home_folder = CRM_Civioffice_Configuration::getHomeFolder() . DIRECTORY_SEPARATOR;
+
             // check if ~/.cache folder exists, try to create if not
-            if (!file_exists("{$_SERVER['HOME']}/.cache/")) {
-                mkdir("{$_SERVER['HOME']}/.cache/");
+            if (!file_exists("{$home_folder}.cache")) {
+                mkdir("{$home_folder}.cache");
             }
-            if (!is_writable("{$_SERVER['HOME']}/.cache/")) {
-                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.cache/");
+            if (!is_writable("{$home_folder}.cache")) {
+                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.cache");
                 return false;
             }
 
             // check if ~/.config folder exists, try to create if not
-            if (!file_exists("{$_SERVER['HOME']}/.config/")) {
-                mkdir("{$_SERVER['HOME']}/.config/");
+            if (!file_exists("{$home_folder}.config")) {
+                mkdir("{$home_folder}.config");
             }
-            if (!is_writable("{$_SERVER['HOME']}/.config")) {
+            if (!is_writable("{$home_folder}.config")) {
                 Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.config");
                 return false;
             }
@@ -186,6 +192,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      */
     public function getDescription(): string
     {
-        return E::ts("Un oconv binary path at: '%1'", [1 => $this->unoconv_path]);
+        return E::ts("Unoconv binary path at: '%1'", [1 => $this->unoconv_path]);
     }
 }
