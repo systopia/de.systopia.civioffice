@@ -119,7 +119,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     /**
      * Render a document for a list of entities
      *
-     * @param CRM_Civioffice_Document $document
+     * @param CRM_Civioffice_Document $source_document
      *   the document to be rendered
      *
      * @param array $entity_ids
@@ -131,12 +131,12 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      * @return array
      *   list of token_name => token value
      */
-    public function render($document, $entity_ids, string $target_mime_type, $entity_type ='contact') : array
+    public function render($source_document, $entity_ids, string $target_mime_type, $entity_type ='contact') : array
     {
         $conversions = [];
         // todo: convert as a batch
         foreach ($entity_ids as $entity_id) {
-            /** @var $source_document CRM_Civioffice_Document */
+            /** @var $converted_document CRM_Civioffice_Document */
             $converted_document = $this->temp_store->addFile("Document-{$entity_id}.pdf");
 
             // todo: implement
