@@ -12,20 +12,32 @@ class CRM_Civioffice_GenerateConversionJob
 
     /**
      * @var $document_id
-     *   The template to use for generating the letter.
+     *   The template id which is used for generating a document
      */
     protected $document_id;
 
+    /**
+     * @var array $entity_IDs
+     *   Array with entity IDs (like contact IDs)
+     */
     protected $entity_IDs;
 
     /**
      * @var string $target_mime_type
-     *   Mime type like pdf of target file
+     *   Mime type of target file (like pdf)
      */
     protected $target_mime_type;
 
+    /**
+     * @var string $entity_type
+     *   Type of entity (like 'contact' ID)
+     */
     protected $entity_type;
 
+    /**
+     * @var string $title
+     *   Title for runner state
+     */
     public $title;
 
     public function __construct($renderer_id, $document_id, $entity_IDs, $target_mime_type, $entity_type, $title)
