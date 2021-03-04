@@ -29,19 +29,21 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
     public abstract function getOutputMimeTypes() : array;
 
     /**
-     * Convert the list of documents to the given mime type
+     * Render a document for a list of entities
      *
-     * @param array $documents
-     *   list of CRM_Civioffice_Document objects
+     * @param CRM_Civioffice_Document $document
+     *   the document to be rendered
      *
-     * @param string $target_mime_type
-     *   mime type to convert to
+     * @param array $entity_ids
+     *   entity ID, e.g. contact_id
+     *
+     * @param string $entity_type
+     *   entity type, e.g. 'contact'
      *
      * @return array
-     *   list of CRM_Civioffice_Document objects
+     *   list of token_name => token value
      */
-    public abstract function render(array $documents, string $target_mime_type) : array;
-
+    public abstract function render($document, $entity_ids, string $target_mime_type, $entity_type ='contact') : array;
 
     /**
      * resolve all tokens
