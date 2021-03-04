@@ -146,6 +146,7 @@ class CRM_Civioffice_Configuration
         }
 
         // todo: what else to check?
-        return '';
+        Civi::log()->warning("Couldn't determine web user's home folder.");
+        return '~';
     }
 }
