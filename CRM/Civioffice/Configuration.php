@@ -43,7 +43,7 @@ class CRM_Civioffice_Configuration
      *
      * @return array
      */
-    public function getDocumentStores($only_show_active = true) : array
+    public static function getDocumentStores($only_show_active = true) : array
     {
         // todo: get from config
         // todo: filter for $only_show_active
@@ -61,7 +61,7 @@ class CRM_Civioffice_Configuration
      *
      * @return array
      */
-    public function getDocumentRenderers($only_show_active = true) : array
+    public static function getDocumentRenderers($only_show_active = true) : array
     {
         // todo: get from config
         // todo: filter for $only_show_active
@@ -78,7 +78,7 @@ class CRM_Civioffice_Configuration
      *
      * @return array
      */
-    public function getEditors($active_only = true) : array
+    public static function getEditors($active_only = true) : array
     {
         // todo: get from config
         // todo: filter for $only_show_active
