@@ -64,13 +64,13 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 return false;
             }
 
-            if (!is_writable('/var/www/.cache/')) {
-                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: /var/www/.cache/");
+            if (!is_writable("{$_SERVER['HOME']}/.cache/")) {
+                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.cache/");
                 return false;
             }
 
-            if (!is_writable('/var/www/.config')) {
-                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: /var/www/.config");
+            if (!is_writable("{$_SERVER['HOME']}.config")) {
+                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.config");
                 return false;
             }
 
