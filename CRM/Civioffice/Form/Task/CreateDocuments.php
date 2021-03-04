@@ -73,11 +73,6 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
     {
         $values = $this->exportValues();
 
-        $document_id = $values['document_uri'];
-
-        $contact_counts = count($this->_contactIds);
-        $target_mime_type = $values['target_mime_type'];
-
         // Initialize a queue.
         $queue = CRM_Queue_Service::singleton()->create(
           [
@@ -87,30 +82,22 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
           ]
         );
 
-        // #todo batching: array with n IDs
-        $batch_size = $values['batch_size'];
+        $chunked_entities = array_chunk($this->_contactIds, $values['batch_size'],false);
 
-
-
-        // run for all contacts
-        foreach ($this->_contactIds as $contactId) {
-
-            $entity_IDs = [$contactId];
-
+        foreach ($chunked_entities as $entity_IDs) {
             // #todo todo: temp_folder, local_document_path
             // Add an initialisation queue item.
             $queue->createItem(
                 $job = new CRM_Civioffice_GenerateConversionJob(
                     $values['document_renderer_id'],
-                    $document_id,
+                    $values['document_uri'],
                     $entity_IDs,
-                    $target_mime_type,
+                    $values['batch_size'],
                     'contact',
                     E::ts('Initialized')
                 )
             );
         }
-
 
         // Start a runner on the queue.
         $download_link = CRM_Utils_System::url(
@@ -122,7 +109,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
           [
               'title' => E::ts(
                   "Generating %1 files",
-                  [1 => $contact_counts]
+                  [1 => count($this->_contactIds)]
               ),
               'queue' => $queue,
               'errorMode' => CRM_Queue_Runner::ERROR_ABORT,
