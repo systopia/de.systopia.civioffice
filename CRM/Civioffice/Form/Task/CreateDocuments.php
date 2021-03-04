@@ -101,7 +101,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
 
         // Start a runner on the queue.
         $download_link = CRM_Utils_System::url(
-            'civicrm/contact/search?reset=1', // contact search page
+            'civicrm/civioffice/download',
             '' // example: "tmp_folder={$temp_folder}&return_url={$return_link}"
         );
 
