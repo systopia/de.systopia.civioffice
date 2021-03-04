@@ -31,7 +31,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
         $this->tmp_folder = CRM_Utils_Request::retrieve('tmp_folder', 'String', $this);
         $this->return_url = CRM_Utils_Request::retrieve('return_url', 'String', $this);
 
-        $this->setTitle(E::ts("Your Invitation PDFs are ready for download."));
+        $this->setTitle(E::ts("Your PDFs are ready for download."));
         $this->addButtons(
             [
                 [
