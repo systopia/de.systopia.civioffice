@@ -11,6 +11,12 @@
 | copyright header is strictly prohibited without        |
 | written permission from the original author(s).        |
 +-------------------------------------------------------*}
+
+{* HEADER *}
+{crmScope extensionKey='de.systopia.civioffice'}
+
+<h3>{ts}CiviOffice Download{/ts}</h3>
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="top"}
 </div>
+{/crmScope}
