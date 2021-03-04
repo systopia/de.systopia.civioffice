@@ -26,7 +26,7 @@ class CRM_Civioffice_GenerateConversionJob
 
     protected $entity_type;
 
-    protected $title; // needs to be public to function?
+    public $title;
 
     public function __construct($renderer_id, $document_id, $entity_IDs, $target_mime_type, $entity_type, $title)
     {
