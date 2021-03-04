@@ -72,11 +72,11 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
                     $output = null;
                     $pattern = E::ts("Document-%1.pdf", [1 => '*']);
                     $command = "cd {$this->tmp_folder} && zip all.zip {$pattern}";
-                    Civi::log()->debug("CiviOffice executing '{$command}' to zip generated pdfs...");
+                    Civi::log()->debug("CiviOffice: Executing '{$command}' to zip generated pdfs...");
                     $timestamp = microtime(true);
                     exec($command, $output, $has_error);
                     $runtime = microtime(true) - $timestamp;
-                    Civi::log()->debug("CiviOffice zip command took {$runtime}s");
+                    Civi::log()->debug("CiviOffice: Zip command took {$runtime}s");
                 } catch (Exception $ex) {
                     $has_error = 1;
                 }

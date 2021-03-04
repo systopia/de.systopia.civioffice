@@ -158,6 +158,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
              * -v for verbose mode. Returns target file format and target filepath
              */
 
+            // todo: Use target_mime_type instead of hardcoded pdf
             $command = "{$this->unoconv_path} -v -f pdf -o '{$converted_document->getAbsolutePath()}' '{$source_document->getAbsolutePath()}'";
             Civi::log()->debug("CiviOffice: Running command: '{$command}'");
             // 251 = Help or version information printed
