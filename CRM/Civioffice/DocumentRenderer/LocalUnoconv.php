@@ -111,24 +111,27 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     }
 
     /**
-     * Convert the list of documents to the given mime type
+     * Render a document for a list of entities
      *
-     * @param array $documents
-     *   list of CRM_Civioffice_Document objects
+     * @param CRM_Civioffice_Document $document
+     *   the document to be rendered
      *
-     * @param string $target_mime_type
-     *   mime type to convert to
+     * @param array $entity_ids
+     *   entity ID, e.g. contact_id
+     *
+     * @param string $entity_type
+     *   entity type, e.g. 'contact'
      *
      * @return array
-     *   list of CRM_Civioffice_Document objects
+     *   list of token_name => token value
      */
-    public function render(array $documents, string $target_mime_type) : array
+    public function render($document, $entity_ids, string $target_mime_type, $entity_type ='contact') : array
     {
         $conversions = [];
         // todo: convert as a batch
-        foreach ($documents as $source_document) {
+        foreach ($entity_ids as $entity_id) {
             /** @var $source_document CRM_Civioffice_Document */
-            $converted_document = $this->temp_store->addFile($source_document->getName() . '.pdf');
+            $converted_document = $this->temp_store->addFile("Document-{$entity_id}.pdf");
 
             // todo: implement
 
