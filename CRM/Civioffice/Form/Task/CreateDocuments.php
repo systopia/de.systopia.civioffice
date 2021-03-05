@@ -77,7 +77,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         $queue = CRM_Queue_Service::singleton()->create(
           [
               'type' => 'Sql',
-              'name' => 'document_task_' . CRM_Core_Session::singleton()->getLoggedInContactId(),
+              'name' => 'civioffice_document_task_' . CRM_Core_Session::singleton()->getLoggedInContactId(),
               'reset' => true
           ]
         );
