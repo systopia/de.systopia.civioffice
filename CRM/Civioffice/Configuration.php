@@ -24,7 +24,7 @@ class CRM_Civioffice_Configuration
 
     /**
      * @return \CRM_Civioffice_Configuration
-     *  the current configuraiton
+     *  the current configuration
      */
     public static function getConfig()
     {
