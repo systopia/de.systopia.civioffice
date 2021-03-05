@@ -23,16 +23,16 @@ class CRM_Civioffice_GenerateConversionJob
     protected $entity_IDs;
 
     /**
-     * @var string $target_mime_type
-     *   Mime type of target file (like pdf)
-     */
-    protected $target_mime_type;
-
-    /**
      * @var string $entity_type
      *   Type of entity (like 'contact' ID)
      */
     protected $entity_type;
+
+    /**
+     * @var string $target_mime_type
+     *   Mime type of target file (like pdf)
+     */
+    protected $target_mime_type;
 
     /**
      * @var string $title
@@ -40,13 +40,13 @@ class CRM_Civioffice_GenerateConversionJob
      */
     public $title;
 
-    public function __construct($renderer_id, $document_uri, $entity_IDs, $target_mime_type, $entity_type, $title)
+    public function __construct($renderer_id, $document_uri, $entity_IDs, $entity_type, $target_mime_type, $title)
     {
         $this->renderer_id = $renderer_id;
         $this->document_uri = $document_uri;
         $this->entity_IDs = $entity_IDs;
-        $this->target_mime_type = $target_mime_type;
         $this->entity_type = $entity_type;
+        $this->target_mime_type = $target_mime_type;
         $this->title = $title;
     }
 
