@@ -101,7 +101,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
                 if (file_exists($filename)) {
                     // set file metadata
                     header('Content-Type: application/zip');
-                    header("Content-Disposition: attachment; filename=" . E::ts("Documents.zip"));
+                    header("Content-Disposition: attachment; filename=" . E::ts("Civioffice_Documents.zip"));
                     header('Content-Length: ' . filesize($filename));
 
                     // dump file contents in stream and exit
