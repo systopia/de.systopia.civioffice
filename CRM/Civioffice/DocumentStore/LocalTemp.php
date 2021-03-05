@@ -20,20 +20,19 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStore_Local
 {
-    public function __construct($mime_type, $temp_folder = null)
+    public function __construct($mime_type, $temp_folder_path = null)
     {
         // create tmp folder
-        if (empty($temp_folder)) {
+        if (empty($temp_folder_path)) {
             // create temp folder with random postfix like: /tmp/civioffice_yssE0h
-            $temp_folder = tempnam(sys_get_temp_dir(),'civioffice_');
-            if (file_exists($temp_folder)) {
-                unlink($temp_folder);
+            $temp_folder_path = tempnam(sys_get_temp_dir(), 'civioffice_');
+            if (file_exists($temp_folder_path)) {
+                unlink($temp_folder_path);
                 Civi::log()->debug("CiviOffice: Temp folder already exists. Deleting and trying to create a new one");
             }
-            mkdir($temp_folder);
+            mkdir($temp_folder_path);
         }
-        $this->base_folder = $temp_folder;
-        
+        $this->base_folder = $temp_folder_path;
         parent::__construct("tmp::{$this->base_folder}", E::ts("Temporary Files"), $mime_type, false, false);
         Civi::log()->debug("CiviOffice: Created local temp document store at: " . $this->base_folder);
     }
