@@ -100,8 +100,8 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             );
         }
 
-        $temp_folder = new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::PDF);
-        $return_link = CRM_Utils_System::url('civicrm/civioffice/download'); #fixme change to correct return link
+        $temp_folder = new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::PDF, null);
+        $return_link = CRM_Utils_System::url('civicrm/contact'); #fixme change to correct return link
         // Start a runner on the queue.
         $download_link = CRM_Utils_System::url(
             'civicrm/civioffice/download',
