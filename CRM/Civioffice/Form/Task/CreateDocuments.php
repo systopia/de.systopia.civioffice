@@ -94,7 +94,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
                     $values['document_uri'],
                     $entity_IDs,
                     'contact',
-                    $values['batch_size'],
+                    $values['target_mime_type'],
                     E::ts('Initialized')
                 )
             );
