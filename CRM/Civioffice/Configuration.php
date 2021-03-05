@@ -110,7 +110,7 @@ class CRM_Civioffice_Configuration
      * @param string $document_uri
      *   document URI
      *
-     * @return \CRM_Civioffice_Document|null
+     * @return CRM_Civioffice_Document|null
      */
     public function getDocument($document_uri)
     {

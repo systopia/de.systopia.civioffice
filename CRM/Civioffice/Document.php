@@ -20,7 +20,7 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 abstract class CRM_Civioffice_Document
 {
-    /** @var \CRM_Civioffice_DocumentStore document store */
+    /** @var CRM_Civioffice_DocumentStore document store */
     protected $document_store;
 
     /** @var string mime type */
