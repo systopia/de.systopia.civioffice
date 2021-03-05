@@ -30,6 +30,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
 
         // build document list
         $document_list = [];
+        // todo: only show supported source mime types
         foreach ($config->getDocumentStores() as $document_store) {
             foreach ($document_store->getDocuments() as $document) {  // todo: recursive
                 /** @var \CRM_Civioffice_Document $document */
