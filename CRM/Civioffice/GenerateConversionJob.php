@@ -11,10 +11,10 @@ class CRM_Civioffice_GenerateConversionJob
     protected $renderer_id;
 
     /**
-     * @var $document_id
-     *   The template id which is used for generating a document
+     * @var $document_uri
+     *   The template uri which is used for generating a document
      */
-    protected $document_id;
+    protected $document_uri;
 
     /**
      * @var array $entity_IDs
@@ -40,10 +40,10 @@ class CRM_Civioffice_GenerateConversionJob
      */
     public $title;
 
-    public function __construct($renderer_id, $document_id, $entity_IDs, $target_mime_type, $entity_type, $title)
+    public function __construct($renderer_id, $document_uri, $entity_IDs, $target_mime_type, $entity_type, $title)
     {
         $this->renderer_id = $renderer_id;
-        $this->document_id = $document_id;
+        $this->document_uri = $document_uri;
         $this->entity_IDs = $entity_IDs;
         $this->target_mime_type = $target_mime_type;
         $this->entity_type = $entity_type;
@@ -57,7 +57,7 @@ class CRM_Civioffice_GenerateConversionJob
         $config = $configuration::getConfig();
         $document_renderer = $configuration->getDocumentRenderer($this->renderer_id);
 
-        $document = $config->getDocument($this->document_id);
+        $document = $config->getDocument($this->document_uri);
 
         $document_renderer->render($document, $this->entity_IDs, $this->target_mime_type, $this->entity_type);
 
