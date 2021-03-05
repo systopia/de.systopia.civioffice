@@ -34,7 +34,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      * @param $source_document
      * @param array $entity_ids
      *   entity ID, e.g. contact_id
-     * @param \CRM_Civioffice_DocumentStore_LocalTemp $temp_store
+     * @param CRM_Civioffice_DocumentStore_LocalTemp $temp_store
      * @param string $target_mime_type
      * @param string $entity_type
      *   entity type, e.g. 'contact'

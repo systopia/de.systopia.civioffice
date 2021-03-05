@@ -23,7 +23,7 @@ class CRM_Civioffice_Configuration
     protected static $singleton = null;
 
     /**
-     * @return \CRM_Civioffice_Configuration
+     * @return CRM_Civioffice_Configuration
      *  the current configuration
      */
     public static function getConfig()
@@ -110,7 +110,7 @@ class CRM_Civioffice_Configuration
      * @param string $document_uri
      *   document URI
      *
-     * @return \CRM_Civioffice_Document|null
+     * @return CRM_Civioffice_Document|null
      */
     public function getDocument($document_uri)
     {
