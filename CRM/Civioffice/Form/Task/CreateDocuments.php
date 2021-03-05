@@ -84,14 +84,15 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         );
 
         $chunked_entities = array_chunk($this->_contactIds, $values['batch_size'],false);
+        $temp_folder_path = (new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::PDF))->getBaseFolder();
 
         foreach ($chunked_entities as $entity_IDs) {
-            // #todo todo: temp_folder, local_document_path
             // Add an initialisation queue item.
             $queue->createItem(
                 $job = new CRM_Civioffice_GenerateConversionJob(
                     $values['document_renderer_id'],
                     $values['document_uri'],
+                    $temp_folder_path,
                     $entity_IDs,
                     'contact',
                     $values['target_mime_type'],
@@ -100,12 +101,14 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             );
         }
 
-        $temp_folder = new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::PDF, null);
-        $return_link = CRM_Utils_System::url('civicrm/contact'); #fixme change to correct return link
+        // Save current page link (e.g. search page)
+        $return_link = html_entity_decode(CRM_Core_Session::singleton()->readUserContext());
+        $return_link = base64_encode($return_link);
+
         // Start a runner on the queue.
         $download_link = CRM_Utils_System::url(
             'civicrm/civioffice/download',
-            "tmp_folder={$temp_folder->getBaseFolder()}&return_url={$return_link}"
+            "tmp_folder={$temp_folder_path}&return_url={$return_link}"
         );
 
         $runner = new CRM_Queue_Runner(

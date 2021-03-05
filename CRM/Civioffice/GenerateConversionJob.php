@@ -16,6 +16,9 @@ class CRM_Civioffice_GenerateConversionJob
      */
     protected $document_uri;
 
+
+    protected $temp_store;
+
     /**
      * @var array $entity_IDs
      *   Array with entity IDs (like contact IDs)
@@ -40,10 +43,11 @@ class CRM_Civioffice_GenerateConversionJob
      */
     public $title;
 
-    public function __construct($renderer_id, $document_uri, $entity_IDs, $entity_type, $target_mime_type, $title)
+    public function __construct($renderer_id, $document_uri, $temp_folder_path, $entity_IDs, $entity_type, $target_mime_type, $title)
     {
         $this->renderer_id = $renderer_id;
         $this->document_uri = $document_uri;
+        $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp($target_mime_type, $temp_folder_path);
         $this->entity_IDs = $entity_IDs;
         $this->entity_type = $entity_type;
         $this->target_mime_type = $target_mime_type;
@@ -59,7 +63,7 @@ class CRM_Civioffice_GenerateConversionJob
 
         $document = $config->getDocument($this->document_uri);
 
-        $document_renderer->render($document, $this->entity_IDs, $this->target_mime_type, $this->entity_type);
+        $document_renderer->render($document, $this->entity_IDs, $this->temp_store, $this->target_mime_type, $this->entity_type);
 
         return true;
     }

@@ -124,22 +124,20 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      *
      * @param array $entity_ids
      *   entity ID, e.g. contact_id
-     *
+     * @param $temp_store
+     * @param string $target_mime_type
      * @param string $entity_type
      *   entity type, e.g. 'contact'
      *
      * @return array
      *   list of token_name => token value
      */
-    public function render($source_document, $entity_ids, string $target_mime_type, $entity_type ='contact') : array
+    public function render($source_document, $entity_ids, CRM_Civioffice_DocumentStore_LocalTemp $temp_store, string $target_mime_type, $entity_type ='contact') : array
     {
         $conversions = [];
         // todo: convert as a batch for better performance?
         foreach ($entity_ids as $entity_id) {
-            /** @var $converted_document CRM_Civioffice_Document */
-            $converted_document = $this->temp_store->addFile("Document-{$entity_id}.pdf");
-
-            // todo: implement
+            $converted_document = $temp_store->addFile("Document-{$entity_id}.pdf");
 
             /*
              * unoconv manpage: https://linux.die.net/man/1/unoconv
