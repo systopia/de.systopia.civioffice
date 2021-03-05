@@ -131,7 +131,7 @@ class CRM_Civioffice_Configuration
      *
      * @return string
      */
-    public static function getHomeFolder()
+    public static function getHomeFolder(): string
     {
         // try environment
         if (!empty($_SERVER['HOME'])) {
