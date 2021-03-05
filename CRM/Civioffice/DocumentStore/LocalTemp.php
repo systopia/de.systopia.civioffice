@@ -52,7 +52,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
         return new CRM_Civioffice_Document_LocalTempfile($this, $this->mime_type, $file_path_including_filename);
     }
 
-    public function zipAllFiles() {
-        // todo: bjoern kopiert das
+    public function packAllFiles() {
+        // todo zip logic could be moved into here
     }
 }
