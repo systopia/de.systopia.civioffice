@@ -56,10 +56,10 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
         // this means somebody clicked download
         $vars = $this->exportValues();
         if (isset($vars['_qf_Download_submit'])) {
-            /** TODO: verify folder
-            if (!preg_match('some_prefix_to_avoid_abuse_\w+$#', $this->tmp_folder)) {
+            // TODO: verify folder
+            if (!preg_match('#civioffice_\w+$#', $this->tmp_folder)) {
                 throw new Exception("Illegal path!");
-            }*/
+            }
 
             // download PDFs
             try {
