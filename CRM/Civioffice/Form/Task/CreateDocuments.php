@@ -89,7 +89,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         foreach ($chunked_entities as $entity_IDs) {
             // Add an initialisation queue item.
             $queue->createItem(
-                $job = new CRM_Civioffice_GenerateConversionJob(
+                $job = new CRM_Civioffice_ConversionJob(
                     $values['document_renderer_id'],
                     $values['document_uri'],
                     $temp_folder_path,

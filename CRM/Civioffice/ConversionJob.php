@@ -15,7 +15,7 @@
 
 use CRM_Civioffice_ExtensionUtil as E;
 
-class CRM_Civioffice_GenerateConversionJob
+class CRM_Civioffice_ConversionJob
 {
     /**
      * @var string $renderer_id
