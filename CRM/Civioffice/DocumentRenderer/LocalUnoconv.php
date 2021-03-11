@@ -189,8 +189,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             $processor->evaluate();
 
-            $rows = $processor->getRows();
-            foreach ($rows as $row) { // not needed if there is only one row?
+            foreach ($processor->getRows() as $row) { // not needed if there is only one row?
                 foreach ($zip_file_list as $fileName) {
                     $fileContent = $row->render($fileName);
                     $zip->addFromString($fileName, $fileContent);
