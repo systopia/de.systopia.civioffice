@@ -31,7 +31,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
     /**
      * Render a document for a list of entities
      *
-     * @param $source_document
+     * @param $document_with_placeholders
      * @param array $entity_ids
      *   entity ID, e.g. contact_id
      * @param CRM_Civioffice_DocumentStore_LocalTemp $temp_store
@@ -42,7 +42,8 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      * @return array
      *   list of token_name => token value
      */
-    public abstract function render($source_document, $entity_ids, CRM_Civioffice_DocumentStore_LocalTemp $temp_store, string $target_mime_type, $entity_type ='contact') : array;
+    public abstract function render($document_with_placeholders, array $entity_ids, CRM_Civioffice_DocumentStore_LocalTemp $temp_store, string $target_mime_type, $entity_type ='contact'
+    ) : array;
 
     /**
      * resolve all tokens

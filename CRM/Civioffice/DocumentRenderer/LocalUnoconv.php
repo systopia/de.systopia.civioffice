@@ -119,12 +119,12 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     /**
      * Render a document for a list of entities
      *
-     * @param CRM_Civioffice_Document $source_document
+     * @param CRM_Civioffice_Document $document_with_placeholders
      *   the document to be rendered
      *
      * @param array $entity_ids
-     *   entity ID, e.g. contact_id
-     * @param $temp_store
+     *   entity ID, e.g. contact ids
+     * @param \CRM_Civioffice_DocumentStore_LocalTemp $temp_store
      * @param string $target_mime_type
      * @param string $entity_type
      *   entity type, e.g. 'contact'
@@ -132,44 +132,105 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      * @return array
      *   list of token_name => token value
      */
-    public function render($source_document, $entity_ids, CRM_Civioffice_DocumentStore_LocalTemp $temp_store, string $target_mime_type, $entity_type ='contact') : array
+    public function render($document_with_placeholders, array $entity_ids, CRM_Civioffice_DocumentStore_LocalTemp $temp_store, string $target_mime_type, $entity_type ='contact'
+    ) : array
     {
-        $conversions = [];
-        // todo: convert as a batch for better performance?
+        $tokenreplaced_documents = [];
+        $temp_store_base_folder = $temp_store->getBaseFolder();
+
+
+        /*
+         * Token replacement
+         * - unpack xml (docx) file
+         * - replace tokens
+         * - repack it again as xml (docx)
+         *
+         * example tokens:
+         * Hello {contact.display_name} aka {contact.first_name}!
+         *
+         */
         foreach ($entity_ids as $entity_id) {
-            $converted_document = $temp_store->addFile("Document-{$entity_id}.pdf");
+            $transitional_xml_based_document = $temp_store->addFile("Document-{$entity_id}.docx");
 
+            $zip = new ZipArchive();
+
+            // copy and rename to target filename. Keeps the xml file name ending e.g. .docx
+            copy($document_with_placeholders->getAbsolutePath(), $transitional_xml_based_document->getAbsolutePath());
+
+            // open xml file (like .docx) as a zip file, as in fact it is one
+            $zip->open($transitional_xml_based_document->getAbsolutePath());
+
+            $processor = new \Civi\Token\TokenProcessor(
+                Civi::service('dispatcher'), [
+                    'controller' => __CLASS__,
+                    'smarty' => false,
+                ]
+            );
+
+            $zip_file_list = [];
             /*
-             * unoconv manpage: https://linux.die.net/man/1/unoconv
-             *
-             * Command:
-             * -f = format
-             *      example: pdf
-             * -o = output directory
-             *      example: ./output_folder_for_pdf_files
-             *
-             * might be interesting if file gets instantly added to a zip file instead of writing and reading it again
-             * --stdout = Print converted output file to stdout.
-             * unoconv -f pdf -o ./output_folder_for_pdf_files FOLDER/PATH/TO/FILENAME/*.docx
-             *      example: unoconv -f pdf --stdout FOLDER/PATH/TO/FILENAME.docx
-             *
-             * -v for verbose mode. Returns target file format and target filepath
+             * Possible optimisation opportunities to save many iterations
+             * todo: save array positions on initialisation and only touch files where tokens need to be replaced?
              */
+            $numberOfFiles = $zip->numFiles;
+            for ($i = 0; $i < $numberOfFiles; $i++) {
+                $fileContent = $zip->getFromIndex($i);
+                $fileName = $zip->getNameIndex($i);
 
-            // todo: Use target_mime_type instead of hardcoded pdf
-            $command = "{$this->unoconv_path} -v -f pdf -o '{$converted_document->getAbsolutePath()}' '{$source_document->getAbsolutePath()}'";
-            Civi::log()->debug("CiviOffice: Running command: '{$command}'");
-            // 251 = Help or version information printed
-            exec($command, $exec_output, $exec_return_code);
-            Civi::log()->debug("CiviOffice: Finished command: '{$command}'");
+                // add each file content to the token processor
+                $processor->addMessage($fileName, $fileContent, 'text/plain');
 
-            if($exec_return_code != 0) Civi::log()->debug("CiviOffice: Return code 0 expected but {$exec_return_code} given");
+                $zip_file_list[] = $fileName;
+            }
 
-            // todo: call converter $source_document->getURI() => $converted_document->getURI()
-            $conversions[] = $converted_document;
+            // fixme: use generic entity instead of 'contact'
+            // An array in the form "contextName => contextData" with different token contexts and their needed data (for example, contact IDs).
+            $processor->addRow()->context('contactId', $entity_id); // needed?
+
+            $processor->evaluate();
+
+            $rows = $processor->getRows();
+            foreach ($rows as $row) { // not needed if there is only one row?
+                foreach ($zip_file_list as $fileName) {
+                    $fileContent = $row->render($fileName);
+                    $zip->addFromString($fileName, $fileContent);
+                }
+            }
+
+            $zip->close();
+
+            $tokenreplaced_documents[] = $transitional_xml_based_document;
         }
 
-        return $conversions;
+        /*
+         * After batch size of xml (docx) files has been processed, we need to convert these files to pdf (using unoconv)
+         */
+
+        /*
+         * unoconv manpage: https://linux.die.net/man/1/unoconv
+         *
+         * Command:
+         * -f = format
+         *      example: pdf
+         * -o = output directory
+         *      example: ./output_folder_for_pdf_files
+         *
+         * might be interesting if file gets instantly added to a zip file instead of writing and reading it again
+         * --stdout = Print converted output file to stdout.
+         * unoconv -f pdf -o ./output_folder_for_pdf_files FOLDER/PATH/TO/FILENAME/*.docx
+         *      example: unoconv -f pdf --stdout FOLDER/PATH/TO/FILENAME.docx
+         *
+         * -v for verbose mode. Returns target file format and target filepath
+         */
+
+        // todo: Use target_mime_type instead of hardcoded pdf
+        // todo: call converter $source_document->getURI() => $converted_document->getURI()
+        $command = "cd $temp_store_base_folder && {$this->unoconv_path} -v -f pdf *.docx";
+        exec($command, $exec_output, $exec_return_code);
+        if($exec_return_code != 0) Civi::log()->debug("CiviOffice: Return code 0 expected but {$exec_return_code} given");
+        exec("cd $temp_store_base_folder && rm *.docx");
+
+        return $tokenreplaced_documents; // todo needed?
     }
 
     /**
