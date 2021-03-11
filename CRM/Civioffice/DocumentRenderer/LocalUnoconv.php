@@ -26,7 +26,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     /** @var string path to the unoconv binary */
     protected $unoconv_path;
 
-    /** @var CRM_Civioffice_DocumentStore temp store for converted files  */
+    /** @var CRM_Civioffice_DocumentStore temp store for converted files */
     protected $temp_store = null;
 
     /**
@@ -50,7 +50,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      * @return boolean
      *   is this renderer ready for use
      */
-    public function isReady() : bool
+    public function isReady(): bool
     {
         try {
             exec("{$this->unoconv_path} --version", $output, $result_code);
@@ -63,7 +63,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             $output_line_with_version = $output[0];
             // todo: test for $MIN_UNOCONV_VERSION version. Version being tested is 0.7
-            if(strpos($output_line_with_version, 'unoconv') === false) {
+            if (strpos($output_line_with_version, 'unoconv') === false) {
                 return false;
             }
 
@@ -100,7 +100,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      * @return array
      *   list of mime types
      */
-    public function getOutputMimeTypes() : array
+    public function getOutputMimeTypes(): array
     {
         return [CRM_Civioffice_MimeType::PDF];
     }
@@ -111,7 +111,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      * @return array
      *   list of mime types as strings
      */
-    public function getSupportedMimeTypes() : array
+    public function getSupportedMimeTypes(): array
     {
         return [CRM_Civioffice_MimeType::DOCX];
     }
