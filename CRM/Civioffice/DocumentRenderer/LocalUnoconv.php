@@ -135,8 +135,8 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     public function render($document_with_placeholders, array $entity_ids, CRM_Civioffice_DocumentStore_LocalTemp $temp_store, string $target_mime_type, $entity_type ='contact'
     ) : array
     {
-        $tokenreplaced_documents = [];
-        $temp_store_base_folder = $temp_store->getBaseFolder();
+        $tokenreplaced_documents = []; // todo needed?
+        $temp_store_folder_path = $temp_store->getBaseFolder();
 
 
         /*
@@ -225,10 +225,10 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
         // todo: Use target_mime_type instead of hardcoded pdf
         // todo: call converter $source_document->getURI() => $converted_document->getURI()
-        $command = "cd $temp_store_base_folder && {$this->unoconv_path} -v -f pdf *.docx";
+        $command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f pdf *.docx";
         exec($command, $exec_output, $exec_return_code);
         if($exec_return_code != 0) Civi::log()->debug("CiviOffice: Return code 0 expected but {$exec_return_code} given");
-        exec("cd $temp_store_base_folder && rm *.docx");
+        exec("cd $temp_store_folder_path && rm *.docx");
 
         return $tokenreplaced_documents; // todo needed?
     }
