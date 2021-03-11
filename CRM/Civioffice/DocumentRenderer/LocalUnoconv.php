@@ -204,6 +204,8 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
         /*
          * After batch size of xml (docx) files has been processed, we need to convert these files to pdf (using unoconv)
+         * - Convert batch size amount of docx files
+         * - Remove docx files
          */
 
         /*
