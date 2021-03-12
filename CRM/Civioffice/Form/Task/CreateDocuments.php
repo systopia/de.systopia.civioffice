@@ -87,7 +87,6 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         $temp_folder_path = (new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::PDF))->getBaseFolder();
 
         foreach ($chunked_entities as $entity_IDs) {
-            // Add an initialisation queue item.
             $queue->createItem(
                 $job = new CRM_Civioffice_ConversionJob(
                     $values['document_renderer_id'],
