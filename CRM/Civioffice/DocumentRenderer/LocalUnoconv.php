@@ -187,7 +187,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 $processor->evaluate();
 
                 $rows = $processor->getRows();
-                foreach ($rows as $row) { // todo not needed if there is only one row?
+                foreach ($rows as $row) { // todo: not needed if there is only one row?
                     $fileContent = $row->render($fileName);
                     $zip->addFromString($fileName, $fileContent);
                 }
@@ -230,7 +230,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         }
         exec("cd $temp_store_folder_path && rm *.docx");
 
-        return $tokenreplaced_documents; // todo needed?
+        return $tokenreplaced_documents; // todo: keep
     }
 
     /**

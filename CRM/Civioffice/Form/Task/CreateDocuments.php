@@ -58,7 +58,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         );
 
         $this->add(
-            'text', #todo validate for int > 0
+            'text', #todo create dropdown with useful values!
             'batch_size',
             E::ts("batch size for processing"),
             [],
