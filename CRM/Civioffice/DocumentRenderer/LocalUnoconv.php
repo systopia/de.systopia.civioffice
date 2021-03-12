@@ -150,6 +150,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          *
          */
         foreach ($entity_ids as $entity_id) {
+            // todo save name identifier at a central place
             $transitional_xml_based_document = $temp_store->addFile("Document-{$entity_id}.docx");
 
             $zip = new ZipArchive();

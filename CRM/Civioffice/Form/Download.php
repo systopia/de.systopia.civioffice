@@ -70,6 +70,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
                 $has_error = 0;
                 try {
                     $output = null;
+                    // todo save name identifier at a central place
                     $pattern = E::ts("Document-%1.pdf", [1 => '*']);
                     $command = "cd {$this->tmp_folder} && zip all.zip {$pattern}";
                     Civi::log()->debug("CiviOffice: Executing '{$command}' to zip generated pdfs...");
@@ -89,6 +90,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
 
                     // add all Document-X.pdf files
                     foreach (scandir($this->tmp_folder) as $file) {
+                        // todo save name identifier at a central place
                         $pattern = E::ts("Document-%1.pdf", [1 => '[0-9]+']);
                         if (preg_match("/{$pattern}/", $file)) {
                             $zip->addFile($this->tmp_folder . DIRECTORY_SEPARATOR . $file, $file);
