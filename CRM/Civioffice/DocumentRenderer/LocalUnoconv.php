@@ -224,7 +224,10 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         // todo: Use target_mime_type instead of hardcoded pdf
         $command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f pdf *.docx";
         exec($command, $exec_output, $exec_return_code);
-        if($exec_return_code != 0) Civi::log()->debug("CiviOffice: Return code 0 expected but {$exec_return_code} given");
+        if($exec_return_code != 0) {
+            Civi::log()->debug("CiviOffice: Exception: Return code 0 expected but {$exec_return_code} given");
+            throw new Exception('Unoconv: Return code 0 expected');
+        }
         exec("cd $temp_store_folder_path && rm *.docx");
 
         return $tokenreplaced_documents; // todo needed?
