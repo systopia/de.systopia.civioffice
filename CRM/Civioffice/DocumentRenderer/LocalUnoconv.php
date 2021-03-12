@@ -137,7 +137,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     {
         $tokenreplaced_documents = []; // todo needed?
         $temp_store_folder_path = $temp_store->getBaseFolder();
-
+        $shadow_temp_result_store = new CRM_Civioffice_DocumentStore_LocalTemp($target_mime_type, $temp_store_folder_path);
 
         /*
          * Token replacement
@@ -152,6 +152,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         foreach ($entity_ids as $entity_id) {
             // todo save name identifier at a central place
             $transitional_xml_based_document = $temp_store->addFile("Document-{$entity_id}.docx");
+            $shadow_temp_result_store = $shadow_temp_result_store->addFile("Document-{$entity_id}.pdf");
 
             $zip = new ZipArchive();
 
@@ -195,7 +196,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             $zip->close();
 
-            $tokenreplaced_documents[] = $transitional_xml_based_document;
+            $tokenreplaced_documents[] = $shadow_temp_result_store;
         }
 
         /*
