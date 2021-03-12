@@ -168,7 +168,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 ]
             );
 
-            $zip_file_list = [];
             /*
              * Possible optimisation opportunities to save many iterations
              * todo: save array positions on initialisation and only touch files where tokens need to be replaced?
@@ -181,17 +180,14 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 // add each file content to the token processor
                 $processor->addMessage($fileName, $fileContent, 'text/plain');
 
-                $zip_file_list[] = $fileName;
-            }
+                // fixme: use generic entity instead of 'contact'
+                // An array in the form "contextName => contextData" with different token contexts and their needed data (for example, contact IDs).
+                $processor->addRow()->context('contactId', $entity_id); // needed?
 
-            // fixme: use generic entity instead of 'contact'
-            // An array in the form "contextName => contextData" with different token contexts and their needed data (for example, contact IDs).
-            $processor->addRow()->context('contactId', $entity_id); // needed?
+                $processor->evaluate();
 
-            $processor->evaluate();
-
-            foreach ($processor->getRows() as $row) { // not needed if there is only one row?
-                foreach ($zip_file_list as $fileName) {
+                $rows = $processor->getRows();
+                foreach ($rows as $row) { // todo not needed if there is only one row?
                     $fileContent = $row->render($fileName);
                     $zip->addFromString($fileName, $fileContent);
                 }
