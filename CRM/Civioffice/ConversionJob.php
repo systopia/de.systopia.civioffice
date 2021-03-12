@@ -73,7 +73,7 @@ class CRM_Civioffice_ConversionJob
         $configuration = new CRM_Civioffice_Configuration();
 
         $document_renderer = $configuration->getDocumentRenderer($this->renderer_id);
-        $document = $configuration::getConfig()->getDocument($this->document_uri);
+        $document = $configuration->getDocument($this->document_uri);
 
         $document_renderer->render($document, $this->entity_IDs, $this->temp_store, $this->target_mime_type, $this->entity_type);
 
