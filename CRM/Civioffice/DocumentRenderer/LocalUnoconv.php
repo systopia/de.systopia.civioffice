@@ -170,7 +170,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             /*
              * Possible optimisation opportunities to save many iterations
-             * todo: save array positions on initialisation and only touch files where tokens need to be replaced?
+             * todo: filter binary files like jpgs?
              */
             $numberOfFiles = $zip->numFiles;
             for ($i = 0; $i < $numberOfFiles; $i++) {
