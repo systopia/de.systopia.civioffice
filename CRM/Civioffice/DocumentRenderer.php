@@ -26,7 +26,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      * @return array
      *   list of mime types
      */
-    public abstract function getOutputMimeTypes() : array;
+    public abstract function getOutputMimeTypes(): array;
 
     /**
      * Render a document for a list of entities
@@ -42,11 +42,17 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      * @return array
      *   list of token_name => token value
      */
-    public abstract function render($document_with_placeholders, array $entity_ids, CRM_Civioffice_DocumentStore_LocalTemp $temp_store, string $target_mime_type, $entity_type ='contact'
-    ) : array;
+    public abstract function render(
+        $document_with_placeholders,
+        array $entity_ids,
+        CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
+        string $target_mime_type,
+        $entity_type = 'contact'
+    ): array;
 
     /**
      * resolve all tokens
+     *
      * @param array $token_names
      *   the list of all token names to be replaced
      *
@@ -59,7 +65,8 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      * @return array
      *   list of token_name => token value
      */
-    public function resolveTokens($token_names, $entity_id, $entity_type = 'contact') : array {
+    public function resolveTokens($token_names, $entity_id, $entity_type = 'contact'): array
+    {
         // TODO: implement
         // TODO: use additional token system
         throw new Exception('resolveTokens not implemented');
@@ -82,7 +89,8 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      *
      * @throws \Exception
      */
-    public function replaceAllTokens($string, $entity_id, $entity_type = 'contact') : string {
+    public function replaceAllTokens($string, $entity_id, $entity_type = 'contact'): string
+    {
         // TODO: use additional token system
         $additional_tokens = [];
 
@@ -114,7 +122,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
     /*
      * Could be used to convert larger batches of strings and/or contact ids
      */
-    public function multipleReplaceAllTokens() {
-
+    public function multipleReplaceAllTokens()
+    {
     }
 }

@@ -21,6 +21,7 @@ use CRM_Civioffice_ExtensionUtil as E;
 class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_DocumentRenderer
 {
     const MIN_UNOCONV_VERSION = '6.0'; // todo: determine
+
     const SETTING_NAME = 'civioffice_unoconv_binary_path';
 
     /** @var string path to the unoconv binary */
@@ -87,7 +88,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.config");
                 return false;
             }
-
         } catch (Exception $ex) {
             return false;
         }
@@ -240,7 +240,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      * @return string
      *   URL
      */
-    public function getConfigPageURL() : string
+    public function getConfigPageURL(): string
     {
         return CRM_Utils_System::url('civicrm/admin/civioffice/settings/localunoconv');
     }
