@@ -146,9 +146,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
         /*
          * Token replacement
-         * - unpack xml (docx) file
-         * - replace tokens
-         * - repack it again as xml (docx)
          *
          * example tokens:
          * Hello {contact.display_name} aka {contact.first_name}!
@@ -177,11 +174,14 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             $numberOfFiles = $zip->numFiles;
             for ($i = 0; $i < $numberOfFiles; $i++) {
+                // 1/3 unpack xml (docx) file and handle it as a zip file as it is one
                 $fileContent = $zip->getFromIndex($i);
                 $fileName = $zip->getNameIndex($i);
 
+                // 2/3 replace tokens
                 $fileContent = $document_renderer_unoconv->replaceAllTokens($fileContent, $entity_id, 'contact');
 
+                // 3/3 repack it again as xml (docx)
                 $zip->addFromString($fileName, $fileContent);
             }
 
