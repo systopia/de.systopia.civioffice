@@ -25,7 +25,12 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
         // create tmp folder
         if (empty($temp_folder_path)) {
             // create temp folder with random postfix like: /tmp/civioffice_yssE0h
-            $temp_folder_path = tempnam(sys_get_temp_dir(), 'civioffice_');
+
+            // $temp_folder_path = tempnam(sys_get_temp_dir(), 'civioffice_');
+
+            $user_selectable_path = '/var/civioffice/temp';
+
+            $temp_folder_path = $user_selectable_path . DIRECTORY_SEPARATOR . uniqid('civioffice_');
             if (file_exists($temp_folder_path)) {
                 unlink($temp_folder_path);
                 Civi::log()->debug("CiviOffice: Temp folder already exists. Deleting and trying to create a new one");
