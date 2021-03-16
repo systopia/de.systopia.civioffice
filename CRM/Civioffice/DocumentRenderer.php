@@ -111,4 +111,10 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
         throw new Exception('replaceAllTokens not implemented for entity ' . $entity_type);
     }
 
+    /*
+     * Could be used to convert larger batches of strings and/or contact ids
+     */
+    public function multipleReplaceAllTokens() {
+
+    }
 }
