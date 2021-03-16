@@ -52,13 +52,14 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
      * @return CRM_Civioffice_Document_LocalTempfile
      *   new temp file
      */
-    public function addFile(string $file_name, $content = null) : CRM_Civioffice_Document_LocalTempfile
+    public function addFile(string $file_name, $content = null): CRM_Civioffice_Document_LocalTempfile
     {
         $file_path_including_filename = $this->base_folder . DIRECTORY_SEPARATOR . $file_name;
         return new CRM_Civioffice_Document_LocalTempfile($this, $this->mime_type, $file_path_including_filename);
     }
 
-    public function packAllFiles() {
+    public function packAllFiles()
+    {
         // todo zip logic could be moved into here
     }
 }
