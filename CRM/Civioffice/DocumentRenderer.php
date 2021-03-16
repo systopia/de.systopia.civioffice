@@ -109,9 +109,9 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
             $processor->addRow()->context('contactId', $entity_id);
             $processor->evaluate();
 
-            $file_content = $processor->getRow(0)->render($identifier);
+            $string = $processor->getRow(0)->render($identifier);
 
-            return $file_content; //fixme: other token replacement code needed?
+            return $string; //fixme: other token replacement code needed?
 
 
             // first: replace CiviCRM style contact tokens
