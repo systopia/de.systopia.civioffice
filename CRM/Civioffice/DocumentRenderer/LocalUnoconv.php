@@ -132,12 +132,17 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      * @return array
      *   list of token_name => token value
      */
-    public function render($document_with_placeholders, array $entity_ids, CRM_Civioffice_DocumentStore_LocalTemp $temp_store, string $target_mime_type, $entity_type ='contact'
-    ) : array
-    {
-        $tokenreplaced_documents = []; // todo needed?
+    public function render(
+        $document_with_placeholders,
+        array $entity_ids,
+        CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
+        string $target_mime_type,
+        $entity_type = 'contact'
+    ): array {
+        $tokenreplaced_documents = [];
         $temp_store_folder_path = $temp_store->getBaseFolder();
-        $shadow_temp_result_store = new CRM_Civioffice_DocumentStore_LocalTemp($target_mime_type, $temp_store_folder_path);
+        // shadow: This store represents docx file names and is only used for being returned as conversion happens entirely without this store in unoconv
+        $shadow_temp_result_store = new CRM_Civioffice_DocumentStore_LocalTemp('docx', $temp_store_folder_path);
 
         /*
          * Token replacement
@@ -152,7 +157,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         foreach ($entity_ids as $entity_id) {
             // todo save name identifier at a central place
             $transitional_xml_based_document = $temp_store->addFile("Document-{$entity_id}.docx");
-            $shadow_temp_result_store = $shadow_temp_result_store->addFile("Document-{$entity_id}.pdf");
+            $shadow_pdf = $shadow_temp_result_store->addFile("Document-{$entity_id}.pdf");
 
             $zip = new ZipArchive();
 
@@ -162,41 +167,27 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             // open xml file (like .docx) as a zip file, as in fact it is one
             $zip->open($transitional_xml_based_document->getAbsolutePath());
 
-            $processor = new \Civi\Token\TokenProcessor(
-                Civi::service('dispatcher'), [
-                    'controller' => __CLASS__,
-                    'smarty' => false,
-                ]
-            );
 
             /*
              * Possible optimisation opportunities to save many iterations
              * todo: filter binary files like jpgs?
              */
+
+            $document_renderer_unoconv = new CRM_Civioffice_DocumentRenderer_LocalUnoconv();
+
             $numberOfFiles = $zip->numFiles;
             for ($i = 0; $i < $numberOfFiles; $i++) {
                 $fileContent = $zip->getFromIndex($i);
                 $fileName = $zip->getNameIndex($i);
 
-                // add each file content to the token processor
-                $processor->addMessage($fileName, $fileContent, 'text/plain');
+                $fileContent = $document_renderer_unoconv->replaceAllTokens($fileContent, $entity_id, 'contact');
 
-                // fixme: use generic entity instead of 'contact'
-                // An array in the form "contextName => contextData" with different token contexts and their needed data (for example, contact IDs).
-                $processor->addRow()->context('contactId', $entity_id); // needed?
-
-                $processor->evaluate();
-
-                $rows = $processor->getRows();
-                foreach ($rows as $row) { // todo: not needed if there is only one row?
-                    $fileContent = $row->render($fileName);
-                    $zip->addFromString($fileName, $fileContent);
-                }
+                $zip->addFromString($fileName, $fileContent);
             }
 
             $zip->close();
 
-            $tokenreplaced_documents[] = $shadow_temp_result_store;
+            $tokenreplaced_documents[] = $shadow_pdf;
         }
 
         /*
@@ -223,15 +214,20 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          */
 
         // todo: Use target_mime_type instead of hardcoded pdf
-        $command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f pdf *.docx";
-        exec($command, $exec_output, $exec_return_code);
-        if($exec_return_code != 0) {
+        // fixme: This only works when apache2 protected temp is disabled
+        $command_cd = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f pdf *.docx";
+
+        // $command = "{$this->unoconv_path} -v -f pdf tmp_civioffice_123.docx tmp/civioffice_124.docx";
+
+        exec($command_cd, $exec_output, $exec_return_code);
+        if ($exec_return_code != 0) {
             Civi::log()->debug("CiviOffice: Exception: Return code 0 expected but {$exec_return_code} given");
             throw new Exception('Unoconv: Return code 0 expected');
         }
+        // fixme: This only works when apache2 protected temp is disabled
         exec("cd $temp_store_folder_path && rm *.docx");
 
-        return $tokenreplaced_documents; // todo: keep
+        return $tokenreplaced_documents;
     }
 
     /**

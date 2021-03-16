@@ -95,6 +95,25 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
         $additional_tokens = [];
 
         if ($entity_type == 'contact') {
+            $processor = new \Civi\Token\TokenProcessor(
+                Civi::service('dispatcher'),
+                [
+                    'controller' => __CLASS__,
+                    'smarty' => false,
+                ]
+            );
+
+            $identifier = 'contact-token';
+
+            $processor->addMessage($identifier, $string, 'text/plain');
+            $processor->addRow()->context('contactId', $entity_id);
+            $processor->evaluate();
+
+            $file_content = $processor->getRow(0)->render($identifier);
+
+            return $file_content; //fixme: other token replacement code needed?
+
+
             // first: replace CiviCRM style contact tokens
             [$contact] = CRM_Utils_Token::getTokenDetails([$entity_id]); //fixme returns empty array?
             $string = CRM_Utils_Token::replaceContactTokens(
@@ -103,6 +122,8 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
                 false,
                 $additional_tokens
             );
+
+            return $string; //fixme: smarty is crashing
 
             // second: replace SMARTY style tokens
             /* @var CRM_Core_Smarty $smarty */
