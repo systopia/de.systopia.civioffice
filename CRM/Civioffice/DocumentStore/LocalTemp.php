@@ -20,7 +20,7 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStore_Local
 {
-    public function __construct($mime_type, $temp_folder_path = null)
+    public function __construct($mime_type, $temp_folder_path = null) // fixme: mime type used as id?
     {
         // create tmp folder
         if (empty($temp_folder_path)) {
