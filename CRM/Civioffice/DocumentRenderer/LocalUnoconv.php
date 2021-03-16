@@ -142,7 +142,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         $tokenreplaced_documents = [];
         $temp_store_folder_path = $temp_store->getBaseFolder();
         // shadow: This store represents docx file names and is only used for being returned as conversion happens entirely without this store in unoconv
-        $shadow_temp_result_store = new CRM_Civioffice_DocumentStore_LocalTemp('docx', $temp_store_folder_path);
+        $shadow_temp_result_store = new CRM_Civioffice_DocumentStore_LocalTemp('pdf', $temp_store_folder_path, true);
 
         /*
          * Token replacement
