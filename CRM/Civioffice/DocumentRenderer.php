@@ -96,7 +96,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
 
         if ($entity_type == 'contact') {
             // first: replace CiviCRM style contact tokens
-            [$contact] = CRM_Utils_Token::getTokenDetails([$entity_id]);
+            [$contact] = CRM_Utils_Token::getTokenDetails([$entity_id]); //fixme returns empty array?
             $string = CRM_Utils_Token::replaceContactTokens(
                 $string,
                 $contact[$entity_id],
