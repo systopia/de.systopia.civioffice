@@ -214,9 +214,14 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          * -v for verbose mode. Returns target file format and target filepath
          */
 
-        // todo: Use target_mime_type instead of hardcoded pdf
-        // fixme: This only works when apache2 protected temp is disabled
-        $command_cd = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f pdf *.docx";
+        // todo: add a file name to mime type mapping in CRM_Civioffice_MimeType 1/2
+        if ($target_mime_type == CRM_Civioffice_MimeType::PDF) {
+            $mime_type_ending_name = 'pdf';
+        } else {
+            throw new Exception('Mime types other than pdf yet need to be implemented and tested');
+        }
+
+        $command_cd = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $mime_type_ending_name *.docx";
 
         // $command = "{$this->unoconv_path} -v -f pdf tmp_civioffice_123.docx tmp/civioffice_124.docx";
 
