@@ -23,7 +23,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     const MIN_UNOCONV_VERSION = '6.0'; // todo: determine
 
     const SETTING_NAME = 'civioffice_unoconv_binary_path';
-    const WORKING_FOLDER_NAME = 'civioffice_temp_folder_path';
+    const TEMP_FOLDER_NAME = 'civioffice_temp_folder_path';
 
     /** @var string path to the unoconv binary */
     protected $unoconv_path;
