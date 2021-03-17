@@ -9,11 +9,10 @@ use CRM_Civioffice_ExtensionUtil as E;
 
 function civioffice_civicrm_searchTasks($objectType, &$tasks)
 {
-    // add "Create CIVI Office PDFs" task to contact list
     if ($objectType == 'contact')
     {
         $tasks[] = [
-            'title' => E::ts('Create CIVI Office PDFs'),
+            'title' => E::ts('Create CIVI Office Documents'),
             'class' => 'CRM_Civioffice_Form_Task_CreateDocuments',
             'result' => false
         ];
