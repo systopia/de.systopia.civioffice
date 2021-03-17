@@ -67,6 +67,12 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
     public function validate(): bool
     {
         parent::validate();
+
+        $dr_u = new CRM_Civioffice_DocumentRenderer_LocalUnoconv;
+        if (!$dr_u->isReady()) {
+            return false;
+        }
+
         return true; //fixme debug
         // todo: check if binary is there?
 
