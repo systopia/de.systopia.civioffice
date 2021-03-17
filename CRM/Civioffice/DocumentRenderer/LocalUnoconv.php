@@ -69,6 +69,17 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 return false;
             }
 
+            $temp_folder = Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_NAME);
+
+            // check if temp folder exists, try to create if not
+            if (!file_exists($temp_folder)) {
+                mkdir($temp_folder);
+            }
+            if (!is_writable($temp_folder)) {
+                Civi::log()->debug("CiviOffice: Unable to create unoconv temp dir in: $temp_folder");
+                return false;
+            }
+
             // get webserver user home path
             $home_folder = CRM_Civioffice_Configuration::getHomeFolder() . DIRECTORY_SEPARATOR;
 
