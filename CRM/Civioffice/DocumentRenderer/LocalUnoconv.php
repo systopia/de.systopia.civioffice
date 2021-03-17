@@ -224,8 +224,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
         $command_cd = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $mime_type_ending_name *.docx";
 
-        // $command = "{$this->unoconv_path} -v -f pdf tmp_civioffice_123.docx tmp/civioffice_124.docx";
-
         exec($command_cd, $exec_output, $exec_return_code);
         if ($exec_return_code != 0) {
             Civi::log()->debug("CiviOffice: Exception: Return code 0 expected but {$exec_return_code} given");
