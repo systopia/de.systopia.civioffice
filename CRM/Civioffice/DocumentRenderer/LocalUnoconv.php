@@ -174,14 +174,14 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             $numberOfFiles = $zip->numFiles;
             for ($i = 0; $i < $numberOfFiles; $i++) {
-                // 1/3 unpack xml (docx) file and handle it as a zip file as it is one
+                // Step 1/4 unpack xml (.docx) file and handle it as a zip file as it is one
                 $fileContent = $zip->getFromIndex($i);
                 $fileName = $zip->getNameIndex($i);
 
-                // 2/3 replace tokens
+                // Step 2/4 replace tokens
                 $fileContent = $document_renderer_unoconv->replaceAllTokens($fileContent, $entity_id, 'contact');
 
-                // 3/3 repack it again as xml (docx)
+                // Step 3/4 repack it again as xml (docx)
                 $zip->addFromString($fileName, $fileContent);
             }
 
@@ -191,6 +191,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         }
 
         /*
+         * Step 4/4
          * After batch size of xml (docx) files has been processed, we need to convert these files to pdf (using unoconv)
          * - Convert batch size amount of docx files
          * - Remove docx files
