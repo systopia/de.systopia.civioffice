@@ -20,24 +20,27 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStore_Local
 {
-    public function __construct($mime_type, $temp_folder_path = null) // fixme: mime type used as id?
+    public function __construct($mime_type, $temp_folder_path = null, $skip_path_creation = false) // fixme: mime type used as id?
     {
         // create tmp folder
-        if (empty($temp_folder_path)) {
-            // create temp folder with random postfix like: /tmp/civioffice_yssE0h
+        if ($skip_path_creation) {
+            $temp_folder_path = 'no-path'; //fixme: do not use $skip_path_creation in general or use null here?
+        } else {
+            if(empty($temp_folder_path)) {
+                // create temp folder with random postfix like: var/civioffice/temp/civioffice_202_6050ec8acc7a5
 
-            // $temp_folder_path = tempnam(sys_get_temp_dir(), 'civioffice_');
+                // fixme: remove last slash
+                // todo: use entry from settings
+                $user_selectable_path = '/var/civioffice/temp';
+                $current_user_id = CRM_Core_Session::singleton()->getLoggedInContactId();
 
-            $user_selectable_path = '/var/civioffice/temp';
-            $current_user_id = CRM_Core_Session::singleton()->getLoggedInContactId();
-
-            $temp_folder_path = $user_selectable_path . DIRECTORY_SEPARATOR . uniqid("civioffice_{$current_user_id}_");
-            if (file_exists($temp_folder_path)) {
-                unlink($temp_folder_path);
-                Civi::log()->debug("CiviOffice: Temp folder already exists. Deleting and trying to create a new one");
+                $temp_folder_path = $user_selectable_path . DIRECTORY_SEPARATOR . uniqid("civioffice_{$current_user_id}_");
+                if (file_exists($temp_folder_path)) {
+                    unlink($temp_folder_path);
+                    Civi::log()->debug("CiviOffice: Temp folder already exists. Deleting and trying to create a new one");
+                }
+                mkdir($temp_folder_path);
             }
-            // fixme creates multiple unused temp folders
-            mkdir($temp_folder_path);
         }
         parent::__construct("tmp::{$temp_folder_path}", E::ts("Temporary Files"), $mime_type, false, false);
         $this->base_folder = $temp_folder_path;
@@ -48,15 +51,17 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
      * Create an new temporary file
      *
      * @param string $file_name
-     * @param string $content
+     * @param null $content
+     * @param bool $skip_path_creation
      *
      * @return CRM_Civioffice_Document_LocalTempfile
      *   new temp file
+     * @throws \Exception
      */
-    public function addFile(string $file_name, $content = null): CRM_Civioffice_Document_LocalTempfile
+    public function addFile(string $file_name, $content = null, $skip_path_creation = false): CRM_Civioffice_Document_LocalTempfile
     {
         $file_path_including_filename = $this->base_folder . DIRECTORY_SEPARATOR . $file_name;
-        return new CRM_Civioffice_Document_LocalTempfile($this, $this->mime_type, $file_path_including_filename);
+        return new CRM_Civioffice_Document_LocalTempfile($this, $this->mime_type, $file_path_including_filename, $skip_path_creation);
     }
 
     public function packAllFiles()
