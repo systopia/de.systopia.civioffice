@@ -215,9 +215,11 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          */
 
         // todo: add a file name to mime type mapping in CRM_Civioffice_MimeType 1/2
-        // todo: return here if target mime type is docx
         if ($target_mime_type == CRM_Civioffice_MimeType::PDF) {
             $mime_type_ending_name = 'pdf';
+        } else if  ($target_mime_type == CRM_Civioffice_MimeType::DOCX) {
+            // We can return here and skip conversion as the transition format is equal to the output format
+            return $tokenreplaced_documents;
         } else {
             throw new Exception('Mime types other than pdf yet need to be implemented and tested');
         }

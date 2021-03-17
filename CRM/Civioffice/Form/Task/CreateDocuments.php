@@ -52,6 +52,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             E::ts("Document Type"),
             [
                 CRM_Civioffice_MimeType::PDF => E::ts("PDF"), // todo: add a file name to mime type mapping in CRM_Civioffice_MimeType 2/2
+                CRM_Civioffice_MimeType::DOCX => E::ts('DOCX')
             ],
             true,
             ['class' => 'crm-select2']
