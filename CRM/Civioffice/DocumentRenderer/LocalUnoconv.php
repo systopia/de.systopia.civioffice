@@ -20,7 +20,7 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_DocumentRenderer
 {
-    const MIN_UNOCONV_VERSION = '6.0'; // todo: determine
+    const MIN_UNOCONV_VERSION = '0.7'; // todo: determine
 
     const UNOCONV_BINARY_PATH_SETTINGS_KEY = 'civioffice_unoconv_binary_path';
     const TEMP_FOLDER_PATH_SETTINGS_KEY = 'civioffice_temp_folder_path';
