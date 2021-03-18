@@ -75,13 +75,6 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
             $this->_errors['temp_folder_path'] = E::ts("Input is empty");
         }
 
-        // check if temp folder exists, try to create one if not
-        if (!file_exists($folder_to_check)) {
-            if (!mkdir($folder_to_check)) {
-                $this->_errors['temp_folder_path'] = E::ts("Unable to create temp folder");
-            }
-        }
-
         if (!is_writable($folder_to_check)) {
             $this->_errors['temp_folder_path'] = E::ts("Unable to write temp folder");
         }
