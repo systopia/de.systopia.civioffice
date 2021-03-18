@@ -33,13 +33,12 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
             );
             $current_user_id = CRM_Core_Session::singleton()->getLoggedInContactId();
 
-                $temp_folder_path = $user_selectable_path . DIRECTORY_SEPARATOR . uniqid("civioffice_{$current_user_id}_");
-                if (file_exists($temp_folder_path)) {
-                    unlink($temp_folder_path);
-                    Civi::log()->debug("CiviOffice: Temp folder already exists. Deleting and trying to create a new one");
-                }
-                mkdir($temp_folder_path);
+            $temp_folder_path = $user_selectable_path . DIRECTORY_SEPARATOR . uniqid("civioffice_{$current_user_id}_");
+            if (file_exists($temp_folder_path)) {
+                unlink($temp_folder_path);
+                Civi::log()->debug("CiviOffice: Temp folder already exists. Deleting and trying to create a new one");
             }
+            mkdir($temp_folder_path);
         }
         parent::__construct("tmp::{$temp_folder_path}", E::ts("Temporary Files"), $mime_type, false, false);
         $this->base_folder = $temp_folder_path;
