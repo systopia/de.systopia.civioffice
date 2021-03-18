@@ -20,19 +20,18 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStore_Local
 {
-    public function __construct($mime_type, $temp_folder_path = null, $skip_path_creation = false) // fixme: mime type used as id?
+    public function __construct($mime_type, $temp_folder_path = null) // fixme: mime type used as id?
     {
         // create tmp folder
-        if ($skip_path_creation) {
-            $temp_folder_path = 'no-path'; //fixme: do not use $skip_path_creation in general or use null here?
-        } else {
-            if(empty($temp_folder_path)) {
-                // create temp folder with random postfix like: var/civioffice/temp/civioffice_202_6050ec8acc7a5
+        if (empty($temp_folder_path)) {
+            // create temp folder with random postfix like: var/civioffice/temp/civioffice_202_6050ec8acc7a5
 
-                // fixme: remove last slash
-                // todo: use entry from settings
-                $user_selectable_path = Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY);
-                $current_user_id = CRM_Core_Session::singleton()->getLoggedInContactId();
+            // fixme: remove last slash
+            // todo: use entry from settings
+            $user_selectable_path = Civi::settings()->get(
+                CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY
+            );
+            $current_user_id = CRM_Core_Session::singleton()->getLoggedInContactId();
 
                 $temp_folder_path = $user_selectable_path . DIRECTORY_SEPARATOR . uniqid("civioffice_{$current_user_id}_");
                 if (file_exists($temp_folder_path)) {

@@ -28,9 +28,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     /** @var string path to the unoconv binary */
     protected $unoconv_path;
 
-    /** @var CRM_Civioffice_DocumentStore temp store for converted files */
-    protected $temp_store = null;
-
     /**
      * constructor
      *
@@ -42,7 +39,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         if (empty($this->unoconv_path)) {
             $this->unoconv_path = '/usr/bin/unoconv'; // default value
         }
-        $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::PDF, null, true); //needs to be true!
     }
 
     /**
