@@ -71,10 +71,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             $temp_folder = Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_NAME);
 
-            // check if temp folder exists, try to create if not
-            if (!file_exists($temp_folder)) {
-                mkdir($temp_folder);
-            }
+            // fixme duplicated check in CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings->isReady() ?
             if (!is_writable($temp_folder)) {
                 Civi::log()->debug("CiviOffice: Unable to create unoconv temp dir in: $temp_folder");
                 return false;

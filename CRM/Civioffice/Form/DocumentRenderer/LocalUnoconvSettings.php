@@ -62,33 +62,35 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
 
     /**
      * Validate input data
+     * This method is executed before postProcess()
      * @return bool
      */
     public function validate(): bool
     {
         parent::validate();
 
-        $dr_u = new CRM_Civioffice_DocumentRenderer_LocalUnoconv;
-        if (!$dr_u->isReady()) {
-            return false;
+        $folder_to_check = $this->_submitValues['temp_folder_path'];
+
+        if (!empty($folder_to_check)) { // needed?
+            $this->_errors['temp_folder_path'] = E::ts("Input is empty");
         }
 
-        return true; //fixme debug
-        // todo: check if binary is there?
-
-        // verify that the folder is 1) there, 2) readable
-        if (!empty($this->_submitValues['unoconv_binary_path'])) {
-            $local_folder = $this->_submitValues['local_folder'];
-            if (!is_dir($local_folder)) {
-                $this->_errors['unoconv_binary_path'] = E::ts("This is not a folder");
-            } else {
-                if (!is_readable($local_folder)) {
-                    $this->_errors['unoconv_binary_path'] = E::ts("This folder cannot be accessed");
-                }
+        // check if temp folder exists, try to create one if not
+        if (!file_exists($folder_to_check)) {
+            if (!mkdir($folder_to_check)) {
+                $this->_errors['temp_folder_path'] = E::ts("Unable to create temp folder");
             }
         }
 
-        return (0 == count($this->_errors));
+        if (!is_writable($folder_to_check)) {
+            $this->_errors['temp_folder_path'] = E::ts("Unable to write temp folder");
+        }
+
+        if (!is_dir($folder_to_check)) {
+            $this->_errors['temp_folder_path'] = E::ts("This is not a folder");
+        }
+
+        return (count($this->_errors) == 0);
     }
 
   public function postProcess() {
