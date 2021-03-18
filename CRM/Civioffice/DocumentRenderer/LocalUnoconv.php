@@ -231,7 +231,8 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
         exec($command_cd, $exec_output, $exec_return_code);
         if ($exec_return_code != 0) {
-            Civi::log()->debug("CiviOffice: Exception: Return code 0 expected but {$exec_return_code} given");
+            $serialize_output = serialize($exec_output);
+            Civi::log()->debug("CiviOffice: Exception: Return code 0 expected but $exec_return_code given: $serialize_output");
             throw new Exception('Unoconv: Return code 0 expected');
         }
         // fixme: This only works when apache2 protected temp is disabled
