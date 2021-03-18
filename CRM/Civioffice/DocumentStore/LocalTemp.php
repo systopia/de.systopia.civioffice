@@ -50,7 +50,6 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
      *
      * @param string $file_name
      * @param null $content
-     * @param bool $skip_path_creation
      *
      * @return CRM_Civioffice_Document_LocalTempfile
      *   new temp file
