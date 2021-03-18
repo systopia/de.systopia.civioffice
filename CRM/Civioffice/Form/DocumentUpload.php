@@ -33,6 +33,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
     {
         $this->common = CRM_Utils_Request::retrieve('common', 'Boolean', $this);
         $this->document_store = new CRM_Civioffice_DocumentStore_Upload($this->common);
+        
 
         if ($this->common) {
             $this->setTitle(E::ts("Shared Uploaded CiviOffice Documents"));
@@ -73,10 +74,13 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
         $documents = $this->document_store->getDocuments();
         foreach ($documents as $document) {
             /** @var $document CRM_Civioffice_Document */
+            $file_path = $this->document_store->getFolder() . DIRECTORY_SEPARATOR . $document->getName();
             $list[] = [
-                'uri'       => $document->getURI(),
-                'name'      => $document->getName(),
-                'mime_type' => $document->getMimeType(),
+                'name'        => $document->getName(),
+                'mime_type'   => $document->getMimeType(),
+                'size'        => E::ts("%1 MB", [1 => number_format(filesize($file_path) / 1024.0 / 1024.0, 2)]),
+                'upload_date' => date('Y-m-d', filectime($file_path)),
+                'icon'        => CRM_Utils_File::getIconFromMimeType($document->getMimeType()),
             ];
         }
         return $list;
