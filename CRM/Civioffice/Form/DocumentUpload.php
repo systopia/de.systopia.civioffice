@@ -1,0 +1,97 @@
+<?php
+/*-------------------------------------------------------+
+| SYSTOPIA CiviOffice Integration                        |
+| Copyright (C) 2021 SYSTOPIA                            |
+| Author: J. Franz (franz@systopia.de)                   |
++--------------------------------------------------------+
+| This program is released as free software under the    |
+| Affero GPL license. You can redistribute it and/or     |
+| modify it under the terms of this license which you    |
+| can read by viewing the included agpl.txt or online    |
+| at www.gnu.org/licenses/agpl.html. Removal of this     |
+| copyright header is strictly prohibited without        |
+| written permission from the original author(s).        |
++-------------------------------------------------------*/
+
+use CRM_Civioffice_ExtensionUtil as E;
+
+/**
+ * Form controller class
+ *
+ * @see https://docs.civicrm.org/dev/en/latest/framework/quickform/
+ */
+class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
+{
+    /** @var boolean  */
+    protected $common;
+
+    /** @var CRM_Civioffice_DocumentStore_Upload */
+    protected $document_store;
+
+
+    public function buildQuickForm()
+    {
+        $this->common = CRM_Utils_Request::retrieve('common', 'Boolean', $this);
+        $this->document_store = new CRM_Civioffice_DocumentStore_Upload($this->common);
+
+        if ($this->common) {
+            $this->setTitle(E::ts("Shared Uploaded CiviOffice Documents"));
+        } else {
+            $this->setTitle(E::ts("Your Uploaded CiviOffice Documents"));
+        }
+
+        $this->add(
+            'File',
+            'upload_file',
+            E::ts('Upload Document'),
+            null,
+            false
+        );
+
+        $this->addButtons(
+            [
+                [
+                    'type' => 'submit',
+                    'name' => E::ts('Upload'),
+                    'isDefault' => true,
+                ],
+            ]
+        );
+
+        $this->assign('document_list', $this->fileList());
+
+        parent::buildQuickForm();
+    }
+
+    /**
+     * Get a list of all files including attributes
+     *
+     */
+    protected function fileList()
+    {
+        $list = [];
+        $documents = $this->document_store->getDocuments();
+        foreach ($documents as $document) {
+            /** @var $document CRM_Civioffice_Document */
+            $list[] = [
+                'uri'       => $document->getURI(),
+                'name'      => $document->getName(),
+                'mime_type' => $document->getMimeType(),
+            ];
+        }
+        return $list;
+    }
+
+    public function postProcess()
+    {
+        if (isset($this->_submitFiles['upload_file'])) {
+            $upload_file = $this->_submitFiles['upload_file'];
+            // move file to new destination
+            $destination = $this->document_store->getFolder() . DIRECTORY_SEPARATOR . $upload_file['name'];
+            move_uploaded_file($upload_file['tmp_name'], $destination);
+            E::ts("Uploaded file '%1'", [1 => $upload_file['name']]);
+        }
+        parent::postProcess();
+    }
+
+}

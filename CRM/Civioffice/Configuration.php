@@ -48,7 +48,9 @@ class CRM_Civioffice_Configuration
         // todo: get from config
         // todo: filter for $only_show_active
         return [
-            new CRM_Civioffice_DocumentStore_Local('test', "Local Folder", CRM_Civioffice_MimeType::DOCX, false, true)
+            new CRM_Civioffice_DocumentStore_Local('test', "Local Folder", CRM_Civioffice_MimeType::DOCX, false, true),
+            new CRM_Civioffice_DocumentStore_Upload(true), // todo: enable disable by setting
+            new CRM_Civioffice_DocumentStore_Upload(false), // todo: enable disable by setting
         ];
     }
 
