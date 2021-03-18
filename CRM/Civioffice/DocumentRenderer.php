@@ -111,28 +111,6 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
 
             $string = $processor->getRow(0)->render($identifier);
 
-            return $string; //fixme: other token replacement code needed?
-
-
-            // first: replace CiviCRM style contact tokens
-            [$contact] = CRM_Utils_Token::getTokenDetails([$entity_id]); //fixme returns empty array?
-            $string = CRM_Utils_Token::replaceContactTokens(
-                $string,
-                $contact[$entity_id],
-                false,
-                $additional_tokens
-            );
-
-            return $string; //fixme: smarty is crashing
-
-            // second: replace SMARTY style tokens
-            /* @var CRM_Core_Smarty $smarty */
-            $smarty = CRM_Core_Smarty::singleton();
-            foreach ($additional_tokens as $key => $value) {
-                $smarty->assign($key, $value);
-            }
-            $string = $smarty->fetch("string:$string");
-
             return $string;
         }
 
