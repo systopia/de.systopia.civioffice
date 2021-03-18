@@ -135,7 +135,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      *   entity type, e.g. 'contact'
      *
      * @return array
-     *   list of token_name => token value
+     *   list of documents with target file name
      */
     public function render(
         $document_with_placeholders,
@@ -146,8 +146,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     ): array {
         $tokenreplaced_documents = [];
         $temp_store_folder_path = $temp_store->getBaseFolder();
-        // shadow: This store represents docx file names and is only used for being returned as conversion happens entirely without this store in unoconv
-        $shadow_temp_result_store = new CRM_Civioffice_DocumentStore_LocalTemp('pdf', $temp_store_folder_path, true);
+        $docx_store = new CRM_Civioffice_DocumentStore_LocalTemp('docx', $temp_store_folder_path);
 
         /*
          * Token replacement
@@ -158,16 +157,28 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          */
         foreach ($entity_ids as $entity_id) {
             // todo save name identifier at a central place
-            $transitional_xml_based_document = $temp_store->addFile("Document-{$entity_id}.docx");
-            $shadow_pdf = $shadow_temp_result_store->addFile("Document-{$entity_id}.pdf", null);
+            $mime_type_ending_name = null;
+            switch ($target_mime_type) {
+                case CRM_Civioffice_MimeType::PDF:
+                    $mime_type_ending_name = 'pdf';
+                    break;
+                case CRM_Civioffice_MimeType::DOCX:
+                    $mime_type_ending_name = 'docx';
+                    break;
+                default:
+                    throw new Exception('Mime types other than pdf yet need to be implemented and tested');
+            }
+
+            $return_document = $temp_store->addFile("Document-{$entity_id}.{$mime_type_ending_name}");
+            $transitional_docx_document = $docx_store->addFile("Document-{$entity_id}.docx");
 
             $zip = new ZipArchive();
 
             // copy and rename to target filename. Keeps the xml file name ending e.g. .docx
-            copy($document_with_placeholders->getAbsolutePath(), $transitional_xml_based_document->getAbsolutePath());
+            copy($document_with_placeholders->getAbsolutePath(), $transitional_docx_document->getAbsolutePath());
 
             // open xml file (like .docx) as a zip file, as in fact it is one
-            $zip->open($transitional_xml_based_document->getAbsolutePath());
+            $zip->open($transitional_docx_document->getAbsolutePath());
 
 
             /*
@@ -190,7 +201,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             $zip->close();
 
-            $tokenreplaced_documents[] = $shadow_pdf;
+            $tokenreplaced_documents[] = $return_document;
         }
 
         /*
@@ -217,14 +228,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          * -v for verbose mode. Returns target file format and target filepath
          */
 
-        // todo: add a file name to mime type mapping in CRM_Civioffice_MimeType 1/2
-        if ($target_mime_type == CRM_Civioffice_MimeType::PDF) {
-            $mime_type_ending_name = 'pdf';
-        } else if  ($target_mime_type == CRM_Civioffice_MimeType::DOCX) {
+        if ($target_mime_type == CRM_Civioffice_MimeType::DOCX) {
             // We can return here and skip conversion as the transition format is equal to the output format
             return $tokenreplaced_documents;
-        } else {
-            throw new Exception('Mime types other than pdf yet need to be implemented and tested');
         }
 
         $command_cd = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $mime_type_ending_name *.docx";
