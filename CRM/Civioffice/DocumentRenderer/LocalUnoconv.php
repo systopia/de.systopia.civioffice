@@ -239,6 +239,15 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         if ($exec_return_code != 0) {
             $serialize_output = serialize($exec_output);
             Civi::log()->debug("CiviOffice: Exception: Return code 0 expected but $exec_return_code given: $serialize_output");
+
+            $empty_files = '';
+            foreach (new DirectoryIterator($temp_store_folder_path) as $file) {
+                if ($file->isFile() && $file->getSize() == 0) {
+                    $empty_files .= $file->getFilename() . ', ';
+                }
+            }
+            Civi::log()->debug("CiviOffice: Files are empty: $empty_files");
+
             throw new Exception('Unoconv: Return code 0 expected');
         }
         // fixme: This only works when apache2 protected temp is disabled
