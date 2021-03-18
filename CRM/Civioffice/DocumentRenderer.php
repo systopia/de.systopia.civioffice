@@ -84,8 +84,8 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      * @param string $entity_type
      *   entity type, e.g. 'contact'
      *
-     * @return array
-     *   list of token_name => token value
+     * @return string
+     *   input string with the tokens replaced
      *
      * @throws \Exception
      */
