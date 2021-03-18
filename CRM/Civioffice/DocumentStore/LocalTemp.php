@@ -58,8 +58,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
      */
     public function addFile(
         string $file_name,
-        $content = null,
-        $skip_path_creation = false
+        $content = null
     ): CRM_Civioffice_Document_LocalTempfile {
         $file_path_including_filename = $this->base_folder . DIRECTORY_SEPARATOR . $file_name;
         return new CRM_Civioffice_Document_LocalTempfile(
