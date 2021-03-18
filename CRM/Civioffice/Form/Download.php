@@ -16,11 +16,11 @@
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
- * Page to download PDFs and go back to the result
+ * Page to download files and go back to the result
  */
 class CRM_Civioffice_Form_Download extends CRM_Core_Form {
 
-    /** @var string the tmp folder holding the PDFs */
+    /** @var string the tmp folder holding the files */
     public $tmp_folder;
 
     /** @var string the URL to return to */
@@ -31,7 +31,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
         $this->tmp_folder = CRM_Utils_Request::retrieve('tmp_folder', 'String', $this);
         $this->return_url = CRM_Utils_Request::retrieve('return_url', 'String', $this);
 
-        $this->setTitle(E::ts("Your PDFs are ready for download."));
+        $this->setTitle(E::ts("Your files are ready for download."));
         $this->addButtons(
             [
                 [
@@ -61,7 +61,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
                 throw new Exception("Illegal path!");
             }
 
-            // download PDFs
+            // download files
             try {
                 // create ZIP file
                 $filename = $this->tmp_folder . DIRECTORY_SEPARATOR . 'all.zip';
@@ -73,7 +73,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
                     // todo save name identifier at a central place
                     $pattern = E::ts("Document-%1.*", [1 => '*']); // todo: Check if wildcard use is okay here
                     $command = "cd {$this->tmp_folder} && zip all.zip {$pattern}";
-                    Civi::log()->debug("CiviOffice: Executing '{$command}' to zip generated pdfs...");
+                    Civi::log()->debug("CiviOffice: Executing '{$command}' to zip generated files...");
                     $timestamp = microtime(true);
                     exec($command, $output, $has_error);
                     $runtime = microtime(true) - $timestamp;
@@ -88,7 +88,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
                     $zip = new ZipArchive();
                     $zip->open($filename, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
 
-                    // add all Document-X.pdf files
+                    // add all Document-X.* files
                     foreach (scandir($this->tmp_folder) as $file) {
                         // todo save name identifier at a central place
                         $pattern = E::ts("Document-%1.*", [1 => '[0-9]+']); // todo: Check if wildcard use is okay here
@@ -137,7 +137,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
 
             } catch (Exception $ex) {
                 CRM_Core_Session::setStatus(
-                    E::ts("Error downloading PDF files: %1", [1 => $ex->getMessage()]),
+                    E::ts("Error downloading files: %1", [1 => $ex->getMessage()]),
                     E::ts("Download Error"),
                     'error');
             }
