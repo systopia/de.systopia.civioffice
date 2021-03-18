@@ -179,8 +179,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
              * todo: filter binary files like jpgs?
              */
 
-            $document_renderer_unoconv = new CRM_Civioffice_DocumentRenderer_LocalUnoconv();
-
             $numberOfFiles = $zip->numFiles;
             for ($i = 0; $i < $numberOfFiles; $i++) {
                 // Step 1/4 unpack xml (.docx) file and handle it as a zip file as it is one
@@ -188,7 +186,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 $fileName = $zip->getNameIndex($i);
 
                 // Step 2/4 replace tokens
-                $fileContent = $document_renderer_unoconv->replaceAllTokens($fileContent, $entity_id, 'contact');
+                $fileContent = $this->replaceAllTokens($fileContent, $entity_id, 'contact');
 
                 // Step 3/4 repack it again as xml (docx)
                 $zip->addFromString($fileName, $fileContent);
