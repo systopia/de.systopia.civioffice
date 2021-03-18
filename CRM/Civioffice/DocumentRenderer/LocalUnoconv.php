@@ -22,8 +22,8 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 {
     const MIN_UNOCONV_VERSION = '6.0'; // todo: determine
 
-    const SETTING_NAME = 'civioffice_unoconv_binary_path';
-    const TEMP_FOLDER_NAME = 'civioffice_temp_folder_path';
+    const UNOCONV_BINARY_PATH_SETTINGS_KEY = 'civioffice_unoconv_binary_path';
+    const TEMP_FOLDER_PATH_SETTINGS_KEY = 'civioffice_temp_folder_path';
 
     /** @var string path to the unoconv binary */
     protected $unoconv_path;
@@ -38,7 +38,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     public function __construct()
     {
         parent::__construct('unoconv-local', E::ts("Local Universal Office Converter (unoconv)"));
-        $this->unoconv_path = Civi::settings()->get(self::SETTING_NAME);
+        $this->unoconv_path = Civi::settings()->get(self::UNOCONV_BINARY_PATH_SETTINGS_KEY);
         if (empty($this->unoconv_path)) {
             $this->unoconv_path = '/usr/bin/unoconv'; // default value
         }
@@ -69,7 +69,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 return false;
             }
 
-            $temp_folder = Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_NAME);
+            $temp_folder = Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY);
 
             // fixme duplicated check in CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings->isReady() ?
             if (!is_writable($temp_folder)) {

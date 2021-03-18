@@ -42,8 +42,8 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
 
       $this->setDefaults(
           [
-              'unoconv_binary_path' => Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::SETTING_NAME),
-              'temp_folder_path' => Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_NAME)
+              'unoconv_binary_path' => Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::UNOCONV_BINARY_PATH_SETTINGS_KEY),
+              'temp_folder_path' => Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY)
           ]
       );
 
@@ -97,9 +97,9 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
       $values = $this->exportValues();
 
       // save to settings
-      Civi::settings()->set(CRM_Civioffice_DocumentRenderer_LocalUnoconv::SETTING_NAME, $values['unoconv_binary_path']);
+      Civi::settings()->set(CRM_Civioffice_DocumentRenderer_LocalUnoconv::UNOCONV_BINARY_PATH_SETTINGS_KEY, $values['unoconv_binary_path']);
 
       $values['temp_folder_path'] = rtrim($values['temp_folder_path'], '\/');
-      Civi::settings()->set(CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_NAME, $values['temp_folder_path']);
+      Civi::settings()->set(CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY, $values['temp_folder_path']);
   }
 }
