@@ -20,7 +20,7 @@
     <thead>
       <tr>
         <th>{ts}Name{/ts}</th>
-        <th>{ts}Type{/ts}</th>
+{*        <th>{ts}Type{/ts}</th>*}
         <th>{ts}Size{/ts}</th>
         <th>{ts}Upload{/ts}</th>
         <th>{ts}Actions{/ts}</th>
@@ -29,9 +29,9 @@
     <tbody>
     {foreach from=$document_list item=document}
       <tr>
-        <td>{$document.uri}</td>
-        <td>{$document.name}</td>
-        <td>{$document.mime_type}</td>
+        <td><i title="{$document.mime_type}" class="crm-i {$document.icon}" aria-hidden="true"></i> {$document.name}</td>
+        <td>{$document.size}</td>
+        <td>{$document.upload_date}</td>
         <td>DELETE</td>
       </tr>
     {/foreach}
