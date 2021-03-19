@@ -98,7 +98,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
                 'name'        => $document->getName(),
                 'mime_type'   => $document->getMimeType(),
                 'size'        => E::ts("%1 MB", [1 => number_format(filesize($file_path) / 1024.0 / 1024.0, 2)]),
-                'upload_date' => date('Y-m-d', filectime($file_path)),
+                'upload_date' => date('Y-m-d H:i:s', filectime($file_path)),
                 'icon'        => CRM_Utils_File::getIconFromMimeType($document->getMimeType()),
             ];
         }
@@ -112,7 +112,14 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
             // move file to new destination
             $destination = $this->document_store->getFolder() . DIRECTORY_SEPARATOR . $upload_file['name'];
             move_uploaded_file($upload_file['tmp_name'], $destination);
-            E::ts("Uploaded file '%1'", [1 => $upload_file['name']]);
+            CRM_Core_Session::setStatus(
+                E::ts("Uploaded file '%1'", [1 => $upload_file['name']]),
+                E::ts("Document Stored"),
+                'info'
+            );
+
+            // update document list
+            $this->assign('document_list', $this->fileList());
         }
         parent::postProcess();
     }
