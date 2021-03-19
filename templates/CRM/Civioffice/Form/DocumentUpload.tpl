@@ -40,8 +40,6 @@
 
   <h3>{ts}Upload More{/ts}</h3>
 
-  <a class="button" href="{$switch_contexts_url}">{ts}switch folder{/ts}</a>
-
   <div class="crm-section">
     <div class="label">{$form.upload_file.label}</div>
     <div class="content">{$form.upload_file.html}</div>

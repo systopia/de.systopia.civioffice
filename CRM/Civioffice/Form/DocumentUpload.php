@@ -61,13 +61,8 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
         $this->addButtons(
             [
                 [
-                    'type' => 'done',
-                    'name' => E::ts('Upload'),
-                    'isDefault' => true,
-                ],
-                [
                     'type' => 'submit',
-                    'name' => E::ts('change folder'),
+                    'name' => E::ts('Upload'),
                     'isDefault' => true,
                 ],
             ]
