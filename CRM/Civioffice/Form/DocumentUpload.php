@@ -76,7 +76,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
         $this->assign('switch_contexts_url',
                       CRM_Utils_System::url('civicrm/civioffice/document_upload', "common={$switched_number}"));
         $this->assign('switch_contexts_icon',
-                      $switched_number ? "fa-lock" : "fa-slideshare");
+                      $switched_number ? "fa-user" : "fa-slideshare");
         $this->assign('switch_contexts_title',
                       $switched_number ? E::ts("Switch to shared documents") : E::ts("Switch to private documents"));
 
