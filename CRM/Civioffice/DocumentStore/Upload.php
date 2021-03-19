@@ -20,6 +20,9 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
 {
+    const UPLOAD_PUBLIC_ENABLED  = 'civioffice_store_upload_public';
+    const UPLOAD_PRIVATE_ENABLED = 'civioffice_store_upload_private';
+
     /** @var string the folder name being used */
     protected $folder_name;
 
@@ -130,13 +133,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
      */
     public function getConfigPageURL() : string
     {
-        return '';
-        /* TODO: create config page to do the following
-                 - enable private
-                 - enable public
-                 - possibly: add links to menu
-        */
-
+        return CRM_Utils_System::url('civicrm/admin/civioffice/settings/uploaddocumentstore', 'reset=1');
     }
 
     /**
@@ -148,8 +145,23 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
      */
     public function isReady() : bool
     {
-        // todo: active
-        return file_exists($this->folder_name) && is_dir($this->folder_name);
+        $enabled = Civi::settings()->get($this->common ? self::UPLOAD_PUBLIC_ENABLED : self::UPLOAD_PRIVATE_ENABLED);
+        return
+            $enabled
+            && file_exists($this->folder_name)
+            && is_dir($this->folder_name);
+    }
+
+    /**
+     * Is the other (sibling) document store ready?
+     *
+     * @return boolean
+     *   URL
+     */
+    public function isOtherReady() : bool
+    {
+        $sibling_store = new CRM_Civioffice_DocumentStore_Upload(!$this->common);
+        return $sibling_store->isReady();
     }
 
     /**

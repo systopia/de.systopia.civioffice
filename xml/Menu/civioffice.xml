@@ -18,7 +18,13 @@
     <path>civicrm/admin/civioffice/settings/localdocumentstore</path>
     <page_callback>CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings</page_callback>
     <title>LocalDocumentStore Settings</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/admin/civioffice/settings/uploaddocumentstore</path>
+    <page_callback>CRM_Civioffice_Form_UploadDocumentStore_UploadDocumentStoreSettings</page_callback>
+    <title>UploadDocumentStore Settings</title>
+    <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
     <path>civicrm/civioffice/download</path>
