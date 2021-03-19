@@ -248,7 +248,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             }
             Civi::log()->debug("CiviOffice: Files are empty: $empty_files");
 
-            throw new Exception('Unoconv: Return code 0 expected');
+            throw new Exception("Unoconv: Return code 0 expected but $exec_return_code given");
         }
         // fixme: This only works when apache2 protected temp is disabled
         exec("cd $temp_store_folder_path && rm *.docx");
