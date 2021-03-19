@@ -157,19 +157,19 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          */
         foreach ($entity_ids as $entity_id) {
             // todo save name identifier at a central place
-            $mime_type_ending_name = null;
+            $file_ending_name = null;
             switch ($target_mime_type) {
                 case CRM_Civioffice_MimeType::PDF:
-                    $mime_type_ending_name = 'pdf';
+                    $file_ending_name = 'pdf';
                     break;
                 case CRM_Civioffice_MimeType::DOCX:
-                    $mime_type_ending_name = 'docx';
+                    $file_ending_name = 'docx';
                     break;
                 default:
                     throw new Exception('Mime types other than pdf yet need to be implemented and tested');
             }
 
-            $return_document = $temp_store->addFile("Document-{$entity_id}.{$mime_type_ending_name}");
+            $return_document = $temp_store->addFile("Document-{$entity_id}.{$file_ending_name}");
             $transitional_docx_document = $docx_store->addFile("Document-{$entity_id}.docx");
 
             $zip = new ZipArchive();
@@ -233,7 +233,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             return $tokenreplaced_documents;
         }
 
-        $command_cd = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $mime_type_ending_name *.docx";
+        $command_cd = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $file_ending_name *.docx";
 
         exec($command_cd, $exec_output, $exec_return_code);
         if ($exec_return_code != 0) {
