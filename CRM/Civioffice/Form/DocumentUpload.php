@@ -37,7 +37,28 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
         $this->common = CRM_Utils_Request::retrieve('common', 'Boolean', $this) ?? self::PRIVATE_ID;
 
         $this->document_store = new CRM_Civioffice_DocumentStore_Upload($this->common);
-        
+
+        // execute a download if requested
+        if (!empty($_REQUEST['download'])) {
+            $file = $this->getFilePath($_REQUEST['download']);
+            if ($file) {
+                $file_content = file_get_contents($file);
+                CRM_Utils_System::download(basename($file), mime_content_type($file), $file_content);
+            }
+        }
+
+        // execute a delete if requested
+        if (!empty($_REQUEST['delete'])) {
+            $file = $this->getFilePath($_REQUEST['delete']);
+            if ($file) {
+                unlink($file);
+                CRM_Core_Session::setStatus(
+                    E::ts("File '%1' deleted.", [1 => basename($file)]),
+                    E::ts("File Deleted"),
+                    'info'
+                );
+            }
+        }
 
 
         switch ($this->common) {
@@ -95,11 +116,13 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
             /** @var $document CRM_Civioffice_Document */
             $file_path = $this->document_store->getFolder() . DIRECTORY_SEPARATOR . $document->getName();
             $list[] = [
-                'name'        => $document->getName(),
-                'mime_type'   => $document->getMimeType(),
-                'size'        => E::ts("%1 MB", [1 => number_format(filesize($file_path) / 1024.0 / 1024.0, 2)]),
-                'upload_date' => date('Y-m-d H:i:s', filectime($file_path)),
-                'icon'        => CRM_Utils_File::getIconFromMimeType($document->getMimeType()),
+                'name'          => $document->getName(),
+                'mime_type'     => $document->getMimeType(),
+                'size'          => E::ts("%1 MB", [1   => number_format(filesize($file_path) / 1024.0 / 1024.0, 2)]),
+                'upload_date'   => date('Y-m-d H:i:s', filectime($file_path)),
+                'icon'          => CRM_Utils_File::getIconFromMimeType($document->getMimeType()),
+                'delete_link'   => CRM_Utils_System::url("civicrm/civioffice/document_upload", "common={$this->common}&delete=" . base64_encode($document->getName())),
+                'download_link' => CRM_Utils_System::url("civicrm/civioffice/document_upload", "common={$this->common}&download=" . base64_encode($document->getName())),
             ];
         }
         return $list;
@@ -124,4 +147,29 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
         parent::postProcess();
     }
 
+
+    /**
+     * Extract a full path from the base64 encoded file name
+     *
+     * @param string $base64_file_name
+     *
+     * @return string|null
+     *   full file path or null if file not exists (or illegal)
+     */
+    protected function getFilePath($base64_file_name)
+    {
+        $file_name = base64_decode($base64_file_name);
+        if ($file_name) {
+            // make sure nobody wants to do anything outside our folder
+            $file_name = basename($file_name);
+
+            // return full path
+            $full_path = $this->document_store->getFolder() . DIRECTORY_SEPARATOR . $file_name;
+            if (file_exists($full_path)) {
+                return $full_path;
+            }
+        }
+        // something's wrong
+        return null;
+    }
 }
