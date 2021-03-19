@@ -94,7 +94,7 @@
       <td>{$component.description}</td>
       <td>{if $component.is_ready}{ts}Yes{/ts}{else}{ts}No{/ts}{/if}</td>
       <td>{if $component.config_url}
-          <a class="button crm-popup" href="{$component.config_url}">{ts}configure{/ts}</a>
+          <a class="button crm-popup small-popup" href="{$component.config_url}">{ts}configure{/ts}</a>
         {else}
           {ts}no configuration available{/ts}
         {/if}
@@ -104,8 +104,15 @@
   </tbody>
 </table>
 
-{*<div class="crm-submit-buttons">*}
-{*{include file="CRM/common/formButtons.tpl" location="bottom"}*}
-{*</div>*}
-
+{literal}
+<script>
+  cj(document).ready(function() {
+    // make sure we reload after a setting popup was saved
+    cj(document).on('crmPopupFormSuccess', function () {
+      location.reload();
+      // todo: add loading indicator?
+    });
+  });
+</script>
+{/literal}
 {/crmScope}
