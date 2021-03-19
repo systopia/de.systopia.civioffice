@@ -15,12 +15,12 @@
 {* HEADER *}
 {crmScope extensionKey='de.systopia.civioffice'}
 
-  <h3>{ts}Documents{/ts}</h3>
+  <h3>{ts}Available Documents{/ts}&nbsp;{if $switch_contexts_url}<a href="{$switch_contexts_url}"><i class="crm-i {$switch_contexts_icon}" title="{$switch_contexts_title}"></i></a>{/if}</h3>
+
   <table>
     <thead>
       <tr>
         <th>{ts}Name{/ts}</th>
-{*        <th>{ts}Type{/ts}</th>*}
         <th>{ts}Size{/ts}</th>
         <th>{ts}Upload{/ts}</th>
         <th>{ts}Actions{/ts}</th>
