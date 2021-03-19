@@ -28,18 +28,27 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
     /** @var CRM_Civioffice_DocumentStore_Upload */
     protected $document_store;
 
+    const SHARED_ID = 1;
+    const PRIVATE_ID = 0;
+
 
     public function buildQuickForm()
     {
-        $this->common = CRM_Utils_Request::retrieve('common', 'Boolean', $this);
+        $this->common = CRM_Utils_Request::retrieve('common', 'Boolean', $this) ?? self::PRIVATE_ID;
+
         $this->document_store = new CRM_Civioffice_DocumentStore_Upload($this->common);
         
 
-        if ($this->common) {
-            $this->setTitle(E::ts("Shared Uploaded CiviOffice Documents"));
-        } else {
-            $this->setTitle(E::ts("Your Uploaded CiviOffice Documents"));
+
+        switch ($this->common) {
+            case self::PRIVATE_ID:
+                $this->setTitle(E::ts("Your Uploaded CiviOffice Documents"));
+                break;
+            case self::SHARED_ID:
+                $this->setTitle(E::ts("Shared Uploaded CiviOffice Documents"));
+                break;
         }
+
 
         $this->add(
             'File',
@@ -52,14 +61,22 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
         $this->addButtons(
             [
                 [
-                    'type' => 'submit',
+                    'type' => 'done',
                     'name' => E::ts('Upload'),
+                    'isDefault' => true,
+                ],
+                [
+                    'type' => 'submit',
+                    'name' => E::ts('change folder'),
                     'isDefault' => true,
                 ],
             ]
         );
 
         $this->assign('document_list', $this->fileList());
+        $switched_number = $this->common ^ 1; // XOR the value with 1 switches it both ways 1 <--> 0
+        $switch_url = CRM_Utils_System::url('civicrm/civioffice/document_upload?common=') . $switched_number;
+        $this->assign('switch_contexts_url', $switch_url);
 
         parent::buildQuickForm();
     }
