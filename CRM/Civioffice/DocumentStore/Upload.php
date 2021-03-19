@@ -33,7 +33,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
 
         // get the upload folder
         $config = CRM_Core_Config::singleton();
-        $base_folder = $config->uploadDir . DIRECTORY_SEPARATOR . 'civioffice_documents';
+        $base_folder = $config->uploadDir . 'civioffice_documents'; // working?
         if (!file_exists($base_folder)) {
             mkdir($base_folder);
         }
