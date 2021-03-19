@@ -71,7 +71,7 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
 
         $folder_to_check = $this->_submitValues['temp_folder_path'];
 
-        if (!empty($folder_to_check)) { // needed?
+        if (empty($folder_to_check)) { // needed?
             $this->_errors['temp_folder_path'] = E::ts("Input is empty");
         }
 
