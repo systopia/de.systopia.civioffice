@@ -69,7 +69,6 @@ class CRM_Civioffice_ConversionJob
 
     public function run(): bool
     {
-        // fixme: only create one instance of singleton. Buggy as it creates one for each batch run
         $configuration = CRM_Civioffice_Configuration::getConfig();
 
         $document_renderer = $configuration->getDocumentRenderer($this->renderer_id);
