@@ -132,6 +132,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
 
     public function postProcess()
     {
+        // TODO: Catch empty upload caused by a button click with no previous file selected
         if (isset($this->_submitFiles['upload_file'])) {
             $upload_file = $this->_submitFiles['upload_file'];
             // move file to new destination
