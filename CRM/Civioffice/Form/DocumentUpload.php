@@ -93,7 +93,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
         $this->assign('document_list', $this->fileList());
 
         // assign switch
-        if ($this->document_store->isOtherReady()) {
+        if ($this->document_store->isSiblingStoreReady()) {
             $switched_number = $this->common ^ 1; // XOR the value with 1 switches it both ways 1 <--> 0
             $this->assign('switch_contexts_url',
               CRM_Utils_System::url('civicrm/civioffice/document_upload', "common={$switched_number}"));

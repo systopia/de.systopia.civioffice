@@ -158,7 +158,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
      * @return boolean
      *   URL
      */
-    public function isOtherReady() : bool
+    public function isSiblingStoreReady() : bool
     {
         $sibling_store = new CRM_Civioffice_DocumentStore_Upload(!$this->common);
         return $sibling_store->isReady();
