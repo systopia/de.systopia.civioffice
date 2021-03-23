@@ -156,7 +156,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          *
          */
         foreach ($entity_ids as $entity_id) {
-            // todo save name identifier at a central place
             $file_ending_name = null;
             switch ($target_mime_type) {
                 case CRM_Civioffice_MimeType::PDF:
@@ -169,6 +168,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                     throw new Exception('Mime types other than pdf yet need to be implemented and tested');
             }
 
+            // todo save name identifier at a central place
             $return_document = $temp_store->addFile("Document-{$entity_id}.{$file_ending_name}");
             $transitional_docx_document = $docx_store->addFile("Document-{$entity_id}.docx");
 
