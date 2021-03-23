@@ -23,10 +23,10 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
     const UPLOAD_PUBLIC_ENABLED  = 'civioffice_store_upload_public';
     const UPLOAD_PRIVATE_ENABLED = 'civioffice_store_upload_private';
 
-    /** @var string the sub folder name being used */
+    /** @var string specific folder of documents of this instance incl. /common or /contact_ */
     protected $folder_name;
 
-    /** @var string the base folder name being used */
+    /** @var string root folder for all upload document stores e.g. /common or /contact_ */
     protected $base_folder;
 
     /** @var boolean is this a set of common/shared documents or the user's private ones */
