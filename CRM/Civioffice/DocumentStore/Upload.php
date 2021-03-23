@@ -23,8 +23,11 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
     const UPLOAD_PUBLIC_ENABLED  = 'civioffice_store_upload_public';
     const UPLOAD_PRIVATE_ENABLED = 'civioffice_store_upload_private';
 
-    /** @var string the folder name being used */
+    /** @var string the sub folder name being used */
     protected $folder_name;
+
+    /** @var string the base folder name being used */
+    protected $base_folder;
 
     /** @var boolean is this a set of common/shared documents or the user's private ones */
     protected $common;
@@ -60,6 +63,17 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
     public function getFolder()
     {
         return $this->folder_name;
+    }
+
+    /**
+     * Return the (local) base folder
+     *
+     * @return string
+     *   local base folder
+     */
+    public function getBaseFolder() : string
+    {
+        return $this->base_folder;
     }
 
     /**
@@ -176,18 +190,19 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
     public function getDocumentByURI($uri)
     {
         // TODO:
-//        if (substr($uri, 0, 7) == 'local::') {
-//            // this is potentially one of ours:
-//            $file_name_with_ending = substr($uri, 7);
-//            // todo: disallow '..' for security
-//            $absolute_path_with_file_name = $this->base_folder . DIRECTORY_SEPARATOR . $file_name_with_ending;
-//            if (file_exists($absolute_path_with_file_name)) {
-//                // todo: check for mime type
-//                $local_path = substr($absolute_path_with_file_name, strlen($this->base_folder) + 1);
-//                return new CRM_Civioffice_Document_Local($this, $this->mime_type, $local_path, $this->readonly);
-//            }
-//        }
-//        return null;
+        if (substr($uri, 0, 7) == 'local::') {
+            // todo: disallow '..' for security
+            $file_name_with_ending = substr(strstr($uri, '/'), strlen('/'));
+            $absolute_path_with_file_name = $this->folder_name . DIRECTORY_SEPARATOR . $file_name_with_ending;
+
+            $this->base_folder = $this->folder_name; // better to use only one?
+            if (file_exists($absolute_path_with_file_name)) {
+                // todo: check for mime type
+                $local_path = substr($absolute_path_with_file_name, strlen($this->folder_name) + 1);
+                return new CRM_Civioffice_Document_Local($this, 'fixme-mimetype', $local_path, true);
+            }
+        }
+        return null;
     }
 
     /**
