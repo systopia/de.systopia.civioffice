@@ -35,7 +35,7 @@ class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends 
 
         $this->setDefaults(
             [
-                'local_folder' => Civi::settings()->get(CRM_Civioffice_DocumentStore_Local::SETTING_NAME),
+                'local_folder' => Civi::settings()->get(CRM_Civioffice_DocumentStore_Local::LOCAL_STATIC_PATH),
             ]
         );
 
@@ -82,7 +82,7 @@ class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends 
         $values = $this->exportValues();
 
         // store
-        Civi::settings()->set(CRM_Civioffice_DocumentStore_Local::SETTING_NAME, $values['local_folder']);
+        Civi::settings()->set(CRM_Civioffice_DocumentStore_Local::LOCAL_STATIC_PATH, $values['local_folder']);
     }
 
 }
