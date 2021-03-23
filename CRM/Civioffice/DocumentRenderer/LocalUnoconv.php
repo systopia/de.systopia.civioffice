@@ -288,4 +288,15 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 throw new Exception('Mime types other than pdf and docx yet need to be implemented');
         }
     }
+
+    /**
+     * @param $entity_id
+     * @param string $file_ending_name
+     *
+     * @return string
+     */
+    private function createDocumentName($entity_id, string $file_ending_name): string
+    {
+        return "Document-{$entity_id}.{$file_ending_name}";
+    }
 }
