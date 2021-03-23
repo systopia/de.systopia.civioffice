@@ -148,6 +148,18 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         $temp_store_folder_path = $temp_store->getBaseFolder();
         $docx_store = new CRM_Civioffice_DocumentStore_LocalTemp('docx', $temp_store_folder_path);
 
+        $file_ending_name = null;
+        switch ($target_mime_type) {
+            case CRM_Civioffice_MimeType::PDF:
+                $file_ending_name = 'pdf';
+                break;
+            case CRM_Civioffice_MimeType::DOCX:
+                $file_ending_name = 'docx';
+                break;
+            default:
+                throw new Exception('Mime types other than pdf yet need to be implemented and tested');
+        }
+
         /*
          * Token replacement
          *
@@ -156,17 +168,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          *
          */
         foreach ($entity_ids as $entity_id) {
-            $file_ending_name = null;
-            switch ($target_mime_type) {
-                case CRM_Civioffice_MimeType::PDF:
-                    $file_ending_name = 'pdf';
-                    break;
-                case CRM_Civioffice_MimeType::DOCX:
-                    $file_ending_name = 'docx';
-                    break;
-                default:
-                    throw new Exception('Mime types other than pdf yet need to be implemented and tested');
-            }
 
             // todo save name identifier at a central place
             $return_document = $temp_store->addFile("Document-{$entity_id}.{$file_ending_name}");
