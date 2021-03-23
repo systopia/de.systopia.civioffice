@@ -199,7 +199,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
             if (file_exists($absolute_path_with_file_name)) {
                 // todo: check for mime type
                 $local_path = substr($absolute_path_with_file_name, strlen($this->folder_name) + 1);
-                return new CRM_Civioffice_Document_Local($this, 'fixme-mimetype', $local_path, true);
+                return new CRM_Civioffice_Document_Local($this, CRM_Civioffice_MimeType::DOCX, $local_path, true);
             }
         }
         return null;
