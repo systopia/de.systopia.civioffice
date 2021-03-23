@@ -148,17 +148,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         $temp_store_folder_path = $temp_store->getBaseFolder();
         $docx_store = new CRM_Civioffice_DocumentStore_LocalTemp('docx', $temp_store_folder_path);
 
-        $file_ending_name = null;
-        switch ($target_mime_type) {
-            case CRM_Civioffice_MimeType::PDF:
-                $file_ending_name = 'pdf';
-                break;
-            case CRM_Civioffice_MimeType::DOCX:
-                $file_ending_name = 'docx';
-                break;
-            default:
-                throw new Exception('Mime types other than pdf yet need to be implemented and tested');
-        }
+        $file_ending_name = $this->resolveMimeTypeToFileNameExtension($target_mime_type);
 
         /*
          * Token replacement
@@ -277,5 +267,23 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     public function getDescription(): string
     {
         return E::ts("Unoconv binary path at: '%1'", [1 => $this->unoconv_path]);
+    }
+
+    /**
+     * Map te mime type to the file ending without a pre dot
+     *
+     * @return string
+     *   file ending like docx or pdf
+     */
+    private function resolveMimeTypeToFileNameExtension($target_mime_type): string // TODO: move method to a more generic place?
+    {
+        switch ($target_mime_type) {
+            case CRM_Civioffice_MimeType::PDF:
+                return 'pdf';
+            case CRM_Civioffice_MimeType::DOCX:
+                return 'docx';
+            default:
+                throw new Exception('Mime types other than pdf and docx yet need to be implemented');
+        }
     }
 }
