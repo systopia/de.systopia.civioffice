@@ -69,7 +69,7 @@ class CRM_Civioffice_Document_LocalTempfile extends CRM_Civioffice_Document
     }
 
     /**
-     * get the file's (local) path
+     * get the file's absolute path
      *
      * @return string
      *   path
