@@ -67,6 +67,29 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
         );
     }
 
+
+    /**
+     * Copy and rename to target filename. Uses .docx as file name ending
+     *
+     * @param \CRM_Civioffice_Document $source_document
+     * @param $new_file_name
+     *
+     * @return \CRM_Civioffice_Document_Local
+     * @throws \Exception
+     */
+    public function getLocalCopyOfDocument(CRM_Civioffice_Document $source_document, $new_file_name) {
+        $final_document = $this->addFile($new_file_name);
+
+        $from_path = $source_document->getAbsolutePath();
+        $to_path = $final_document->getAbsolutePath();
+
+        if (!copy($from_path, $to_path)) {
+            throw new Exception("Unoconv: getLocalCopyOfDocument(): Failed to copy file");
+        }
+        $to_path = basename($to_path); // FIXME: Does not work with subfolders?
+        return new CRM_Civioffice_Document_Local($this, CRM_Civioffice_MimeType::DOCX, $to_path, false);
+    }
+
     public function packAllFiles()
     {
         // todo zip logic could be moved into here

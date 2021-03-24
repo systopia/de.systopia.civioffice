@@ -146,7 +146,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     ): array {
         $tokenreplaced_documents = [];
         $temp_store_folder_path = $temp_store->getBaseFolder();
-        $docx_store = new CRM_Civioffice_DocumentStore_LocalTemp('docx', $temp_store_folder_path);
 
         $file_ending_name = $this->resolveMimeTypeToFileNameExtension($target_mime_type);
 
@@ -158,19 +157,14 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          *
          */
         foreach ($entity_ids as $entity_id) {
-
-            // todo save name identifier at a central place
-            $return_document = $temp_store->addFile("Document-{$entity_id}.{$file_ending_name}");
-            $transitional_docx_document = $docx_store->addFile("Document-{$entity_id}.docx");
-
             $zip = new ZipArchive();
 
-            // copy and rename to target filename. Keeps the xml file name ending e.g. .docx
-            copy($document_with_placeholders->getAbsolutePath(), $transitional_docx_document->getAbsolutePath());
+            $new_file_name = $this->createDocumentName($entity_id, 'docx');
+            $transitional_docx_document = new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::DOCX, $temp_store_folder_path);
+            $transitional_docx_document = $transitional_docx_document->getLocalCopyOfDocument($document_with_placeholders, $new_file_name);
 
             // open xml file (like .docx) as a zip file, as in fact it is one
             $zip->open($transitional_docx_document->getAbsolutePath());
-
 
             /*
              * Possible optimisation opportunities to save many iterations
@@ -194,7 +188,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             $zip->close();
 
-            $tokenreplaced_documents[] = $return_document;
+            $tokenreplaced_documents[] = $temp_store->addFile($this->createDocumentName($entity_id, $file_ending_name));
         }
 
         /*
