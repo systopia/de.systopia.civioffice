@@ -178,7 +178,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
              */
 
             $numberOfFiles = $zip->numFiles;
-            if (empty($numberOfFiles)) throw new Exception("Unoconv: Docx (zip) file seems to be broken");
+            if (empty($numberOfFiles)) throw new Exception("Unoconv: Docx (zip) file seems to be broken or path is wrong");
 
             for ($i = 0; $i < $numberOfFiles; $i++) {
                 // Step 1/4 unpack xml (.docx) file and handle it as a zip file as it is one
