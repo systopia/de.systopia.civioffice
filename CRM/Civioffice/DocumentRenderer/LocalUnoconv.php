@@ -243,6 +243,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             throw new Exception("Unoconv: Return code 0 expected but $exec_return_code given");
         }
+        // TODO: Check errors with $exec_return_code
         exec("cd $temp_store_folder_path && rm *.docx");
 
         return $tokenreplaced_documents;
