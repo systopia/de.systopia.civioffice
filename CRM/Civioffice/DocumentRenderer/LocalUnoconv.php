@@ -274,8 +274,11 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     /**
      * Map te mime type to the file ending without a pre dot
      *
+     * @param $target_mime_type
+     *
      * @return string
      *   file ending like docx or pdf
+     * @throws \Exception
      */
     private function resolveMimeTypeToFileNameExtension($target_mime_type): string // TODO: move method to a more generic place?
     {
