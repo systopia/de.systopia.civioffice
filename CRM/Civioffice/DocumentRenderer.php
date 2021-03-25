@@ -109,13 +109,10 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
             $processor->addRow()->context('contactId', $entity_id);
             $processor->evaluate();
 
-            // escape illegal symbols to not break xml structure of docx files
-            $all_contact_tokens = $processor->rowContexts[0]['contact'];
-            if (empty($all_contact_tokens)) throw new Exception('No contact tokens available or token path has moved');
-
-            foreach ($all_contact_tokens as $key => $value) {
-                $processor->rowContexts[0]['contact'][$key] = "<![CDATA[$value]]>";
-            }
+            /*
+             * FIXME: Unfortunately we get &lt; and &gt; from civi backend so we need to decode them back to < and > with htmlspecialchars_decode()
+             * This is postponed as it might be risky as it either breaks xml or leads to further problems
+             */
 
             $string = $processor->getRow(0)->render($identifier);
 
