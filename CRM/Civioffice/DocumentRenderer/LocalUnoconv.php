@@ -247,6 +247,8 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     /**
      * Takes a string with one or many {domain.context} style tokens and wraps a CDATA block around it to
      * not break xml files by using illegal symbols like: ' () & , " <>
+     * Input example:  Welcome {contact.display_name} aka {contact.first_name}. Great to have you!
+     * Output example: Welcome <![CDATA[{contact.display_name}]]> aka <![CDATA[{contact.first_name}]]>. Great to have you!
      * @param $string
      *
      * @return string
