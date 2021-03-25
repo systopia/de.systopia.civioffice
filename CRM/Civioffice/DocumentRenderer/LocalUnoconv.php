@@ -180,6 +180,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 $fileName = $zip->getNameIndex($i);
 
                 // Step 2/4 replace tokens
+                $fileContent = $this->escapeIllegalXmlSymbolsInTokens($fileContent);
                 $fileContent = $this->replaceAllTokens($fileContent, $entity_id, 'contact');
 
                 // Step 3/4 repack it again as xml (docx)
@@ -241,6 +242,19 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         exec("cd $temp_store_folder_path && rm *.docx");
 
         return $tokenreplaced_documents;
+    }
+
+    /**
+     * Takes a string with one or many {domain.context} style tokens and wraps a CDATA block around it to
+     * not break xml files by using illegal symbols like: ' () & , " <>
+     * @param $string
+     *
+     * @return string
+     *   Returns the whole string with escaped tokens
+     */
+    private function escapeIllegalXmlSymbolsInTokens($string): string
+    {
+        return preg_replace('/{([\w.]+)}/', '<![CDATA[$0]]>', $string);
     }
 
     /**
