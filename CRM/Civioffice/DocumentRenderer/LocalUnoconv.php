@@ -116,7 +116,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      * @return array
      *   list of mime types as strings
      */
-    public function getSupportedMimeTypes(): array
+    public function getSupportedMimeTypes(): array // FIXME: Input or output mime types?
     {
         return [CRM_Civioffice_MimeType::DOCX];
     }
