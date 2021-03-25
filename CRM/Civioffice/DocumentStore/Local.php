@@ -32,15 +32,15 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     protected $readonly;
 
     /** @var boolean should there be subfolders? */
-    protected $subfolders;
+    protected $has_subfolders;
 
-    public function __construct($id, $name, $mime_type, $readonly, $subfolders)
+    public function __construct($id, $name, $mime_type, $readonly, $has_subfolders)
     {
         parent::__construct($id, $name);
         $this->base_folder = Civi::settings()->get(self::LOCAL_STATIC_PATH);
         $this->mime_type = $mime_type;
         $this->readonly = $readonly;
-        $this->subfolders = $subfolders;
+        $this->has_subfolders = $has_subfolders;
     }
 
     /**
@@ -54,7 +54,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
      */
     public function getDocuments($path = null) : array
     {
-        if ($this->subfolders) {
+        if ($this->has_subfolders) {
             $path = null;
         }
 
@@ -92,7 +92,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     public function getPaths($path = null) : array {
         $paths = [];
 
-        if ($this->subfolders) {
+        if ($this->has_subfolders) {
             $full_path = $this->base_folder;
             if ($path) {
                 $full_path = $this->base_folder . DIRECTORY_SEPARATOR . $path;
