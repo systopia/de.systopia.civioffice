@@ -58,7 +58,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
             $path = null;
         }
 
-        // todo: santise path ../..
+        // todo: sanitise path ../..
         $full_path = $this->base_folder;
         if ($path) {
             $full_path = $this->base_folder . DIRECTORY_SEPARATOR . $path;
