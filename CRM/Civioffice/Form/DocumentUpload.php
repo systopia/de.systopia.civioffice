@@ -133,7 +133,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
     public function postProcess()
     {
         // TODO: Catch empty upload caused by a button click with no previous file selected
-        if (isset($this->_submitFiles['upload_file'])) {
+        if (!empty($this->_submitFiles['upload_file']['name'])) {
             $upload_file = $this->_submitFiles['upload_file'];
             // move file to new destination
             $destination = $this->document_store->getFolder() . DIRECTORY_SEPARATOR . $upload_file['name'];
@@ -146,6 +146,12 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
 
             // update document list
             $this->assign('document_list', $this->fileList());
+        } else {
+            CRM_Core_Session::setStatus(
+                E::ts("Error"),
+                E::ts("No file or empty file name selected"),
+                'info'
+            );
         }
         parent::postProcess();
     }
