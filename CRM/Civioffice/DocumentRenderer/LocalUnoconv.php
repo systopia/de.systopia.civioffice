@@ -221,9 +221,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             return $tokenreplaced_documents;
         }
 
-        $command_cd = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $file_ending_name *.docx";
+        $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $file_ending_name *.docx";
 
-        exec($command_cd, $exec_output, $exec_return_code);
+        exec($convert_command, $exec_output, $exec_return_code);
         if ($exec_return_code != 0) {
             $serialize_output = serialize($exec_output);
             Civi::log()->debug("CiviOffice: Exception: Return code 0 expected but $exec_return_code given: $serialize_output");
