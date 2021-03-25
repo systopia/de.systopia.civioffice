@@ -20,4 +20,25 @@ abstract class CRM_Civioffice_MimeType
 
     public const ALL = [self::DOCX, self::PDF];
     public const RENDERABLE = [self::DOCX];
+
+    /**
+     * Map te mime type to the file ending without a pre dot
+     *
+     * @param $mime_type
+     *
+     * @return string
+     *   file ending like docx or pdf
+     * @throws \Exception
+     */
+    public static function mapMimeTypeToFileExtension($mime_type): string
+    {
+        switch ($mime_type) {
+            case self::PDF:
+                return 'pdf';
+            case self::DOCX:
+                return 'docx';
+            default:
+                throw new Exception('Mime types other than pdf and docx yet need to be implemented');
+        }
+    }
 }

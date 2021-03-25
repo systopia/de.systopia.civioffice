@@ -147,7 +147,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         $tokenreplaced_documents = [];
         $temp_store_folder_path = $temp_store->getBaseFolder();
 
-        $file_ending_name = $this->resolveMimeTypeToFileNameExtension($target_mime_type);
+        $file_ending_name = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($target_mime_type);
 
         /*
          * Token replacement
@@ -279,26 +279,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         return E::ts("Unoconv binary path at: '%1'", [1 => $this->unoconv_path]);
     }
 
-    /**
-     * Map te mime type to the file ending without a pre dot
-     *
-     * @param $target_mime_type
-     *
-     * @return string
-     *   file ending like docx or pdf
-     * @throws \Exception
-     */
-    private function resolveMimeTypeToFileNameExtension($target_mime_type): string // TODO: move method to a more generic place?
-    {
-        switch ($target_mime_type) {
-            case CRM_Civioffice_MimeType::PDF:
-                return 'pdf';
-            case CRM_Civioffice_MimeType::DOCX:
-                return 'docx';
-            default:
-                throw new Exception('Mime types other than pdf and docx yet need to be implemented');
-        }
-    }
 
     /**
      * @param $entity_id
