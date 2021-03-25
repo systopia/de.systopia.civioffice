@@ -111,7 +111,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
 
             // escape illegal symbols to not break xml structure of docx files
             $all_contact_tokens = $processor->rowContexts[0]['contact'];
-            if (empty($all_contact_tokens)) throw new Exception('No tokens available or token path has moved');
+            if (empty($all_contact_tokens)) throw new Exception('No contact tokens available or token path has moved');
 
             foreach ($all_contact_tokens as $key => $value) {
                 $processor->rowContexts[0]['contact'][$key] = "<![CDATA[$value]]>";
