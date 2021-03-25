@@ -17,7 +17,7 @@
 
 
 <h3>{ts}CiviOffice Document Stores{/ts}</h3>
-<div id="help">{ts}Document Stores description text{/ts}</div>
+<div id="help">{ts}Document Stores are used to store files{/ts}</div>
 
 <table>
   <thead>
@@ -46,7 +46,7 @@
 </table>
 
 <h3>{ts}CiviOffice Document Renderers{/ts}</h3>
-<div id="help">{ts}Document Renderers description text{/ts}</div>
+<div id="help">{ts}Renders documents{/ts}</div>
 
 <table>
   <thead>
@@ -76,7 +76,7 @@
 
 
 <h3>{ts}CiviOffice Document Editors{/ts}</h3>
-<div id="help">{ts}Document Editors description text{/ts}</div>
+<div id="help">{ts}Editors are used to edit text files{/ts}</div>
 
   <table>
   <thead>
