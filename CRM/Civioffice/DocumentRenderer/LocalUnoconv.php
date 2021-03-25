@@ -180,7 +180,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 $fileName = $zip->getNameIndex($i);
 
                 // Step 2/4 replace tokens
-                $fileContent = $this->escapeIllegalXmlSymbolsInTokens($fileContent);
+                $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
                 $fileContent = $this->replaceAllTokens($fileContent, $entity_id, 'contact');
 
                 // Step 3/4 repack it again as xml (docx)
@@ -254,7 +254,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      * @return string
      *   Returns the whole string with escaped tokens
      */
-    private function escapeIllegalXmlSymbolsInTokens($string): string
+    private function wrapTokensInStringWithXmlEscapeCdata($string): string
     {
         return preg_replace('/{([\w.]+)}/', '<![CDATA[$0]]>', $string);
     }
