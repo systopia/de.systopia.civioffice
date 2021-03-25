@@ -136,6 +136,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      *
      * @return array
      *   list of documents with target file name
+     * @throws \Exception
      */
     public function render(
         $document_with_placeholders,
