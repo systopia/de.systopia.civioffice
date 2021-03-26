@@ -51,10 +51,10 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
      *
      * @return array
      *   list of CRM_Civioffice_Document objects
+     * @throws \Exception
      */
     public function getDocuments($path = null) : array
     {
-        // TODO: Filter for and only return documents of parameter / method supportedMimeTypes()
         if ($this->has_subfolders) {
             $path = null;
         }
@@ -67,17 +67,34 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
 
         $file_list = scandir($full_path);
         $documents = [];
-        foreach ($file_list as $file) {
-            if (preg_match("/^[.].*$/", $file)) {
+        foreach ($file_list as $file_name) {
+            if (preg_match("/^[.].*$/", $file_name)) {
                 continue; // we don't want anything that starts with . (including . and ..)
             }
-            // todo: filter for files (not dirs)
-            // todo: check for mime type
-            $base_folder = substr($full_path . DIRECTORY_SEPARATOR . $file, strlen($this->base_folder) + 1);
+            if (!$this->hasSpecificFileNameExtension($file_name, CRM_Civioffice_MimeType::DOCX)) continue;
+
+            $base_folder = substr($full_path . DIRECTORY_SEPARATOR . $file_name, strlen($this->base_folder) + 1);
             $documents[] = new CRM_Civioffice_Document_Local($this, $this->mime_type, $base_folder, $this->readonly);
         }
 
         return $documents;
+    }
+
+    /**
+     * Checks if the file ending/extension matches with the given fully qualified mime type
+     *
+     * @param $file_name
+     * @param $mime_type
+     *
+     * @return bool Returns true if given mime type is equal to ending/extension
+     * @throws \Exception
+     */
+    private function hasSpecificFileNameExtension($file_name, $mime_type): bool
+    {
+        $ending = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
+        $length_from_right = -1 * abs(strlen(strlen($ending))); // negative as we want to check the file extension
+
+        return substr($file_name, $length_from_right) == $ending;
     }
 
     /**
