@@ -75,8 +75,7 @@ class CRM_Civioffice_ConversionJob
         $document = $configuration->getDocument($this->document_uri);
 
         $documents = $document_renderer->render($document, $this->entity_IDs, $this->temp_store, $this->target_mime_type, $this->entity_type);
-
-        // todo: compare amount of entity ids with amount of $documents and handle problems if some are missing?
+        // TODO: Determine what to do with returned $documents array
 
         return true;
     }
