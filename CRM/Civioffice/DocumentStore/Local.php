@@ -54,6 +54,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
      */
     public function getDocuments($path = null) : array
     {
+        // TODO: Filter for and only return documents of parameter / method supportedMimeTypes()
         if ($this->has_subfolders) {
             $path = null;
         }
