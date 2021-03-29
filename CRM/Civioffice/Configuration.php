@@ -56,7 +56,7 @@ class CRM_Civioffice_Configuration
 
         $active_document_stores = [];
         foreach ($available_document_stores as $ds) {
-            /** @var $ds \CRM_Civioffice_DocumentStore */
+            /** @var $ds CRM_Civioffice_DocumentStore */
             if ($ds->isReady()) {
                 $active_document_stores[] = $ds;
             }
@@ -85,6 +85,7 @@ class CRM_Civioffice_Configuration
 
         $active_renderers = [];
         foreach ($available_renderers as $renderer) {
+            /** @var $renderer \CRM_Civioffice_DocumentRenderer */
             if ($renderer->isReady()) {
                 $active_renderers[] = $renderer;
             }
