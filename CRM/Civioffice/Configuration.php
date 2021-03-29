@@ -63,13 +63,23 @@ class CRM_Civioffice_Configuration
      *
      * @return array
      */
-    public static function getDocumentRenderers($only_show_active = true) : array
+    public static function getDocumentRenderers(bool $only_show_active) : array
     {
         // todo: get from config
-        // todo: filter for $only_show_active
-        return [
+        $available_renderers = [
             new CRM_Civioffice_DocumentRenderer_LocalUnoconv()
         ];
+
+        if (!$only_show_active) return $available_renderers;
+
+        $active_renderers = [];
+        foreach ($available_renderers as $renderer) {
+            if ($renderer->isReady()) {
+                $active_renderers[] = $renderer;
+            }
+        }
+
+        return $active_renderers;
     }
 
     /**

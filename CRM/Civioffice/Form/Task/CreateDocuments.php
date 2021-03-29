@@ -29,7 +29,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         // add list of document renderers and supported output mime types
         $output_mimetypes = null;
         $document_renderer_list = [];
-        foreach ($config->getDocumentRenderers() as $dr) {
+        foreach ($config->getDocumentRenderers(true) as $dr) {
             foreach ($dr->getOutputMimeTypes() as $mime_type) {
                 $output_mimetypes[$mime_type] = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
             }
