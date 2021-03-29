@@ -92,7 +92,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     private function hasSpecificFileNameExtension($file_name, $mime_type): bool
     {
         $ending = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
-        $length_from_right = -1 * abs(strlen(strlen($ending))); // negative as we want to check the file extension
+        $length_from_right = -1 * abs(strlen($ending)); // negative as we want to check the file extension
 
         return substr($file_name, $length_from_right) == $ending;
     }
