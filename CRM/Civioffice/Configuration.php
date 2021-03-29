@@ -36,22 +36,32 @@ class CRM_Civioffice_Configuration
 
 
     /**
-     * Get the list of active document stores
+     * Get the list of active/all document stores
      *
      * @param boolean $only_show_active
-     *   return only active objects
+     *   return only active/all objects
      *
      * @return array
      */
-    public static function getDocumentStores($only_show_active = true) : array
+    public static function getDocumentStores(bool $only_show_active) : array
     {
         // todo: get from config
-        // todo: filter for $only_show_active
-        return [
-            new CRM_Civioffice_DocumentStore_Local('test', "Local Folder", CRM_Civioffice_MimeType::DOCX, false, true),
+        $available_document_stores = [
+            new CRM_Civioffice_DocumentStore_Local('local_folder', "Local Folder", CRM_Civioffice_MimeType::DOCX, false, true),
             new CRM_Civioffice_DocumentStore_Upload(true), // todo: enable disable by setting
             new CRM_Civioffice_DocumentStore_Upload(false), // todo: enable disable by setting
         ];
+
+        if (!$only_show_active) return $available_document_stores;
+
+        $active_document_stores = [];
+        foreach ($available_document_stores as $ds) {
+            if ($ds->isReady()) {
+                $active_document_stores[] = $ds;
+            }
+        }
+
+        return $active_document_stores;
     }
 
 
