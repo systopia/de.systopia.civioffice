@@ -56,6 +56,7 @@ class CRM_Civioffice_Configuration
 
         $active_document_stores = [];
         foreach ($available_document_stores as $ds) {
+            /** @var $ds \CRM_Civioffice_DocumentStore */
             if ($ds->isReady()) {
                 $active_document_stores[] = $ds;
             }
