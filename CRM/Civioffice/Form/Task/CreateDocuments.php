@@ -72,11 +72,14 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         );
 
         $this->add(
-            'text', #todo create dropdown with useful values!
+            'select',
             'batch_size',
             E::ts("batch size for processing"),
-            [],
-            true
+            [
+                10, 20, 50, 100, 200
+            ],
+            true,
+            ['class' => 'crm-select2']
         );
 
         // add buttons
