@@ -26,10 +26,13 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
 
         $config = CRM_Civioffice_Configuration::getConfig();
 
+        $output_mimetypes = null;
         // add list of document renderers
         $document_renderer_list = [];
         foreach ($config->getDocumentRenderers() as $dr) {
-            /** @var CRM_Civioffice_DocumentRenderer $dr */
+            foreach ($dr->getOutputMimeTypes() as $mime_type) {
+                $output_mimetypes[$mime_type] = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
+            }
             $document_renderer_list[$dr->getID()] = $dr->getName();
         }
         $this->add(
@@ -63,10 +66,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             'select',
             'target_mime_type',
             E::ts("Document Type"),
-            [
-                CRM_Civioffice_MimeType::PDF => E::ts("PDF"), // todo: add a file name to mime type mapping in CRM_Civioffice_MimeType 2/2
-                CRM_Civioffice_MimeType::DOCX => E::ts('DOCX (fastest)')
-            ],
+            $output_mimetypes,
             true,
             ['class' => 'crm-select2']
         );
