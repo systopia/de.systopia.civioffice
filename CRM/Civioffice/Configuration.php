@@ -136,7 +136,7 @@ class CRM_Civioffice_Configuration
      *
      * @return CRM_Civioffice_Document|null
      */
-    public function getDocument($document_uri)
+    public function getDocument(string $document_uri): ?CRM_Civioffice_Document
     {
         $stores = self::getDocumentStores(false);
         foreach ($stores as $store) {
