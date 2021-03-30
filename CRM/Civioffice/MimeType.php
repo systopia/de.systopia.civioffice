@@ -53,10 +53,8 @@ abstract class CRM_Civioffice_MimeType
      */
     public static function hasSpecificFileNameExtension($file_name, $mime_type): bool
     {
-        // FIXME: preg_match() could probable be used here
-        $ending = self::mapMimeTypeToFileExtension($mime_type);
-        $length_from_right = -1 * abs(strlen($ending)); // negative as we want to check the file extension from the right side of the string
+        $extension = self::mapMimeTypeToFileExtension($mime_type);
 
-        return substr($file_name, $length_from_right) == $ending;
+        return (bool)preg_match("#\w+\.{$extension}$#", $file_name);
     }
 }
