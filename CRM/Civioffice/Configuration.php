@@ -141,6 +141,7 @@ class CRM_Civioffice_Configuration
         $stores = self::getDocumentStores(false);
         foreach ($stores as $store) {
             // see if this one has the file
+            /** @var  $store CRM_Civioffice_DocumentStore*/
             $document = $store->getDocumentByURI($document_uri);
             if ($document) {
                 return $document;
