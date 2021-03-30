@@ -71,30 +71,13 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
             if (preg_match("/^[.].*$/", $file_name)) {
                 continue; // we don't want anything that starts with . (including . and ..)
             }
-            if (!$this->hasSpecificFileNameExtension($file_name, CRM_Civioffice_MimeType::DOCX)) continue;
+            if (!CRM_Civioffice_MimeType::hasSpecificFileNameExtension($file_name, CRM_Civioffice_MimeType::DOCX)) continue;
 
             $base_folder = substr($full_path . DIRECTORY_SEPARATOR . $file_name, strlen($this->base_folder) + 1);
             $documents[] = new CRM_Civioffice_Document_Local($this, $this->mime_type, $base_folder, $this->readonly);
         }
 
         return $documents;
-    }
-
-    /**
-     * Checks if the file ending/extension matches with the given fully qualified mime type
-     *
-     * @param $file_name
-     * @param $mime_type
-     *
-     * @return bool Returns true if given mime type is equal to ending/extension
-     * @throws \Exception
-     */
-    private function hasSpecificFileNameExtension($file_name, $mime_type): bool
-    {
-        $ending = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
-        $length_from_right = -1 * abs(strlen($ending)); // negative as we want to check the file extension
-
-        return substr($file_name, $length_from_right) == $ending;
     }
 
     /**

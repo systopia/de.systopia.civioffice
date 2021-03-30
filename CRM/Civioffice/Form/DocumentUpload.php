@@ -132,20 +132,30 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
 
     public function postProcess()
     {
-        // TODO: Catch empty upload caused by a button click with no previous file selected
-        if (!empty($this->_submitFiles['upload_file']['name'])) {
-            $upload_file = $this->_submitFiles['upload_file'];
-            // move file to new destination
-            $destination = $this->document_store->getFolder() . DIRECTORY_SEPARATOR . $upload_file['name'];
-            move_uploaded_file($upload_file['tmp_name'], $destination);
-            CRM_Core_Session::setStatus(
-                E::ts("Uploaded file '%1'", [1 => $upload_file['name']]),
-                E::ts("Document Stored"),
-                'info'
-            );
+        $upload_file_infos = $this->_submitFiles['upload_file'];
+        if (!empty($upload_file_infos['name'])) {
+            $file_name = $upload_file_infos['name'];
 
-            // update document list
-            $this->assign('document_list', $this->fileList());
+            // check if file ends with docx
+            if (!CRM_Civioffice_MimeType::hasSpecificFileNameExtension($file_name, CRM_Civioffice_MimeType::DOCX)) {
+                CRM_Core_Session::setStatus(
+                    E::ts("Error"),
+                    E::ts("Filetype docx expected"),
+                    'info'
+                );
+            } else {
+                // if file ending is correct: move file to new destination
+                $destination = $this->document_store->getFolder() . DIRECTORY_SEPARATOR . $file_name;
+                move_uploaded_file($upload_file_infos['tmp_name'], $destination);
+                CRM_Core_Session::setStatus(
+                    E::ts("Uploaded file '%1'", [1 => $upload_file_infos['name']]),
+                    E::ts("Document Stored"),
+                    'info'
+                );
+
+                // update document list
+                $this->assign('document_list', $this->fileList());
+            }
         } else {
             CRM_Core_Session::setStatus(
                 E::ts("Error"),

@@ -41,4 +41,22 @@ abstract class CRM_Civioffice_MimeType
                 throw new Exception('Mime types other than pdf and docx yet need to be implemented');
         }
     }
+
+    /**
+     * Checks if the file ending/extension matches with the given fully qualified mime type
+     *
+     * @param $file_name
+     * @param $mime_type
+     *
+     * @return bool Returns true if given mime type is equal to ending/extension
+     * @throws \Exception
+     */
+    public static function hasSpecificFileNameExtension($file_name, $mime_type): bool
+    {
+        // FIXME: preg_match() could probable be used here
+        $ending = self::mapMimeTypeToFileExtension($mime_type);
+        $length_from_right = -1 * abs(strlen($ending)); // negative as we want to check the file extension from the right side of the string
+
+        return substr($file_name, $length_from_right) == $ending;
+    }
 }
