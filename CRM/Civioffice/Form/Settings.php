@@ -25,14 +25,14 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
     {
         self::setTitle(E::ts("CiviOffice - Configuration"));
 
-        $basic_elements = [
+        $office_components = [
             'document_stores'    => CRM_Civioffice_Configuration::getDocumentStores(false),
             'document_renderers' => CRM_Civioffice_Configuration::getDocumentRenderers(false),
             'document_editors'   => CRM_Civioffice_Configuration::getEditors(false),
         ];
 
         $ui_components = [];
-        foreach ($basic_elements as $element_type => $components) {
+        foreach ($office_components as $element_type => $components) {
             foreach ($components as $instance) {
                 /** @var $instance CRM_Civioffice_OfficeComponent */
                 $ui_components[$element_type][] = [
