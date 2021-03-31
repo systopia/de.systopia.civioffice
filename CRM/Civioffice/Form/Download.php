@@ -42,7 +42,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
                 ],
                 [
                     'type' => 'done',
-                    'name' => E::ts('Delete files and back to Search'),
+                    'name' => E::ts('Back to Search'),
                     'isDefault' => false,
                 ],
             ]
