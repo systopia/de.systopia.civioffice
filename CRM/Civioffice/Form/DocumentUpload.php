@@ -63,10 +63,10 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
 
         switch ($this->common) {
             case self::PRIVATE_ID:
-                $this->setTitle(E::ts("Your Uploaded CiviOffice Documents"));
+                $this->setTitle(E::ts("CiviOffice - Your Uploaded Documents"));
                 break;
             case self::SHARED_ID:
-                $this->setTitle(E::ts("Shared Uploaded CiviOffice Documents"));
+                $this->setTitle(E::ts("CiviOffice - Shared Uploaded Documents"));
                 break;
         }
 

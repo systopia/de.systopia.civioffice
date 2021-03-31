@@ -23,7 +23,7 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
 
     public function buildQuickForm()
     {
-        self::setTitle(E::ts("CiviOffice Configuration"));
+        self::setTitle(E::ts("CiviOffice - Configuration"));
 
         $basic_elements = [
             'document_stores'    => CRM_Civioffice_Configuration::getDocumentStores(false),
