@@ -17,14 +17,14 @@
 {crmScope extensionKey='de.systopia.civioffice'}
 
   <div class="crm-section">
-    <div class="label">{$form.document_renderer_id.label}</div>
-    <div class="content">{$form.document_renderer_id.html}</div>
+    <div class="label">{$form.document_uri.label}</div>
+    <div class="content">{$form.document_uri.html}</div>
     <div class="clear"></div>
   </div>
 
   <div class="crm-section">
-    <div class="label">{$form.document_uri.label}</div>
-    <div class="content">{$form.document_uri.html}</div>
+    <div class="label">{$form.document_renderer_id.label}</div>
+    <div class="content">{$form.document_renderer_id.html}</div>
     <div class="clear"></div>
   </div>
 
