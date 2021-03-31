@@ -78,16 +78,25 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
      * @throws \Exception
      */
     public function getLocalCopyOfDocument(CRM_Civioffice_Document $source_document, $new_file_name) {
+        /** @var CRM_Civioffice_Document_Local $final_document the placeholder document to be generated */
         $final_document = $this->addFile($new_file_name);
 
-        $from_path = $source_document->getAbsolutePath();
-        $to_path = $final_document->getAbsolutePath();
-
-        if (!copy($from_path, $to_path)) {
-            throw new Exception("Unoconv: getLocalCopyOfDocument(): Failed to copy file");
+        // fill the new file with the document data
+        if ($source_document instanceof CRM_Civioffice_Document_Local) {
+            // if this is a local document, we can simply copy on the file system
+            $from_path = $source_document->getAbsolutePath();
+            $to_path   = $final_document->getAbsolutePath();
+            if (!copy($from_path, $to_path)) {
+                throw new Exception("Unoconv: getLocalCopyOfDocument(): Failed to copy file");
+            }
         }
-        $to_path = basename($to_path); // FIXME: Does not work with subfolders?
-        return new CRM_Civioffice_Document_Local($this, CRM_Civioffice_MimeType::DOCX, $to_path, false);
+        else {
+            // if this is NOT a local file, we just write the content
+            file_put_contents($final_document->getAbsolutePath(), $source_document->getContent());
+        }
+
+        // $to_path = basename($to_path); // FIXME: Does not work with subfolders?
+        return $final_document; //new CRM_Civioffice_Document_Local($this, CRM_Civioffice_MimeType::DOCX, $to_path, false);
     }
 
     public function packAllFiles()

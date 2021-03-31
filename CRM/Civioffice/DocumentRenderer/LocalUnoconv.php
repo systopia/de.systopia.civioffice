@@ -148,6 +148,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     ): array {
         $tokenreplaced_documents = [];
         $temp_store_folder_path = $temp_store->getBaseFolder();
+        $local_temp_store = new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::DOCX, $temp_store_folder_path);
 
         $file_ending_name = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($target_mime_type);
 
@@ -162,21 +163,17 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             $zip = new ZipArchive();
 
             $new_file_name = $this->createDocumentName($entity_id, 'docx');
-            $transitional_docx_document = new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::DOCX, $temp_store_folder_path);
-            $transitional_docx_document = $transitional_docx_document->getLocalCopyOfDocument($document_with_placeholders, $new_file_name);
+            $transitional_docx_document = $local_temp_store->getLocalCopyOfDocument($document_with_placeholders, $new_file_name);
 
             // open xml file (like .docx) as a zip file, as in fact it is one
             $zip->open($transitional_docx_document->getAbsolutePath());
-
-            /*
-             * Possible optimisation opportunities to save many iterations
-             * todo: filter binary files like jpgs?
-             */
-
             $numberOfFiles = $zip->numFiles;
             if (empty($numberOfFiles)) throw new Exception("Unoconv: Docx (zip) file seems to be broken or path is wrong");
 
+            // iterate through all docx components (files in zip)
             for ($i = 0; $i < $numberOfFiles; $i++) {
+                // todo: somehow skip binaries like jpegs?
+
                 // Step 1/4 unpack xml (.docx) file and handle it as a zip file as it is one
                 $fileContent = $zip->getFromIndex($i);
                 $fileName = $zip->getNameIndex($i);
@@ -227,6 +224,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
         exec($convert_command, $exec_output, $exec_return_code);
         if ($exec_return_code != 0) {
+            // something's wrong - error handling:
             $serialize_output = serialize($exec_output);
             Civi::log()->debug("CiviOffice: Exception: Return code 0 expected but $exec_return_code given: $serialize_output");
 
@@ -240,7 +238,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             throw new Exception("Unoconv: Return code 0 expected but $exec_return_code given");
         }
+
         // TODO: Check errors with $exec_return_code
+        // todo: better cleanup solution?
         exec("cd $temp_store_folder_path && rm *.docx");
 
         return $tokenreplaced_documents;
