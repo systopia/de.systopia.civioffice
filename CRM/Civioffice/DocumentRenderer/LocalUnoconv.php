@@ -53,8 +53,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         try {
             exec("{$this->unoconv_path} --version", $output, $result_code);
 
-            // todo: test version
-
             if (!empty($result_code)) {
                 return false;
             }
