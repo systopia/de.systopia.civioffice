@@ -136,6 +136,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
         if (!empty($upload_file_infos['name'])) {
             $file_name = $upload_file_infos['name'];
 
+            // TODO: check if file already exists?
             // check if file ends with docx
             if (!CRM_Civioffice_MimeType::hasSpecificFileNameExtension($file_name, CRM_Civioffice_MimeType::DOCX)) {
                 CRM_Core_Session::setStatus(
