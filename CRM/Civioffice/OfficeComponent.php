@@ -64,7 +64,8 @@ abstract class CRM_Civioffice_OfficeComponent
      * @return string
      *   ID
      */
-    public function getID() {
+    public function getID(): string
+    {
         return $this->id;
     }
 
