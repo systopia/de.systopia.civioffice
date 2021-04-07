@@ -74,10 +74,10 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
      * @param \CRM_Civioffice_Document $source_document
      * @param $new_file_name
      *
-     * @return \CRM_Civioffice_Document_Local
+     * @return \CRM_Civioffice_Document_LocalTempfile
      * @throws \Exception
      */
-    public function getLocalCopyOfDocument(CRM_Civioffice_Document $source_document, $new_file_name): CRM_Civioffice_Document_Local
+    public function getLocalCopyOfDocument(CRM_Civioffice_Document $source_document, $new_file_name): CRM_Civioffice_Document_LocalTempfile
     {
         /** @var CRM_Civioffice_Document_Local $final_document the placeholder document to be generated */
         $final_document = $this->addFile($new_file_name);
