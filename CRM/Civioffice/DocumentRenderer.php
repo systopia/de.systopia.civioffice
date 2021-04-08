@@ -112,9 +112,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
              * This is postponed as it might be risky as it either breaks xml or leads to further problems
              */
 
-            $string = $processor->getRow(0)->render($identifier);
-
-            return $string;
+            return $processor->getRow(0)->render($identifier);
         }
 
         // todo: implement?
