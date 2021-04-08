@@ -75,9 +75,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
     /**
      * Replace all tokens with {token_name} and {$smarty_var.attribute} format
      *
-     * @param array $token_names
-     *   the list of all token names to be replaced
-     *
+     * @param $string
      * @param integer $entity_id
      *   entity ID, e.g. contact_id
      *
