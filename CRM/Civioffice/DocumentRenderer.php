@@ -90,7 +90,6 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
     public function replaceAllTokens($string, $entity_id, $entity_type = 'contact'): string
     {
         // TODO: use additional token system
-        $additional_tokens = [];
 
         if ($entity_type == 'contact') {
             $processor = new \Civi\Token\TokenProcessor(
