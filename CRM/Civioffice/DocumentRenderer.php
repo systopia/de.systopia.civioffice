@@ -109,6 +109,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
             /*
              * FIXME: Unfortunately we get &lt; and &gt; from civi backend so we need to decode them back to < and > with htmlspecialchars_decode()
              * This is postponed as it might be risky as it either breaks xml or leads to further problems
+             * https://github.com/systopia/de.systopia.civioffice/issues/3
              */
 
             return $processor->getRow(0)->render($identifier);
