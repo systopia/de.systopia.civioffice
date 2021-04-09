@@ -138,6 +138,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
 
             // TODO: check if file already exists?
             // check if file ends with docx
+            // TODO: Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
             if (!CRM_Civioffice_MimeType::hasSpecificFileNameExtension($file_name, CRM_Civioffice_MimeType::DOCX)) {
                 CRM_Core_Session::setStatus(
                     E::ts("Error"),

@@ -45,6 +45,8 @@ abstract class CRM_Civioffice_MimeType
     /**
      * Checks if the file ending/extension matches with the given fully qualified mime type
      *
+     * Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
+     *
      * @param $file_name
      * @param $mime_type
      *

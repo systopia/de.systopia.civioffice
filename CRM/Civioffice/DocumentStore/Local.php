@@ -71,6 +71,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
             if (preg_match("/^[.].*$/", $file_name)) {
                 continue; // we don't want anything that starts with . (including . and ..)
             }
+            // TODO: Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
             if (!CRM_Civioffice_MimeType::hasSpecificFileNameExtension($file_name, CRM_Civioffice_MimeType::DOCX)) {
                 continue; // only allow docx files
             }
