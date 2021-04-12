@@ -47,6 +47,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
                 ],
             ]
         );
+        Civi::log()->debug("CiviOffice: Zip page loaded");
 
         parent::buildQuickForm();
     }
