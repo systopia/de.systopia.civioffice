@@ -20,8 +20,8 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
 {
-    const UPLOAD_PUBLIC_ENABLED  = 'civioffice_store_upload_public';
-    const UPLOAD_PRIVATE_ENABLED = 'civioffice_store_upload_private';
+    const UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY  = 'civioffice_store_upload_public';
+    const UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY = 'civioffice_store_upload_private';
 
     /** @var string specific folder of documents of this instance incl. /common or /contact_ */
     protected $folder_name;
@@ -159,7 +159,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
      */
     public function isReady() : bool
     {
-        $enabled = Civi::settings()->get($this->common ? self::UPLOAD_PUBLIC_ENABLED : self::UPLOAD_PRIVATE_ENABLED);
+        $enabled = Civi::settings()->get($this->common ? self::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY : self::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY);
         return
             $enabled
             && file_exists($this->folder_name)

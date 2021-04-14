@@ -20,7 +20,7 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
 {
-    const LOCAL_STATIC_PATH = 'civioffice_store_local_static_path';
+    const LOCAL_STATIC_PATH_SETTINGS_KEY = 'civioffice_store_local_static_path';
 
     /** @var string local folder this store has access to */
     protected $base_folder;
@@ -37,7 +37,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     public function __construct($id, $name, $mime_type, $readonly, $has_subfolders)
     {
         parent::__construct($id, $name);
-        $this->base_folder = Civi::settings()->get(self::LOCAL_STATIC_PATH);
+        $this->base_folder = Civi::settings()->get(self::LOCAL_STATIC_PATH_SETTINGS_KEY);
         $this->mime_type = $mime_type;
         $this->readonly = $readonly;
         $this->has_subfolders = $has_subfolders;
