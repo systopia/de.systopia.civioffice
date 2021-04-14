@@ -6,6 +6,7 @@
   <license>AGPL-3.0</license>
   <maintainer>
     <author>SYSTOPIA</author>
+    <email>franz@systopia.de</email>
     <email>endres@systopia.de</email>
   </maintainer>
   <urls>
@@ -14,7 +15,7 @@
     <url desc="Support">https://github.com/systopia/de.systopia.civioffice/issues</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
-  <releaseDate></releaseDate>
+  <releaseDate>2021-04-14</releaseDate>
   <version>0.1</version>
   <develStage>dev</develStage>
   <compatibility>
