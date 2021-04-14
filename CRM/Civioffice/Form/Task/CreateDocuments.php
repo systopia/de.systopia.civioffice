@@ -80,7 +80,10 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
                 20 => 20,
                 50 => 50,
                 100 => 100,
-                200 => 200
+                200 => 200,
+                500 => 500,
+                1000 => 1000,
+                2000 => 2000
             ],
             true,
             ['class' => 'crm-select2']
