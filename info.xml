@@ -6,8 +6,7 @@
   <license>AGPL-3.0</license>
   <maintainer>
     <author>SYSTOPIA</author>
-    <email>franz@systopia.de</email>
-    <email>endres@systopia.de</email>
+    <email>franz@systopia.de, endres@systopia.de</email>
   </maintainer>
   <urls>
     <url desc="Main Extension Page">https://github.com/systopia/de.systopia.civioffice</url>
