@@ -63,7 +63,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 return false;
             }
 
-            $temp_folder = Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY);
+            $temp_folder = Civi::settings()->get(self::TEMP_FOLDER_PATH_SETTINGS_KEY);
 
             // fixme duplicated check in CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings->isReady() ?
             if (!is_writable($temp_folder)) {
@@ -280,7 +280,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      */
     public function getDescription(): string
     {
-        return E::ts("Unoconv binary path at: '%1'", [1 => $this->unoconv_path]);
+        return E::ts("Unoconv binary path at: '%1' <br>Temp folder path at: '%2'", [1 => $this->unoconv_path, 2 => Civi::settings()->get(self::TEMP_FOLDER_PATH_SETTINGS_KEY)]);
     }
 
 
