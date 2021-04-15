@@ -207,7 +207,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
      */
     public function getDescription(): string
     {
-        return E::ts("All documents at: '%1'", [1 => $this->base_folder]);
+        return E::ts("A local folder is needed if documents are stored and managed on the server. CiviOffice only uses it for read access. This folder could be a pre existing shared folder of the organisation. A local folder is not being used for uploaded documents.<br> All documents at: '%1'", [1 => $this->base_folder]);
     }
 
 }
