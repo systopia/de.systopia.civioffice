@@ -59,7 +59,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             $output_line_with_version = $output[0];
             // todo: test for $MIN_UNOCONV_VERSION version. Version being tested is 0.7
-            if (strpos($output_line_with_version, 'unoconv') === false) {
+            if (strpos($output_line_with_version, 'unoconv 0.') === false) {
                 return false;
             }
 
