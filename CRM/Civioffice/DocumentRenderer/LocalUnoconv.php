@@ -146,6 +146,12 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         string $target_mime_type,
         $entity_type = 'contact'
     ): array {
+        // currently, this execution needs to be serialised (see https://github.com/systopia/de.systopia.civioffice/issues/6)
+        $lock = new CRM_Core_Lock('civicrm.office.civi_office_unoconv_local', 60, true);
+        if (!$lock->acquire()) {
+            throw new Exception(E::ts("Too many parallel conversions. Try using a smaller batch size"));
+        }
+
         $tokenreplaced_documents = [];
         $temp_store_folder_path = $temp_store->getBaseFolder();
         $local_temp_store = new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::DOCX, $temp_store_folder_path);
@@ -189,6 +195,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             $zip->close();
 
             $tokenreplaced_documents[] = $temp_store->addFile($this->createDocumentName($entity_id, $file_ending_name));
+
+            // free lock
+            $lock->release();
         }
 
         /*
