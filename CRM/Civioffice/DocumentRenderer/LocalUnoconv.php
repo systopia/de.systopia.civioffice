@@ -150,6 +150,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         $needs_conversion = $target_mime_type != CRM_Civioffice_MimeType::DOCX;
 
         // only lock render process if renderer is needed
+        $lock = null;
         if ($needs_conversion) {
             // currently, this execution needs to be serialised (see https://github.com/systopia/de.systopia.civioffice/issues/6)
             $lock = new CRM_Core_Lock('civicrm.office.civi_office_unoconv_local', 60, true);
