@@ -202,11 +202,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             $zip->close();
 
             $tokenreplaced_documents[] = $temp_store->addFile($this->createDocumentName($entity_id, $file_ending_name));
-
-            if($needs_conversion) {
-                // free lock
-                $lock->release();
-            }
         }
 
         /*
@@ -260,6 +255,11 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         // TODO: Check errors with $exec_return_code
         // todo: better cleanup solution?
         exec("cd $temp_store_folder_path && rm *.docx");
+
+        // release lock
+        if ($lock) {
+            $lock->release();
+        }
 
         return $tokenreplaced_documents;
     }
