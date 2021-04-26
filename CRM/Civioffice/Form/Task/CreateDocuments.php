@@ -79,6 +79,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
                 10 => 10,
                 20 => 20,
                 50 => 50,
+// // As soon as parallel conversion is solved and lock is removed higher values can be enabled again https://github.com/systopia/de.systopia.civioffice/issues/6
 //                100 => 100,
 //                200 => 200,
 //                500 => 500,
