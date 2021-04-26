@@ -2,7 +2,7 @@
 <extension key="de.systopia.civioffice" type="module">
   <file>civioffice</file>
   <name>CiviOffice</name>
-  <description>CiviCRM integration with various exchangeable office suits</description>
+  <description>CiviCRM integration for various exchangeable office suits</description>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>SYSTOPIA</author>
