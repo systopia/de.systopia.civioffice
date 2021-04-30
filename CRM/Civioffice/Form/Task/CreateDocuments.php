@@ -65,7 +65,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         $this->add(
             'select',
             'target_mime_type',
-            E::ts("Document Type"),
+            E::ts("Target document type"),
             $output_mimetypes,
             true,
             ['class' => 'crm-select2']
