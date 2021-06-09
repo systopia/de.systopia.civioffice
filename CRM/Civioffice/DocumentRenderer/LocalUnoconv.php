@@ -92,6 +92,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 return false;
             }
         } catch (Exception $ex) {
+            Civi::log()->debug("CiviOffice: Unoconv generic exception in isReady() check");
             return false;
         }
         return true;
