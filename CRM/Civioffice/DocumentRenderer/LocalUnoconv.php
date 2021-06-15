@@ -51,18 +51,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     public function isReady(): bool
     {
         try {
-            exec("{$this->unoconv_path} --version", $output, $result_code);
-
-            if (!empty($result_code)) {
-                return false;
-            }
-
-            $output_line_with_version = $output[0];
-            // todo: test for $MIN_UNOCONV_VERSION version. Version being tested is 0.7
-            if (strpos($output_line_with_version, 'unoconv 0.') === false) {
-                return false;
-            }
-
             $temp_folder = Civi::settings()->get(self::TEMP_FOLDER_PATH_SETTINGS_KEY);
 
             // fixme duplicated check in CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings->isReady() ?
@@ -89,6 +77,19 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             }
             if (!is_writable("{$home_folder}.config")) {
                 Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.config");
+                return false;
+            }
+
+            exec("{$this->unoconv_path} --version", $output, $result_code);
+
+            if (!empty($result_code)) {
+                Civi::log()->debug("CiviOffice: Return code of unoconv is empty");
+                return false;
+            }
+
+            $output_line_with_version = $output[0];
+            // todo: test for $MIN_UNOCONV_VERSION version. Version being tested is 0.7
+            if (strpos($output_line_with_version, 'unoconv 0.') === false) {
                 return false;
             }
         } catch (Exception $ex) {
