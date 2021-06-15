@@ -83,7 +83,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             exec("{$this->unoconv_path} --version", $output, $result_code);
 
             if (!empty($result_code)) {
-                Civi::log()->debug("CiviOffice: Return code of unoconv is empty");
+                Civi::log()->debug("CiviOffice: Return code of unoconv should be zero");
                 return false;
             }
 
