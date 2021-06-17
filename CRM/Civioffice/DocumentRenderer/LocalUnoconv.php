@@ -80,15 +80,18 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 return false;
             }
 
-            exec("{$this->unoconv_path} --version", $output, $result_code);
+            // run a probe command
+            $probe_command = "{$this->unoconv_path} --version 2>&1";
+            list($result_code, $output) = $this->runCommand($probe_command);
 
-            if (!empty($result_code)) {
-                Civi::log()->debug("CiviOffice: Return code of unoconv should be zero");
+            if (!empty($result_code) && $result_code != 255) {
+                Civi::log()->debug("CiviOffice: Error code {$result_code} received from unoconv. Output was: " . json_encode($output));
                 return false;
             }
 
             $output_line_with_version = $output[0];
             // todo: test for $MIN_UNOCONV_VERSION version. Version being tested is 0.7
+            Civi::log()->debug("CiviOffice: unoconv version is {$output_line_with_version}");
             if (strpos($output_line_with_version, 'unoconv 0.') === false) {
                 return false;
             }
@@ -235,9 +238,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             return $tokenreplaced_documents;
         }
 
-        $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $file_ending_name *.docx";
+        $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $file_ending_name *.docx 2>&1";
+        list($exec_return_code, $exec_output) = $this->runCommand($convert_command);
 
-        exec($convert_command, $exec_output, $exec_return_code);
         if ($exec_return_code != 0) {
             // something's wrong - error handling:
             $serialize_output = serialize($exec_output);
@@ -313,5 +316,36 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     private function createDocumentName($entity_id, string $file_ending_name): string
     {
         return "Document-{$entity_id}.{$file_ending_name}";
+    }
+
+    /**
+     * Run unoconv in the current configuration with the given command
+     *
+     * @param string $command
+     *   the command to run
+     *
+     * @return array
+     *   [return code, output lines]
+     */
+    protected function runCommand($command)
+    {
+        // make sure the unoconv path is in the environment
+        //  see https://stackoverflow.com/a/43083964
+        $our_path = dirname($this->unoconv_path);
+        $paths = explode(PATH_SEPARATOR, getenv('PATH'));
+        if (!in_array($our_path, $paths)) {
+            $paths[] = $our_path;
+        }
+
+        // finally: execute
+        putenv('PATH=' . implode(PATH_SEPARATOR, $paths));
+        exec($command, $exec_output, $exec_return_code);
+
+        // exec code 255 seems to be o.k. as well...
+        if ($exec_return_code == 255) {
+            $exec_return_code = 0;
+        }
+
+        return [$exec_return_code, $exec_output];
     }
 }
