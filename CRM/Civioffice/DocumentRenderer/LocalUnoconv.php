@@ -330,14 +330,15 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     protected function runCommand($command)
     {
         // make sure the unoconv path is in the environment
+        //  see https://stackoverflow.com/a/43083964
         $our_path = dirname($this->unoconv_path);
         $paths = explode(PATH_SEPARATOR, getenv('PATH'));
         if (!in_array($our_path, $paths)) {
             $paths[] = $our_path;
-            putenv('PATH=' . implode(PATH_SEPARATOR, $paths));
         }
 
         // finally: execute
+        putenv('PATH=' . implode(PATH_SEPARATOR, $paths));
         exec($command, $exec_output, $exec_return_code);
 
         // exec code 255 seems to be o.k. as well...
