@@ -29,7 +29,7 @@ function civioffice_civicrm_summaryActions(&$actions, $contactID)
             'weight'      => 2410,
             'ref'         => 'open_document_with_single_contact', // todo: needed for?
             'key'         => 'open_document_with_single_contact', // todo: needed for?
-            'href'        => CRM_Utils_System::url('civicrm/civioffice/document_from_single_contact', "reset=1"), // todo fixme contact id
+            'href'        => CRM_Utils_System::url('civicrm/civioffice/document_from_single_contact', "reset=1"), // fixme contact id is passed twice as pid
             'permissions' => ['view all contacts']
         ];
     }
