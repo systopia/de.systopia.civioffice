@@ -40,7 +40,7 @@
   </item>
   <item>
     <path>civicrm/civioffice/document_from_single_contact</path>
-    <page_callback>CRM_Civioffice_Page_DocumentFromSingleContact</page_callback>
+    <page_callback>CRM_Civioffice_Form_DocumentFromSingleContact</page_callback>
     <title>DocumentFromSingleContact</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
