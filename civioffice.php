@@ -19,6 +19,22 @@ function civioffice_civicrm_searchTasks($objectType, &$tasks)
     }
 }
 
+function civioffice_civicrm_summaryActions(&$actions, $contactID)
+{
+    // add "open document with single contact" action
+    if (CRM_Core_Permission::check('administer CiviCRM')) // todo correct?
+    {
+        $actions['open_document_with_single_contact'] = [
+            'title'       => E::ts('Create CiviOffice document'),
+            'weight'      => 2410,
+            'ref'         => 'open_document_with_single_contact', // todo: needed for?
+            'key'         => 'open_document_with_single_contact', // todo: needed for?
+            'href'        => CRM_Utils_System::url('civicrm/admin/civioffice/settings', "reset=1&cid={$contactID}"), // todo fixme contact id
+            'permissions' => ['view all contacts']
+        ];
+    }
+}
+
 /**
  * Implements hook_civicrm_config().
  *
