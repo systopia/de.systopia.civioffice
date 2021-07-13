@@ -16,75 +16,66 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
             // todo redirect with error
         }
 
-        CRM_Utils_System::setTitle(E::ts('Document creation for single contact'));
-
-
         $this->assign('currentUser', $contact_id);
 
+        CRM_Utils_System::setTitle(E::ts('Document creation for single contact')); // fixme duplicated?
 
-        // add form elements
-        $this->add(
-            'select', // field type
-            'favorite_color', // field name
-            'Favorite Color', // field label
-            $this->getColorOptions(), // list of options
-            TRUE // is required
-        );
-        $this->addButtons(array(
-                              array(
-                                  'type' => 'submit',
-                                  'name' => E::ts('Submit'),
-                                  'isDefault' => TRUE,
-                              ),
-                          ));
+        $this->setTitle(E::ts("CiviOffice - Generate Document"));
 
-        // export form elements
-        $this->assign('elementNames', $this->getRenderableElementNames());
-        parent::buildQuickForm();
-    }
+        $config = CRM_Civioffice_Configuration::getConfig();
 
-    public function postProcess() {
-        $values = $this->exportValues();
-        $options = $this->getColorOptions();
-        CRM_Core_Session::setStatus(E::ts('You picked color "%1"', array(
-            1 => $options[$values['favorite_color']],
-        )));
-        parent::postProcess();
-    }
-
-    public function getColorOptions() {
-        $options = array(
-            '' => E::ts('- select -'),
-            '#f00' => E::ts('Red'),
-            '#0f0' => E::ts('Green'),
-            '#00f' => E::ts('Blue'),
-            '#f0f' => E::ts('Purple'),
-        );
-        foreach (array('1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e') as $f) {
-            $options["#{$f}{$f}{$f}"] = E::ts('Grey (%1)', array(1 => $f));
+        // add list of document renderers and supported output mime types
+        $output_mimetypes = null;
+        $document_renderer_list = [];
+        foreach ($config->getDocumentRenderers(true) as $dr) {
+            foreach ($dr->getOutputMimeTypes() as $mime_type) {
+                $output_mimetypes[$mime_type] = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
+            }
+            $document_renderer_list[$dr->getID()] = $dr->getName();
         }
-        return $options;
-    }
+        $this->add(
+            'select',
+            'document_renderer_id',
+            E::ts("Document Renderer"),
+            $document_renderer_list,
+            true,
+            ['class' => 'crm-select2 huge']
+        );
 
-    /**
-     * Get the fields/elements defined in this form.
-     *
-     * @return array (string)
-     */
-    public function getRenderableElementNames() {
-        // The _elements list includes some items which should not be
-        // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
-        // items don't have labels.  We'll identify renderable by filtering on
-        // the 'label'.
-        $elementNames = array();
-        foreach ($this->_elements as $element) {
-            /** @var HTML_QuickForm_Element $element */
-            $label = $element->getLabel();
-            if (!empty($label)) {
-                $elementNames[] = $element->getName();
+        // build document list
+        $document_list = [];
+        // todo: only show supported source mime types
+        foreach ($config->getDocumentStores(true) as $document_store) {
+            foreach ($document_store->getDocuments() as $document) {  // todo: recursive
+                /** @var CRM_Civioffice_Document $document */
+                $document_list[$document->getURI()] = "[{$document_store->getName()}] {$document->getName()}";
             }
         }
-        return $elementNames;
+        $this->add(
+            'select',
+            'document_uri',
+            E::ts("Document"),
+            $document_list,
+            true,
+            ['class' => 'crm-select2 huge']
+        );
+
+        $this->add(
+            'select',
+            'target_mime_type',
+            E::ts("Target document type"),
+            $output_mimetypes,
+            true,
+            ['class' => 'crm-select2']
+        );
+
+        // add buttons
+        CRM_Core_Form::addDefaultButtons(E::ts("Generate File"));
     }
 
+
+    public function postProcess() {
+        // todo add logic. maybe abstract it from CreateDocuments.php
+        parent::postProcess();
+    }
 }
