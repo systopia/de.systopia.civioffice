@@ -21,15 +21,18 @@ use CRM_Civioffice_ExtensionUtil as E;
  * @see https://docs.civicrm.org/dev/en/latest/framework/quickform/
  */
 class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
+
+    public $contact_id = null;
+
     public function buildQuickForm() {
 
-        $contact_id = CRM_Utils_Request::retrieve('cid', 'Int', $this);
+        $this->contact_id = CRM_Utils_Request::retrieve('cid', 'Int', $this);
 
-        if (empty($contact_id)) {
+        if (empty($this->contact_id)) {
             // todo redirect with error
         }
 
-        $this->assign('currentUser', $contact_id);
+        $this->assign('currentUser', $this->contact_id);
 
         CRM_Utils_System::setTitle(E::ts('Document creation for single contact')); // fixme duplicated?
 
