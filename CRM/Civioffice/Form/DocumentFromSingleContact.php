@@ -91,7 +91,55 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
 
 
     public function postProcess() {
-        // todo add logic. maybe abstract it from CreateDocuments.php
+        $values = $this->exportValues();
+
+        // Initialize a queue.
+        $queue = CRM_Queue_Service::singleton()->create(
+            [
+                'type' => 'Sql',
+                'name' => 'civioffice_document_task_' . CRM_Core_Session::singleton()->getLoggedInContactId(),
+                'reset' => true
+            ]
+        );
+
+        $temp_folder_path = (new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::PDF))->getBaseFolder();
+
+        $entity_IDs = [$this->contact_id];
+
+        $queue->createItem(
+            $job = new CRM_Civioffice_ConversionJob(
+                $values['document_renderer_id'],
+                $values['document_uri'],
+                $temp_folder_path,
+                $entity_IDs,
+                'contact',
+                $values['target_mime_type'],
+                E::ts('Initialized')
+            )
+        );
+
+        // Save current page link (e.g. search page)
+        $return_link = html_entity_decode(CRM_Core_Session::singleton()->readUserContext());
+        $return_link = base64_encode($return_link);
+
+        // Start a runner on the queue.
+        $download_link = CRM_Utils_System::url(
+            'civicrm/civioffice/download',
+            "tmp_folder={$temp_folder_path}&return_url={$return_link}"
+        );
+
+        $runner = new CRM_Queue_Runner(
+            [
+                'title' => E::ts(
+                    "Generating one file"
+                ),
+                'queue' => $queue,
+                'errorMode' => CRM_Queue_Runner::ERROR_ABORT,
+                'onEndUrl' => $download_link
+            ]
+        );
+        $runner->runAllViaWeb();
+
         parent::postProcess();
     }
 }
