@@ -15,7 +15,7 @@
 {* HEADER *}
 
 {crmScope extensionKey='de.systopia.civioffice'}
-  <p>The current user ID is: <b>{$currentUser}</b></p>
+  <p>The current user ID is: <b>{$user_id}</b></p>
 
   <div class="crm-section">
     <div class="label">{$form.document_uri.label}</div>

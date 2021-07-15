@@ -32,7 +32,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
             // todo redirect with error
         }
 
-        $this->assign('currentUser', $this->contact_id);
+        $this->assign('user_id', $this->contact_id);
 
         CRM_Utils_System::setTitle(E::ts('Document creation for single contact')); // fixme duplicated?
 
