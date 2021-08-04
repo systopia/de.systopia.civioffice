@@ -17,6 +17,7 @@ abstract class CRM_Civioffice_MimeType
 {
     public const DOCX = 'application/vnd.openxmlformats-officedocument.wordprocessingm';
     public const PDF = 'application/pdf';
+    public const ZIP = 'application/zip';
 
     public const ALL = [self::DOCX, self::PDF];
     public const RENDERABLE = [self::DOCX];
@@ -37,6 +38,8 @@ abstract class CRM_Civioffice_MimeType
                 return 'pdf';
             case self::DOCX:
                 return 'docx';
+            case self::ZIP:
+                return 'zip';
             default:
                 throw new Exception('Mime types other than pdf and docx yet need to be implemented');
         }
