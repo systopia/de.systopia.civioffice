@@ -29,6 +29,9 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
     /** @var bool start download instantly */
     public $instant_download;
 
+    /** @var string Name of zip file */
+    private $ZIP_FOLDER_NAME = "Civioffice_Documents.zip";
+
     public function buildQuickForm()
     {
         $this->tmp_folder = CRM_Utils_Request::retrieve('tmp_folder', 'String', $this);
@@ -130,7 +133,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
             if (file_exists($filename)) {
                 // set file metadata
                 header('Content-Type: application/zip');
-                header("Content-Disposition: attachment; filename=" . E::ts("Civioffice_Documents.zip"));
+                header("Content-Disposition: attachment; filename=" . E::ts($this->ZIP_FOLDER_NAME));
                 header('Content-Length: ' . filesize($filename));
 
                 // dump file contents in stream and exit
