@@ -78,9 +78,9 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
     }
 
     /**
-     * @return array
+     * @return void
      * @throws \Exception
-    */
+     */
     private function startDownload(): void
     {
         // TODO: verify folder
