@@ -26,7 +26,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      * @return array
      *   list of mime types
      */
-    public abstract function getOutputMimeTypes(): array;
+    public abstract function getSupportedOutputMimeTypes(): array;
 
     /**
      * Render a document for a list of entities

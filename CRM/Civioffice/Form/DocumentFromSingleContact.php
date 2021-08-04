@@ -44,7 +44,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
         $output_mimetypes = null;
         $document_renderer_list = [];
         foreach ($config->getDocumentRenderers(true) as $dr) {
-            foreach ($dr->getOutputMimeTypes() as $mime_type) {
+            foreach ($dr->getSupportedOutputMimeTypes() as $mime_type) {
                 $output_mimetypes[$mime_type] = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
             }
             $document_renderer_list[$dr->getID()] = $dr->getName();

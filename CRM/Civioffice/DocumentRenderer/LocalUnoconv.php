@@ -108,7 +108,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      * @return array
      *   list of mime types
      */
-    public function getOutputMimeTypes(): array
+    public function getSupportedOutputMimeTypes(): array
     {
         return [
             CRM_Civioffice_MimeType::PDF,
