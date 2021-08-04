@@ -135,7 +135,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
      */
     public function getSupportedMimeTypes() : array
     {
-        return [CRM_Civioffice_MimeType::RENDERABLE];
+        return [CRM_Civioffice_MimeType::DOCX];
     }
 
 

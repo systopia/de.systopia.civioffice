@@ -19,9 +19,6 @@ abstract class CRM_Civioffice_MimeType
     public const PDF = 'application/pdf';
     public const ZIP = 'application/zip';
 
-    public const ALL = [self::DOCX, self::PDF];
-    public const RENDERABLE = [self::DOCX];
-
     /**
      * Map te mime type to the file ending without a pre dot
      *
