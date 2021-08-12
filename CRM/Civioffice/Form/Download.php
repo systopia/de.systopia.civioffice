@@ -93,7 +93,8 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
 
         // download files
         try {
-            $number_of_files = count(glob($folder_path . "*"));
+            $glob = glob($folder_path . '/' . '*');
+            $number_of_files = count($glob);
 
             if($number_of_files == 1) {
                 // do not zip if single file
