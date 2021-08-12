@@ -70,9 +70,9 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
         // this means somebody clicked download
         $vars = $this->exportValues();
         if (isset($vars['_qf_Download_submit'])) {
-            $this->zipIfNeededAndDownload();
+            $this->zipIfNeededAndDownload($this->tmp_folder);
         } else if (isset($vars['_qf_Download_done'])) {
-            $this->removeFilesAndFolder();
+            $this->removeFilesAndFolder($this->tmp_folder);
             // go back
             CRM_Utils_System::redirect(base64_decode($this->return_url));
         }
