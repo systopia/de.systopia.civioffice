@@ -89,10 +89,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 return false;
             }
 
-            $output_line_with_version = $output[0];
-            // todo: test for $MIN_UNOCONV_VERSION version. Version being tested is 0.7
-            Civi::log()->debug("CiviOffice: unoconv version is {$output_line_with_version}");
-            if (strpos($output_line_with_version, 'unoconv 0.') === false) {
+            $found = preg_grep("/{unoconv 0.}/i", $output);
+            if (empty($found)) {
+                Civi::log()->debug("CiviOffice: unoconv version number not found");
                 return false;
             }
         } catch (Exception $ex) {
