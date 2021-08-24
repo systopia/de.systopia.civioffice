@@ -90,7 +90,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 return false;
             }
 
-            $found = preg_grep("/{unoconv 0.}/i", $output);
+            $found = preg_grep('/^unoconv (\d+)\.(\d+)/i', $output);
             if (empty($found)) {
                 Civi::log()->debug("CiviOffice: unoconv version number not found");
                 return false;
