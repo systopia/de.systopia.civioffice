@@ -70,6 +70,8 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
         parent::validate();
 
         $folder_to_check = $this->_submitValues['temp_folder_path'];
+        $unoconv_path_to_check = $this->_submitValues['unoconv_binary_path'];
+
 
         if (empty($folder_to_check)) { // needed?
             $this->_errors['temp_folder_path'] = E::ts("Input is empty");
@@ -81,6 +83,10 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
 
         if (!is_dir($folder_to_check)) {
             $this->_errors['temp_folder_path'] = E::ts("This is not a folder");
+        }
+
+        if (!file_exists($unoconv_path_to_check)) {
+            $this->_errors['unoconv_binary_path'] = E::ts("File does not exist. Please provide a correct filename");
         }
 
         return (count($this->_errors) == 0);
