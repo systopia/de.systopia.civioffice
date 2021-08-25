@@ -149,7 +149,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         array $entity_ids,
         CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
         string $target_mime_type,
-        $entity_type = 'contact'
+        string $entity_type = 'contact'
     ): array {
         // for now DOCX is the only format being used for internal processing
         $internal_processing_format = CRM_Civioffice_MimeType::DOCX;
