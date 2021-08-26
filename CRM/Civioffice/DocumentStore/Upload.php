@@ -214,9 +214,9 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
     public function getDescription(): string
     {
         if ($this->common) {
-            return E::ts("Shared Uploaded Documents. The CiviCRM internal upload folder is being used");
+            return E::ts("Shared Uploaded Documents. There is no folder setup needed as the CiviCRM internal upload folder is being used here. Be aware. If enabled very user has full access to upload documents.");
         } else {
-            return E::ts("My Uploaded Documents. The CiviCRM internal upload folder is being used");
+            return E::ts("My Uploaded Documents. Users only have access to files being uploaded by themself. The CiviCRM internal upload folder is being used");
         }
     }
 

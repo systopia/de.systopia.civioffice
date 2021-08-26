@@ -304,7 +304,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      */
     public function getDescription(): string
     {
-        return E::ts("Unoconv binary path at: '%1' <br>Temp folder path at: '%2'", [1 => $this->unoconv_path, 2 => Civi::settings()->get(self::TEMP_FOLDER_PATH_SETTINGS_KEY)]);
+        return E::ts("Please provide a Unoconv binary or a wrapper script. Wrapper scripts like the one provided in <i>/scripts</i> prevent unoconv from running parallel as this is causing problems.<br>Binary / shell script path:<br>'%1'<br><br><hr><br>A temp folder is needed to store transactional files.<br>Temp folder path:<br><i>'%2'</i>", [1 => $this->unoconv_path, 2 => Civi::settings()->get(self::TEMP_FOLDER_PATH_SETTINGS_KEY)]);
     }
 
 
