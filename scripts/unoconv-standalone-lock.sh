@@ -1,6 +1,7 @@
 #!/bin/bash
 args="$@"
-FILE="~/.config/.uno-lock" # this path can be changed however the default one ususally has sufficient access in oder to work with no additional configuration. Follow the command line instructions if there is no access
+FILE="~/.config/.uno-lock" # this path can be changed however the default one usually has sufficient access in oder to work with no additional configuration. Follow the command line instructions if there is no access. In some cases ~ doesn't work. In this case an absolute path is needed here. You can find the absolute path using the pwd command.
+
 
 
 
