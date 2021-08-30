@@ -15,7 +15,7 @@
 {crmScope extensionKey='de.systopia.civioffice'}
 
   <div class="crm-section">
-    <div class="help">{ts}Path to unoconv binary.<br>For example: /usr/bin/unoconv{/ts}</div>
+    <div class="help">{ts}Please provide a Unoconv binary or a wrapper script. Wrapper scripts like the one provided in /scripts prevent unoconv from running parallel as this is causing problems.{/ts}</div>
     <div class="label">{$form.unoconv_binary_path.label}</div>
     <div class="content">{$form.unoconv_binary_path.html}</div>
     <div class="clear"></div>
