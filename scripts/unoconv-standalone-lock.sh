@@ -1,10 +1,10 @@
 #!/bin/bash
 args="$@"
-FILE="~/.config/.uno-lock" # this path can be changed however the default one ususally has sufficient access in oder to work with no additional configuration. Follow the command line instructions if there is no access
+FILE="~/.config/.uno-lock" # this path can be changed however the default one usually has sufficient access in oder to work with no additional configuration. Follow the command line instructions if there is no access
 
 
 
-if ! [ -w "$FILE" ] 
+if ! [ -w "$FILE" ]
 then
    echo "### WARNING: Write permission is NOT granted on $FILE"
    echo "### This script needs +x and and the web servers users e.g. www-data in order to work."
@@ -21,6 +21,7 @@ set -e
 
   echo $$ working with lock
   #echo "debug arguments:" ${args}
+  sleep 4
   unoconv ${args}
   echo $$ done with lock
 
