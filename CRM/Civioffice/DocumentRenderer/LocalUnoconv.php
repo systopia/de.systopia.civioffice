@@ -52,6 +52,11 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     public function isReady(): bool
     {
         try {
+            if (empty($this->unoconv_path)) {
+                // no unoconv binary or wrapper script provided
+                return false;
+            }
+
             $temp_folder = Civi::settings()->get(self::TEMP_FOLDER_PATH_SETTINGS_KEY);
 
             // fixme duplicated check in CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings->isReady() ?
