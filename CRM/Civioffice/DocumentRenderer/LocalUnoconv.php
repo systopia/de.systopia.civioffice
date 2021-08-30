@@ -37,8 +37,8 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         parent::__construct('unoconv-local', E::ts("Local Universal Office Converter (unoconv)"));
         $this->unoconv_path = Civi::settings()->get(self::UNOCONV_BINARY_PATH_SETTINGS_KEY);
         if (empty($this->unoconv_path)) {
-            Civi::log()->debug("CiviOffice: Path to unoconv bin/script is missing");
-            throw new Exception(E::ts("CiviOffice: Path to unoconv bin/script is missing"));
+            Civi::log()->debug("CiviOffice: Path to unoconv binary / wrapper script is missing");
+            $this->unoconv_path = "";
         }
     }
 
