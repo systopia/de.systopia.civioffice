@@ -34,9 +34,9 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     /** @var boolean should there be subfolders? */
     protected $has_subfolders;
 
-    public function __construct($id, $name, $mime_type, $readonly, $has_subfolders)
+    public function __construct($uri, $name, $mime_type, $readonly, $has_subfolders)
     {
-        parent::__construct($id, $name);
+        parent::__construct($uri, $name);
         $this->base_folder = Civi::settings()->get(self::LOCAL_STATIC_PATH_SETTINGS_KEY);
         $this->mime_type = $mime_type;
         $this->readonly = $readonly;

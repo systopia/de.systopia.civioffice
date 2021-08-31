@@ -121,7 +121,7 @@ class CRM_Civioffice_Configuration
     {
         $document_renderers = self::getDocumentRenderers(false);
         foreach ($document_renderers as $dr) {
-            if ($document_renderer_id == $dr->getID()) {
+            if ($document_renderer_id == $dr->getURI()) {
                 return $dr;
             }
         }

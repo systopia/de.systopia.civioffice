@@ -36,7 +36,7 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
             foreach ($components as $instance) {
                 /** @var $instance CRM_Civioffice_OfficeComponent */
                 $ui_components[$element_type][] = [
-                    'id'          => $instance->getID(),
+                    'id'          => $instance->getURI(),
                     'name'        => $instance->getName(),
                     'description' => $instance->getDescription(),
                     'config_url'  => $instance->getConfigPageURL(),

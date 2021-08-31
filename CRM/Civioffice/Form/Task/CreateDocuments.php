@@ -33,7 +33,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             foreach ($dr->getSupportedOutputMimeTypes() as $mime_type) {
                 $output_mimetypes[$mime_type] = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
             }
-            $document_renderer_list[$dr->getID()] = $dr->getName();
+            $document_renderer_list[$dr->getURI()] = $dr->getName();
         }
         $this->add(
             'select',
