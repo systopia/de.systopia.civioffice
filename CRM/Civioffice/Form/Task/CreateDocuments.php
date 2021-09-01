@@ -37,7 +37,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         }
         $this->add(
             'select',
-            'document_renderer_id',
+            'document_renderer_uri',
             E::ts("Document Renderer"),
             $document_renderer_list,
             true,
@@ -114,7 +114,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         foreach ($chunked_entities as $entity_IDs) {
             $queue->createItem(
                 $job = new CRM_Civioffice_ConversionJob(
-                    $values['document_renderer_id'],
+                    $values['document_renderer_uri'],
                     $values['document_uri'],
                     $temp_folder_path,
                     $entity_IDs,

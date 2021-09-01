@@ -112,16 +112,16 @@ class CRM_Civioffice_Configuration
     /**
      * Find/get the document renderer with the given URI
      *
-     * @param string $document_renderer_id
+     * @param string $document_renderer_uri
      *   document renderer URI
      *
      * @return CRM_Civioffice_DocumentRenderer|null
      */
-    public function getDocumentRenderer(string $document_renderer_id)
+    public function getDocumentRenderer(string $document_renderer_uri)
     {
         $document_renderers = self::getDocumentRenderers(false);
         foreach ($document_renderers as $dr) {
-            if ($document_renderer_id == $dr->getURI()) {
+            if ($document_renderer_uri == $dr->getURI()) {
                 return $dr;
             }
         }

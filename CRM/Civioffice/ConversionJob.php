@@ -18,10 +18,10 @@ use CRM_Civioffice_ExtensionUtil as E;
 class CRM_Civioffice_ConversionJob
 {
     /**
-     * @var string $renderer_id
-     *  ID which specifies the selected renderer being used
+     * @var string $renderer_uri
+     *  URI which specifies the selected renderer being used
      */
-    protected $renderer_id;
+    protected $renderer_uri;
 
     /**
      * @var $document_uri
@@ -56,9 +56,9 @@ class CRM_Civioffice_ConversionJob
      */
     public $title;
 
-    public function __construct($renderer_id, $document_uri, $temp_folder_path, $entity_IDs, $entity_type, $target_mime_type, $title)
+    public function __construct($renderer_uri, $document_uri, $temp_folder_path, $entity_IDs, $entity_type, $target_mime_type, $title)
     {
-        $this->renderer_id = $renderer_id;
+        $this->renderer_uri = $renderer_uri;
         $this->document_uri = $document_uri;
         $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp($target_mime_type, $temp_folder_path);
         $this->entity_IDs = $entity_IDs;
@@ -71,7 +71,7 @@ class CRM_Civioffice_ConversionJob
     {
         $configuration = CRM_Civioffice_Configuration::getConfig();
 
-        $document_renderer = $configuration->getDocumentRenderer($this->renderer_id);
+        $document_renderer = $configuration->getDocumentRenderer($this->renderer_uri);
         $document = $configuration->getDocument($this->document_uri);
 
         $documents = $document_renderer->render($document, $this->entity_IDs, $this->temp_store, $this->target_mime_type, $this->entity_type);

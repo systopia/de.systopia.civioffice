@@ -51,7 +51,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
         }
         $this->add(
             'select',
-            'document_renderer_id',
+            'document_renderer_uri',
             E::ts("Document Renderer"),
             $document_renderer_list,
             true,
@@ -108,7 +108,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
 
         $queue->createItem(
             $job = new CRM_Civioffice_ConversionJob(
-                $values['document_renderer_id'],
+                $values['document_renderer_uri'],
                 $values['document_uri'],
                 $temp_folder_path,
                 $entity_IDs,
