@@ -83,7 +83,45 @@ function civicrm_api3_civi_office_convert($params)
 
     $documents = $document_renderer->render($document, $entity_ids, $temp_store, $target_mime_type, $entity_type);
 
+    createActivity(
+        3, // pdf letter type
+        "CiviOffice: $document_uri",
+        CRM_Core_Session::getLoggedInContactID(),
+        $entity_ids,
+        'Beliebiger Text',
+        "CiviOffice $entity_type document: Detail text",
+        null
+    );
+
     $uri = $temp_store->getURI();
 
     return [$uri];
+}
+
+/**
+ * Create an activity
+ *
+ * @param integer $activity_type_id
+ * @param string $subject
+ * @param string $status
+ * @param string $details
+ * @param integer $sender_contact_id
+ * @param array $target_contact_ids
+ */
+function createActivity($activity_type_id, $subject, $sender_contact_id, $target_contact_ids, $status, $details = null, $assignees = '')
+{
+    try {
+        $activity_data = [
+            'activity_type_id'  => $activity_type_id,
+            'status_id'         => $status,
+            'source_contact_id' => $sender_contact_id,
+            'target_contact_id' => $target_contact_ids,
+            'assignee_id'       => empty($assignees) ? '' : explode(',', $assignees),
+            'subject'           => $subject,
+            'details'           => $details,
+        ];
+        civicrm_api3('Activity', 'create', $activity_data);
+    } catch (CiviCRM_API3_Exception $ex) {
+        Civi::log()->debug("CiviOffice: Couldn't create activity: " . json_encode($activity_data) . ' - error was: ' . $ex->getMessage());
+    }
 }
