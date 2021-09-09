@@ -28,7 +28,7 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
           'text',
           'unoconv_binary_path',
           E::ts("path to the unoconv binary"),
-          [],
+          ['class' => 'huge'],
           true
       );
 
@@ -36,7 +36,7 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
           'text',
           'temp_folder_path',
           E::ts("path to the working temp folder"),
-          [],
+          ['class' => 'huge'],
           true
       );
 

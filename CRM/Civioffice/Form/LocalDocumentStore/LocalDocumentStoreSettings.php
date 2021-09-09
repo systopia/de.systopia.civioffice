@@ -29,7 +29,7 @@ class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends 
             'text',
             'local_folder',
             E::ts("Local Folder (full path)"),
-            [],
+            ['class' => 'huge'],
             true
         );
 
