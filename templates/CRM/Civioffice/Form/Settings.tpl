@@ -45,8 +45,8 @@
   </tbody>
 </table>
 
-<h3>{ts}CiviOffice Document Renderers{/ts}</h3>
-<div id="help">{ts}Renders documents{/ts}</div>
+<h3>{ts}CiviOffice Document Renderers (Converters){/ts}</h3>
+<div id="help">{ts}Renders or converts documents{/ts}</div>
 
 <table>
   <thead>
