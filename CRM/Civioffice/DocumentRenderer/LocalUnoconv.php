@@ -23,10 +23,14 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     const MIN_UNOCONV_VERSION = '0.7'; // todo: determine
 
     const UNOCONV_BINARY_PATH_SETTINGS_KEY = 'civioffice_unoconv_binary_path';
+    const UNOCONV_LOCK_PATH_SETTINGS_KEY = 'civioffice_unoconv_lock_file';
     const TEMP_FOLDER_PATH_SETTINGS_KEY = 'civioffice_temp_folder_path';
 
     /** @var string path to the unoconv binary */
     protected $unoconv_path;
+
+    /** @var resource handle used for the lock */
+    protected $lock_file;
 
     /**
      * constructor
@@ -88,7 +92,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             // run a probe command
             $probe_command = "{$this->unoconv_path} --version 2>&1";
-            list($result_code, $output) = $this->runCommand($probe_command);
+            [$result_code, $output] = $this->runCommand($probe_command);
 
             if (!empty($result_code) && $result_code != 255) {
                 Civi::log()->debug("CiviOffice: Error code {$result_code} received from unoconv. Output was: " . json_encode($output));
@@ -245,7 +249,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         }
 
         $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $file_ending_name *.docx 2>&1";
-        list($exec_return_code, $exec_output) = $this->runCommand($convert_command);
+        [$exec_return_code, $exec_output] = $this->runCommand($convert_command);
 
         if ($exec_return_code != 0) {
             // something's wrong - error handling:
@@ -309,7 +313,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      */
     public function getDescription(): string
     {
-        return E::ts("Please provide a Unoconv binary or a wrapper script. Wrapper scripts like the one provided in <i>/scripts</i> prevent unoconv from running parallel as this is causing problems.<br>Binary / shell script path:<br>'%1'<br><br><hr><br>A temp folder is needed to store transactional files.<br>Temp folder path:<br><i>'%2'</i>", [1 => $this->unoconv_path, 2 => Civi::settings()->get(self::TEMP_FOLDER_PATH_SETTINGS_KEY)]);
+        return E::ts("This document renderer employs the <code>unoconv</code> script on your server to convert documents using LibreOffice.");
     }
 
 
@@ -335,23 +339,59 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      */
     protected function runCommand($command)
     {
-        // make sure the unoconv path is in the environment
-        //  see https://stackoverflow.com/a/43083964
-        $our_path = dirname($this->unoconv_path);
-        $paths = explode(PATH_SEPARATOR, getenv('PATH'));
-        if (!in_array($our_path, $paths)) {
-            $paths[] = $our_path;
-        }
+        // use the lock if this is set up
+        $this->lock();
 
-        // finally: execute
-        putenv('PATH=' . implode(PATH_SEPARATOR, $paths));
-        exec($command, $exec_output, $exec_return_code);
+        try {
+            // make sure the unoconv path is in the environment
+            //  see https://stackoverflow.com/a/43083964
+            $our_path = dirname($this->unoconv_path);
+            $paths = explode(PATH_SEPARATOR, getenv('PATH'));
+            if (!in_array($our_path, $paths)) {
+                $paths[] = $our_path;
+            }
 
-        // exec code 255 seems to be o.k. as well...
-        if ($exec_return_code == 255) {
-            $exec_return_code = 0;
+            // finally: execute
+            putenv('PATH=' . implode(PATH_SEPARATOR, $paths));
+            exec($command, $exec_output, $exec_return_code);
+
+            // exec code 255 seems to be o.k. as well...
+            if ($exec_return_code == 255) {
+                $exec_return_code = 0;
+            }
+        } catch (Exception $ex) {
+            Civi::log()->debug("Got execution exception: ". $ex->getMessage());
         }
+        $this->unlock();
 
         return [$exec_return_code, $exec_output];
+    }
+
+    /**
+     * wait for the unoconv resource to become available
+     */
+    protected function lock()
+    {
+        $lock_file = Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::UNOCONV_LOCK_PATH_SETTINGS_KEY);
+        if ($lock_file) {
+            $this->lock_file = fopen($lock_file,"r+");
+            if (!flock($this->lock_file, LOCK_EX)) {
+                throw new Exception(E::ts("Could not aquire unoconv lock. Sorry"));
+            }
+        }
+    }
+
+    /**
+     * wait for the unoconv resource to become available
+     */
+    protected function unlock()
+    {
+        if ($this->lock_file) {
+            if (!flock($this->lock_file, LOCK_UN)) {
+                Civi::log()->debug("Could not release unoconv lock.");
+            }
+            fclose($this->lock_file);
+            $this->lock_file = null;
+        }
     }
 }
