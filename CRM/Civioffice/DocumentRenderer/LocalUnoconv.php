@@ -360,7 +360,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 $exec_return_code = 0;
             }
         } catch (Exception $ex) {
-            Civi::log()->debug("Got execution exception: ". $ex->getMessage());
+            Civi::log()->debug("CiviOffice: Got execution exception: ". $ex->getMessage());
         }
         $this->unlock();
 
@@ -388,7 +388,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     {
         if ($this->lock_file) {
             if (!flock($this->lock_file, LOCK_UN)) {
-                Civi::log()->debug("Could not release unoconv lock.");
+                Civi::log()->debug("CiviOffice: Could not release unoconv lock.");
             }
             fclose($this->lock_file);
             $this->lock_file = null;

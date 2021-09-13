@@ -22,7 +22,7 @@
   </div>
 
   <div class="crm-section">
-    <div class="help">{ts}We strongly recommend creating a system wide lock file on this server to synchronise access. You can create such a file doing this in the server console: <code>touch /some/accessible/path/unoconv.lock && chmod 777 /some/accessible/path/unoconv.lock</code>{/ts}</div>
+    <div class="help">{ts}We strongly recommend creating a system wide lock file on this server to synchronise access. You can create such a file doing this in the server console:<br><code>touch /some/accessible/path/unoconv.lock && chmod 777 /some/accessible/path/unoconv.lock</code>{/ts}</div>
     <div class="label">{$form.unoconv_lock_file.label}</div>
     <div class="content">{$form.unoconv_lock_file.html}</div>
     <div class="clear"></div>
