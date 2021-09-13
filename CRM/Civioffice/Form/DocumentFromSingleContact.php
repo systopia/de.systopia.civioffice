@@ -93,6 +93,8 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
     public function postProcess() {
         $values = $this->exportValues();
 
+
+
         $api_input['document_uri'] = $values['document_uri'];
         $api_input['entity_ids'] = [$this->contact_id];
         $api_input['entity_type'] = 'contact';
@@ -102,8 +104,8 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
         $result = civicrm_api3('CiviOffice', 'convert', $api_input);
 
         $temp_folder_path = $result[0]; //fixme remove tmp:: --> helper method?
-        //$temp_folder_path = '/var/www/civicrm/office/sites/default/files/civicrm/templates_c/civioffice/temp/civioffice_202_613a433473488';
 
+        $temp_folder_path = str_replace('tmp::', '', $temp_folder_path); //fixme replace later
 
         // Save current page link (e.g. search page)
         $return_link = html_entity_decode(CRM_Core_Session::singleton()->readUserContext());
@@ -115,7 +117,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
             "tmp_folder={$temp_folder_path}&return_url={$return_link}&instant_download=1"
         );
 
-        //CRM_Utils_System::redirect($download_link);
+        CRM_Utils_System::redirect($download_link);
 
         $dl = new CRM_Civioffice_Form_Download();
         $dl->zipIfNeededAndDownload($temp_folder_path);
