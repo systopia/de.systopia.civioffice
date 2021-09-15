@@ -107,20 +107,24 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
 
         $temp_folder_path = str_replace('tmp::', '', $temp_folder_path); //fixme replace later
 
-        // Save current page link (e.g. search page)
-        $return_link = html_entity_decode(CRM_Core_Session::singleton()->readUserContext());
-        $return_link = base64_encode($return_link);
 
-        // Start a runner on the queue.
-        $download_link = CRM_Utils_System::url(
-            'civicrm/civioffice/download',
-            "tmp_folder={$temp_folder_path}&return_url={$return_link}&instant_download=1"
+        $files = scandir($temp_folder_path);
+        $file_name = $files[2];
+
+        $path_to_file = $temp_folder_path . DIRECTORY_SEPARATOR . $file_name;
+
+        $file_content = file_get_contents($path_to_file);
+        $mime = mime_content_type($path_to_file);
+
+
+        CRM_Utils_System::download(
+            'name.pdf',
+            $mime,
+            $file_content,
+            null,
+            true
         );
 
-        CRM_Utils_System::redirect($download_link);
-
-        $dl = new CRM_Civioffice_Form_Download();
-        $dl->zipIfNeededAndDownload($temp_folder_path);
 
         parent::postProcess();
     }
