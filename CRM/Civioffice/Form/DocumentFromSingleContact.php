@@ -87,39 +87,35 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
     public function postProcess() {
         $values = $this->exportValues();
 
+        $render_result = civicrm_api3('CiviOffice', 'convert', [
+            'document_uri'     => $values['document_uri'],
+            'entity_ids'       => [$this->contact_id],
+            'entity_type'      => 'contact',
+            'renderer_uri'     => $values['document_renderer_uri'],
+            'target_mime_type' => $values['target_mime_type']
+        ]);
 
+        // get the result (@todo adjust to proper APIv3 result)
+        $result_store_uri = $render_result[0];
 
-        $api_input['document_uri'] = $values['document_uri'];
-        $api_input['entity_ids'] = [$this->contact_id];
-        $api_input['entity_type'] = 'contact';
-        $api_input['renderer_uri'] = $values['document_renderer_uri'];
-        $api_input['target_mime_type'] = $values['target_mime_type'];
+        // get the document from the store
+        $store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
+        $rendered_documents = $store->getDocuments();
 
-        $result = civicrm_api3('CiviOffice', 'convert', $api_input);
+        // make sure nothing funny is going on...
+        if (count($rendered_documents) > 1) {
+            throw new Exception("Multiple documents returned!");
+        }
+        if (count($rendered_documents) == 0) {
+            throw new Exception("Document not rendered.");
+        }
 
-        $temp_folder_path = $result[0]; //fixme remove tmp:: --> helper method?
+        // and simply trigger the download
+        /** @var \CRM_Civioffice_Document $rendered_document */
+        $rendered_document = reset($rendered_documents);
+        $rendered_document->download();
 
-        $temp_folder_path = str_replace('tmp::', '', $temp_folder_path); //fixme replace later
-
-
-        $files = scandir($temp_folder_path);
-        $file_name = $files[2];
-
-        $path_to_file = $temp_folder_path . DIRECTORY_SEPARATOR . $file_name;
-
-        $file_content = file_get_contents($path_to_file);
-        $mime = mime_content_type($path_to_file);
-
-
-        CRM_Utils_System::download(
-            'name.pdf',
-            $mime,
-            $file_content,
-            null,
-            true
-        );
-
-
+        // we shouldn't get here
         parent::postProcess();
     }
 }

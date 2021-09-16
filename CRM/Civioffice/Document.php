@@ -120,4 +120,20 @@ abstract class CRM_Civioffice_Document
      *   is this file editable
      */
     public abstract function isEditable() : bool;
+
+    /**
+     * Helper function to offer the given document as a CiviCRM download,
+     *  i.e. post the data as file disposition and exit
+     */
+    public function download()
+    {
+        $data = $this->getContent();
+        CRM_Utils_System::download(
+            $this->getName(),
+            $this->getMimeType(),
+            $data,
+            null,
+            true
+        );
+    }
 }
