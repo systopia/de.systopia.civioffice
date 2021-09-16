@@ -109,10 +109,10 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
         if (count($rendered_documents) == 0) {
             throw new Exception("Document not rendered.");
         }
+        $rendered_document = reset($rendered_documents);
 
         // and simply trigger the download
         /** @var \CRM_Civioffice_Document $rendered_document */
-        $rendered_document = reset($rendered_documents);
         $rendered_document->download();
 
         // we shouldn't get here
