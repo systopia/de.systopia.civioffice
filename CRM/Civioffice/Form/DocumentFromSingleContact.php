@@ -26,11 +26,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
 
     public function buildQuickForm() {
 
-        $this->contact_id = CRM_Utils_Request::retrieve('cid', 'Int', $this);
-
-        if (empty($this->contact_id)) {
-            // todo redirect with error
-        }
+        $this->contact_id = CRM_Utils_Request::retrieve('cid', 'Int', $this, true);
 
         $this->assign('user_id', $this->contact_id);
 
