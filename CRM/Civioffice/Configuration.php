@@ -150,6 +150,33 @@ class CRM_Civioffice_Configuration
         return null; // not found
     }
 
+    /**
+     * Get the document store with the given URI
+     *
+     * @param string $document_store_uri
+     *   document store URI
+     *
+     * @return \CRM_Civioffice_DocumentStore|null
+     */
+    public static function getDocumentStore(string $document_store_uri): ?CRM_Civioffice_DocumentStore
+    {
+        // check for tmp store first
+        $tmp_store = CRM_Civioffice_DocumentStore_LocalTemp::getByURI($document_store_uri);
+        if ($tmp_store) {
+            return $tmp_store;
+        }
+
+        // then: check other stores
+        $other_stores = self::getDocumentStores(false);
+        /** @var CRM_Civioffice_DocumentStore $store */
+        foreach ($other_stores as $store) {
+            if ($store->isStoreURI($document_store_uri)) {
+                return $store;
+            }
+        }
+        return null; // not found
+    }
+
 
     /**
      * Get the home folder of the current user (usually webserver)

@@ -63,4 +63,12 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
      */
     public abstract function getDocumentByURI($uri);
 
+    /**
+     * Check if the given URI matches this store
+     *
+     * @param string $uri
+     *
+     * @return boolean
+     */
+    public abstract function isStoreURI($uri);
 }

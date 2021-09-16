@@ -104,4 +104,33 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
     {
         // todo zip logic could be moved into here
     }
+
+
+    /**
+     * Get a local document store by URI
+     *
+     * @return CRM_Civioffice_DocumentStore_LocalTemp|null
+     *     returns the local tmp store matching the uri, or null if it's not a local temp store URI
+     */
+    public static function getByURI($uri, $mime_type = 'application/pdf')
+    {
+        if (substr($uri, 0, 5) == 'tmp::') {
+            $folder = substr($uri, 5);
+            if (file_exists($folder)) {
+                return new CRM_Civioffice_DocumentStore_LocalTemp($mime_type, $folder);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check if the given URI matches this store
+     *
+     * @param string $uri
+     *
+     * @return boolean
+     */
+    public function isStoreURI($uri) {
+        return (substr($uri, 0, 5) == 'tmp::');
+    }
 }
