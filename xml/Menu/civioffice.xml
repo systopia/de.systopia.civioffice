@@ -6,6 +6,7 @@
     <title>CiviOffice Settings</title>
     <access_arguments>administer CiviCRM</access_arguments>
     <adminGroup>Communications</adminGroup>
+    <desc>Configure CiviOffice's components: document stores, renderers, and editors.</desc>
     <icon>admin/small/rela_type.png</icon>
   </item>
   <item>
