@@ -22,7 +22,11 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
 
+    /** @var integer contact ID */
     public $contact_id = null;
+
+    const UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE = 'civioffice_create_single_activity_type';
+    const UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT = 'civioffice_create_single_activity_attachment';
 
     public function buildQuickForm() {
 
@@ -79,12 +83,43 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
             ['class' => 'crm-select2']
         );
 
+        $this->add(
+            'select',
+            'activity_type_id',
+            E::ts("Create Activity"),
+            $this->getActivityTypes(),
+            false,
+            ['class' => 'crm-select2']
+        );
+
+        $this->add(
+            'checkbox',
+            'activity_attach_doc',
+            E::ts("Attach Rendered Document")
+        );
+
+        // set last values
+        try {
+            $this->setDefaults([
+               'activity_type_id' => Civi::contactSettings()->get(self::UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE),
+               'activity_attach_doc' => Civi::contactSettings()->get(self::UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT),
+           ]);
+        } catch (CRM_Core_Exception $ex) {
+            Civi::log()->warning("Couldn't restore defaults: " . $ex->getMessage());
+        }
+
         // add buttons
         $this->addButtons([
               [
                   'type' => 'preview',
                   'name' => E::ts("Preview"),
                   'icon' => 'fa-search',
+                  'isDefault' => FALSE,
+              ],
+              [
+                  'type' => 'close',
+                  'name' => E::ts("Close"),
+                  'icon' => 'fa-window-close-o',
                   'isDefault' => FALSE,
               ],
               [
@@ -95,6 +130,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
               ],
         ]);
 
+        // add script to handle the special buttons
         Civi::resources()->addScriptUrl(E::url('js/create_single_document.js'));
     }
 
@@ -102,35 +138,71 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
     public function postProcess() {
         $values = $this->exportValues();
 
-        $render_result = civicrm_api3('CiviOffice', 'convert', [
-            'document_uri'     => $values['document_uri'],
-            'entity_ids'       => [$this->contact_id],
-            'entity_type'      => 'contact',
-            'renderer_uri'     => $values['document_renderer_uri'],
-            'target_mime_type' => $values['target_mime_type']
+        // save defaults
+        try {
+            Civi::contactSettings()->set(self::UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE, $values['activity_type_id'] ?? '');
+            Civi::contactSettings()->set(self::UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT, $values['activity_attach_doc'] ?? 0);
+        } catch (CRM_Core_Exception $ex) {
+            Civi::log()->warning("Couldn't save defaults: " . $ex->getMessage());
+        }
+
+        // if we get here, the user pressed the 'close & create activity'
+        if (!empty($values['activity_type_id'])) {
+            $activity = civicrm_api3('Activity', 'create', [
+                'activity_type_id'   => $values['activity_type_id'],
+                'subject'            => E::ts("Document (CiviOffice)"),
+                'status_id'          => 'Completed',
+                'activity_date_time' => date("YmdHis"),
+                'target_id'          => [$this->contact_id],
+            ]);
+
+            // generate & link attachment if requested
+            if (!empty($values['activity_attach_doc'])) {
+                // render document (again)
+                $render_result = civicrm_api3('CiviOffice', 'convert', [
+                    'document_uri'     => $values['document_uri'],
+                    'entity_ids'       => [$this->contact_id],
+                    'entity_type'      => 'contact',
+                    'renderer_uri'     => $values['document_renderer_uri'],
+                    'target_mime_type' => $values['target_mime_type']
+                ]);
+                $result_store_uri = $render_result[0];
+                $store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
+                $rendered_documents = $store->getDocuments();
+                /** @var CRM_Civioffice_Document $rendered_document */
+                $rendered_document = reset($rendered_documents);
+
+                // attach rendered document
+                $attachments = [
+                    'attachFile_1' => [
+                        'location' => $rendered_document->getLocalTempCopy(),
+                        'type' => $rendered_document->getMimeType()
+                    ]
+                ];
+
+                CRM_Core_BAO_File::processAttachment($attachments, 'civicrm_activity', $activity['id']);
+            }
+        }
+    }
+
+
+
+
+    /**
+     * Get a list of eligible activity types
+     */
+    protected function getActivityTypes()
+    {
+        $types = ['' => E::ts("- none -")];
+        $type_query = civicrm_api3('OptionValue', 'get', [
+            'option_group_id' => 'activity_type',
+            'is_reserved' => 0,
+            'option.limit' => 0,
+            'return' => 'value,label'
         ]);
-
-        // get the result (@todo adjust to proper APIv3 result)
-        $result_store_uri = $render_result[0];
-
-        // get the document from the store
-        $store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
-        $rendered_documents = $store->getDocuments();
-
-        // make sure nothing funny is going on...
-        if (count($rendered_documents) > 1) {
-            throw new Exception("Multiple documents returned!");
+        foreach ($type_query['values'] as $type) {
+            $types[$type['value']] = $type['label'];
         }
-        if (count($rendered_documents) == 0) {
-            throw new Exception("Document not rendered.");
-        }
-        $rendered_document = reset($rendered_documents);
-
-        // and simply trigger the download
-        /** @var \CRM_Civioffice_Document $rendered_document */
-        $rendered_document->download();
-
-        // we shouldn't get here
-        parent::postProcess();
+        return $types;
     }
 }

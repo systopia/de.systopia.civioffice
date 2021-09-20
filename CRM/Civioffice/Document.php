@@ -136,4 +136,17 @@ abstract class CRM_Civioffice_Document
             true
         );
     }
+
+    /**
+     * Helper function to offer the given document data
+     *   as a local tmp file
+     *
+     * @return string temporary file containing the file
+     */
+    public function getLocalTempCopy()
+    {
+        $tmp_file_name = tempnam(sys_get_temp_dir(), $this->getName());
+        file_put_contents($tmp_file_name, $this->getContent());
+        return $tmp_file_name;
+    }
 }
