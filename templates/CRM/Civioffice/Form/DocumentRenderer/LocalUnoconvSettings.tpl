@@ -15,14 +15,14 @@
 {crmScope extensionKey='de.systopia.civioffice'}
 
   <div class="crm-section">
-    <div class="help">{ts}Please provide a Unoconv binary or a wrapper script. Wrapper scripts like the one provided in /scripts prevent unoconv from running parallel as this is causing problems.{/ts}</div>
+    <div class="help">{ts}Please provide the path of your Unoconv binary.{/ts}</div>
     <div class="label">{$form.unoconv_binary_path.label}</div>
     <div class="content">{$form.unoconv_binary_path.html}</div>
     <div class="clear"></div>
   </div>
 
   <div class="crm-section">
-    <div class="help">{ts}We strongly recommend creating a system wide lock file on this server to synchronise access. You can create such a file doing this in the server console:<br><code>touch /some/accessible/path/unoconv.lock && chmod 777 /some/accessible/path/unoconv.lock</code>{/ts}</div>
+    <div class="help">{ts}We strongly recommend creating a system wide lock file on this server to synchronise access. You can create such a file doing this in the server console:<br><code>touch /some/accessible/path/unoconv.lock && chmod 777 /some/accessible/path/unoconv.lock</code><br>Please note: This path needs to be equal in every civicrm environment on this server. Otherwise locking is only active for this very civicrm instance!{/ts}</div>
     <div class="label">{$form.unoconv_lock_file.label}</div>
     <div class="content">{$form.unoconv_lock_file.html}</div>
     <div class="clear"></div>
