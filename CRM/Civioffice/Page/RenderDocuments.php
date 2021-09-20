@@ -27,7 +27,7 @@ class CRM_Civioffice_Page_RenderDocuments extends CRM_Core_Page
         $null = null;
 
         // get the input
-        $document_uri = CRM_Utils_Request::retrieve('document', 'String', $null, true);
+        $document_uri = CRM_Utils_Request::retrieve('document_uri', 'String', $null, true);
         $entity_ids = CRM_Utils_Request::retrieve('contact_ids', 'CommaSeparatedIntegers', $null, true);
         $renderer_uri = CRM_Utils_Request::retrieve('renderer_uri', 'String', $null, true);
         $target_mime_type = CRM_Utils_Request::retrieve('target_mime_type', 'String', $null, false, CRM_Civioffice_MimeType::PDF);
@@ -37,8 +37,7 @@ class CRM_Civioffice_Page_RenderDocuments extends CRM_Core_Page
         $document_uri = base64_decode($document_uri);
         $entity_ids = explode(',', $entity_ids);
         $renderer_uri = base64_decode($renderer_uri);
-
-        // todo: input sanitation?
+        $target_mime_type = base64_decode($target_mime_type);
 
         // then: run the API
         $render_result = civicrm_api3('CiviOffice', 'convert', [

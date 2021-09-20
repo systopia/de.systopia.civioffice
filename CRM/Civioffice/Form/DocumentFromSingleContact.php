@@ -80,7 +80,22 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
         );
 
         // add buttons
-        CRM_Core_Form::addDefaultButtons(E::ts("Generate File"));
+        $this->addButtons([
+              [
+                  'type' => 'preview',
+                  'name' => E::ts("Preview"),
+                  'icon' => 'fa-search',
+                  'isDefault' => FALSE,
+              ],
+              [
+                  'type' => 'submit',
+                  'name' => E::ts("Close & Create Activity"),
+                  'icon' => 'fa-file-pdf-o',
+                  'isDefault' => FALSE,
+              ],
+        ]);
+
+        Civi::resources()->addScriptUrl(E::url('js/create_single_document.js'));
     }
 
 
