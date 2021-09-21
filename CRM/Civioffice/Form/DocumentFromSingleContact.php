@@ -105,7 +105,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
                'activity_attach_doc' => Civi::contactSettings()->get(self::UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT),
            ]);
         } catch (CRM_Core_Exception $ex) {
-            Civi::log()->warning("Couldn't restore defaults: " . $ex->getMessage());
+            Civi::log()->warning("CiviOffice: Couldn't restore defaults: " . $ex->getMessage());
         }
 
         // add buttons
@@ -143,7 +143,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
             Civi::contactSettings()->set(self::UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE, $values['activity_type_id'] ?? '');
             Civi::contactSettings()->set(self::UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT, $values['activity_attach_doc'] ?? 0);
         } catch (CRM_Core_Exception $ex) {
-            Civi::log()->warning("Couldn't save defaults: " . $ex->getMessage());
+            Civi::log()->warning("CiviOffice: Couldn't save defaults: " . $ex->getMessage());
         }
 
         // if we get here, the user pressed the 'close & create activity'
