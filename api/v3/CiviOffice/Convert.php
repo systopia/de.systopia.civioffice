@@ -85,5 +85,5 @@ function civicrm_api3_civi_office_convert($params)
 
     $uri = $temp_store->getURI();
 
-    return [$uri];
+    return civicrm_api3_create_success([$uri], $params, 'CiviOffice', 'convert');
 }
