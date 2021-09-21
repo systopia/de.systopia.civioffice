@@ -112,7 +112,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
      * @return CRM_Civioffice_DocumentStore_LocalTemp|null
      *     returns the local tmp store matching the uri, or null if it's not a local temp store URI
      */
-    public static function getByURI($uri, $mime_type = 'application/pdf')
+    public static function getByURI($uri, $mime_type = CRM_Civioffice_MimeType::PDF)
     {
         if (substr($uri, 0, 5) == 'tmp::') {
             $folder = substr($uri, 5);
