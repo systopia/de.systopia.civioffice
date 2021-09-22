@@ -50,7 +50,7 @@ class CRM_Civioffice_Page_RenderDocuments extends CRM_Core_Page
 
         // get the result (@todo adjust to proper APIv3 result)
         $result_store_uri = $render_result[0];
-        $result_store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri, $target_mime_type);
+        $result_store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
         $rendered_documents = $result_store->getDocuments();
 
         switch (count($rendered_documents)) {

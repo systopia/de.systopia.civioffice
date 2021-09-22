@@ -158,10 +158,10 @@ class CRM_Civioffice_Configuration
      *
      * @return \CRM_Civioffice_DocumentStore|null
      */
-    public static function getDocumentStore(string $document_store_uri, string $mime_type = CRM_Civioffice_MimeType::PDF): ?CRM_Civioffice_DocumentStore
+    public static function getDocumentStore(string $document_store_uri): ?CRM_Civioffice_DocumentStore
     {
         // check for tmp store first
-        $tmp_store = CRM_Civioffice_DocumentStore_LocalTemp::getByURI($document_store_uri, $mime_type); // fixme to allow other mimetypes
+        $tmp_store = CRM_Civioffice_DocumentStore_LocalTemp::getByURI($document_store_uri);
         if ($tmp_store) {
             return $tmp_store;
         }
