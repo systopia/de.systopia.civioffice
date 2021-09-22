@@ -166,7 +166,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
                     'renderer_uri'     => $values['document_renderer_uri'],
                     'target_mime_type' => $values['target_mime_type']
                 ]);
-                $result_store_uri = $render_result[0];
+                $result_store_uri = $render_result['values'][0];
                 $store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
                 $rendered_documents = $store->getDocuments();
                 /** @var CRM_Civioffice_Document $rendered_document */
