@@ -173,6 +173,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
                     'target_mime_type' => $values['target_mime_type']
                 ]);
                 $result_store_uri = $render_result['values'][0];
+                // fixme: Bug: Wrong mimetype (pdf) is set here if pdf or docx has been selected before. As a result a docx file will be downloaded as pdf
                 $store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
                 $rendered_documents = $store->getDocuments();
                 /** @var CRM_Civioffice_Document $rendered_document */
