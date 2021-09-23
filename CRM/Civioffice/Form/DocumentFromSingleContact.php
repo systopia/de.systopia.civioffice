@@ -62,6 +62,12 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
         foreach ($config->getDocumentStores(true) as $document_store) {
             foreach ($document_store->getDocuments() as $document) {  // todo: recursive
                 /** @var CRM_Civioffice_Document $document */
+
+                // TODO: Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
+                if (!CRM_Civioffice_MimeType::hasSpecificFileNameExtension($document->getName(), CRM_Civioffice_MimeType::DOCX)) {
+                    continue; // for now only allow/return docx files
+                }
+
                 $document_list[$document->getURI()] = "[{$document_store->getName()}] {$document->getName()}";
             }
         }

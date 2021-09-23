@@ -72,10 +72,6 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
             if (preg_match("/^[.].*$/", $file_name)) {
                 continue; // we don't want anything that starts with . (including . and ..)
             }
-            // TODO: Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
-            if (!CRM_Civioffice_MimeType::hasSpecificFileNameExtension($file_name, $this->mime_type)) {
-                continue; // only allow docx files
-            }
 
             $base_folder = substr($full_path . DIRECTORY_SEPARATOR . $file_name, strlen($this->base_folder) + 1);
             $documents[] = new CRM_Civioffice_Document_Local($this, $this->mime_type, $base_folder, $this->readonly);
