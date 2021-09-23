@@ -22,7 +22,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
 {
     public function buildQuickForm()
     {
-        $this->setTitle(E::ts("CiviOffice - Generate Documents"));
+        $this->setTitle(E::ts("CiviOffice - Generate multiple Documents"));
 
         $config = CRM_Civioffice_Configuration::getConfig();
 

@@ -34,7 +34,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
 
         $this->assign('user_id', $this->contact_id);
 
-        $this->setTitle(E::ts("CiviOffice - Generate Document"));
+        $this->setTitle(E::ts("CiviOffice - Generate a single Document"));
 
         $config = CRM_Civioffice_Configuration::getConfig();
 
