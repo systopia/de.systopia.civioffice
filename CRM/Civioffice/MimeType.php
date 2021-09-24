@@ -30,16 +30,26 @@ abstract class CRM_Civioffice_MimeType
      */
     public static function mapMimeTypeToFileExtension($mime_type): string
     {
-        switch ($mime_type) {
-            case self::PDF:
-                return 'pdf';
-            case self::DOCX:
-                return 'docx';
-            case self::ZIP:
-                return 'zip';
-            default:
-                throw new Exception('Mime types other than pdf and docx yet need to be implemented');
+        $mapping = self::mimeTypeToFileExtensionMap();
+        if (isset($mapping[$mime_type])) {
+            return $mapping[$mime_type];
+        } else {
+            throw new Exception('Unknown mime type "{$mime_type}", needs to be implemented.');
         }
+    }
+
+    /**
+     * Get a list of mime type to file extension
+     *
+     * @return array
+     */
+    public static function mimeTypeToFileExtensionMap()
+    {
+        return [
+            self::PDF  => 'pdf',
+            self::DOCX => 'docx',
+            self::ZIP  => 'zip',
+        ];
     }
 
     /**

@@ -27,19 +27,16 @@ cj(document).ready(function() {
       let preview_button = cj("button[data-identifier=_qf_DocumentFromSingleContact_preview]");
       if (preview_button.length) {
         // we have found the button: let's manipulate
-        console.log("button found");
         click_handler_registered = true;
         preview_button
           .removeAttr('data-identifier')
           .off()
           .click(function(event) {
-            console.log("clicked now");
             event.stopPropagation();
             trigger_preview_download();
           });
       } else {
-        // no problem, we'll try again later
-        console.log("button NOT found");
+        // probably too early...we'll try again later
       }
     }
   }
@@ -47,14 +44,16 @@ cj(document).ready(function() {
   /** Trigger the download of the configured file */
   function trigger_preview_download() {
     // generate a href object an click on it :)
+    let render_config = CRM.vars.civioffice_single_document;
     let download_link = document.createElement("a");
-    download_link.setAttribute('download', "todo.pdf");
-    download_link.href = "http://localhost/office/civicrm/civioffice/render?";
+    download_link.setAttribute('download',
+      render_config.document_name
+        + render_config.mime2suffix[cj("#target_mime_type").val()]);
+    download_link.href = render_config.renderer_url + "?";
     download_link.href += "document_uri=" + btoa(cj("#document_uri").val());
     download_link.href += "&renderer_uri=" + btoa(cj("#document_renderer_uri").val());
     download_link.href += "&target_mime_type=" + btoa(cj("#target_mime_type").val());
-    download_link.href += "&contact_ids=2"; // todo
-    console.log(download_link.href);
+    download_link.href += "&contact_ids=" + render_config.contact_id;
     document.body.appendChild(download_link);
     download_link.click();
     download_link.remove();

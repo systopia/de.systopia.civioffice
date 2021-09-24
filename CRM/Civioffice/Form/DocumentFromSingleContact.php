@@ -138,6 +138,12 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
 
         // add script to handle the special buttons
         Civi::resources()->addScriptUrl(E::url('js/create_single_document.js'));
+        Civi::resources()->addVars('civioffice_single_document', [
+            'contact_id'    => $this->contact_id,
+            'renderer_url'  => CRM_Utils_System::url('civicrm/civioffice/render'),
+            'document_name' => E::ts('document.'),
+            'mime2suffix'   => CRM_Civioffice_MimeType::mimeTypeToFileExtensionMap(),
+        ]);
     }
 
 
