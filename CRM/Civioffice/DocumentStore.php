@@ -63,4 +63,40 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
      */
     public abstract function getDocumentByURI($uri);
 
+    /**
+     * Check if the given URI matches this store
+     *
+     * @param string $uri
+     *
+     * @return boolean
+     */
+    public abstract function isStoreURI($uri);
+
+    /**
+     * Generate a zipfile of all documents contained,
+     *  and trigger download
+     */
+    public function downloadZipped()
+    {
+        // ZIP
+        $tmp_file = tmpfile(); // todo: use buffer instead of tmp file
+        $zip = new ZipArchive();
+        $zip->open($tmp_file, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
+
+        // add all documents
+        foreach ($this->getDocuments() as $document) {
+            /** @var \CRM_Civioffice_Document $document */
+            $zip->addFromString($document->getName(), $document->getContent());
+        }
+        $zip->close();
+
+        $data = file_get_contents($tmp_file);
+        CRM_Utils_System::download(
+            $this->getName(),
+            CRM_Civioffice_MimeType::ZIP,
+            $data,
+            null,
+            true
+        );
+    }
 }

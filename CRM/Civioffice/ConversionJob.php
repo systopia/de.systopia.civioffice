@@ -18,10 +18,10 @@ use CRM_Civioffice_ExtensionUtil as E;
 class CRM_Civioffice_ConversionJob
 {
     /**
-     * @var string $renderer_id
-     *  ID which specifies the selected renderer being used
+     * @var string $renderer_uri
+     *  URI which specifies the selected renderer being used
      */
-    protected $renderer_id;
+    protected $renderer_uri;
 
     /**
      * @var $document_uri
@@ -56,9 +56,9 @@ class CRM_Civioffice_ConversionJob
      */
     public $title;
 
-    public function __construct($renderer_id, $document_uri, $temp_folder_path, $entity_IDs, $entity_type, $target_mime_type, $title)
+    public function __construct($renderer_uri, $document_uri, $temp_folder_path, $entity_IDs, $entity_type, $target_mime_type, $title)
     {
-        $this->renderer_id = $renderer_id;
+        $this->renderer_uri = $renderer_uri;
         $this->document_uri = $document_uri;
         $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp($target_mime_type, $temp_folder_path);
         $this->entity_IDs = $entity_IDs;
@@ -69,14 +69,39 @@ class CRM_Civioffice_ConversionJob
 
     public function run(): bool
     {
-        $configuration = CRM_Civioffice_Configuration::getConfig();
+        // run the API
+        $render_result = civicrm_api3('CiviOffice', 'convert', [
+            'document_uri'     => $this->document_uri,
+            'entity_ids'       => $this->entity_IDs,
+            'entity_type'      => $this->entity_type,
+            'renderer_uri'     => $this->renderer_uri,
+            'target_mime_type' => $this->target_mime_type
+        ]);
 
-        $document_renderer = $configuration->getDocumentRenderer($this->renderer_id);
-        $document = $configuration->getDocument($this->document_uri);
+        $result_store_uri = $render_result['values'][0];
+        $result_store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
 
-        $documents = $document_renderer->render($document, $this->entity_IDs, $this->temp_store, $this->target_mime_type, $this->entity_type);
-        // TODO: Determine what to do with returned $documents array
+        $source_folder = $result_store->getBaseFolder();
+        $destination_folder = $this->temp_store->getBaseFolder();
+
+        // copy files from source to target and overwrite existing files on retry
+        $copy_successful = shell_exec("cp -rf $source_folder/* $destination_folder");
+
+        if (!$this->temp_store->isReadOnly()) {
+            $this->removeFilesAndFolder($source_folder);
+        }
 
         return true;
+    }
+
+    private function removeFilesAndFolder(string $folder_path): void
+    {
+        // delete tmp folder
+        foreach (scandir($folder_path) as $file) {
+            if ($file != '.' && $file != '..') {
+                unlink($folder_path . DIRECTORY_SEPARATOR . $file);
+            }
+        }
+        rmdir($folder_path);
     }
 }

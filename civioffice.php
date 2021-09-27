@@ -25,10 +25,11 @@ function civioffice_civicrm_summaryActions(&$actions, $contactID)
     if (CRM_Core_Permission::check('administer CiviCRM')) // todo correct?
     {
         $actions['open_document_with_single_contact'] = [
+            'ref'         => 'civioffice-render-single',
             'title'       => E::ts('Create CiviOffice document'),
-            'weight'      => 2410,
-            'ref'         => 'open_document_with_single_contact', // todo: needed for?
-            'key'         => 'open_document_with_single_contact', // todo: needed for?
+            'weight'      => -110, // to the top!
+            'key'         => 'open_document_with_single_contact',
+            'class'       => 'medium-popup',
             'href'        => CRM_Utils_System::url('civicrm/civioffice/document_from_single_contact', "reset=1"), // fixme contact id is passed twice as pid
             'permissions' => ['view all contacts']
         ];

@@ -23,8 +23,8 @@
 
 
   <div class="crm-section">
-    <div class="label">{$form.document_renderer_id.label}</div>
-    <div class="content">{$form.document_renderer_id.html}</div>
+    <div class="label">{$form.document_renderer_uri.label}</div>
+    <div class="content">{$form.document_renderer_uri.html}</div>
     <div class="clear"></div>
   </div>
 
@@ -35,8 +35,14 @@
   </div>
 
   <div class="crm-section">
-    <div class="label">{$form.batch_size.label}</div>
-    <div class="content">{$form.batch_size.html}</div>
+    <div class="label">{$form.activity_type_id.label}</div>
+    <div class="content">{$form.activity_type_id.html}</div>
+    <div class="clear"></div>
+  </div>
+
+  <div class="crm-section">
+    <div class="label">{$form.activity_attach_doc.label}</div>
+    <div class="content">{$form.activity_attach_doc.html}</div>
     <div class="clear"></div>
   </div>
 
@@ -44,5 +50,4 @@
   <div class="crm-submit-buttons">
     {include file="CRM/common/formButtons.tpl" location="bottom"}
   </div>
-
 {/crmScope}

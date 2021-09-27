@@ -34,14 +34,15 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     /** @var boolean should there be subfolders? */
     protected $has_subfolders;
 
-    public function __construct($id, $name, $mime_type, $readonly, $has_subfolders)
+    public function __construct($uri, $name, $mime_type, $readonly, $has_subfolders)
     {
-        parent::__construct($id, $name);
+        parent::__construct($uri, $name);
         $this->base_folder = Civi::settings()->get(self::LOCAL_STATIC_PATH_SETTINGS_KEY);
         $this->mime_type = $mime_type;
         $this->readonly = $readonly;
         $this->has_subfolders = $has_subfolders;
     }
+
 
     /**
      * Get a list of available documents
@@ -70,10 +71,6 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
         foreach ($file_list as $file_name) {
             if (preg_match("/^[.].*$/", $file_name)) {
                 continue; // we don't want anything that starts with . (including . and ..)
-            }
-            // TODO: Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
-            if (!CRM_Civioffice_MimeType::hasSpecificFileNameExtension($file_name, CRM_Civioffice_MimeType::DOCX)) {
-                continue; // only allow docx files
             }
 
             $base_folder = substr($full_path . DIRECTORY_SEPARATOR . $file_name, strlen($this->base_folder) + 1);
@@ -210,4 +207,14 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
         return E::ts("A local folder is needed if documents are stored and managed on the server. CiviOffice only uses it for read access. This folder could be a pre existing shared folder of the organisation. A local folder is not being used for uploaded documents.<br> All documents at: <code>%1</code>", [1 => $this->base_folder]);
     }
 
+    /**
+     * Check if the given URI matches this store
+     *
+     * @param string $uri
+     *
+     * @return boolean
+     */
+    public function isStoreURI($uri) {
+        return (substr($uri, 0, 7) == 'local::');
+    }
 }

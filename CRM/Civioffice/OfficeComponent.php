@@ -20,16 +20,16 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 abstract class CRM_Civioffice_OfficeComponent
 {
-    /** @var string component ID */
-    protected $id;
+    /** @var string component uri */
+    protected $uri;
 
     /** @var string component name */
     protected $name;
 
-    protected function __construct($id, $name)
+    protected function __construct($uri, $name)
     {
+        $this->uri = $uri;
         $this->name = $name;
-        $this->id = $id;
     }
 
     /**
@@ -64,9 +64,9 @@ abstract class CRM_Civioffice_OfficeComponent
      * @return string
      *   ID
      */
-    public function getID(): string
+    public function getURI(): string
     {
-        return $this->id;
+        return $this->uri;
     }
 
     /**

@@ -112,16 +112,16 @@ class CRM_Civioffice_Configuration
     /**
      * Find/get the document renderer with the given URI
      *
-     * @param string $document_renderer_id
+     * @param string $document_renderer_uri
      *   document renderer URI
      *
      * @return CRM_Civioffice_DocumentRenderer|null
      */
-    public function getDocumentRenderer(string $document_renderer_id)
+    public function getDocumentRenderer(string $document_renderer_uri)
     {
         $document_renderers = self::getDocumentRenderers(false);
         foreach ($document_renderers as $dr) {
-            if ($document_renderer_id == $dr->getID()) {
+            if ($document_renderer_uri == $dr->getURI()) {
                 return $dr;
             }
         }
@@ -145,6 +145,33 @@ class CRM_Civioffice_Configuration
             $document = $store->getDocumentByURI($document_uri);
             if ($document) {
                 return $document;
+            }
+        }
+        return null; // not found
+    }
+
+    /**
+     * Get the document store with the given URI
+     *
+     * @param string $document_store_uri
+     *   document store URI
+     *
+     * @return \CRM_Civioffice_DocumentStore|null
+     */
+    public static function getDocumentStore(string $document_store_uri): ?CRM_Civioffice_DocumentStore
+    {
+        // check for tmp store first
+        $tmp_store = CRM_Civioffice_DocumentStore_LocalTemp::getByURI($document_store_uri);
+        if ($tmp_store) {
+            return $tmp_store;
+        }
+
+        // then: check other stores
+        $other_stores = self::getDocumentStores(false);
+        /** @var CRM_Civioffice_DocumentStore $store */
+        foreach ($other_stores as $store) {
+            if ($store->isStoreURI($document_store_uri)) {
+                return $store;
             }
         }
         return null; // not found

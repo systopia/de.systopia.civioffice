@@ -22,7 +22,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
 {
     public function buildQuickForm()
     {
-        $this->setTitle(E::ts("CiviOffice - Generate Documents"));
+        $this->setTitle(E::ts("CiviOffice - Generate multiple Documents"));
 
         $config = CRM_Civioffice_Configuration::getConfig();
 
@@ -33,11 +33,11 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             foreach ($dr->getSupportedOutputMimeTypes() as $mime_type) {
                 $output_mimetypes[$mime_type] = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
             }
-            $document_renderer_list[$dr->getID()] = $dr->getName();
+            $document_renderer_list[$dr->getURI()] = $dr->getName();
         }
         $this->add(
             'select',
-            'document_renderer_id',
+            'document_renderer_uri',
             E::ts("Document Renderer"),
             $document_renderer_list,
             true,
@@ -50,7 +50,15 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         foreach ($config->getDocumentStores(true) as $document_store) {
             foreach ($document_store->getDocuments() as $document) {  // todo: recursive
                 /** @var CRM_Civioffice_Document $document */
-                $document_list[$document->getURI()] = "[{$document_store->getName()}] {$document->getName()}";
+                foreach ($config->getDocumentRenderers(true) as $dr) {
+                    foreach ($dr->getSupportedMimeTypes() as $mime_type) {
+                        // TODO: Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
+                        if (CRM_Civioffice_MimeType::hasSpecificFileNameExtension($document->getName(), $mime_type)) {
+                            // only return if mimetype matches with supported mimetypes
+                            $document_list[$document->getURI()] = "[{$document_store->getName()}] {$document->getName()}";
+                        }
+                    }
+                }
             }
         }
         $this->add(
@@ -114,7 +122,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         foreach ($chunked_entities as $entity_IDs) {
             $queue->createItem(
                 $job = new CRM_Civioffice_ConversionJob(
-                    $values['document_renderer_id'],
+                    $values['document_renderer_uri'],
                     $values['document_uri'],
                     $temp_folder_path,
                     $entity_IDs,

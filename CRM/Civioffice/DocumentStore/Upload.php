@@ -220,4 +220,14 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
         }
     }
 
+    /**
+     * Check if the given URI matches this store
+     *
+     * @param string $uri
+     *
+     * @return boolean
+     */
+    public function isStoreURI($uri) {
+        return (substr($uri, 0, 7) == 'upload:');
+    }
 }

@@ -43,7 +43,7 @@ class CRM_Civioffice_Document_Local extends CRM_Civioffice_Document
     public function getContent() : string
     {
         // todo: exceptions
-        return file_get_contents($this->local_path);
+        return file_get_contents($this->getAbsolutePath());
     }
 
     /**

@@ -84,7 +84,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
      * @return void
      * @throws \Exception
      */
-    private function zipIfNeededAndDownload(string $folder_path): void
+    public function zipIfNeededAndDownload(string $folder_path): void
     {
         // TODO: verify folder
         if (!preg_match('#civioffice_\w+$#', $folder_path)) {

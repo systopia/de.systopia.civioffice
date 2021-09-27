@@ -6,6 +6,7 @@
     <title>CiviOffice Settings</title>
     <access_arguments>administer CiviCRM</access_arguments>
     <adminGroup>Communications</adminGroup>
+    <desc>Configure CiviOffice's components: document stores, renderers, and editors.</desc>
     <icon>admin/small/rela_type.png</icon>
   </item>
   <item>
@@ -42,6 +43,12 @@
     <path>civicrm/civioffice/document_from_single_contact</path>
     <page_callback>CRM_Civioffice_Form_DocumentFromSingleContact</page_callback>
     <title>DocumentFromSingleContact</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civioffice/render</path>
+    <page_callback>CRM_Civioffice_Page_RenderDocuments</page_callback>
+    <title>Render Document(s)</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
 </menu>
