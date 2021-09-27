@@ -185,11 +185,12 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
                 /** @var CRM_Civioffice_Document $rendered_document */
                 $rendered_document = reset($rendered_documents);
 
+                $path_of_local_copy = $rendered_document->getLocalTempCopy();
                 // attach rendered document
                 $attachments = [
                     'attachFile_1' => [
-                        'location' => $rendered_document->getLocalTempCopy(),
-                        'type' => $rendered_document->getMimeType()
+                        'location' => $path_of_local_copy,
+                        'type' => mime_content_type($path_of_local_copy)
                     ]
                 ];
 
