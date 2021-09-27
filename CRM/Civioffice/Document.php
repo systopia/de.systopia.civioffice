@@ -145,7 +145,7 @@ abstract class CRM_Civioffice_Document
      */
     public function getLocalTempCopy()
     {
-        $tmp_file_name = tempnam(sys_get_temp_dir(),'') . '_' . $file_name = $this->getName();
+        $tmp_file_name = tempnam(sys_get_temp_dir(),'') . '_' . $this->getName();
         file_put_contents($tmp_file_name, $this->getContent());
         return $tmp_file_name;
     }
