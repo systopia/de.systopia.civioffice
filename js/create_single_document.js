@@ -57,7 +57,6 @@ cj(document).ready(function() {
     document.body.appendChild(download_link);
     download_link.click();
     download_link.remove();
-    event.stopPropagation();
   }
 
 
