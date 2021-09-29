@@ -26,6 +26,10 @@ class CRM_Civioffice_Page_RenderDocuments extends CRM_Core_Page
         CRM_Utils_System::setTitle(E::ts('CiviOffice - Render Document(s)'));
         $null = null;
 
+        // unset snippet stuff
+        unset($_GET['snippet']);
+        unset($_REQUEST['snippet']);
+
         // get the input
         $document_uri = CRM_Utils_Request::retrieve('document_uri', 'String', $null, true);
         $entity_ids = CRM_Utils_Request::retrieve('contact_ids', 'CommaSeparatedIntegers', $null, true);

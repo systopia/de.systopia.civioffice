@@ -124,13 +124,13 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
               ],
               [
                   'type' => 'close',
-                  'name' => E::ts("Close"),
+                  'name' => E::ts("Cancel"),
                   'icon' => 'fa-window-close-o',
                   'isDefault' => FALSE,
               ],
               [
                   'type' => 'submit',
-                  'name' => E::ts("Close & Create Activity"),
+                  'name' => E::ts("Download Document"),
                   'icon' => 'fa-file-pdf-o',
                   'isDefault' => FALSE,
               ],
@@ -158,7 +158,21 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
             Civi::log()->warning("CiviOffice: Couldn't save defaults: " . $ex->getMessage());
         }
 
-        // if we get here, the user pressed the 'close & create activity'
+        // render document
+        $render_result = civicrm_api3('CiviOffice', 'convert', [
+            'document_uri'     => $values['document_uri'],
+            'entity_ids'       => [$this->contact_id],
+            'entity_type'      => 'contact',
+            'renderer_uri'     => $values['document_renderer_uri'],
+            'target_mime_type' => $values['target_mime_type']
+        ]);
+        $result_store_uri = $render_result['values'][0];
+        $store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
+        $rendered_documents = $store->getDocuments();
+        /** @var CRM_Civioffice_Document $rendered_document */
+        $rendered_document = reset($rendered_documents);
+
+        // if user wants an activity, create + add the document
         if (!empty($values['activity_type_id'])) {
             $activity = civicrm_api3('Activity', 'create', [
                 'activity_type_id'   => $values['activity_type_id'],
@@ -170,21 +184,6 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
 
             // generate & link attachment if requested
             if (!empty($values['activity_attach_doc'])) {
-                // render document (again)
-                $render_result = civicrm_api3('CiviOffice', 'convert', [
-                    'document_uri'     => $values['document_uri'],
-                    'entity_ids'       => [$this->contact_id],
-                    'entity_type'      => 'contact',
-                    'renderer_uri'     => $values['document_renderer_uri'],
-                    'target_mime_type' => $values['target_mime_type']
-                ]);
-                $result_store_uri = $render_result['values'][0];
-                // fixme: Bug: Wrong mimetype (pdf) is set here if pdf or docx has been selected before. As a result a docx file will be downloaded as pdf
-                $store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
-                $rendered_documents = $store->getDocuments();
-                /** @var CRM_Civioffice_Document $rendered_document */
-                $rendered_document = reset($rendered_documents);
-
                 $path_of_local_copy = $rendered_document->getLocalTempCopy();
                 // attach rendered document
                 $attachments = [
@@ -193,10 +192,16 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
                         'type' => mime_content_type($path_of_local_copy)
                     ]
                 ];
-
                 CRM_Core_BAO_File::processAttachment($attachments, 'civicrm_activity', $activity['id']);
             }
         }
+
+        // finally: download the document (render it again)
+        $render_url = CRM_Utils_System::url('civicrm/civioffice/render', 'contact_ids=2');
+        $render_url .= "&document_uri=" . base64_encode($values['document_uri']);
+        $render_url .= "&renderer_uri=" . base64_encode($values['document_renderer_uri']);
+        $render_url .= "&target_mime_type=" . base64_encode($values['target_mime_type']);
+        CRM_Utils_System::redirect($render_url);
     }
 
 
