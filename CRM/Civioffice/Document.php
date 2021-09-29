@@ -37,7 +37,7 @@ abstract class CRM_Civioffice_Document
     {
         $this->uri = $uri;
         $this->name = $name;
-        $this->mime_type = $mime_type;
+        $this->mime_type = null;
         $this->document_store = $document_store;
     }
 
@@ -61,6 +61,10 @@ abstract class CRM_Civioffice_Document
      */
     public function getMimeType() : string
     {
+        // detect and set mimetype if null
+        if (empty($this->mime_type)) {
+            $this->mime_type = mime_content_type($this->getAbsolutePath());
+        }
         return $this->mime_type;
     }
 
