@@ -28,6 +28,7 @@ function _civicrm_api3_civi_office_convert_spec(&$spec)
     $spec['document_uri'] = [
         'name'         => 'document_uri',
         'api.required' => 1,
+        'type' => CRM_Utils_Type::T_STRING,
         'title'        => E::ts('Document URI. E.g.: "local::common/vorlage_kontakte_und_zuwendungen.docx"'),
         'description'  => E::ts('URI of document.'),
     ];
@@ -40,12 +41,14 @@ function _civicrm_api3_civi_office_convert_spec(&$spec)
     $spec['entity_type'] = [
         'name'         => 'entity_type',
         'api.required' => 1,
+        'type' => CRM_Utils_Type::T_STRING,
         'title'        => E::ts('Entity type. E.g.: "contact", "contribution",...'),
         'description'  => E::ts('Entity type for token replacement'),
     ];
     $spec['renderer_uri']            = [
         'name'         => 'renderer_uri',
         'api.required' => 1,
+        'type' => CRM_Utils_Type::T_STRING,
         'title'        => E::ts('Renderer URI. E.g.: "unoconv-local"'),
         'description'  => E::ts('URI of the renderer.'),
     ];
@@ -53,6 +56,7 @@ function _civicrm_api3_civi_office_convert_spec(&$spec)
     $spec['target_mime_type']            = [
         'name'         => 'target_mime_type',
         'api.required' => 1,
+        'type' => CRM_Utils_Type::T_STRING,
         'title'        => E::ts('Target / final mime type. E.g.: "application/pdf"'),
         'description'  => E::ts('Renderer converts given file to this mimetype'),
     ];
