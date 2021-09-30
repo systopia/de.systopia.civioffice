@@ -35,6 +35,7 @@ function _civicrm_api3_civi_office_convert_spec(&$spec)
     $spec['entity_ids'] = [
         'name'         => 'entity_ids',
         'api.required' => 1,
+        'type' => CRM_Utils_Type::T_INT,
         'title'        => E::ts('Array of entity ids. E.g.: "[362, 614]"'),
         'description'  => E::ts('One or multiple entity as an array'),
     ];
