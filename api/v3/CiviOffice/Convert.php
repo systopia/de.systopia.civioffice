@@ -83,7 +83,5 @@ function civicrm_api3_civi_office_convert($params)
 
     $documents = $document_renderer->render($document, $entity_ids, $temp_store, $target_mime_type, $entity_type);
 
-    $uri = $temp_store->getURI();
-
-    return civicrm_api3_create_success([$uri], $params, 'CiviOffice', 'convert');
+    return civicrm_api3_create_success([$temp_store->getURI()], $params, 'CiviOffice', 'convert');
 }
