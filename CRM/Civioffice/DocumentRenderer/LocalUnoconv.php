@@ -176,7 +176,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
         $tokenreplaced_documents = [];
         $temp_store_folder_path = $temp_store->getBaseFolder();
-        $local_temp_store = new CRM_Civioffice_DocumentStore_LocalTemp($internal_processing_format, $temp_store_folder_path);
+        $local_temp_store = new CRM_Civioffice_DocumentStore_LocalTemp($temp_store_folder_path);
 
         $file_ending_name = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($target_mime_type);
 

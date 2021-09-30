@@ -47,6 +47,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
         // get the user folder
         $user_folder = $common ? 'common' : 'contact_' . CRM_Core_Session::getLoggedInContactID();
         $this->folder_name = $base_folder . DIRECTORY_SEPARATOR . $user_folder;
+        $this->base_folder = $base_folder;
         if (!file_exists($this->folder_name)) {
             mkdir($this->folder_name);
         }
@@ -93,9 +94,8 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
             if (preg_match("/^[.].*$/", $file)) {
                 continue; // we don't want anything that starts with . (including . and ..)
             }
-            $file_path = $this->folder_name . DIRECTORY_SEPARATOR . $file;
             $base_folder = basename($this->folder_name) . DIRECTORY_SEPARATOR . $file;
-            $documents[] = new CRM_Civioffice_Document_Local($this, mime_content_type($file_path), $base_folder, true);
+            $documents[] = new CRM_Civioffice_Document_Local($this, $base_folder, true);
         }
 
         return $documents;
@@ -199,7 +199,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
             if (file_exists($absolute_path_with_file_name)) {
                 // todo: check for mime type
                 $local_path = substr($absolute_path_with_file_name, strlen($this->folder_name) + 1);
-                return new CRM_Civioffice_Document_Local($this, CRM_Civioffice_MimeType::DOCX, $local_path, true);
+                return new CRM_Civioffice_Document_Local($this, $local_path, true);
             }
         }
         return null;

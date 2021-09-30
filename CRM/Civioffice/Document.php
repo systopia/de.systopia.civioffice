@@ -24,7 +24,7 @@ abstract class CRM_Civioffice_Document
     protected $document_store;
 
     /** @var string mime type */
-    protected $mime_type;
+    protected $mime_type = null;
 
     /** @var string uri */
     protected $uri;
@@ -33,12 +33,11 @@ abstract class CRM_Civioffice_Document
     protected $name;
 
 
-    protected function __construct($document_store, $mime_type, $uri, $name)
+    protected function __construct($document_store, $uri, $name)
     {
+        $this->document_store = $document_store;
         $this->uri = $uri;
         $this->name = $name;
-        $this->mime_type = null;
-        $this->document_store = $document_store;
     }
 
 
