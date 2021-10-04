@@ -51,7 +51,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
             mkdir($this->folder_name);
         }
 
-        parent::__construct("upload:{$user_folder}", $common ? E::ts("Shared Uploads") : E::ts("My Uploads"));
+        parent::__construct("upload::{$user_folder}", $common ? E::ts("Shared Uploads") : E::ts("My Uploads"));
     }
 
     /**
@@ -228,6 +228,6 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
      * @return boolean
      */
     public function isStoreURI($uri) {
-        return (substr($uri, 0, 7) == 'upload:');
+        return (substr($uri, 0, 8) == 'upload::');
     }
 }
