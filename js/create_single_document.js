@@ -78,6 +78,17 @@ cj(document).ready(function() {
     download_link.click();
     download_link.remove();
 
+    // inform user
+    if (is_preview) {
+      CRM.status(ts('Rendering Preview', {domain: ['de.systopia.civioffice', null]}));
+    } else {
+      if (cj("#activity_type_id").val()) {
+        CRM.status(ts('Rendering Document and Activity', {domain: ['de.systopia.civioffice', null]}));
+      } else {
+        CRM.status(ts('Rendering Document', {domain: ['de.systopia.civioffice', null]}));
+      }
+    }
+
     // close window with the download button?
     if (!is_preview) {
       //cj("button[data-identifier=_qf_DocumentFromSingleContact_close]").click();
