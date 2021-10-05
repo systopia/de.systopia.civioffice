@@ -36,6 +36,8 @@ class CRM_Civioffice_Page_RenderDocuments extends CRM_Core_Page
         $renderer_uri = CRM_Utils_Request::retrieve('renderer_uri', 'String', $null, true);
         $target_mime_type = CRM_Utils_Request::retrieve('target_mime_type', 'String', $null, false, CRM_Civioffice_MimeType::PDF);
         $entity_type = CRM_Utils_Request::retrieve('entity_type', 'String', $null, false, 'contact');
+        $activity_type_id = CRM_Utils_Request::retrieve('activity_type_id', 'Integer', $null, false, '');
+        $activity_attach_file = CRM_Utils_Request::retrieve('activity_attach_file', 'String', $null, false, '');
 
         // process input
         $document_uri = base64_decode($document_uri);
@@ -51,10 +53,37 @@ class CRM_Civioffice_Page_RenderDocuments extends CRM_Core_Page
             'renderer_uri'     => $renderer_uri,
             'target_mime_type' => $target_mime_type
         ]);
-
         $result_store_uri = $render_result['values'][0];
         $result_store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
         $rendered_documents = $result_store->getDocuments();
+
+        // if user wants an activity, create + add the document
+        if (!empty($activity_type_id)) {
+            $activity = civicrm_api3('Activity', 'create', [
+                'activity_type_id'   => $activity_type_id,
+                'subject'            => E::ts("Document (CiviOffice)"),
+                'status_id'          => 'Completed',
+                'activity_date_time' => date("YmdHis"),
+                'target_id'          => $entity_ids,
+            ]);
+
+            // generate & link attachment if requested
+            if (!empty($activity_attach_file)) {
+                foreach ($rendered_documents as $document) {
+                    $path_of_local_copy = $document->getLocalTempCopy();
+                    // attach rendered document
+                    $attachments = [
+                        'attachFile_1' => [
+                            'location' => $path_of_local_copy,
+                            'type' => mime_content_type($path_of_local_copy)
+                        ]
+                    ];
+                    CRM_Core_BAO_File::processAttachment($attachments, 'civicrm_activity', $activity['id']);
+                }
+            }
+        }
+
+
 
         switch (count($rendered_documents)) {
             case 0: // something's wrong

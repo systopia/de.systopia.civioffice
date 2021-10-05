@@ -33,7 +33,23 @@ cj(document).ready(function() {
           .off()
           .click(function(event) {
             event.stopPropagation();
-            trigger_preview_download();
+            trigger_download(true);
+          });
+      } else {
+        // probably too early...we'll try again later
+      }
+
+      // do the same
+      let generate_button = cj("button[data-identifier=_qf_DocumentFromSingleContact_upload]");
+      if (generate_button.length) {
+        // we have found the button: let's manipulate
+        click_handler_registered = true;
+        generate_button
+          .removeAttr('data-identifier')
+          .off()
+          .click(function(event) {
+            event.stopPropagation();
+            trigger_download(false);
           });
       } else {
         // probably too early...we'll try again later
@@ -42,7 +58,7 @@ cj(document).ready(function() {
   }
 
   /** Trigger the download of the configured file */
-  function trigger_preview_download() {
+  function trigger_download(is_preview = true) {
     // generate a href object an click on it :)
     let render_config = CRM.vars.civioffice_single_document;
     let download_link = document.createElement("a");
@@ -54,9 +70,18 @@ cj(document).ready(function() {
     download_link.href += "&renderer_uri=" + btoa(cj("#document_renderer_uri").val());
     download_link.href += "&target_mime_type=" + btoa(cj("#target_mime_type").val());
     download_link.href += "&contact_ids=" + render_config.contact_id;
+    if (!is_preview) {
+      download_link.href += "&activity_type_id=" + cj("#activity_type_id").val();
+      download_link.href += "&activity_attach_file=" + cj("#activity_attach_doc").val();
+    }
     document.body.appendChild(download_link);
     download_link.click();
     download_link.remove();
+
+    // close window with the download button?
+    if (!is_preview) {
+      //cj("button[data-identifier=_qf_DocumentFromSingleContact_close]").click();
+    }
   }
 
 

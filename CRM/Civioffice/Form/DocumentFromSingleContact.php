@@ -124,12 +124,12 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
               ],
               [
                   'type' => 'close',
-                  'name' => E::ts("Cancel"),
+                  'name' => E::ts("Close"),
                   'icon' => 'fa-window-close-o',
                   'isDefault' => FALSE,
               ],
               [
-                  'type' => 'submit',
+                  'type' => 'upload',
                   'name' => E::ts("Download Document"),
                   'icon' => 'fa-file-pdf-o',
                   'isDefault' => FALSE,
@@ -148,6 +148,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
 
 
     public function postProcess() {
+        // todo: won't get here any more...
         $values = $this->exportValues();
 
         // save defaults
@@ -157,51 +158,6 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
         } catch (CRM_Core_Exception $ex) {
             Civi::log()->warning("CiviOffice: Couldn't save defaults: " . $ex->getMessage());
         }
-
-        // render document
-        $render_result = civicrm_api3('CiviOffice', 'convert', [
-            'document_uri'     => $values['document_uri'],
-            'entity_ids'       => [$this->contact_id],
-            'entity_type'      => 'contact',
-            'renderer_uri'     => $values['document_renderer_uri'],
-            'target_mime_type' => $values['target_mime_type']
-        ]);
-        $result_store_uri = $render_result['values'][0];
-        $store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
-        $rendered_documents = $store->getDocuments();
-        /** @var CRM_Civioffice_Document $rendered_document */
-        $rendered_document = reset($rendered_documents);
-
-        // if user wants an activity, create + add the document
-        if (!empty($values['activity_type_id'])) {
-            $activity = civicrm_api3('Activity', 'create', [
-                'activity_type_id'   => $values['activity_type_id'],
-                'subject'            => E::ts("Document (CiviOffice)"),
-                'status_id'          => 'Completed',
-                'activity_date_time' => date("YmdHis"),
-                'target_id'          => [$this->contact_id],
-            ]);
-
-            // generate & link attachment if requested
-            if (!empty($values['activity_attach_doc'])) {
-                $path_of_local_copy = $rendered_document->getLocalTempCopy();
-                // attach rendered document
-                $attachments = [
-                    'attachFile_1' => [
-                        'location' => $path_of_local_copy,
-                        'type' => mime_content_type($path_of_local_copy)
-                    ]
-                ];
-                CRM_Core_BAO_File::processAttachment($attachments, 'civicrm_activity', $activity['id']);
-            }
-        }
-
-        // finally: download the document (render it again)
-        $render_url = CRM_Utils_System::url('civicrm/civioffice/render', 'contact_ids=2');
-        $render_url .= "&document_uri=" . base64_encode($values['document_uri']);
-        $render_url .= "&renderer_uri=" . base64_encode($values['document_renderer_uri']);
-        $render_url .= "&target_mime_type=" . base64_encode($values['target_mime_type']);
-        CRM_Utils_System::redirect($render_url);
     }
 
 
