@@ -190,11 +190,10 @@ class CRM_Civioffice_Configuration
             return $_SERVER['HOME'];
         }
 
-        // try via shell
-        $user_name = get_current_user();
-        exec("eval echo \"~{$user_name}\"", $eval_output);
-        if (!empty($eval_output[0])) {
-            return $eval_output[0];
+        // Get process user's home directory.
+        $user_info = posix_getpwuid(posix_getuid());
+        if (!empty($user_info['dir'])) {
+            return $user_info['dir'];
         }
 
         // todo: what else to check?
