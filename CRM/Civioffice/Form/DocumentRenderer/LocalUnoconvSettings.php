@@ -83,7 +83,7 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
         $lockfile_to_check = $this->_submitValues['unoconv_lock_file'];
 
         if (!empty($folder_to_check && !file_exists($folder_to_check))) {
-            mkdir($folder_to_check);
+            mkdir($folder_to_check, 0777, true);
         }
 
         if (empty($folder_to_check)) { // needed?
