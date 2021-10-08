@@ -82,6 +82,9 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
         $unoconv_path_to_check = $this->_submitValues['unoconv_binary_path'];
         $lockfile_to_check = $this->_submitValues['unoconv_lock_file'];
 
+        if (!empty($folder_to_check && !file_exists($folder_to_check))) {
+            mkdir($folder_to_check);
+        }
 
         if (empty($folder_to_check)) { // needed?
             $this->_errors['temp_folder_path'] = E::ts("Input is empty");
