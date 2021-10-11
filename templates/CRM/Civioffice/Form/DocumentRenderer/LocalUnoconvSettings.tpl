@@ -29,7 +29,7 @@
   </div>
 
   <div class="crm-section">
-    <div class="help">{ts}Working / temp path where files are stored until a download happens.<br>For example: <code>.../civicrm/templates_c/civioffice/temp</code>{/ts}</div>
+    <div class="help">{ts}Working / temp path where files are stored until a download happens.<br>For example: <code>.../civicrm/templates_c/civioffice/temp</code>{/ts}<br>Be aware: This folder will be created if it doesn't exist</div>
     <div class="label">{$form.temp_folder_path.label}</div>
     <div class="content">{$form.temp_folder_path.html}</div>
     <div class="clear"></div>
