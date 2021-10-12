@@ -68,7 +68,7 @@ class CRM_Civioffice_Page_RenderDocuments extends CRM_Core_Page
             ]);
 
             // generate & link attachment if requested
-            if (!empty($activity_attach_file)) {
+            if (!empty($activity_attach_file) && $activity_attach_file !== 'false') {
                 foreach ($rendered_documents as $document) {
                     $path_of_local_copy = $document->getLocalTempCopy();
                     // attach rendered document

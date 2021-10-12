@@ -72,7 +72,7 @@ cj(document).ready(function() {
     download_link.href += "&contact_ids=" + render_config.contact_id;
     if (!is_preview) {
       download_link.href += "&activity_type_id=" + cj("#activity_type_id").val();
-      download_link.href += "&activity_attach_file=" + cj("#activity_attach_doc").val();
+      download_link.href += "&activity_attach_file=" + cj("#activity_attach_doc").is(":checked");
     }
     document.body.appendChild(download_link);
     download_link.click();
