@@ -95,7 +95,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
             E::ts("Create Activity"),
             $this->getActivityTypes(),
             false,
-            ['class' => 'crm-select2']
+            ['class' => 'crm-select2', 'placeholder' => E::ts("- don't create activity -")]
         );
 
         $this->add(
