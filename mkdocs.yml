@@ -1,0 +1,31 @@
+site_name: CiviOffice
+repo_url: https://github.com/systopia/de.systopia.civioffice
+site_description: 'A guide for the CiviOffice.'
+site_author: 'systopia'
+theme:
+  name:
+    material
+
+nav:
+  - 'Introduction': index.md
+  - 'Installation': installation.md
+  - 'Configuration': configuration.md
+  - 'Working With Documents': working-with-documents.md
+  - 'Custom Fonts': custom-fonts.md
+
+markdown_extensions:
+  - attr_list
+  - admonition
+  - def_list
+  - codehilite
+  - toc:
+      permalink: True
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.tilde
+  - pymdownx.betterem
+  - pymdownx.mark
+
+plugins:
+  - search:
+      lang: en
