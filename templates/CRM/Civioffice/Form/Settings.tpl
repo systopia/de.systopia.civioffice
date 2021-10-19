@@ -76,7 +76,7 @@
 
 
 <h3>{ts}CiviOffice Document Editors{/ts}</h3>
-<div id="help">{ts}Editors are used to edit text files{/ts}</div>
+<div id="help">{ts}Editors can be used to edit CiviOffice documents.{/ts}</div>
 
   <table>
   <thead>
