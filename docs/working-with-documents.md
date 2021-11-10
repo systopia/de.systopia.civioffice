@@ -12,7 +12,7 @@ The table shows the available documents of the selected store. These can be dele
 ### Upload More
 If at least one document store is configured, a .docx file can be selected, uploaded and made available to others using the common button.
 
-## Creating a document for multiple contacts
+## Creating documents for multiple contacts
 
 From a contact search result, select the intended contact records. Then, select the action **Create Documents** which will take you to a form with different options for the rendering of your document.
 

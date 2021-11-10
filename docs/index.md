@@ -13,7 +13,7 @@ For the conversion from .docx to .pdf, the command-line tool [unoconv](https://g
 + create documents and activities for single contacts
 + create documents for many contacts (search result action)
 + convert to .pdf or export as processed .docx
-+ integrate with de.systopia.donrec to create cover letters for donation receipts (de.systopia.donrec 2.1+ required)
++ integrate with [de.systopia.donrec](https://github.com/systopia/de.systopia.donrec) to create cover letters for donation receipts (de.systopia.donrec 2.1+ required)
 + API
 ## Planned features
 + insert "live snippets", i.e. text portions to be inserted in the document in the creation process (a full-fleged document editor might be introduced at a later stage) 
