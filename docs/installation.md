@@ -5,12 +5,6 @@ The following components must be installed on the server:
 + libreoffice (https://www.libreoffice.org/)
   the successful installation can be verified:
   `unoconv --version`
-```
-mkdir /var/www/.cache
-sudo chown www-data:www-data /var/www/.cache
-mkdir /var/www/.config
-sudo chown www-data:www-data /var/www/.config
-```
 ## installing
 This extension needs to be installed manually into CiviCRM. It is not (yet) available from the built-in extensions catalog.
 
