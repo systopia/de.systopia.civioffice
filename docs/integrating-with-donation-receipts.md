@@ -1,4 +1,4 @@
-#Integrating With Donation Receipts
+# Integrating With Donation Receipts
 
 If you are using de.systopia.donrec to create donation receipts, it can be integrated with CiviOffice to create cover letters for the receipts. The minimum version required for this is de.systopia.donrec 2.1.
 

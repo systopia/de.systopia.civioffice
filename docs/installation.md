@@ -5,7 +5,7 @@ The following components must be installed on the server:
 + [unoconv](https://github.com/unoconv/)
 + [libreoffice](https://www.libreoffice.org/)
 
-###Verifying successful unoconv installation
+### Verifying successful unoconv installation
 If
 ```unoconv --version```
 prints out the unoconv version, your installation was successful.
