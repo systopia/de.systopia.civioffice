@@ -1,15 +1,23 @@
 # Introduction
-Written communication with contacts is an essential aspect of the work of non-profit organisations, which usually have their own template letters for this purpose. However, transferring these templates for further use in CiviCRM is complicated. The templates, which are usually created in doc/docx format in programmes such as MS-Office or LibreOffice/OpenOffice, have to be transferred manually into html/css. Afterwards, this "webpage" is converted into printable pdfs by the internal htmltopdf converter. It was therefore important to us to fundamentally simplify this time-consuming and error-prone process with our own tool.
+Written communication with contacts is an essential aspect of the work of non-profit organisations. Typically, they have their own letter templates etc. Utilizing tokens to insert contact and other data, pdf documents for many contacts can be produced fast. 
 
-The CiviCRM token system was to be fully integrated so that individualised serial letters could be created automatically on the basis of the contact management. It should of course also be possible to use our own development "de.systopia.stoken", which supplements the existing token system with a variety of additional database keys. In order to enable the administration of template letters for all employees of the organisation centrally, but also individually, the configuration of the file system was also made possible.
+However, creating document templates for further use in CiviCRM with the core functionality is complicated as layouts have to be implemented in HTML and CSS. For non-technical users, it is hardly possible to create a proper layout for a document template. This extension aims to solve this problem.
 
-We focused on Microsoft's .docx as the source format. This zip-compressed xml-format seems to be a sensible starting point, which is used as standard in the everyday life of our customers and can technically completely map the transmission of the token system. As a target format, the document can now either remain as it is or be converted into the "permanent" .pdf format. For the conversion, the command-line tool unoconv (https://github.com/unoconv/) is used, which must be installed on the server for this purpose.
+The approach is to facilitate the use of a common file format (.docx) for templates that integrate with CiviCRM workflows, including CiviCRM tokens. .docx files can be created and edited with any text processing software, so the format should give easy access to all users, although other input formats might be implemented later. 
+
+For the conversion from .docx to .pdf, the command-line tool [unoconv](https://github.com/unoconv/) is used, which must be installed on the server for this purpose.
+
 ## Features
 + organize templates organization-wide or individually
 + use CiviCRM tokens
-+ convert to .pdf
-+ integrated document-locking mechanism, to avoid documents beeing corrupted by multi-user usage
++ create documents and activities for single contacts
++ create documents for many contacts (search result action)
++ convert to .pdf or export as processed .docx
++ integrate with de.systopia.donrec to create cover letters for donation receipts (de.systopia.donrec 2.1+ required)
++ API
 ## Planned features
-+ Further editors are to be configurable
-## Requirements
-TODO
++ insert "live snippets", i.e. text portions to be inserted in the document in the creation process (a full-fleged document editor might be introduced at a later stage) 
++ integrate with de.systopia.mailbatch to create personalized mail attachments
++ search result actions for contributions, participants, and memberships
++ add WebDAV compatibility to connect to external document stores such as Nextcloud, Sharepoint, or GoogleDrive
+
