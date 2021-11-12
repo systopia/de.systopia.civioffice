@@ -2,9 +2,8 @@ site_name: CiviOffice
 repo_url: https://github.com/systopia/de.systopia.civioffice
 site_description: 'A guide for the CiviOffice.'
 site_author: 'systopia'
-theme:
-  name:
-    material
+theme: 
+  name: material
 
 nav:
   - 'Introduction': index.md
@@ -12,6 +11,7 @@ nav:
   - 'Configuration': configuration.md
   - 'Working With Documents': working-with-documents.md
   - 'Custom Fonts': custom-fonts.md
+  - 'Integrating With Donation Receipts': integrating-with-donation-receipts.md
 
 markdown_extensions:
   - attr_list
