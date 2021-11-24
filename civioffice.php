@@ -44,6 +44,10 @@ function civioffice_civicrm_summaryActions(&$actions, $contactID)
 function civioffice_civicrm_config(&$config)
 {
     _civioffice_civix_civicrm_config($config);
+
+    if (interface_exists('\Civi\Mailbatch\AttachmentType\AttachmentTypeInterface')) {
+        \Civi::dispatcher()->addSubscriber(new CRM_Civioffice_AttachmentProvider());
+    }
 }
 
 /**
