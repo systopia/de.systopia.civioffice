@@ -30,7 +30,9 @@ the server for this purpose.
 + integrate
   with [de.systopia.donrec](https://github.com/systopia/de.systopia.donrec) to
   create cover letters for donation receipts (de.systopia.donrec 2.1+ required)
-+ integrate with [de.systopia.mailbatch](https://github.com/systopia/de.systopia.mailbatch) to send emails with personalized attachments
++ integrate
+  with [de.systopia.mailbatch](https://github.com/systopia/de.systopia.mailbatch)
+  to send emails with personalized attachments
 + API
 
 ## Planned features
