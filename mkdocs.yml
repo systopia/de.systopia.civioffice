@@ -12,7 +12,7 @@ nav:
   - 'Working With Documents': working-with-documents.md
   - 'Custom Fonts': custom-fonts.md
   - 'Integrating With Donation Receipts': integrating-with-donation-receipts.md
-  - 'Sending personalized email attachments': integrating-with-mail-batch.md
+  - 'Sending Emails With Personalized Attachments': integrating-with-mail-batch.md
 
 markdown_extensions:
   - attr_list
