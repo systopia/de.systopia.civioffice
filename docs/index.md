@@ -30,6 +30,7 @@ the server for this purpose.
 + integrate
   with [de.systopia.donrec](https://github.com/systopia/de.systopia.donrec) to
   create cover letters for donation receipts (de.systopia.donrec 2.1+ required)
++ integrate with [de.systopia.mailbatch](https://github.com/systopia/de.systopia.mailbatch) to send emails with personalized attachments
 + API
 
 ## Planned features
@@ -37,7 +38,6 @@ the server for this purpose.
 + insert "live snippets", i.e. text portions to be inserted in the document in
   the creation process (a full-fleged document editor might be introduced at a
   later stage)
-+ integrate with de.systopia.mailbatch to create personalized mail attachments
 + search result actions for contributions, participants, and memberships
 + add WebDAV compatibility to connect to external document stores such as
   Nextcloud, Sharepoint, or GoogleDrive
