@@ -76,47 +76,55 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      * Replace all tokens with {token_name} and {$smarty_var.attribute} format
      *
      * @param $string
-     * @param integer $entity_id
-     *   entity ID, e.g. contact_id
-     *
+     *   A string including tokens to be replaced.
      * @param string $entity_type
-     *   entity type, e.g. 'contact'
+     *   The entity type, e.g. 'contact'. The entity type "civioffice" refers to tokens defined by CiviOffice itself.     *
+     * @param integer $entity_id
+     *   The entity ID, e.g. contact_id.
      *
      * @return string
-     *   input string with the tokens replaced
+     *   The input string with the tokens replaced.
      *
      * @throws \Exception
+     *   When replacing tokens fails or replacing tokens for the given entity is not implemented.
      */
-    public function replaceAllTokens($string, $entity_id, $entity_type = 'contact'): string
+    public function replaceAllTokens($string, $entity_type = 'contact', $entity_id = NULL): string
     {
         // TODO: use additional token system
+        switch ($entity_type) {
+            case 'civioffice':
+                // TODO: Implement live snippet tokens.
+                break;
+            case 'contact':
+                $processor = new \Civi\Token\TokenProcessor(
+                    Civi::service('dispatcher'),
+                    [
+                        'controller' => __CLASS__,
+                        'smarty' => false,
+                    ]
+                );
 
-        if ($entity_type == 'contact') {
-            $processor = new \Civi\Token\TokenProcessor(
-                Civi::service('dispatcher'),
-                [
-                    'controller' => __CLASS__,
-                    'smarty' => false,
-                ]
-            );
+                $identifier = 'contact-token';
 
-            $identifier = 'contact-token';
+                $processor->addMessage($identifier, $string, 'text/plain');
+                $processor->addRow()->context('contactId', $entity_id);
+                $processor->evaluate();
 
-            $processor->addMessage($identifier, $string, 'text/plain');
-            $processor->addRow()->context('contactId', $entity_id);
-            $processor->evaluate();
+                /*
+                 * FIXME: Unfortunately we get &lt; and &gt; from civi backend so we need to decode them back to < and > with htmlspecialchars_decode()
+                 * This is postponed as it might be risky as it either breaks xml or leads to further problems
+                 * https://github.com/systopia/de.systopia.civioffice/issues/3
+                 */
 
-            /*
-             * FIXME: Unfortunately we get &lt; and &gt; from civi backend so we need to decode them back to < and > with htmlspecialchars_decode()
-             * This is postponed as it might be risky as it either breaks xml or leads to further problems
-             * https://github.com/systopia/de.systopia.civioffice/issues/3
-             */
-
-            return $processor->getRow(0)->render($identifier);
+                $result = $processor->getRow(0)->render($identifier);
+                break;
+            default:
+                // todo: implement?
+                throw new Exception('replaceAllTokens not implemented for entity ' . $entity_type);
+                break;
         }
 
-        // todo: implement?
-        throw new Exception('replaceAllTokens not implemented for entity ' . $entity_type);
+        return $result;
     }
 
     /*
