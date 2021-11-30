@@ -44,6 +44,12 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
                 ];
             }
         }
+
+        foreach (CRM_Civioffice_LiveSnippets::get() as $live_snippet) {
+            $live_snippet['current_content'] = Civi::contactSettings()->get('civioffice.live_snippets.' . $live_snippet['name']);
+            $ui_components['live_snippets'][] = $live_snippet;
+        }
+
         $this->assign('ui_components', $ui_components);
 
         $this->addButtons(
