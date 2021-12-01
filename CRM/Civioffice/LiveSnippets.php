@@ -25,13 +25,14 @@ class CRM_Civioffice_LiveSnippets
 
     public static function get() {
         if (!isset(self::$_liveSnippets)) {
-            self::$_liveSnippets = Civi\Api4\OptionValue::get()
-                ->addWhere(
-                    'option_group_id:name',
-                    '=',
-                    'civioffice_live_snippets'
-                )
-                ->execute();
+            $option_group_id = civicrm_api3('OptionGroup', 'getvalue', ['name' => 'civioffice_live_snippets', 'return' => 'id']);
+            self::$_liveSnippets = civicrm_api3(
+                'OptionValue',
+                'get',
+                [
+                    'option_group_id' => $option_group_id
+                ]
+            )['values'];
         }
         return self::$_liveSnippets;
     }
