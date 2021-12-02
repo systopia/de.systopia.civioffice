@@ -25,6 +25,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         $this->setTitle(E::ts("CiviOffice - Generate multiple Documents"));
 
         $config = CRM_Civioffice_Configuration::getConfig();
+        $defaults = [];
 
         // add list of document renderers and supported output mime types
         $output_mimetypes = null;
@@ -98,6 +99,24 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             ['class' => 'crm-select2']
         );
 
+        // Add fields for Live Snippets.
+        $live_snippet_elements = [];
+        $live_snippet_values = CRM_Civioffice_LiveSnippets::getValues();
+        foreach (CRM_Civioffice_LiveSnippets::get() as $live_snippet) {
+            $this->add(
+                'wysiwyg',
+                'live_snippets_' . $live_snippet['name'],
+                $live_snippet['label'],
+                ['class' => 'collapsed']
+            );
+            $defaults['live_snippets_' . $live_snippet['name']] = $live_snippet_values[$live_snippet['name']];
+            $live_snippet_elements[] = 'live_snippets_' . $live_snippet['name'];
+        }
+        $this->assign('live_snippet_elements', $live_snippet_elements);
+
+        // set default values.
+        $this->setDefaults($defaults);
+
         // add buttons
         CRM_Core_Form::addDefaultButtons(E::ts("Generate %1 Files", [1 => count($this->_contactIds)]));
     }
@@ -106,6 +125,15 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
     public function postProcess()
     {
         $values = $this->exportValues();
+
+        // Set live snippet setting values.
+        foreach (CRM_Civioffice_LiveSnippets::get() as $live_snippet) {
+            CRM_Civioffice_LiveSnippets::setValue(
+                $live_snippet['name'],
+                $values['live_snippets_' . $live_snippet['name']],
+                true
+            );
+        }
 
         // Initialize a queue.
         $queue = CRM_Queue_Service::singleton()->create(

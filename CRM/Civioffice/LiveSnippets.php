@@ -23,21 +23,30 @@ class CRM_Civioffice_LiveSnippets
 
     public static $_liveSnippetTokens;
 
-    public static function get() {
+    public static function get()
+    {
         if (!isset(self::$_liveSnippets)) {
-            $option_group_id = civicrm_api3('OptionGroup', 'getvalue', ['name' => 'civioffice_live_snippets', 'return' => 'id']);
+            $option_group_id = civicrm_api3(
+                'OptionGroup',
+                'getvalue',
+                [
+                    'name' => 'civioffice_live_snippets',
+                    'return' => 'id',
+                ]
+            );
             self::$_liveSnippets = civicrm_api3(
                 'OptionValue',
                 'get',
                 [
-                    'option_group_id' => $option_group_id
+                    'option_group_id' => $option_group_id,
                 ]
             )['values'];
         }
         return self::$_liveSnippets;
     }
 
-    public static function getValues() {
+    public static function getValues()
+    {
         if (!isset(self::$_liveSnippetValues)) {
             self::$_liveSnippetValues = [];
             foreach (self::get() as $live_snippet) {
@@ -49,7 +58,34 @@ class CRM_Civioffice_LiveSnippets
         return self::$_liveSnippetValues;
     }
 
-    public static function getTokens() {
+    public static function getValue($name)
+    {
+        self::getValues();
+        return self::$_liveSnippetValues[$name];
+    }
+
+    public static function setValue($name, $value, $store = false)
+    {
+        self::$_liveSnippetValues[$name] = $value;
+        if ($store) {
+            self::storeValue($name, $value);
+        }
+    }
+
+    public static function storeValue($name, $value)
+    {
+        Civi::contactSettings()->set('civioffice.live_snippets.' . $name, $value);
+    }
+
+    public static function storeValues()
+    {
+        foreach (self::$_liveSnippetValues as $name => $value) {
+            self::storeValue($name, $value);
+        }
+    }
+
+    public static function getTokens()
+    {
         if (!isset(self::$_liveSnippetTokens)) {
             self::$_liveSnippetTokens = [];
             foreach (self::get() as $live_snippet) {
