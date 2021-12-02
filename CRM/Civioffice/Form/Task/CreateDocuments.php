@@ -106,8 +106,12 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             $this->add(
                 'wysiwyg',
                 'live_snippets_' . $live_snippet['name'],
-                $live_snippet['label'],
-                ['class' => 'collapsed']
+                $live_snippet['label']
+                /**
+                 * Do not add attributes, as otherwise HTML content is being encoded during processing of value.
+                 * @see \HTML_QuickForm::exportValues()
+                 * @url https://github.com/civicrm/civicrm-packages/commit/311a4f85180e144774e2f3aa2b163af4a79c99fa
+                 */
             );
             $defaults['live_snippets_' . $live_snippet['name']] = $live_snippet_values[$live_snippet['name']];
             $live_snippet_elements[] = 'live_snippets_' . $live_snippet['name'];
