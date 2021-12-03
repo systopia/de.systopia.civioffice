@@ -45,25 +45,14 @@ class CRM_Civioffice_LiveSnippets
         return self::$_liveSnippets;
     }
 
-    public static function getValues($output_type = CRM_Civioffice_MimeType::DOCX)
+    public static function getValues()
     {
         if (!isset(self::$_liveSnippetValues)) {
             self::$_liveSnippetValues = [];
             foreach (self::get() as $live_snippet) {
-                $value = Civi::contactSettings()->get(
+                self::$_liveSnippetValues[$live_snippet['name']] = Civi::contactSettings()->get(
                     'civioffice.live_snippets.' . $live_snippet['name']
                 );
-                // TODO: Is this the right place for conversions? What if CiviOffice is to support more input formats?
-                switch ($output_type) {
-                    case CRM_Civioffice_MimeType::DOCX:
-                        /**
-                         * TODO: Convert HTML to OOXML using PhpWord library
-                         * @url https://github.com/PHPOffice/PHPWord
-                         * @url https://code-boxx.com/convert-html-to-docx-using-php/
-                         */
-                        break;
-                }
-                self::$_liveSnippetValues[$live_snippet['name']] = $value;
             }
         }
         return self::$_liveSnippetValues;

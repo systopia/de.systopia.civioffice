@@ -102,6 +102,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
                     [
                         'controller' => __CLASS__,
                         'smarty' => false,
+                        'civioffice' => (object) ['mime_type' => CRM_Civioffice_MimeType::DOCX],
                     ]
                 );
 
