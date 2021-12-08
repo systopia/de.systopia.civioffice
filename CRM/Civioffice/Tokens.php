@@ -33,29 +33,8 @@ class CRM_Civioffice_Tokens extends AbstractTokenSubscriber
     public function prefetch(TokenValueEvent $e)
     {
         $token_values = [
-            'live_snippets' => CRM_Civioffice_LiveSnippets::getValues(),
+            'live_snippets' => $e->getTokenProcessor()->rowContexts[0]['civioffice.live_snippets'],
         ];
-
-        // TODO: Convert to context mime type.
-        $context = $e->getTokenProcessor()->getContextValues('civioffice', 'mime_type');
-        foreach ($token_values as $category => $tokens) {
-            foreach ($tokens as $token) {
-                switch (reset($context)) {
-                    case CRM_Civioffice_MimeType::DOCX:
-                        /**
-                         * TODO: Convert HTML to OOXML using PhpWord library
-                         * @url https://github.com/PHPOffice/PHPWord
-                         * @url https://code-boxx.com/convert-html-to-docx-using-php/
-                         */
-                        // PHPWord is a CiviCRM Core dependency.
-                        $pw = new \PhpOffice\PhpWord\PhpWord();
-                        $section = $pw->addSection();
-                        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $token, false, false);
-                        $pw->save("HTML.docx", "Word2007");
-                        break;
-                }
-            }
-        }
 
         return $token_values;
     }

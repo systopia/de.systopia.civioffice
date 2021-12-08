@@ -104,7 +104,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         $live_snippet_values = CRM_Civioffice_LiveSnippets::getValues();
         foreach (CRM_Civioffice_LiveSnippets::get() as $live_snippet) {
             $this->add(
-                'wysiwyg',
+                'textarea',
                 'live_snippets_' . $live_snippet['name'],
                 $live_snippet['label']
                 /**
@@ -131,7 +131,9 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         $values = $this->exportValues();
 
         // Set live snippet setting values.
+        $live_snippets = [];
         foreach (CRM_Civioffice_LiveSnippets::get() as $live_snippet) {
+            $live_snippets[$live_snippet['name']] = $values['live_snippets_' . $live_snippet['name']];
             CRM_Civioffice_LiveSnippets::setValue(
                 $live_snippet['name'],
                 $values['live_snippets_' . $live_snippet['name']],
@@ -160,7 +162,8 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
                     $entity_IDs,
                     'contact',
                     $values['target_mime_type'],
-                    E::ts('Initialized')
+                    E::ts('Initialized'),
+                    $live_snippets
                 )
             );
         }

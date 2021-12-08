@@ -38,6 +38,8 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      * @param string $target_mime_type
      * @param string $entity_type
      *   entity type, e.g. 'contact'
+     * @param array $live_snippets
+     *   Values for Live Snippet tokens in the document.
      *
      * @return array
      *   list of token_name => token value
@@ -47,7 +49,8 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
         array $entity_ids,
         CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
         string $target_mime_type,
-        string $entity_type = 'contact'
+        string $entity_type = 'contact',
+        array $live_snippets = []
     ): array;
 
     /**
@@ -78,9 +81,9 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      * @param $string
      *   A string including tokens to be replaced.
      * @param string $entity_type
-     *   The entity type, e.g. 'contact'. The entity type "civioffice" refers to tokens defined by CiviOffice itself.     *
-     * @param integer $entity_id
-     *   The entity ID, e.g. contact_id.
+     *   The entity type, e.g. 'contact'. The entity type "civioffice" refers to tokens defined by CiviOffice itself.
+     * @param array $token_contexts
+     *   A list of token contexts, keyed by token entity (e.g. "contact" or "civioffice").
      *
      * @return string
      *   The input string with the tokens replaced.
@@ -88,43 +91,43 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      * @throws \Exception
      *   When replacing tokens fails or replacing tokens for the given entity is not implemented.
      */
-    public function replaceAllTokens($string, $entity_type = 'contact', $entity_id = NULL): string
+    public function replaceAllTokens($string, $token_contexts = []): string
     {
         $result = $string;
-        // TODO: use additional token system
-        switch ($entity_type) {
-            case 'civioffice':
-                // TODO: Implement live snippet tokens.
-                break;
-            case 'contact':
-                $processor = new \Civi\Token\TokenProcessor(
-                    Civi::service('dispatcher'),
-                    [
-                        'controller' => __CLASS__,
-                        'smarty' => false,
-                        'civioffice' => (object) ['mime_type' => CRM_Civioffice_MimeType::DOCX],
-                    ]
-                );
+        $identifier = 'document';
+        $processor = new \Civi\Token\TokenProcessor(
+            Civi::service('dispatcher'),
+            [
+                'controller' => __CLASS__,
+                'smarty' => false,
+            ]
+        );
+        $processor->addMessage($identifier, $string, 'text/plain');
+        $token_row = $processor->addRow();
+        foreach ($token_contexts as $entity_type => $context) {
+            switch ($entity_type) {
+                case 'civioffice':
+                    $token_row->context('civioffice.live_snippets', $context['live_snippets']);
+                    break;
+                case 'contact':
+                    $token_row->context('contactId', $context['entity_id']);
 
-                $identifier = 'contact-token';
+                    /*
+                     * FIXME: Unfortunately we get &lt; and &gt; from civi backend so we need to decode them back to < and > with htmlspecialchars_decode()
+                     * This is postponed as it might be risky as it either breaks xml or leads to further problems
+                     * https://github.com/systopia/de.systopia.civioffice/issues/3
+                     */
 
-                $processor->addMessage($identifier, $string, 'text/plain');
-                $processor->addRow()->context('contactId', $entity_id);
-                $processor->evaluate();
-
-                /*
-                 * FIXME: Unfortunately we get &lt; and &gt; from civi backend so we need to decode them back to < and > with htmlspecialchars_decode()
-                 * This is postponed as it might be risky as it either breaks xml or leads to further problems
-                 * https://github.com/systopia/de.systopia.civioffice/issues/3
-                 */
-
-                $result = $processor->getRow(0)->render($identifier);
-                break;
-            default:
-                // todo: implement?
-                throw new Exception('replaceAllTokens not implemented for entity ' . $entity_type);
-                break;
+                    break;
+                default:
+                    // todo: implement?
+                    throw new Exception('replaceAllTokens not implemented for entity ' . $entity_type);
+                    break;
+            }
         }
+
+        $processor->evaluate();
+        $result = $token_row->render($identifier);
 
         return $result;
     }

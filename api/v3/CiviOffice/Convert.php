@@ -61,6 +61,12 @@ function _civicrm_api3_civi_office_convert_spec(&$spec)
         'title'        => E::ts('Target / final mime type. E.g.: "application/pdf"'),
         'description'  => E::ts('Renderer converts given file to this mimetype'),
     ];
+    $spec['live_snippets'] = [
+        'name' => 'live_snippets',
+        'type' => CRM_Utils_Type::T_STRING,
+        'title' => E::ts('Live Snippets'),
+        'description' => E::ts('Contents for tokens referring to configured Live Snippets.'),
+    ];
 }
 
 /**
@@ -79,6 +85,7 @@ function civicrm_api3_civi_office_convert($params)
     $entity_type = $params['entity_type'];
     $renderer_uri = $params['renderer_uri'];
     $target_mime_type = $params['target_mime_type'];
+    $live_snippets = $params['live_snippets'];
 
     $configuration = CRM_Civioffice_Configuration::getConfig();
     $document_renderer = $configuration->getDocumentRenderer($renderer_uri);
@@ -86,7 +93,7 @@ function civicrm_api3_civi_office_convert($params)
 
     $temp_store = new CRM_Civioffice_DocumentStore_LocalTemp($target_mime_type);
 
-    $documents = $document_renderer->render($document, $entity_ids, $temp_store, $target_mime_type, $entity_type);
+    $documents = $document_renderer->render($document, $entity_ids, $temp_store, $target_mime_type, $entity_type, $live_snippets);
 
     return civicrm_api3_create_success([$temp_store->getURI()], $params, 'CiviOffice', 'convert');
 }
