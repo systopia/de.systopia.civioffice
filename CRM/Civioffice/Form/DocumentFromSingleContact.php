@@ -117,7 +117,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
         );
 
         // Add fields for Live Snippets.
-        CRM_Civioffice_LiveSnippets::getFormElements($this, $defaults);
+        CRM_Civioffice_LiveSnippets::addFormElements($this);
 
         // Set default values.
         $this->setDefaults($defaults);

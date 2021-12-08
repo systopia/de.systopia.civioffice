@@ -100,7 +100,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         );
 
         // Add fields for Live Snippets.
-        CRM_Civioffice_LiveSnippets::getFormElements($this, $defaults);
+        CRM_Civioffice_LiveSnippets::addFormElements($this);
 
         // set default values.
         $this->setDefaults($defaults);
