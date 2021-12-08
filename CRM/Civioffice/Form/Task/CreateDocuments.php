@@ -115,7 +115,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         $values = $this->exportValues();
 
         // Extract and store live snippet values.
-        $live_snippets = CRM_Civioffice_LiveSnippets::getFormElementValues($values);
+        $live_snippets = CRM_Civioffice_LiveSnippets::getFormElementValues($this);
 
         // Initialize a queue.
         $queue = CRM_Queue_Service::singleton()->create(

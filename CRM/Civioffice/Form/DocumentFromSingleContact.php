@@ -153,7 +153,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
         $values = $this->exportValues();
 
         // Extract and store live snippet values.
-        $live_snippets = CRM_Civioffice_LiveSnippets::getFormElementValues($values);
+        $live_snippets = CRM_Civioffice_LiveSnippets::getFormElementValues($this);
 
         $render_result = civicrm_api3('CiviOffice', 'convert', [
             'document_uri' => $values['document_uri'],

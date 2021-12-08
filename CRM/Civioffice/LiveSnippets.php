@@ -95,6 +95,10 @@ class CRM_Civioffice_LiveSnippets
         return self::$_liveSnippetTokens;
     }
 
+    /**
+     * @param CRM_Core_Form $form
+     * @param $defaults
+     */
     public static function getFormElements(&$form, &$defaults) {
         $live_snippet_elements = [];
         $live_snippet_values = CRM_Civioffice_LiveSnippets::getValues();
@@ -102,12 +106,7 @@ class CRM_Civioffice_LiveSnippets
             $form->add(
                 'textarea',
                 'live_snippets_' . $live_snippet['name'],
-                $live_snippet['label']
-            /**
-             * Do not add attributes, as otherwise HTML content is being encoded during processing of value.
-             * @see \HTML_QuickForm::exportValues()
-             * @url https://github.com/civicrm/civicrm-packages/commit/311a4f85180e144774e2f3aa2b163af4a79c99fa
-             */
+                $live_snippet['label'],
             );
             $defaults['live_snippets_' . $live_snippet['name']] = $live_snippet_values[$live_snippet['name']];
             $live_snippet_elements[] = 'live_snippets_' . $live_snippet['name'];
@@ -115,17 +114,35 @@ class CRM_Civioffice_LiveSnippets
         $form->assign('live_snippet_elements', $live_snippet_elements);
     }
 
-    public static function getFormElementValues($values, $store_defaults = TRUE) {
-        // Set live snippet setting values.
-        $live_snippets = [];
-        foreach (self::get() as $live_snippet) {
-            $live_snippets[$live_snippet['name']] = $values['live_snippets_' . $live_snippet['name']];
-            self::setValue(
-                $live_snippet['name'],
-                $values['live_snippets_' . $live_snippet['name']],
-                true
-            );
+    /**
+     * @param CRM_Core_Form $form
+     * @param bool $store_defaults
+     *
+     * @return array
+     */
+    public static function getFormElementValues(&$form, $store_defaults = TRUE) {
+        $live_snippets = self::get();
+        $live_snippet_values = [];
+        foreach ($live_snippets as $live_snippet) {
+            $element_name = 'live_snippets_' . $live_snippet['name'];
+            if ($element = $form->getElement($element_name)) {
+                // Fake an element name that is in CRM_Utils_API_HTMLInputCoder->skipFields for not encoding its content
+                // as HTML-safe, since we're inside an XML CDATA section.
+                $form->_elementIndex['content'] = $form->_elementIndex[$element_name];
+                $value = $form->exportValue('content');
+                // Filter CDATA ending sections ("]]>") for not breaking the XML document.
+                $value = str_replace(']]>', ']]]]><![CDATA[>', $value);
+                $live_snippet_values[$live_snippet['name']] = $value;
+                self::setValue(
+                    $live_snippet['name'],
+                    $value,
+                    $store_defaults
+                );
+            }
         }
-        return $live_snippets;
+        if (isset($form->_elementIndex['content'])) {
+            unset ($form->_elementIndex['content']);
+        }
+        return $live_snippet_values;
     }
 }
