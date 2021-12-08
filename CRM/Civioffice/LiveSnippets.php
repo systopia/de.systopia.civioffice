@@ -131,13 +131,13 @@ class CRM_Civioffice_LiveSnippets
                 $form->_elementIndex['content'] = $form->_elementIndex[$element_name];
                 $value = $form->exportValue('content');
                 // Filter CDATA ending sections ("]]>") for not breaking the XML document.
-                $value = str_replace(']]>', ']]]]><![CDATA[>', $value);
-                $live_snippet_values[$live_snippet['name']] = $value;
                 self::setValue(
                     $live_snippet['name'],
                     $value,
                     $store_defaults
                 );
+                $value = str_replace(']]>', ']]]]><![CDATA[>', $value);
+                $live_snippet_values[$live_snippet['name']] = $value;
             }
         }
         if (isset($form->_elementIndex['content'])) {
