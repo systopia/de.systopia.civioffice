@@ -36,6 +36,14 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
     public function buildQuickForm()
     {
         $config = CRM_Civioffice_Configuration::getConfig();
+        $defaults = [
+            'activity_type_id' => Civi::contactSettings()->get(
+                self::UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE
+            ),
+            'activity_attach_doc' => Civi::contactSettings()->get(
+                self::UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT
+            ),
+        ];
         $this->setAttribute('data-no-ajax-submit', 'true');
         $this->contact_id = CRM_Utils_Request::retrieve('cid', 'Int', $this, true);
         $this->assign('user_id', $this->contact_id);
@@ -108,21 +116,11 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
             E::ts("Attach Rendered Document")
         );
 
-        // set last values
-        try {
-            $this->setDefaults(
-                [
-                    'activity_type_id' => Civi::contactSettings()->get(
-                        self::UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE
-                    ),
-                    'activity_attach_doc' => Civi::contactSettings()->get(
-                        self::UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT
-                    ),
-                ]
-            );
-        } catch (CRM_Core_Exception $ex) {
-            Civi::log()->warning("CiviOffice: Couldn't restore defaults: " . $ex->getMessage());
-        }
+        // Add fields for Live Snippets.
+        CRM_Civioffice_LiveSnippets::getFormElements($this, $defaults);
+
+        // Set default values.
+        $this->setDefaults($defaults);
 
         // add buttons
         $this->addButtons(
@@ -151,7 +149,11 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
 
     public function postProcess()
     {
+        // TODO: Do not filter live snippet values.
         $values = $this->exportValues();
+
+        // Extract and store live snippet values.
+        $live_snippets = CRM_Civioffice_LiveSnippets::getFormElementValues($values);
 
         $render_result = civicrm_api3('CiviOffice', 'convert', [
             'document_uri' => $values['document_uri'],
@@ -159,7 +161,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
             'entity_type' => 'contact',
             'renderer_uri' => $values['document_renderer_uri'],
             'target_mime_type' => $values['target_mime_type'],
-            'live_snippets' => $values['live_snippets'] ?? [],
+            'live_snippets' => $live_snippets,
         ]);
         $result_store_uri = $render_result['values'][0];
         $result_store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
