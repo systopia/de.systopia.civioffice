@@ -175,7 +175,7 @@
           {/foreach}
       {else}
         <tr>
-          <td colspan="5">{ts}No document editors available{/ts}</td>
+          <td colspan="5">{ts}No Live Snippets available{/ts}</td>
         </tr>
       {/if}
       </tbody>
