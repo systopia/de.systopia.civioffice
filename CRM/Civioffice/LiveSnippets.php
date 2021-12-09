@@ -26,21 +26,27 @@ class CRM_Civioffice_LiveSnippets
     public static function get()
     {
         if (!isset(self::$_liveSnippets)) {
-            $option_group_id = civicrm_api3(
-                'OptionGroup',
-                'getvalue',
-                [
-                    'name' => 'civioffice_live_snippets',
-                    'return' => 'id',
-                ]
-            );
-            self::$_liveSnippets = civicrm_api3(
-                'OptionValue',
-                'get',
-                [
-                    'option_group_id' => $option_group_id,
-                ]
-            )['values'];
+            try {
+                $option_group_id = civicrm_api3(
+                    'OptionGroup',
+                    'getvalue',
+                    [
+                        'name' => 'civioffice_live_snippets',
+                        'return' => 'id',
+                    ]
+                );
+                self::$_liveSnippets = civicrm_api3(
+                    'OptionValue',
+                    'get',
+                    [
+                        'option_group_id' => $option_group_id,
+                    ]
+                )['values'];
+            } catch (Exception $exception) {
+                // The option groupo doesn't seem to exist. This can only be the case when a DB upgrade after updating
+                // is pending, so do nothing here.
+                self::$_liveSnippets = [];
+            }
         }
         return self::$_liveSnippets;
     }
