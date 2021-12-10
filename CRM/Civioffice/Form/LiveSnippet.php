@@ -84,6 +84,11 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form
             );
             $this->add(
                 'text',
+                'description',
+                E::ts('Description')
+            );
+            $this->add(
+                'text',
                 'name',
                 E::ts('Name'),
                 null,
@@ -105,6 +110,7 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form
         return [
             'name' => $this->option_value['name'],
             'label' => $this->option_value['label'],
+            'description' => $this->option_value['description'],
         ];
     }
 
@@ -157,6 +163,7 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form
                     'option_group_id' => $this->option_group_id,
                     'label' => $values['label'],
                     'name' => $values['name'],
+                    'description' => $values['description'],
                 ]
             );
         }

@@ -18,6 +18,10 @@
   <p>{ts}A label for identifying the live snippet in user interfaces.{/ts}</p>
 {/htxt}
 
+{htxt id='id-live_snippet-description'}
+  <p>{ts}A description for explaining how to use this Live Snippet.{/ts}</p>
+{/htxt}
+
 {htxt id='id-live_snippet-name'}
   <p>{ts}A name to use for the token name.{/ts}</p>
   <p>{ts}Example:{/ts}<br />

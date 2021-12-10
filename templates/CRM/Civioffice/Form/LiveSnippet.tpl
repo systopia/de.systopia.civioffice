@@ -51,6 +51,15 @@
 
         <div class="crm-section">
           <div class="label">
+              {$form.description.label}
+              {help id="id-live_snippet-description" title=$form.description.label}
+          </div>
+          <div class="content">{$form.description.html}</div>
+          <div class="clear"></div>
+        </div>
+
+        <div class="crm-section">
+          <div class="label">
               {$form.name.label}
               {help id="id-live_snippet-name" title=$form.name.label}
           </div>

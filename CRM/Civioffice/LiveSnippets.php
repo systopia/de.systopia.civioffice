@@ -107,6 +107,7 @@ class CRM_Civioffice_LiveSnippets
      */
     public static function addFormElements(&$form, $name_prefix = '') {
         $live_snippet_elements = [];
+        $live_snippet_descriptions = [];
         $live_snippet_values = CRM_Civioffice_LiveSnippets::getValues();
         $defaults = [];
         $element_names = [];
@@ -119,9 +120,11 @@ class CRM_Civioffice_LiveSnippets
             );
             $element_names[] = $element_name;
             $defaults[$element_name] = $live_snippet_values[$live_snippet['name']];
-            $live_snippet_elements[] = 'live_snippets_' . $live_snippet['name'];
+            $live_snippet_elements[$live_snippet['name']] = 'live_snippets_' . $live_snippet['name'];
+            $live_snippet_descriptions[$live_snippet['name']] = $live_snippet['description'];
         }
         $form->assign('live_snippet_elements', $live_snippet_elements);
+        $form->assign('live_snippet_descriptions', $live_snippet_descriptions);
         $form->setDefaults($defaults);
         return $element_names;
     }
