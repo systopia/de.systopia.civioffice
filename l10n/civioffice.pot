@@ -242,6 +242,10 @@ msgstr ""
 msgid "Label"
 msgstr ""
 
+#: ./CRM/Civioffice/Form/LiveSnippet.php ./templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Description"
+msgstr ""
+
 #: ./CRM/Civioffice/Form/LiveSnippet.php ./templates/CRM/Civioffice/Form/DocumentUpload.tpl ./templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Name"
 msgstr ""
@@ -415,6 +419,10 @@ msgid "A label for identifying the live snippet in user interfaces."
 msgstr ""
 
 #: ./templates/CRM/Civioffice/Form/LiveSnippet.hlp
+msgid "A description for explaining how to use this Live Snippet."
+msgstr ""
+
+#: ./templates/CRM/Civioffice/Form/LiveSnippet.hlp
 msgid "A name to use for the token name."
 msgstr ""
 
@@ -448,10 +456,6 @@ msgstr ""
 
 #: ./templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Document Stores are used to store files"
-msgstr ""
-
-#: ./templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Description"
 msgstr ""
 
 #: ./templates/CRM/Civioffice/Form/Settings.tpl
