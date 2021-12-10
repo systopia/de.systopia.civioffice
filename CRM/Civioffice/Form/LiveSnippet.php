@@ -113,7 +113,7 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form
         if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD)) {
             $values = $this->exportValues();
 
-            // Validate unique field names.
+            // Validate unique names.
             $params = [
                 'option_group_id' => $this->option_group_id,
                 'name' => $values['name'],
