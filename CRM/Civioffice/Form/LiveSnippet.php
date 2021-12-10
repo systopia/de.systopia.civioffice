@@ -144,7 +144,7 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form
 
     public function postProcess()
     {
-        // Update/delete contactSettings records when updating/deleting.
+        // Create/update/delete option value.
         if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD | CRM_Core_Action::DELETE)) {
             $values = $this->exportValues();
 
