@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.3\n"
-"Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: de_DE\n"
 
 #: CRM/Civioffice/AttachmentProvider.php
 msgid "CiviOffice Document"
@@ -20,7 +20,7 @@ msgstr "CiviOffice-Dokument"
 #: CRM/Civioffice/Form/DocumentFromSingleContact.php
 #: CRM/Civioffice/Form/Task/CreateDocuments.php
 msgid "Document Renderer"
-msgstr ""
+msgstr "Dokument-Renderer"
 
 #: CRM/Civioffice/AttachmentProvider.php
 #: CRM/Civioffice/Form/DocumentFromSingleContact.php
@@ -299,6 +299,11 @@ msgid "Label"
 msgstr "Beschriftung"
 
 #: CRM/Civioffice/Form/LiveSnippet.php
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Description"
+msgstr "Beschreibung"
+
+#: CRM/Civioffice/Form/LiveSnippet.php
 #: templates/CRM/Civioffice/Form/DocumentUpload.tpl
 #: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Name"
@@ -395,7 +400,7 @@ msgstr "Entitätstyp, z.B. \"contact\", \"contribution\""
 
 #: api/v3/CiviOffice/Convert.php
 msgid "Entity type for token replacement"
-msgstr ""
+msgstr "Entitytyp für Platzhalterersetzung"
 
 #: api/v3/CiviOffice/Convert.php
 msgid "Renderer URI. E.g.: \"unoconv-local\""
@@ -510,6 +515,12 @@ msgstr ""
 "Benutzeroberfläche"
 
 #: templates/CRM/Civioffice/Form/LiveSnippet.hlp
+msgid "A description for explaining how to use this Live Snippet."
+msgstr ""
+"Eine Beschreibung zur Erklärung, wie dieses Live-Snippet verwendet werden "
+"soll."
+
+#: templates/CRM/Civioffice/Form/LiveSnippet.hlp
 msgid "A name to use for the token name."
 msgstr "Ein Name zur Verwendung für den Namen des Platzhalters"
 
@@ -556,10 +567,6 @@ msgstr "CiviOffice-Dokumentenspeicher"
 #: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Document Stores are used to store files"
 msgstr "Dokumentenspeicher werden zum Speichern von Dokumenten verwendet."
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Description"
-msgstr "Beschreibung"
 
 #: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Ready to use"
