@@ -162,14 +162,21 @@
       </thead>
       <tbody>
       {if !empty($ui_components.live_snippets)}
-          {foreach from=$ui_components.live_snippets item=live_snippet}
+          {foreach from=$ui_components.live_snippets item="live_snippet" key="live_snippet_id"}
             <tr>
 
               <td>{$live_snippet.label}</td>
               <td>{$live_snippet.description}</td>
               <td><code>{literal}{{/literal}civioffice.live_snippet.{$live_snippet.name}{literal}}{/literal}</code></td>
               <td>{$live_snippet.current_content}</td>
-              <td></td>
+              <td>
+                <a class="button crm-popup crm-small-popup"
+                   href="{crmURL p='civicrm/admin/civioffice/settings/livesnippet' q="reset=1&id=`$live_snippet_id`&action=update"}"
+                   title="{ts}Edit Live Snippet{/ts}">{ts}Edit{/ts}</a>
+                <a class="button crm-popup crm-small-popup"
+                   href="{crmURL p='civicrm/admin/civioffice/settings/livesnippet' q="reset=1&id=`$live_snippet_id`&action=delete"}"
+                   title="{ts}Edit Live Snippet{/ts}">{ts}Delete{/ts}</a>
+              </td>
 
             </tr>
           {/foreach}
@@ -180,6 +187,11 @@
       {/if}
       </tbody>
     </table>
+
+    <div class="action-link">
+      <a class="button crm-popup small-popup"
+         href="{crmURL p='civicrm/admin/civioffice/settings/livesnippet' q="reset=1&action=add"}">{ts}Add Live Snippet{/ts}</a>
+    </div>
 
   </div>
 

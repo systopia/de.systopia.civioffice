@@ -28,6 +28,12 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/admin/civioffice/settings/livesnippet</path>
+    <page_callback>CRM_Civioffice_Form_LiveSnippet</page_callback>
+    <title>Live Snippet</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civioffice/download</path>
     <page_callback>CRM_Civioffice_Form_Download</page_callback>
     <title>Download</title>
