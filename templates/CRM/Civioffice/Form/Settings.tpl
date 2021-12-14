@@ -167,7 +167,7 @@
 
               <td>{$live_snippet.label}</td>
               <td>{$live_snippet.description}</td>
-              <td><code>{literal}{{/literal}civioffice.live_snippet.{$live_snippet.name}{literal}}{/literal}</code></td>
+              <td><code>{literal}{{/literal}civioffice.live_snippets.{$live_snippet.name}{literal}}{/literal}</code></td>
               <td>{$live_snippet.current_content}</td>
               <td>
                 <a class="button crm-popup crm-small-popup"
