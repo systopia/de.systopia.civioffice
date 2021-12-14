@@ -26,7 +26,7 @@ msgstr "Dokument-Renderer"
 #: CRM/Civioffice/Form/DocumentFromSingleContact.php
 #: CRM/Civioffice/Form/Task/CreateDocuments.php
 msgid "Document"
-msgstr "Doument"
+msgstr "Dokument"
 
 #: CRM/Civioffice/AttachmentProvider.php
 #: CRM/Civioffice/Form/DocumentFromSingleContact.php
@@ -40,16 +40,15 @@ msgstr "Anhangname"
 
 #: CRM/Civioffice/Document/LocalTempfile.php
 msgid "Local path is not writable"
-msgstr "Der lokale Pfad ist nicht beschreibbar"
+msgstr "Der lokale Pfad ist nicht beschreibbar."
 
 #: CRM/Civioffice/DocumentRenderer/LocalUnoconv.php
 msgid "Local Universal Office Converter (unoconv)"
-msgstr "Lokaler Universal Office Konvertierer (unoconv)"
+msgstr "Lokaler Universal Office Converter (unoconv)"
 
 #: CRM/Civioffice/DocumentRenderer/LocalUnoconv.php
 msgid "Too many parallel conversions. Try using a smaller batch size"
-msgstr ""
-"Zu viele parallele Konvertierungen. Versuchen Sie eine kleinere Stapelgröße"
+msgstr "Zu viele parallele Konvertierungen. Versuchen Sie eine kleinere Stapelgröße."
 
 #: CRM/Civioffice/DocumentRenderer/LocalUnoconv.php
 msgid ""
@@ -82,11 +81,11 @@ msgstr "Temporäre Dateien"
 
 #: CRM/Civioffice/DocumentStore/Upload.php
 msgid "Shared Uploads"
-msgstr "Geteilte Hochgeladene Dateien"
+msgstr "Geteilte hochgeladene Dateien"
 
 #: CRM/Civioffice/DocumentStore/Upload.php
 msgid "My Uploads"
-msgstr "Meine Hochgeladenen Dateien"
+msgstr "Meine hochgeladenen Dateien"
 
 #: CRM/Civioffice/DocumentStore/Upload.php
 msgid ""
@@ -94,7 +93,7 @@ msgid ""
 "internal upload folder is being used here. Be aware. If enabled very user "
 "has full access to upload documents."
 msgstr ""
-"Geteilte hochgeladene Dokumente. Es ist kein Ordnereinrichtung erforderlich, "
+"Geteilte hochgeladene Dokumente. Es ist keine Ordnerkonfiguration erforderlich, "
 "da hier der CiviCRM-interne Upload-Ordner verwendet wird. Bitte beachten "
 "Sie: wenn diese Funktion aktiviert ist, hat jeder Benutzer vollen Zugriff "
 "auf das Hochladen von Dokumenten."
@@ -174,12 +173,12 @@ msgstr "Eingabe ist leer"
 
 #: CRM/Civioffice/Form/DocumentRenderer/LocalUnoconvSettings.php
 msgid "Unable to write temp folder"
-msgstr "In temporären Ordner kann nicht geschrieben werden"
+msgstr "In temporären Ordner kann nicht geschrieben werden."
 
 #: CRM/Civioffice/Form/DocumentRenderer/LocalUnoconvSettings.php
 #: CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.php
 msgid "This is not a folder"
-msgstr "Dies ist kein Ordner"
+msgstr "Dies ist kein Ordner."
 
 #: CRM/Civioffice/Form/DocumentRenderer/LocalUnoconvSettings.php
 msgid "File does not exist. Please provide a correct filename"
