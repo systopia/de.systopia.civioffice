@@ -25,6 +25,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         $this->setTitle(E::ts("CiviOffice - Generate multiple Documents"));
 
         $config = CRM_Civioffice_Configuration::getConfig();
+        $defaults = [];
 
         // add list of document renderers and supported output mime types
         $output_mimetypes = null;
@@ -98,6 +99,12 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             ['class' => 'crm-select2']
         );
 
+        // Add fields for Live Snippets.
+        CRM_Civioffice_LiveSnippets::addFormElements($this);
+
+        // set default values.
+        $this->setDefaults($defaults);
+
         // add buttons
         CRM_Core_Form::addDefaultButtons(E::ts("Generate %1 Files", [1 => count($this->_contactIds)]));
     }
@@ -106,6 +113,9 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
     public function postProcess()
     {
         $values = $this->exportValues();
+
+        // Extract and store live snippet values.
+        $live_snippets = CRM_Civioffice_LiveSnippets::getFormElementValues($this);
 
         // Initialize a queue.
         $queue = CRM_Queue_Service::singleton()->create(
@@ -128,7 +138,8 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
                     $entity_IDs,
                     'contact',
                     $values['target_mime_type'],
-                    E::ts('Initialized')
+                    E::ts('Initialized'),
+                    $live_snippets
                 )
             );
         }

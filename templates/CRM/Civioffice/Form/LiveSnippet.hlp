@@ -1,0 +1,31 @@
+{*-------------------------------------------------------+
+| SYSTOPIA CiviOffice Integration                        |
+| Copyright (C) 2020 SYSTOPIA                            |
+| Author: J. Schuppe (schuppe@systopia.de)               |
++--------------------------------------------------------+
+| This program is released as free software under the    |
+| Affero GPL license. You can redistribute it and/or     |
+| modify it under the terms of this license which you    |
+| can read by viewing the included agpl.txt or online    |
+| at www.gnu.org/licenses/agpl.html. Removal of this     |
+| copyright header is strictly prohibited without        |
+| written permission from the original author(s).        |
++-------------------------------------------------------*}
+
+{crmScope extensionKey='de.systopia.civioffice'}
+
+{htxt id='id-live_snippet-label'}
+  <p>{ts}A label for identifying the live snippet in user interfaces.{/ts}</p>
+{/htxt}
+
+{htxt id='id-live_snippet-description'}
+  <p>{ts}A description for explaining how to use this Live Snippet.{/ts}</p>
+{/htxt}
+
+{htxt id='id-live_snippet-name'}
+  <p>{ts}A name to use for the token name.{/ts}</p>
+  <p>{ts}Example:{/ts}<br />
+      {ts}When the name is <em>foobar</em>, the token for this live snippet will be <code>{literal}{civioffice.live_snippets.foobar}{/literal}</code>{/ts}</p>
+{/htxt}
+
+{/crmScope}

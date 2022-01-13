@@ -51,12 +51,27 @@ class CRM_Civioffice_ConversionJob
     protected $target_mime_type;
 
     /**
+     * @var array $live_snippets
+     *   Values for live snippet tokens in the document.
+     */
+    protected $live_snippets;
+
+    /**
      * @var string $title
      *   Title for runner state
      */
     public $title;
 
-    public function __construct($renderer_uri, $document_uri, $temp_folder_path, $entity_IDs, $entity_type, $target_mime_type, $title)
+    public function __construct(
+        $renderer_uri,
+        $document_uri,
+        $temp_folder_path,
+        $entity_IDs,
+        $entity_type,
+        $target_mime_type,
+        $title,
+        $live_snippets = []
+    )
     {
         $this->renderer_uri = $renderer_uri;
         $this->document_uri = $document_uri;
@@ -65,6 +80,7 @@ class CRM_Civioffice_ConversionJob
         $this->entity_type = $entity_type;
         $this->target_mime_type = $target_mime_type;
         $this->title = $title;
+        $this->live_snippets = $live_snippets;
     }
 
     public function run(): bool
@@ -75,7 +91,8 @@ class CRM_Civioffice_ConversionJob
             'entity_ids'       => $this->entity_IDs,
             'entity_type'      => $this->entity_type,
             'renderer_uri'     => $this->renderer_uri,
-            'target_mime_type' => $this->target_mime_type
+            'target_mime_type' => $this->target_mime_type,
+            'live_snippets' => $this->live_snippets,
         ]);
 
         $result_store_uri = $render_result['values'][0];

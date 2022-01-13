@@ -41,7 +41,7 @@ class CRM_Civioffice_Configuration
      * @param boolean $only_show_active
      *   return only active/all objects
      *
-     * @return array
+     * @return \CRM_Civioffice_DocumentStore[]
      */
     public static function getDocumentStores(bool $only_show_active) : array
     {
@@ -72,7 +72,7 @@ class CRM_Civioffice_Configuration
      * @param boolean $only_show_active
      *   return only active objects
      *
-     * @return array
+     * @return \CRM_Civioffice_DocumentRenderer[]
      */
     public static function getDocumentRenderers(bool $only_show_active) : array
     {

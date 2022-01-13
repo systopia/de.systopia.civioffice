@@ -94,6 +94,13 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             true,
             ['class' => 'crm-select2']
         );
+
+        // Add Live Snippets.
+        $live_snippet_elements = CRM_Civioffice_LiveSnippets::addFormElements(
+            $form,
+            'attachments--' . $attachment_id . '--'
+        );
+
         $form->add(
             'text',
             'attachments--' . $attachment_id . '--name',
@@ -107,17 +114,27 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             'attachments--' . $attachment_id . '--document_uri' => 'attachment-civioffice_document-document_uri',
             'attachments--' . $attachment_id . '--target_mime_type' => 'attachment-civioffice_document-target_mime_type',
             'attachments--' . $attachment_id . '--name' => 'attachment-civioffice_document-name',
-        ];
+        ] + array_fill_keys($live_snippet_elements, 'attachment-civioffice_document-live_snippet');
+    }
+
+    public static function getAttachmentFormTemplate() {
+        return 'CRM/Civioffice/Form/AttachmentProvider.tpl';
     }
 
     public static function processAttachmentForm(&$form, $attachment_id)
     {
         $values = $form->exportValues();
+        $live_snippet_values = CRM_Civioffice_LiveSnippets::getFormElementValues(
+            $form,
+            false,
+            'attachments--' . $attachment_id . '--'
+        );
         return [
             'document_renderer_uri' => $values['attachments--' . $attachment_id . '--document_renderer_uri'],
             'document_uri' => $values['attachments--' . $attachment_id . '--document_uri'],
             'target_mime_type' => $values['attachments--' . $attachment_id . '--target_mime_type'],
             'name' => $values['attachments--' . $attachment_id . '--name'],
+            'live_snippets' => $live_snippet_values,
         ];
     }
 
@@ -133,6 +150,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
                 'entity_type' => isset($context['contact']) ? 'contact' : null,
                 'renderer_uri' => $attachment_values['document_renderer_uri'],
                 'target_mime_type' => $attachment_values['target_mime_type'],
+                'live_snippets' => $attachment_values['live_snippets'],
             ]
         );
         if (!empty($civioffice_result['is_error']) || empty($civioffice_result['values'][0])) {

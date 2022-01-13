@@ -158,7 +158,8 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         array $entity_ids,
         CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
         string $target_mime_type,
-        string $entity_type = 'contact'
+        string $entity_type = 'contact',
+        array $live_snippets = []
     ): array {
         // for now DOCX is the only format being used for internal processing
         $internal_processing_format = CRM_Civioffice_MimeType::DOCX; // todo later on this can be determined by checking the $document_with_placeholders later on to allow different transition formats like .odt/.odf
@@ -201,6 +202,10 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             // iterate through all docx components (files in zip)
             for ($i = 0; $i < $numberOfFiles; $i++) {
                 // todo: somehow skip binaries like jpegs?
+                /**
+                 * TODO: Skip irrelevant parts
+                 *   @url https://github.com/systopia/de.systopia.civioffice/issues/13
+                 */
 
                 // Step 1/4 unpack xml (.docx) file and handle it as a zip file as it is one
                 $fileContent = $zip->getFromIndex($i);
@@ -208,7 +213,10 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
                 // Step 2/4 replace tokens
                 $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
-                $fileContent = $this->replaceAllTokens($fileContent, $entity_id, 'contact');
+                $fileContent = $this->replaceAllTokens($fileContent, [
+                    'contact' => ['entity_id' => $entity_id],
+                    'civioffice' => ['live_snippets' => $live_snippets]
+                ]);
 
                 // Step 3/4 repack it again as xml (docx)
                 $zip->addFromString($fileName, $fileContent);

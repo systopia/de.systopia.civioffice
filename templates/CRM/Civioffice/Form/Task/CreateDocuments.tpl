@@ -15,34 +15,41 @@
 {* HEADER *}
 
 {crmScope extensionKey='de.systopia.civioffice'}
+  <div class="crm-block crm-form-block">
 
-  <div class="crm-section">
-    <div class="label">{$form.document_uri.label}</div>
-    <div class="content">{$form.document_uri.html}</div>
-    <div class="clear"></div>
+    <div class="crm-submit-buttons">
+        {include file="CRM/common/formButtons.tpl" location="top"}
+    </div>
+
+    <div class="crm-section">
+      <div class="label">{$form.document_uri.label}</div>
+      <div class="content">{$form.document_uri.html}</div>
+      <div class="clear"></div>
+    </div>
+
+    <div class="crm-section">
+      <div class="label">{$form.document_renderer_uri.label}</div>
+      <div class="content">{$form.document_renderer_uri.html}</div>
+      <div class="clear"></div>
+    </div>
+
+    <div class="crm-section">
+      <div class="label">{$form.target_mime_type.label}</div>
+      <div class="content">{$form.target_mime_type.html}</div>
+      <div class="clear"></div>
+    </div>
+
+    <div class="crm-section">
+      <div class="label">{$form.batch_size.label}</div>
+      <div class="content">{$form.batch_size.html}</div>
+      <div class="clear"></div>
+    </div>
+
+      {include file="CRM/Civioffice/Form/LiveSnippets.tpl"}
+
+    <div class="crm-submit-buttons">
+        {include file="CRM/common/formButtons.tpl" location="bottom"}
+    </div>
+
   </div>
-
-  <div class="crm-section">
-    <div class="label">{$form.document_renderer_uri.label}</div>
-    <div class="content">{$form.document_renderer_uri.html}</div>
-    <div class="clear"></div>
-  </div>
-
-  <div class="crm-section">
-    <div class="label">{$form.target_mime_type.label}</div>
-    <div class="content">{$form.target_mime_type.html}</div>
-    <div class="clear"></div>
-  </div>
-
-  <div class="crm-section">
-    <div class="label">{$form.batch_size.label}</div>
-    <div class="content">{$form.batch_size.html}</div>
-    <div class="clear"></div>
-  </div>
-
-  {* FOOTER *}
-  <div class="crm-submit-buttons">
-    {include file="CRM/common/formButtons.tpl" location="bottom"}
-  </div>
-
 {/crmScope}

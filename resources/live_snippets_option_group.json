@@ -1,0 +1,9 @@
+{
+  "_lookup": ["name"],
+  "_translate": ["title"],
+  "name": "civioffice_live_snippets",
+  "title": "CiviOffice Live Snippets",
+  "is_reserved": "1",
+  "is_active": "1",
+  "_values": []
+}
