@@ -159,11 +159,63 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
         string $target_mime_type,
         string $entity_type = 'contact',
-        array $live_snippets = []
+        array $live_snippets = [],
+        $prepare_docx = false
     ): array {
         // for now DOCX is the only format being used for internal processing
         $internal_processing_format = CRM_Civioffice_MimeType::DOCX; // todo later on this can be determined by checking the $document_with_placeholders later on to allow different transition formats like .odt/.odf
         $needs_conversion = $target_mime_type != $internal_processing_format;
+
+        // "Convert" DOCX files to DOCX in order to "repair" stuff, e.g. tokens that might have got split in the OOXML
+        // due to spell checking or formatting.
+        if ($prepare_docx && $internal_processing_format == CRM_Civioffice_MimeType::DOCX) {
+            $lock = new CRM_Core_Lock('civicrm.office.civi_office_unoconv_local', 60, true);
+            if (!$lock->acquire()) {
+                throw new Exception(E::ts("Too many parallel conversions. Try using a smaller batch size"));
+            }
+
+            $temp_store_folder_path = $temp_store->getBaseFolder();
+            $local_temp_store = new CRM_Civioffice_DocumentStore_LocalTemp(
+                $internal_processing_format,
+                $temp_store_folder_path
+            );
+            $prepared_document = $local_temp_store->getLocalCopyOfDocument(
+                $document_with_placeholders,
+                $document_with_placeholders->getName()
+            );
+
+            // Rename source DOCX files to *.docxsource for avoiding unoconv storage errors.
+            exec(
+                "cd $temp_store_folder_path"
+                . '&& for f in *.docx; do mv -- "$f" "${f%.docx}.docxsource"; done'
+            );
+
+            $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f docx *.docxsource 2>&1";
+            [$exec_return_code, $exec_output] = $this->runCommand($convert_command);
+            exec("cd $temp_store_folder_path && rm *.docxsource");
+
+            if ($exec_return_code != 0) {
+                // something's wrong - error handling:
+                $serialize_output = serialize($exec_output);
+                Civi::log()->debug(
+                    "CiviOffice: Exception: Return code 0 expected but $exec_return_code given: $serialize_output"
+                );
+
+                $empty_files = '';
+                foreach (new DirectoryIterator($temp_store_folder_path) as $file) {
+                    if ($file->isFile() && $file->getSize() == 0) {
+                        $empty_files .= $file->getFilename() . ', ';
+                    }
+                }
+                Civi::log()->debug("CiviOffice: Files are empty: $empty_files");
+
+                throw new Exception("Unoconv: Return code 0 expected but $exec_return_code given");
+            }
+
+            if ($lock) {
+                $lock->release();
+            }
+        }
 
         // only lock render process if renderer is needed
         $lock = null;
@@ -192,7 +244,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             $zip = new ZipArchive();
 
             $new_file_name = $this->createDocumentName($entity_id, 'docx');
-            $transitional_docx_document = $local_temp_store->getLocalCopyOfDocument($document_with_placeholders, $new_file_name);
+            $transitional_docx_document = $local_temp_store->getLocalCopyOfDocument($prepared_document ?? $document_with_placeholders, $new_file_name);
 
             // open xml file (like .docx) as a zip file, as in fact it is one
             $zip->open($transitional_docx_document->getAbsolutePath());
@@ -254,6 +306,10 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         if (!$needs_conversion) {
             // We can return here and skip conversion as the transition format is equal to the output format
             return $tokenreplaced_documents;
+        }
+
+        if (isset($prepared_document)) {
+            exec('rm ' . $prepared_document->getAbsolutePath());
         }
 
         $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $file_ending_name *.docx 2>&1";
