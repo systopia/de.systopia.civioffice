@@ -44,3 +44,8 @@ the server for this purpose.
 + add WebDAV compatibility to connect to external document stores such as
   Nextcloud, Sharepoint, or GoogleDrive
 
+## Known issues
+
++ .docx files use an XML structure internally to describe formatting and other properties of text elements. In some cases, this can lead to CiviCRM tokens being split up by XML tags, making them infunctional. CiviOffice tries to mitigate this problem by optimizing the XML structure. However, there are some things that CiviOffice can not repair (yet). **In order to avoid issues, you should**
+  + make sure there are no mixed formatting properties in your tokens (e.g. a portion of the token is in bold font)
+  + disable spell checking in your documents, especially make sure you don't apply exceptions from spell checking to bits of your tokens
