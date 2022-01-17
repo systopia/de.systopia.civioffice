@@ -18,6 +18,10 @@ msgstr ""
 msgid "Attachment Name"
 msgstr ""
 
+#: ./CRM/Civioffice/AttachmentProvider.php ./CRM/Civioffice/Form/DocumentFromSingleContact.php ./CRM/Civioffice/Form/Task/CreateDocuments.php ./api/v3/CiviOffice/Convert.php
+msgid "Prepare DOCX documents"
+msgstr ""
+
 #: ./CRM/Civioffice/Document/LocalTempfile.php
 msgid "Local path is not writable"
 msgstr ""
@@ -134,6 +138,14 @@ msgstr ""
 msgid "File does not exist. Please provide a correct filename"
 msgstr ""
 
+#: ./CRM/Civioffice/Form/DocumentRenderer/LocalUnoconvSettings.php
+msgid "Lock file does not exist. Please create as follows: 'touch %1 && chmod 777 %1'"
+msgstr ""
+
+#: ./CRM/Civioffice/Form/DocumentRenderer/LocalUnoconvSettings.php
+msgid "Lock file cannot be written. Please run: 'chmod 777 %1'"
+msgstr ""
+
 #: ./CRM/Civioffice/Form/DocumentUpload.php
 msgid "File '%1' deleted."
 msgstr ""
@@ -204,6 +216,10 @@ msgstr ""
 
 #: ./CRM/Civioffice/Form/Download.php
 msgid "Document-%1.*"
+msgstr ""
+
+#: ./CRM/Civioffice/Form/Download.php
+msgid "CiviOffice Documents.zip"
 msgstr ""
 
 #: ./CRM/Civioffice/Form/Download.php
@@ -360,6 +376,10 @@ msgstr ""
 
 #: ./api/v3/CiviOffice/Convert.php
 msgid "Contents for tokens referring to configured Live Snippets."
+msgstr ""
+
+#: ./api/v3/CiviOffice/Convert.php
+msgid "Run the DOCX document through the converter prior to processing in order to optimise/repair possibly corrupted CiviCRM tokens in the document."
 msgstr ""
 
 #: ./civioffice.php
