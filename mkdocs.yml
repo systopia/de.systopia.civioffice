@@ -10,6 +10,7 @@ nav:
   - 'Installation': installation.md
   - 'Configuration': configuration.md
   - 'Working With Documents': working-with-documents.md
+  - 'Inserting dynamic content with "Live Snippets"': inserting-content-with-live-snippets.md
   - 'Custom Fonts': custom-fonts.md
   - 'Integrating With Donation Receipts': integrating-with-donation-receipts.md
   - 'Sending Emails With Personalized Attachments': integrating-with-mail-batch.md
