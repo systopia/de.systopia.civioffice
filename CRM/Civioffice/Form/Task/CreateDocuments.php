@@ -81,6 +81,12 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         );
 
         $this->add(
+            'checkbox',
+            'prepare_docx',
+            E::ts("Prepare DOCX documents")
+        );
+
+        $this->add(
             'select',
             'batch_size',
             E::ts("batch size for processing"),
@@ -139,7 +145,8 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
                     'contact',
                     $values['target_mime_type'],
                     E::ts('Initialized'),
-                    $live_snippets
+                    $live_snippets,
+                    !empty($values['prepare_docx'])
                 )
             );
         }

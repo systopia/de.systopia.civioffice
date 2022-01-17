@@ -109,11 +109,19 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             false
         );
 
+        $form->add(
+            'checkbox',
+            'attachments--' . $attachment_id . '--prepare_docx',
+            E::ts('Prepare DOCX documents'),
+            false
+        );
+
         return [
             'attachments--' . $attachment_id . '--document_renderer_uri' => 'attachment-civioffice_document-document_renderer_uri',
             'attachments--' . $attachment_id . '--document_uri' => 'attachment-civioffice_document-document_uri',
             'attachments--' . $attachment_id . '--target_mime_type' => 'attachment-civioffice_document-target_mime_type',
             'attachments--' . $attachment_id . '--name' => 'attachment-civioffice_document-name',
+            'attachments--' . $attachment_id . '--prepare_docx' => 'attachment-civioffice_document-prepare_docx',
         ] + array_fill_keys($live_snippet_elements, 'attachment-civioffice_document-live_snippet');
     }
 
@@ -135,6 +143,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             'target_mime_type' => $values['attachments--' . $attachment_id . '--target_mime_type'],
             'name' => $values['attachments--' . $attachment_id . '--name'],
             'live_snippets' => $live_snippet_values,
+            'prepare_docx' => !empty($values['attachments--' . $attachment_id . '--prepare_docx'])
         ];
     }
 
@@ -151,6 +160,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
                 'renderer_uri' => $attachment_values['document_renderer_uri'],
                 'target_mime_type' => $attachment_values['target_mime_type'],
                 'live_snippets' => $attachment_values['live_snippets'],
+                'prepare_docx' => $attachment_values['prepare_docx'],
             ]
         );
         if (!empty($civioffice_result['is_error']) || empty($civioffice_result['values'][0])) {
