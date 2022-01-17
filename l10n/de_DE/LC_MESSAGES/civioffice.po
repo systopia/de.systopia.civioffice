@@ -38,6 +38,12 @@ msgstr "Ausgabedokumenttyp"
 msgid "Attachment Name"
 msgstr "Anhangname"
 
+#: CRM/Civioffice/AttachmentProvider.php
+#: CRM/Civioffice/Form/DocumentFromSingleContact.php
+#: CRM/Civioffice/Form/Task/CreateDocuments.php api/v3/CiviOffice/Convert.php
+msgid "Prepare DOCX documents"
+msgstr "DOCX-Dokumente vorbereiten"
+
 #: CRM/Civioffice/Document/LocalTempfile.php
 msgid "Local path is not writable"
 msgstr "Der lokale Pfad ist nicht beschreibbar."
@@ -48,7 +54,8 @@ msgstr "Lokaler Universal Office Converter (unoconv)"
 
 #: CRM/Civioffice/DocumentRenderer/LocalUnoconv.php
 msgid "Too many parallel conversions. Try using a smaller batch size"
-msgstr "Zu viele parallele Konvertierungen. Versuchen Sie eine kleinere Stapelgröße."
+msgstr ""
+"Zu viele parallele Konvertierungen. Versuchen Sie eine kleinere Stapelgröße."
 
 #: CRM/Civioffice/DocumentRenderer/LocalUnoconv.php
 msgid ""
@@ -93,10 +100,10 @@ msgid ""
 "internal upload folder is being used here. Be aware. If enabled very user "
 "has full access to upload documents."
 msgstr ""
-"Geteilte hochgeladene Dokumente. Es ist keine Ordnerkonfiguration erforderlich, "
-"da hier der CiviCRM-interne Upload-Ordner verwendet wird. Bitte beachten "
-"Sie: wenn diese Funktion aktiviert ist, hat jeder Benutzer vollen Zugriff "
-"auf das Hochladen von Dokumenten."
+"Geteilte hochgeladene Dokumente. Es ist keine Ordnerkonfiguration "
+"erforderlich, da hier der CiviCRM-interne Upload-Ordner verwendet wird. "
+"Bitte beachten Sie: wenn diese Funktion aktiviert ist, hat jeder Benutzer "
+"vollen Zugriff auf das Hochladen von Dokumenten."
 
 #: CRM/Civioffice/DocumentStore/Upload.php
 msgid ""
@@ -184,6 +191,20 @@ msgstr "Dies ist kein Ordner."
 msgid "File does not exist. Please provide a correct filename"
 msgstr "Datei existiert nicht. Bitte einen korrekten Dateinamen angeben."
 
+#: CRM/Civioffice/Form/DocumentRenderer/LocalUnoconvSettings.php
+msgid ""
+"Lock file does not exist. Please create as follows: 'touch %1 && chmod 777 "
+"%1'"
+msgstr ""
+"Sperrdatei existiert nicht. Bitte wie folgt erzeugen: 'touch %1 && chmod 777 "
+"%1'"
+
+#: CRM/Civioffice/Form/DocumentRenderer/LocalUnoconvSettings.php
+msgid "Lock file cannot be written. Please run: 'chmod 777 %1'"
+msgstr ""
+"Sperrdatei kann nicht geschrieben werden. Bitte führen Sie folgendes aus: "
+"'chmod 777 %1'"
+
 #: CRM/Civioffice/Form/DocumentUpload.php
 msgid "File '%1' deleted."
 msgstr "Datei '%1' gelöscht."
@@ -258,6 +279,10 @@ msgstr "Zurück zu vorheriger Seite"
 #: CRM/Civioffice/Form/Download.php
 msgid "Document-%1.*"
 msgstr "Dokument-%1.*"
+
+#: CRM/Civioffice/Form/Download.php
+msgid "CiviOffice Documents.zip"
+msgstr "CiviOffice-Dokumente.zip"
 
 #: CRM/Civioffice/Form/Download.php
 msgid "File couldn't be generated. Contact the author."
@@ -427,6 +452,15 @@ msgstr "Live-Snippets"
 #: api/v3/CiviOffice/Convert.php
 msgid "Contents for tokens referring to configured Live Snippets."
 msgstr "Inhlte für Platzhalter konfigurierter Live-Snippets."
+
+#: api/v3/CiviOffice/Convert.php
+msgid ""
+"Run the DOCX document through the converter prior to processing in order to "
+"optimise/repair possibly corrupted CiviCRM tokens in the document."
+msgstr ""
+"Das DOCX-Dokument vor der eigentlichen Verarbeitung durch den Konverter "
+"laufen lassen, um eventuell beschädigte CiviCRM-Platzhalter im Dokument zu "
+"optimieren/reparieren."
 
 #: civioffice.php
 msgid "Create Documents (CiviOffice)"
