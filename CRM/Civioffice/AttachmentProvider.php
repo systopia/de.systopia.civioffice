@@ -119,6 +119,10 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         ];
     }
 
+    public static function getAttachmentFormTemplate() {
+        return 'CRM/Civioffice/Form/AttachmentProvider.tpl';
+    }
+
     public static function processAttachmentForm(&$form, $attachment_id)
     {
         $values = $form->exportValues();
