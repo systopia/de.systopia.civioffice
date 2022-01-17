@@ -104,10 +104,16 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
 
         if (!empty($lockfile_to_check)) {
             if (!file_exists($lockfile_to_check)) {
-                $this->_errors['unoconv_lock_file'] = E::ts("Lock file does not exist. Please create as follows: 'touch {$lockfile_to_check} && chmod 777 {$lockfile_to_check}'");
+                $this->_errors['unoconv_lock_file'] = E::ts(
+                    "Lock file does not exist. Please create as follows: 'touch %1 && chmod 777 %1'",
+                    [
+                        1 => $lockfile_to_check,
+                    ]
+                );
             }
             if (!is_writable($lockfile_to_check)) {
-                $this->_errors['unoconv_lock_file'] = E::ts("Lock file cannot be written. Please run: 'chmod 777 {$lockfile_to_check}'");
+                $this->_errors['unoconv_lock_file'] = E::ts(
+                    "Lock file cannot be written. Please run: 'chmod 777 %1'", [1 => $lockfile_to_check]);
             }
         }
 
