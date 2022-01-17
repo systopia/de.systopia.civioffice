@@ -94,6 +94,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             true,
             ['class' => 'crm-select2']
         );
+
         $form->add(
             'text',
             'attachments--' . $attachment_id . '--name',
@@ -102,11 +103,19 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             false
         );
 
+        $form->add(
+            'checkbox',
+            'attachments--' . $attachment_id . '--prepare_docx',
+            E::ts('Prepare DOCX documents'),
+            false
+        );
+
         return [
             'attachments--' . $attachment_id . '--document_renderer_uri' => 'attachment-civioffice_document-document_renderer_uri',
             'attachments--' . $attachment_id . '--document_uri' => 'attachment-civioffice_document-document_uri',
             'attachments--' . $attachment_id . '--target_mime_type' => 'attachment-civioffice_document-target_mime_type',
             'attachments--' . $attachment_id . '--name' => 'attachment-civioffice_document-name',
+            'attachments--' . $attachment_id . '--prepare_docx' => 'attachment-civioffice_document-prepare_docx',
         ];
     }
 
@@ -118,6 +127,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             'document_uri' => $values['attachments--' . $attachment_id . '--document_uri'],
             'target_mime_type' => $values['attachments--' . $attachment_id . '--target_mime_type'],
             'name' => $values['attachments--' . $attachment_id . '--name'],
+            'prepare_docx' => !empty($values['attachments--' . $attachment_id . '--prepare_docx'])
         ];
     }
 
@@ -133,6 +143,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
                 'entity_type' => isset($context['contact']) ? 'contact' : null,
                 'renderer_uri' => $attachment_values['document_renderer_uri'],
                 'target_mime_type' => $attachment_values['target_mime_type'],
+                'prepare_docx' => $attachment_values['prepare_docx'],
             ]
         );
         if (!empty($civioffice_result['is_error']) || empty($civioffice_result['values'][0])) {

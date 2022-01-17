@@ -25,6 +25,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         $this->setTitle(E::ts("CiviOffice - Generate multiple Documents"));
 
         $config = CRM_Civioffice_Configuration::getConfig();
+        $defaults = [];
 
         // add list of document renderers and supported output mime types
         $output_mimetypes = null;
@@ -80,6 +81,12 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
         );
 
         $this->add(
+            'checkbox',
+            'prepare_docx',
+            E::ts("Prepare DOCX documents")
+        );
+
+        $this->add(
             'select',
             'batch_size',
             E::ts("batch size for processing"),
@@ -97,6 +104,9 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
             true,
             ['class' => 'crm-select2']
         );
+
+        // set default values.
+        $this->setDefaults($defaults);
 
         // add buttons
         CRM_Core_Form::addDefaultButtons(E::ts("Generate %1 Files", [1 => count($this->_contactIds)]));
@@ -128,7 +138,8 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
                     $entity_IDs,
                     'contact',
                     $values['target_mime_type'],
-                    E::ts('Initialized')
+                    E::ts('Initialized'),
+                    !empty($values['prepare_docx'])
                 )
             );
         }

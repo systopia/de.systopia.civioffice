@@ -51,12 +51,28 @@ class CRM_Civioffice_ConversionJob
     protected $target_mime_type;
 
     /**
+     * @var bool $prepare_docx
+     *   Whether to run the DOCX document through the converter prior to processing in order to optimise/repair possibly
+     *   corrupted CiviCRM tokens in the document.
+     */
+    protected $prepare_docx;
+
+    /**
      * @var string $title
      *   Title for runner state
      */
     public $title;
 
-    public function __construct($renderer_uri, $document_uri, $temp_folder_path, $entity_IDs, $entity_type, $target_mime_type, $title)
+    public function __construct(
+        $renderer_uri,
+        $document_uri,
+        $temp_folder_path,
+        $entity_IDs,
+        $entity_type,
+        $target_mime_type,
+        $title,
+        $prepare_docx = false
+    )
     {
         $this->renderer_uri = $renderer_uri;
         $this->document_uri = $document_uri;
@@ -65,6 +81,7 @@ class CRM_Civioffice_ConversionJob
         $this->entity_type = $entity_type;
         $this->target_mime_type = $target_mime_type;
         $this->title = $title;
+        $this->prepare_docx = $prepare_docx;
     }
 
     public function run(): bool
@@ -75,7 +92,8 @@ class CRM_Civioffice_ConversionJob
             'entity_ids'       => $this->entity_IDs,
             'entity_type'      => $this->entity_type,
             'renderer_uri'     => $this->renderer_uri,
-            'target_mime_type' => $this->target_mime_type
+            'target_mime_type' => $this->target_mime_type,
+            'prepare_docx' => $this->prepare_docx
         ]);
 
         $result_store_uri = $render_result['values'][0];

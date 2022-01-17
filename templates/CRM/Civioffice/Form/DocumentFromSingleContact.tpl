@@ -12,42 +12,65 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*}
 
-{* HEADER *}
-
 {crmScope extensionKey='de.systopia.civioffice'}
-  <div class="crm-section">
-    <div class="label">{$form.document_uri.label}</div>
-    <div class="content">{$form.document_uri.html}</div>
-    <div class="clear"></div>
-  </div>
+  <div class="crm-block crm-form-block">
+
+    {* HEADER *}
+    <div class="crm-submit-buttons">
+        {include file="CRM/common/formButtons.tpl" location="top"}
+    </div>
+
+    <div class="crm-section">
+      <div class="label">{$form.document_uri.label}</div>
+      <div class="content">{$form.document_uri.html}</div>
+      <div class="clear"></div>
+    </div>
 
 
-  <div class="crm-section">
-    <div class="label">{$form.document_renderer_uri.label}</div>
-    <div class="content">{$form.document_renderer_uri.html}</div>
-    <div class="clear"></div>
-  </div>
+    <div class="crm-section">
+      <div class="label">{$form.document_renderer_uri.label}</div>
+      <div class="content">{$form.document_renderer_uri.html}</div>
+      <div class="clear"></div>
+    </div>
 
-  <div class="crm-section">
-    <div class="label">{$form.target_mime_type.label}</div>
-    <div class="content">{$form.target_mime_type.html}</div>
-    <div class="clear"></div>
-  </div>
+    <div class="crm-section">
+      <div class="label">{$form.target_mime_type.label}</div>
+      <div class="content">{$form.target_mime_type.html}</div>
+      <div class="clear"></div>
+    </div>
 
-  <div class="crm-section">
-    <div class="label">{$form.activity_type_id.label}</div>
-    <div class="content">{$form.activity_type_id.html}</div>
-    <div class="clear"></div>
-  </div>
+    <div class="crm-section">
+      <div class="label">{$form.prepare_docx.label}</div>
+      <div class="content">{$form.prepare_docx.html}</div>
+      <div class="clear"></div>
+    </div>
 
-  <div class="crm-section">
-    <div class="label">{$form.activity_attach_doc.label}</div>
-    <div class="content">{$form.activity_attach_doc.html}</div>
-    <div class="clear"></div>
-  </div>
+    <div class="crm-accordion-wrapper">
 
-  {* FOOTER *}
-  <div class="crm-submit-buttons">
-    {include file="CRM/common/formButtons.tpl" location="bottom"}
+      <div class="crm-accordion-header">{ts}Activity{/ts}</div>
+
+      <div class="crm-accordion-body">
+
+        <div class="crm-section">
+          <div class="label">{$form.activity_type_id.label}</div>
+          <div class="content">{$form.activity_type_id.html}</div>
+          <div class="clear"></div>
+        </div>
+
+        <div class="crm-section">
+          <div class="label">{$form.activity_attach_doc.label}</div>
+          <div class="content">{$form.activity_attach_doc.html}</div>
+          <div class="clear"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    {* FOOTER *}
+    <div class="crm-submit-buttons">
+        {include file="CRM/common/formButtons.tpl" location="bottom"}
+    </div>
+
   </div>
 {/crmScope}
