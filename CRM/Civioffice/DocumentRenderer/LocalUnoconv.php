@@ -303,13 +303,13 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          * -v for verbose mode. Returns target file format and target filepath
          */
 
+        if (isset($prepared_document)) {
+            exec('rm ' . $prepared_document->getAbsolutePath());
+        }
+
         if (!$needs_conversion) {
             // We can return here and skip conversion as the transition format is equal to the output format
             return $tokenreplaced_documents;
-        }
-
-        if (isset($prepared_document)) {
-            exec('rm ' . $prepared_document->getAbsolutePath());
         }
 
         $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $file_ending_name *.docx 2>&1";
