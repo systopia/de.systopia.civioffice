@@ -109,7 +109,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
                 try {
                     $output = null;
                     // todo save name identifier at a central place
-                    $pattern = E::ts("Document-%1.*", [1 => '*']); // todo: Check if wildcard use is okay here
+                    $pattern = "Document-*.*"; // todo: Check if wildcard use is okay here
                     $command = "cd {$folder_path} && zip all.zip {$pattern}";
                     Civi::log()->debug("CiviOffice: Executing '{$command}' to zip generated files...");
                     $timestamp = microtime(true);
