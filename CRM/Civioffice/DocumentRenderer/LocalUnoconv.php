@@ -252,19 +252,20 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
 
             // iterate through all docx components (files in zip)
             for ($i = 0; $i < $numberOfFiles; $i++) {
-                // todo: somehow skip binaries like jpegs?
-                /**
-                 * TODO: Skip irrelevant parts
-                 *   @url https://github.com/systopia/de.systopia.civioffice/issues/13
-                 */
-
                 // Step 1/4 unpack xml (.docx) file and handle it as a zip file as it is one
                 $fileContent = $zip->getFromIndex($i);
                 $fileName = $zip->getNameIndex($i);
 
                 // Step 2/4 replace tokens
-                $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
-                $fileContent = $this->replaceAllTokens($fileContent, $entity_id, 'contact');
+                /**
+                 * TODO: Skip irrelevant parts, like binary files (images, etc.).
+                 *   @url https://github.com/systopia/de.systopia.civioffice/issues/13
+                 *   As a first step, we filter for XML files only.
+                 */
+                if (0 === substr_compare($fileName, '.xml', - strlen('.xml'))) {
+                    $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
+                    $fileContent = $this->replaceAllTokens($fileContent, $entity_id, 'contact');
+                }
 
                 // Step 3/4 repack it again as xml (docx)
                 $zip->addFromString($fileName, $fileContent);
