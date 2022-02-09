@@ -7,6 +7,8 @@ The following components must be installed on the server:
 + [unoconv](https://github.com/unoconv/)
 + [libreoffice](https://www.libreoffice.org/)
 
+Note that CiviOffice requires at least CiviCRM Core 5.44.
+
 ### Verifying successful unoconv installation
 
 If `unoconv --version` prints out the unoconv version, your installation was successful.
