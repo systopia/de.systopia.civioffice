@@ -1,8 +1,8 @@
-# Sending Emails With Personalized Attachments
+# Sending E-Mail with Personalized Attachments
 
 You can integrate CiviOffice with
 the [de.systopia.mailbatch](https://github.com/systopia/de.systopia.mailbatch)
-extension. This allows you to send out personalized email attachments to your
+extension. This allows you to send out personalized e-mail attachments to your
 contacts. The minimum version required for this is MailBatch 1.2-alpha1 (release
 upcoming, feature is in master branch as of writing).
 

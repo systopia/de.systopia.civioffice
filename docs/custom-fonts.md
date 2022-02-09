@@ -32,4 +32,3 @@ are saving all fonts within the document. Further note that this may not include
 all weights and styles of the fonts (Light, Bold, Italic etc.). While working
 with .pdfs can be rather reliable, working with docx and different software
 (LibreOffice, Excel, GoogleDocs, etc.) could prove complicated.
-

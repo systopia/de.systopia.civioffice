@@ -29,16 +29,12 @@ Two paths are entered here that are essential for using CiviOffice:
    The path can otherwise be determined with the following console
    command: ``which unoconv``.
 2. **The path to the temp folder**: A subfolder of
-   CiviCRM's ``templates_c folder``. As an example, on a Drupal-based site, this
-   might look like this
-
-```
-[/var/www/vhosts/[YOUR_DOMAIN]/httpdocs/dev/public/sites/default/files]/civicrm/templates_c/civioffice
-```
+   CiviCRM's `templates_c` directory. As an example, on a Drupal-based site,
+   this might look like `/var/www/vhosts/[YOUR_DOMAIN]/httpdocs/dev/public/sites/default/files/civicrm/templates_c/civioffice`
 
 The directory, here named ``civioffice``, must be created manually in the
 described path. Although the path (and name) might be set differently, we
-recommend creating the directory inside ``templates_c*``.
+recommend creating the directory inside `templates_c`.
 
 The path entry is verified dynamically, so saving is only possible when an
 existing path is entered. In case of permission problems, you will receive a

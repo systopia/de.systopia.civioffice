@@ -1,4 +1,4 @@
-# Inserting dynamic content with "live snippets"
+# Inserting dynamic content with "live Snippets"
 
 As of version 0.7, CiviOffice provides a means to insert dynamic content when
 creating your document (although it still lacks a full-fledged text editor). The
