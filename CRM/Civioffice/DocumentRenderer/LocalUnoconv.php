@@ -160,7 +160,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         string $target_mime_type,
         string $entity_type = 'contact',
         array $live_snippets = [],
-        $prepare_docx = false
+        bool $prepare_docx = false
     ): array {
         // for now DOCX is the only format being used for internal processing
         $internal_processing_format = CRM_Civioffice_MimeType::DOCX; // todo later on this can be determined by checking the $document_with_placeholders later on to allow different transition formats like .odt/.odf

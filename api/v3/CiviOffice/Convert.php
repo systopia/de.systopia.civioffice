@@ -64,12 +64,14 @@ function _civicrm_api3_civi_office_convert_spec(&$spec)
     $spec['live_snippets'] = [
         'name' => 'live_snippets',
         'type' => CRM_Utils_Type::T_STRING,
+        'api.default' => [],
         'title' => E::ts('Live Snippets'),
         'description' => E::ts('Contents for tokens referring to configured Live Snippets.'),
     ];
     $spec['prepare_docx'] = [
         'name' => 'prepare_docx',
         'type' => CRM_Utils_Type::T_BOOLEAN,
+        'api.default' => false,
         'title' => E::ts('Prepare DOCX documents'),
         'description' => E::ts('Run the DOCX document through the converter prior to processing in order to optimise/repair possibly corrupted CiviCRM tokens in the document.'),
     ];
