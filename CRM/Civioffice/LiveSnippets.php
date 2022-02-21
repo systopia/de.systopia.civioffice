@@ -116,7 +116,7 @@ class CRM_Civioffice_LiveSnippets
             $form->add(
                 'textarea',
                 $element_name,
-                $live_snippet['label'],
+                $live_snippet['label']
             );
             $element_names[] = $element_name;
             $defaults[$element_name] = $live_snippet_values[$live_snippet['name']];
