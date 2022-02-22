@@ -34,12 +34,12 @@ the server for this purpose.
   with [de.systopia.mailbatch](https://github.com/systopia/de.systopia.mailbatch)
   to send emails with personalized attachments
 + API
-
-## Planned features
-
 + insert "live snippets", i.e. text portions to be inserted in the document in
   the creation process (a full-fleged document editor might be introduced at a
   later stage)
+
+## Planned features
++ HTML to OOXML conversion to allow for simple formatting within tokens (also a workaround for missing Smarty syntax)
 + search result actions for contributions, participants, and memberships
 + add WebDAV compatibility to connect to external document stores such as
   Nextcloud, Sharepoint, or GoogleDrive
