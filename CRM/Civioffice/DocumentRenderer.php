@@ -119,6 +119,10 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
                      */
 
                     break;
+                case 'contribution':
+                    $token_row->context('contributionId', $context['entity_id']);
+                    $token_row->context('contribution', $context['entity']);
+                    break;
                 default:
                     // todo: implement?
                     throw new Exception('replaceAllTokens not implemented for entity ' . $entity_type);
