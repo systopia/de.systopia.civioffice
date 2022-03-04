@@ -14,6 +14,7 @@
 +-------------------------------------------------------*/
 
 use Civi\Token\TokenProcessor;
+use Civi\Api4;
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
@@ -104,6 +105,19 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
         );
         $processor->addMessage($identifier, $string, 'text/plain');
         $token_row = $processor->addRow();
+
+        // Add implicit contact token context for contributions.
+        if (
+            array_key_exists('contribution', $token_contexts)
+            && !array_key_exists('contact', $token_contexts)
+        ) {
+            $contribution = Api4\Contribution::get()
+                ->addWhere('id', '=', $token_contexts['contribution']['entity_id'])
+                ->execute()
+                ->single();
+            $token_contexts['contact'] = ['entity_id' => $contribution['contact_id']];
+        }
+
         foreach ($token_contexts as $entity_type => $context) {
             switch ($entity_type) {
                 case 'civioffice':

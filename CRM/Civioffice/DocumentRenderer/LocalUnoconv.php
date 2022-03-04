@@ -14,7 +14,6 @@
 +-------------------------------------------------------*/
 
 use CRM_Civioffice_ExtensionUtil as E;
-use Civi\Api4;
 
 /**
  *
@@ -270,14 +269,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                         $entity_type => ['entity_id' => $entity_id],
                         'civioffice' => ['live_snippets' => $live_snippets]
                     ];
-                    if ($entity_type == 'contribution') {
-                        $contribution = Api4\Contribution::get()
-                            ->addWhere('id', '=', $entity_id)
-                            ->execute()
-                            ->single();
-                        $tokenContexts['contact'] = ['entity_id' => $contribution['contact_id']];
-                        $tokenContexts['contribution']['entity'] = $contribution;
-                    }
                     $fileContent = $this->replaceAllTokens($fileContent, $tokenContexts);
                 }
 
