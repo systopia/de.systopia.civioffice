@@ -95,17 +95,6 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      */
     public function replaceAllTokens($string, $token_contexts = []): string
     {
-        $identifier = 'document';
-        $processor = new TokenProcessor(
-            Civi::service('dispatcher'),
-            array_keys($token_contexts) + [
-                'controller' => __CLASS__,
-                'smarty' => false,
-            ]
-        );
-        $processor->addMessage($identifier, $string, 'text/plain');
-        $token_row = $processor->addRow();
-
         // Add implicit contact token context for contributions.
         if (
             array_key_exists('contribution', $token_contexts)
@@ -117,6 +106,17 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
                 ->single();
             $token_contexts['contact'] = ['entity_id' => $contribution['contact_id']];
         }
+
+        $identifier = 'document';
+        $processor = new TokenProcessor(
+            Civi::service('dispatcher'),
+            array_keys($token_contexts) + [
+                'controller' => __CLASS__,
+                'smarty' => false,
+            ]
+        );
+        $processor->addMessage($identifier, $string, 'text/plain');
+        $token_row = $processor->addRow();
 
         foreach ($token_contexts as $entity_type => $context) {
             switch ($entity_type) {
