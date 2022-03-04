@@ -13,6 +13,7 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+use Civi\Token\TokenProcessor;
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
@@ -93,11 +94,10 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      */
     public function replaceAllTokens($string, $token_contexts = []): string
     {
-        $result = $string;
         $identifier = 'document';
-        $processor = new \Civi\Token\TokenProcessor(
+        $processor = new TokenProcessor(
             Civi::service('dispatcher'),
-            [
+            array_keys($token_contexts) + [
                 'controller' => __CLASS__,
                 'smarty' => false,
             ]
@@ -131,9 +131,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
         }
 
         $processor->evaluate();
-        $result = $token_row->render($identifier);
-
-        return $result;
+        return $token_row->render($identifier);
     }
 
     /*

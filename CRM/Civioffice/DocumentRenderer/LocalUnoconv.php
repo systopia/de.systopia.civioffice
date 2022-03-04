@@ -14,6 +14,7 @@
 +-------------------------------------------------------*/
 
 use CRM_Civioffice_ExtensionUtil as E;
+use Civi\Api4;
 
 /**
  *
@@ -270,13 +271,12 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                         'civioffice' => ['live_snippets' => $live_snippets]
                     ];
                     if ($entity_type == 'contribution') {
-                        // TODO: Inherit code from \CRM_Contribute_Form_Task_PDFLetter::resolveTokens().
-                        $contribution = \Civi\Api4\Contribution::get()
+                        $contribution = Api4\Contribution::get()
                             ->addWhere('id', '=', $entity_id)
                             ->execute()
                             ->single();
                         $tokenContexts['contact'] = ['entity_id' => $contribution['contact_id']];
-                        $tokenContexts[$entity_type]['entity'] = $contribution;
+                        $tokenContexts['contribution']['entity'] = $contribution;
                     }
                     $fileContent = $this->replaceAllTokens($fileContent, $tokenContexts);
                 }
