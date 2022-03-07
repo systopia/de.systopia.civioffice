@@ -24,13 +24,13 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
      * @var string $entityType
      *   The type of entities to create documents for.
      */
-    protected string $entityType;
+    protected $entityType;
 
     /**
      * @var array $entityIds
      *   A list of IDs of entities to create documents for.
      */
-    protected array $entityIds;
+    protected $entityIds;
 
     /**
      * {@inheritDoc}
