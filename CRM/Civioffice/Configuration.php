@@ -78,7 +78,8 @@ class CRM_Civioffice_Configuration
     {
         // todo: get from config
         $available_renderers = [
-            new CRM_Civioffice_DocumentRenderer_LocalUnoconv()
+            new CRM_Civioffice_DocumentRenderer_LocalUnoconv(),
+            new CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord(),
         ];
 
         if (!$only_show_active) return $available_renderers;

@@ -2,7 +2,7 @@
 /*-------------------------------------------------------+
 | SYSTOPIA CiviOffice Integration                        |
 | Copyright (C) 2020 SYSTOPIA                            |
-| Author: J. Franz (franz@systopia.de)                   |
+| Author: J. Schuppe (schuppe@systopia.de)               |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
 | Affero GPL license. You can redistribute it and/or     |
@@ -14,11 +14,12 @@
 +-------------------------------------------------------*/
 
 use CRM_Civioffice_ExtensionUtil as E;
+use PhpOffice\PhpWord;
 
 /**
  *
  */
-class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_DocumentRenderer
+class CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord extends CRM_Civioffice_DocumentRenderer_LocalUnoconv
 {
     const MIN_UNOCONV_VERSION = '0.7'; // todo: determine
 
@@ -36,104 +37,14 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      * constructor
      *
      */
-    public function __construct($uri = null, $name = null)
+    public function __construct()
     {
-        parent::__construct($uri ?? 'unoconv-local', $name ?? E::ts("Local Universal Office Converter (unoconv)"));
+        parent::__construct('unoconv-local-phpword', E::ts("Local Universal Office Converter (unoconv) implementing PhpWord"));
         $this->unoconv_path = Civi::settings()->get(self::UNOCONV_BINARY_PATH_SETTINGS_KEY);
         if (empty($this->unoconv_path)) {
             Civi::log()->debug("CiviOffice: Path to unoconv binary / wrapper script is missing");
             $this->unoconv_path = "";
         }
-    }
-
-    /**
-     * Is this renderer currently available?
-     * Tests if the binary is there and responding
-     *
-     * @return boolean
-     *   is this renderer ready for use
-     */
-    public function isReady(): bool
-    {
-        try {
-            if (empty($this->unoconv_path)) {
-                // no unoconv binary or wrapper script provided
-                return false;
-            }
-
-            $temp_folder = Civi::settings()->get(self::TEMP_FOLDER_PATH_SETTINGS_KEY);
-
-            // fixme duplicated check in CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings->isReady() ?
-            if (!is_writable($temp_folder)) {
-                Civi::log()->debug("CiviOffice: Unable to create unoconv temp dir in: $temp_folder");
-                return false;
-            }
-
-            // get webserver user home path
-            $home_folder = CRM_Civioffice_Configuration::getHomeFolder() . DIRECTORY_SEPARATOR;
-
-            // check if ~/.cache folder exists, try to create if not
-            if (!file_exists("{$home_folder}.cache")) {
-                mkdir("{$home_folder}.cache");
-            }
-            if (!is_writable("{$home_folder}.cache")) {
-                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.cache");
-                return false;
-            }
-
-            // check if ~/.config folder exists, try to create if not
-            if (!file_exists("{$home_folder}.config")) {
-                mkdir("{$home_folder}.config");
-            }
-            if (!is_writable("{$home_folder}.config")) {
-                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.config");
-                return false;
-            }
-
-            // run a probe command
-            $probe_command = "{$this->unoconv_path} --version 2>&1";
-            [$result_code, $output] = $this->runCommand($probe_command);
-
-            if (!empty($result_code) && $result_code != 255) {
-                Civi::log()->debug("CiviOffice: Error code {$result_code} received from unoconv. Output was: " . json_encode($output));
-                return false;
-            }
-
-            $found = preg_grep('/^unoconv (\d+)\.(\d+)/i', $output);
-            if (empty($found)) {
-                Civi::log()->debug("CiviOffice: unoconv version number not found");
-                return false;
-            }
-        } catch (Exception $ex) {
-            Civi::log()->debug("CiviOffice: Unoconv generic exception in isReady() check");
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Get the output/generated mime types for this document renderer
-     *
-     * @return array
-     *   list of mime types
-     */
-    public function getSupportedOutputMimeTypes(): array
-    {
-        return [
-            CRM_Civioffice_MimeType::PDF,
-            CRM_Civioffice_MimeType::DOCX
-        ];
-    }
-
-    /**
-     * Get a list of document mime types supported by this component
-     *
-     * @return array
-     *   list of mime types as strings
-     */
-    public function getSupportedMimeTypes(): array // FIXME: Input or output mime types?
-    {
-        return [CRM_Civioffice_MimeType::DOCX];
     }
 
     /**
@@ -241,10 +152,59 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          *
          */
         foreach ($entity_ids as $entity_id) {
-            $zip = new ZipArchive();
-
             $new_file_name = $this->createDocumentName($entity_id, 'docx');
             $transitional_docx_document = $local_temp_store->getLocalCopyOfDocument($prepared_document ?? $document_with_placeholders, $new_file_name);
+
+            // Replace live snippet tokens using PhpWord TemplateProcessor (resp. our extending variant of it).
+            try {
+                $templateProcessor = new CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord_TemplateProcessor(
+                    $transitional_docx_document->getAbsolutePath()
+                );
+            }
+            catch (PhpWord\Exception\Exception $exception) {
+                throw new Exception("Unoconv: Docx (zip) file seems to be broken or path is wrong");
+            }
+
+            // Replace CiviCRM tokens with PhpWord macros (convert format from "{token}" to "${macro}").
+            $templateProcessor->liveSnippetTokensToMacros();
+
+            foreach ($live_snippets as $live_snippet_name => $live_snippet) {
+                // Use a temporary Section element for adding the elements.
+                $section = new PhpWord\Element\Section(0);
+                PhpWord\Shared\Html::addHtml($section, $live_snippet);
+                // Replace live snippet macros, ...
+                if (
+                    count($elements = $section->getElements()) == 1
+                    && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
+                ) {
+                    // ... either as plain text (if there is only a single Text element), ...
+                    $templateProcessor->setValue('civioffice.live_snippets.' . $live_snippet_name, $live_snippet);
+                }
+                else {
+                    // ... or as HTML: Render all elements and replace the paragraph containing the macro.
+                    // Note: This will remove everything else around the macro.
+                    // TODO: Save and split surrounding contents and add them to the replaced block.
+                    //       This would be a logical assumption, since HTML elements will always make for a new
+                    //       paragraph, so that text before and after the macro would then become their own paragraphs.
+                    $elements_data = '';
+                    foreach ($section->getElements() as $element) {
+                        $elementName = substr(get_class($element), strrpos(get_class($element), '\\') + 1);
+                        $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
+
+                        $xmlWriter = new PhpWord\Shared\XMLWriter();
+                        /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
+                        $elementWriter = new $objectClass($xmlWriter, $element, false);
+                        $elementWriter->write();
+                        $elements_data .= $xmlWriter->getData();
+                    }
+                    $templateProcessor->replaceXmlBlock('civioffice.live_snippets.' . $live_snippet_name, $elements_data, 'w:p');
+                }
+            }
+            $templateProcessor->saveAs($transitional_docx_document->getAbsolutePath());
+
+            // Replace all other tokens manually.
+            // TODO: Use PhpWord template processor for these as well.
+            $zip = new ZipArchive();
 
             // open xml file (like .docx) as a zip file, as in fact it is one
             $zip->open($transitional_docx_document->getAbsolutePath());
@@ -267,7 +227,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                     $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
                     $fileContent = $this->replaceAllTokens($fileContent, [
                         'contact' => ['entity_id' => $entity_id],
-                        'civioffice' => ['live_snippets' => $live_snippets]
                     ]);
                 }
 
@@ -345,32 +304,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     }
 
     /**
-     * Takes a string with one or many {domain.context} style tokens and wraps a CDATA block around it to
-     * not break xml files by using illegal symbols like: ' () & , " <>
-     * Input example:  Welcome {contact.display_name} aka {contact.first_name}. Great to have you!
-     * Output example: Welcome <![CDATA[{contact.display_name}]]> aka <![CDATA[{contact.first_name}]]>. Great to have you!
-     * @param $string
-     *
-     * @return string
-     *   Returns the whole string with escaped tokens
-     */
-    protected function wrapTokensInStringWithXmlEscapeCdata($string): string
-    {
-        return preg_replace('/{([\w.]+)}/', '<![CDATA[$0]]>', $string);
-    }
-
-    /**
-     * Get the URL to configure this component
-     *
-     * @return string
-     *   URL
-     */
-    public function getConfigPageURL(): string
-    {
-        return CRM_Utils_System::url('civicrm/admin/civioffice/settings/localunoconv');
-    }
-
-    /**
      * Get the (localised) component description
      *
      * @return string
@@ -378,85 +311,6 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      */
     public function getDescription(): string
     {
-        return E::ts("This document renderer employs the <code>unoconv</code> script on your server to convert documents using LibreOffice.");
-    }
-
-
-    /**
-     * @param $entity_id
-     * @param string $file_ending_name
-     *
-     * @return string
-     */
-    protected function createDocumentName($entity_id, string $file_ending_name): string
-    {
-        return "Document-{$entity_id}.{$file_ending_name}";
-    }
-
-    /**
-     * Run unoconv in the current configuration with the given command
-     *
-     * @param string $command
-     *   the command to run
-     *
-     * @return array
-     *   [return code, output lines]
-     */
-    protected function runCommand($command)
-    {
-        // use the lock if this is set up
-        $this->lock();
-
-        try {
-            // make sure the unoconv path is in the environment
-            //  see https://stackoverflow.com/a/43083964
-            $our_path = dirname($this->unoconv_path);
-            $paths = explode(PATH_SEPARATOR, getenv('PATH'));
-            if (!in_array($our_path, $paths)) {
-                $paths[] = $our_path;
-            }
-
-            // finally: execute
-            putenv('PATH=' . implode(PATH_SEPARATOR, $paths));
-            exec($command, $exec_output, $exec_return_code);
-
-            // exec code 255 seems to be o.k. as well...
-            if ($exec_return_code == 255) {
-                $exec_return_code = 0;
-            }
-        } catch (Exception $ex) {
-            Civi::log()->debug("CiviOffice: Got execution exception: ". $ex->getMessage());
-        }
-        $this->unlock();
-
-        return [$exec_return_code, $exec_output];
-    }
-
-    /**
-     * wait for the unoconv resource to become available
-     */
-    protected function lock()
-    {
-        $lock_file = Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::UNOCONV_LOCK_PATH_SETTINGS_KEY);
-        if ($lock_file) {
-            $this->lock_file = fopen($lock_file,"r+");
-            if (!flock($this->lock_file, LOCK_EX)) {
-                throw new Exception(E::ts("Could not aquire unoconv lock. Sorry"));
-            }
-        }
-    }
-
-    /**
-     * wait for the unoconv resource to become available
-     */
-    protected function unlock()
-    {
-        if ($this->lock_file) {
-            if (!flock($this->lock_file, LOCK_UN)) {
-                Civi::log()->debug("CiviOffice: Could not release unoconv lock.");
-            }
-            fclose($this->lock_file);
-            $this->lock_file = null;
-        }
+        return E::ts("This document renderer employs the <code>unoconv</code> script on your server to convert documents using LibreOffice and implements PhpWord for replacing CiviCRM tokens.");
     }
 }
