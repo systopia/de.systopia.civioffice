@@ -149,14 +149,13 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
 
     public static function buildAttachment($context, $attachment_values)
     {
-        $entity_id = $context['contact']['id'] ?? null;
         $civioffice_result = civicrm_api3(
             'CiviOffice',
             'convert',
             [
                 'document_uri' => $attachment_values['document_uri'],
-                'entity_ids' => $entity_id ? [$entity_id] : [],
-                'entity_type' => isset($context['contact']) ? 'contact' : null,
+                'entity_ids' => [$context['entity_id']],
+                'entity_type' => $context['entity_type'],
                 'renderer_uri' => $attachment_values['document_renderer_uri'],
                 'target_mime_type' => $attachment_values['target_mime_type'],
                 'live_snippets' => $attachment_values['live_snippets'],
