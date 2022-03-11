@@ -15,8 +15,8 @@
 
 use CRM_Civioffice_ExtensionUtil as E;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Civi\Mailbatch\AttachmentType\AttachmentTypeInterface;
-use Civi\Mailbatch\Form\Task\AttachmentsTrait;
+use Civi\Mailattachment\AttachmentType\AttachmentTypeInterface;
+use Civi\Mailattachment\Form\Task\AttachmentsTrait;
 
 class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, AttachmentTypeInterface
 {
@@ -26,7 +26,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
     public static function getSubscribedEvents()
     {
         return [
-            'civi.mailbatch.attachmentTypes' => 'getAttachmentTypes',
+            'civi.mailattachment.attachmentTypes' => 'getAttachmentTypes',
         ];
     }
 
@@ -41,6 +41,10 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         ];
     }
 
+    /**
+     * @param \CRM_Core_Form $form
+     * @param int $attachment_id
+     */
     public static function buildAttachmentForm(&$form, $attachment_id)
     {
         $config = CRM_Civioffice_Configuration::getConfig();
@@ -128,8 +132,9 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         ] + array_fill_keys($live_snippet_elements, 'attachment-civioffice_document-live_snippet');
     }
 
-    public static function getAttachmentFormTemplate() {
-        return 'CRM/Civioffice/Form/AttachmentProvider.tpl';
+    public static function getAttachmentFormTemplate($type = 'tpl')
+    {
+        return in_array($type, ['tpl', 'hlp']) ? 'CRM/Civioffice/Form/AttachmentProvider.' . $type : null;
     }
 
     public static function processAttachmentForm(&$form, $attachment_id)
