@@ -16,16 +16,16 @@
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
- * Contact search task: Create CiviOffice documents for selected contacts.
+ * Contact search task: Create CiviOffice documents for selected contributions.
  */
-class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
+class CRM_Civioffice_Form_Task_CreateContributionDocuments extends CRM_Contribute_Form_Task
 {
     use CRM_Civioffice_Form_Task_CreateDocumentsTrait;
 
     public function preProcess()
     {
         parent::preProcess();
-        $this->entityType = 'contact';
-        $this->entityIds = $this->_contactIds;
+        $this->entityType = 'contribution';
+        $this->entityIds = $this->_contributionIds;
     }
 }

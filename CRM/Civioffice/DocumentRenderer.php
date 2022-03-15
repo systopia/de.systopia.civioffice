@@ -13,6 +13,8 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+use Civi\Token\TokenProcessor;
+use Civi\Api4;
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
@@ -93,17 +95,29 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
      */
     public function replaceAllTokens($string, $token_contexts = []): string
     {
-        $result = $string;
+        // Add implicit contact token context for contributions.
+        if (
+            array_key_exists('contribution', $token_contexts)
+            && !array_key_exists('contact', $token_contexts)
+        ) {
+            $contribution = Api4\Contribution::get()
+                ->addWhere('id', '=', $token_contexts['contribution']['entity_id'])
+                ->execute()
+                ->single();
+            $token_contexts['contact'] = ['entity_id' => $contribution['contact_id']];
+        }
+
         $identifier = 'document';
-        $processor = new \Civi\Token\TokenProcessor(
+        $processor = new TokenProcessor(
             Civi::service('dispatcher'),
-            [
+            array_keys($token_contexts) + [
                 'controller' => __CLASS__,
                 'smarty' => false,
             ]
         );
         $processor->addMessage($identifier, $string, 'text/plain');
         $token_row = $processor->addRow();
+
         foreach ($token_contexts as $entity_type => $context) {
             switch ($entity_type) {
                 case 'civioffice':
@@ -119,6 +133,10 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
                      */
 
                     break;
+                case 'contribution':
+                    $token_row->context('contributionId', $context['entity_id']);
+                    $token_row->context('contribution', $context['entity']);
+                    break;
                 default:
                     // todo: implement?
                     throw new Exception('replaceAllTokens not implemented for entity ' . $entity_type);
@@ -127,9 +145,7 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
         }
 
         $processor->evaluate();
-        $result = $token_row->render($identifier);
-
-        return $result;
+        return $token_row->render($identifier);
     }
 
     /*
