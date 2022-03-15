@@ -107,6 +107,20 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
             $token_contexts['contact'] = ['entity_id' => $contribution['contact_id']];
         }
 
+        // Add implicit contact and event token contexts for participants.
+        if (array_key_exists('participant', $token_contexts)) {
+            $participant = Api4\Participant::get()
+                ->addWhere('id', '=', $token_contexts['participant']['entity_id'])
+                ->execute()
+                ->single();
+            if (!array_key_exists('contact', $token_contexts)) {
+                $token_contexts['contact'] = ['entity_id' => $participant['contact_id']];
+            }
+            if (!array_key_exists('event', $token_contexts)) {
+                $token_contexts['event'] = ['entity_id' => $participant['event_id']];
+            }
+        }
+
         $identifier = 'document';
         $processor = new TokenProcessor(
             Civi::service('dispatcher'),
@@ -136,6 +150,14 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
                 case 'contribution':
                     $token_row->context('contributionId', $context['entity_id']);
                     $token_row->context('contribution', $context['entity']);
+                    break;
+                case 'participant':
+                    $token_row->context('participantId', $context['entity_id']);
+                    $token_row->context('participant', $context['entity']);
+                    break;
+                case 'event':
+                    $token_row->context('eventId', $context['entity_id']);
+                    $token_row->context('event', $context['entity']);
                     break;
                 default:
                     // todo: implement?
