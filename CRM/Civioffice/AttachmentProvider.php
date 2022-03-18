@@ -44,7 +44,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
     /**
      * {@inheritDoc}
      */
-    public static function buildAttachmentForm(&$form, $attachment_id, $prefix = '')
+    public static function buildAttachmentForm(&$form, $attachment_id, $prefix = '', $defaults = [])
     {
         $config = CRM_Civioffice_Configuration::getConfig();
 
@@ -104,7 +104,8 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         // Add Live Snippets.
         $live_snippet_elements = CRM_Civioffice_LiveSnippets::addFormElements(
             $form,
-            $prefix . 'attachments--' . $attachment_id . '--'
+            $prefix . 'attachments--' . $attachment_id . '--',
+            $defaults['live_snippets']
         );
 
         $form->add(
@@ -120,6 +121,16 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             $prefix . 'attachments--' . $attachment_id . '--prepare_docx',
             E::ts('Prepare DOCX documents'),
             false
+        );
+
+        $form->setDefaults(
+            [
+                $prefix . 'attachments--' . $attachment_id . '--document_renderer_uri' => $defaults['document_renderer_uri'],
+                $prefix . 'attachments--' . $attachment_id . '--document_uri' => $defaults['document_uri'],
+                $prefix . 'attachments--' . $attachment_id . '--target_mime_type' => $defaults['target_mime_type'],
+                $prefix . 'attachments--' . $attachment_id . '--name' => $defaults['name'],
+                $prefix . 'attachments--' . $attachment_id . '--prepare_docx' => $defaults['prepare_docx'],
+            ]
         );
 
         return [
