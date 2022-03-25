@@ -1,8 +1,8 @@
 <?php
 /*-------------------------------------------------------+
 | SYSTOPIA CiviOffice Integration                        |
-| Copyright (C) 2021 SYSTOPIA                            |
-| Author: J. Franz (franz@systopia.de)                   |
+| Copyright (C) 2022 SYSTOPIA                            |
+| Author: J. Schuppe (schuppe@systopia.de)               |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
 | Affero GPL license. You can redistribute it and/or     |
@@ -16,16 +16,16 @@
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
- * Contribution search task: Create CiviOffice documents for selected contributions.
+ * Participant search task: Create CiviOffice documents for selected participants.
  */
-class CRM_Civioffice_Form_Task_CreateContributionDocuments extends CRM_Contribute_Form_Task
+class CRM_Civioffice_Form_Task_CreateParticipantDocuments extends CRM_Event_Form_Task
 {
     use CRM_Civioffice_Form_Task_CreateDocumentsTrait;
 
     public function preProcess()
     {
         parent::preProcess();
-        $this->entityType = 'contribution';
-        $this->entityIds = $this->_contributionIds;
+        $this->entityType = 'participant';
+        $this->entityIds = $this->_participantIds;
     }
 }
