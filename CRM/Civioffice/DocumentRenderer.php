@@ -119,6 +119,19 @@ abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComp
             if (!array_key_exists('event', $token_contexts)) {
                 $token_contexts['event'] = ['entity_id' => $participant['event_id']];
             }
+            if (!array_key_exists('contribution', $token_contexts)) {
+                try {
+                    $participant_payment = civicrm_api3(
+                        'ParticipantPayment',
+                        'getsingle',
+                        ['participant_id' => $participant['id']]
+                    );
+                    $token_contexts['contribution'] = ['entity_id' => $participant_payment['contribution_id']];
+                }
+                catch (Exception $exception) {
+                    // No participant payment, nothing to do.
+                }
+            }
         }
 
         $identifier = 'document';
