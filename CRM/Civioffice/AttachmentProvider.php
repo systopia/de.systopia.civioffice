@@ -193,10 +193,15 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         $result_store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
         foreach ($result_store->getDocuments() as $document) {
             $attachment_file = $document->getLocalTempCopy();
+            $mime_type = Attachments::getMimeType($attachment_file);
+            $file_extension = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
+            if (!empty($name_parts = explode('.', $attachment_values['name'])) && end($name_parts) != $file_extension) {
+                $attachment_values['name'] .= '.' . $file_extension;
+            }
             $attachment = [
                 'fullPath' => $attachment_file,
-                'mime_type' => Attachments::getMimeType($attachment_file),
-                'cleanName' => $attachment_values['name'],
+                'mime_type' => $mime_type,
+                'cleanName' => $attachment_values['name'] ?: $document->getName(),
             ];
         }
         return $attachment ?? null;
