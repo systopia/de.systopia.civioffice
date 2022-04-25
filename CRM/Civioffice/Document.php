@@ -23,9 +23,6 @@ abstract class CRM_Civioffice_Document
     /** @var CRM_Civioffice_DocumentStore document store */
     protected $document_store;
 
-    /** @var string mime type */
-    protected $mime_type;
-
     /** @var string uri */
     protected $uri;
 
@@ -33,14 +30,12 @@ abstract class CRM_Civioffice_Document
     protected $name;
 
 
-    protected function __construct($document_store, $mime_type, $uri, $name)
+    protected function __construct($document_store, $uri, $name)
     {
         $this->uri = $uri;
         $this->name = $name;
-        $this->mime_type = $mime_type;
         $this->document_store = $document_store;
     }
-
 
     /**
      * Get the document store containing this file
@@ -61,7 +56,7 @@ abstract class CRM_Civioffice_Document
      */
     public function getMimeType() : string
     {
-        return $this->mime_type;
+        return $this->document_store->getMimeType($this);
     }
 
     /**
@@ -103,7 +98,6 @@ abstract class CRM_Civioffice_Document
      */
     public abstract function updateFileContent(string $data);
 
-
     /**
      * get the file's (local) path
      *
@@ -111,7 +105,6 @@ abstract class CRM_Civioffice_Document
      *   path
      */
     public abstract function getPath() : string;
-
 
     /**
      * Can this file be edited?

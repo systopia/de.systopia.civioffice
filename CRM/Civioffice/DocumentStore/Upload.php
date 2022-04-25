@@ -93,9 +93,8 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
             if (preg_match("/^[.].*$/", $file)) {
                 continue; // we don't want anything that starts with . (including . and ..)
             }
-            $file_path = $this->folder_name . DIRECTORY_SEPARATOR . $file;
             $base_folder = basename($this->folder_name) . DIRECTORY_SEPARATOR . $file;
-            $documents[] = new CRM_Civioffice_Document_Local($this, mime_content_type($file_path), $base_folder, true);
+            $documents[] = new CRM_Civioffice_Document_Local($this, $base_folder, true);
         }
 
         return $documents;
@@ -126,18 +125,6 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
     {
         return true;
     }
-
-    /**
-     * Get a list of document mime types supported by this component
-     *
-     * @return array
-     *   list of mime types as strings
-     */
-    public function getSupportedMimeTypes() : array
-    {
-        return [CRM_Civioffice_MimeType::DOCX];
-    }
-
 
     /**
      * Get the URL to configure this component
@@ -199,7 +186,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
             if (file_exists($absolute_path_with_file_name)) {
                 // todo: check for mime type
                 $local_path = substr($absolute_path_with_file_name, strlen($this->folder_name) + 1);
-                return new CRM_Civioffice_Document_Local($this, CRM_Civioffice_MimeType::DOCX, $local_path, true);
+                return new CRM_Civioffice_Document_Local($this, $local_path, true);
             }
         }
         return null;

@@ -64,6 +64,31 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
     public abstract function getDocumentByURI($uri);
 
     /**
+     * Retrieves a document's MIME type.
+     *
+     * @param \CRM_Civioffice_Document $document
+     *   The document to determine the MIME type for.
+     *
+     * @return string | false
+     *   The document's MIME type, or FALSE when it could not be determined.
+     *
+     * @throws \Exception
+     *   When the document does not belong to the document store.
+     */
+    public function getMimeType(CRM_Civioffice_Document $document) {
+        if ($document->getDocumentStore()->getURI() !== $this->getURI()) {
+            throw new Exception('Document does not belong to DocumentStore, can not retrieve MIME type.');
+        }
+        // Fallback: Get a local temporary copy and retrieve MIME type using PHP.
+        if (!$mime_type = Civi::cache('civioffice_mime_type')->get($document->getURI())) {
+            $local = $document->getLocalTempCopy();
+            $mime_type = mime_content_type($local);
+            Civi::cache('civioffice_mime_type')->set($document->getURI(), $mime_type);
+        }
+        return $mime_type;
+    }
+
+    /**
      * Check if the given URI matches this store
      *
      * @param string $uri

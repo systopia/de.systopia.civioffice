@@ -188,12 +188,13 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
                 // generate & link attachment if requested
                 if (!empty($values['activity_attach_doc'])) {
                     foreach ($rendered_documents as $document) {
+                        /* @var \CRM_Civioffice_Document $document */
                         $path_of_local_copy = $document->getLocalTempCopy();
                         // attach rendered document
                         $attachments = [
                             'attachFile_1' => [
                                 'location' => $path_of_local_copy,
-                                'type' => mime_content_type($path_of_local_copy),
+                                'type' => $document->getMimeType(),
                             ],
                         ];
                         CRM_Core_BAO_File::processAttachment($attachments, 'civicrm_activity', $activity['id']);
