@@ -51,4 +51,10 @@
     <title>DocumentFromSingleContact</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/civioffice/tokens</path>
+    <page_callback>CRM_Civioffice_Page_Tokens</page_callback>
+    <title>Tokens</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
