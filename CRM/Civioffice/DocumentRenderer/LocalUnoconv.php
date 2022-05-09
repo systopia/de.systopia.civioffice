@@ -306,7 +306,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
          */
 
         if (isset($prepared_document)) {
-            exec('rm ' . $prepared_document->getAbsolutePath());
+            exec('rm "' . $prepared_document->getAbsolutePath() . '"');
         }
 
         if (!$needs_conversion) {
