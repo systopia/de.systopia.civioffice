@@ -159,7 +159,8 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
         $values = $this->exportValues();
 
         // Extract and store live snippet values.
-        $live_snippets = CRM_Civioffice_LiveSnippets::getFormElementValues($this);
+        $live_snippets = CRM_Civioffice_LiveSnippets::get('name');
+        $live_snippet_values = CRM_Civioffice_LiveSnippets::getFormElementValues($this);
 
         $render_result = civicrm_api3('CiviOffice', 'convert', [
             'document_uri' => $values['document_uri'],
@@ -167,11 +168,12 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
             'entity_type' => 'contact',
             'renderer_uri' => $values['document_renderer_uri'],
             'target_mime_type' => $values['target_mime_type'],
-            'live_snippets' => $live_snippets,
+            'live_snippets' => $live_snippet_values,
             'prepare_docx' => !empty($values['prepare_docx']),
         ]);
         $result_store_uri = $render_result['values'][0];
         $result_store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
+        /* @var CRM_Civioffice_Document[] $rendered_documents */
         $rendered_documents = $result_store->getDocuments();
 
         if ($this->isLiveMode()) {
@@ -182,7 +184,19 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
                     'subject' => E::ts("Document (CiviOffice)"),
                     'status_id' => 'Completed',
                     'activity_date_time' => date("YmdHis"),
-                    'target_id' => $entity_ids,
+                    'target_id' => [$this->contact_id],
+                    'details' => '<p>' . E::ts(
+                            'Created from document: %1',
+                            [1 => '<code>' . CRM_Civioffice_Configuration::getConfig()->getDocument($values['document_uri'])->getName() . '</code>']
+                        ) . '</p>'
+                        . '<p>' . E::ts('Live Snippets used:') . '</p>'
+                        . (!empty($live_snippet_values) ? '<table><tr>' . implode(
+                                '</tr><tr>',
+                                array_map(function ($name, $value) use ($live_snippets) {
+                                    return '<th>' . $live_snippets[$name]['label'] . '</th>'
+                                        . '<td>' . $value . '</td>';
+                                }, array_keys($live_snippet_values), $live_snippet_values)
+                            ) . '</tr></table>' : ''),
                 ]);
 
                 // generate & link attachment if requested
@@ -193,7 +207,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
                         $attachments = [
                             'attachFile_1' => [
                                 'location' => $path_of_local_copy,
-                                'type' => mime_content_type($path_of_local_copy),
+                                'type' => $document->getMimeType(),
                             ],
                         ];
                         CRM_Core_BAO_File::processAttachment($attachments, 'civicrm_activity', $activity['id']);
