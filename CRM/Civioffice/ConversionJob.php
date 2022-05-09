@@ -63,6 +63,8 @@ class CRM_Civioffice_ConversionJob
      */
     protected $prepare_docx;
 
+    protected $activity_type_id;
+
     /**
      * @var string $title
      *   Title for runner state
@@ -78,7 +80,8 @@ class CRM_Civioffice_ConversionJob
         $target_mime_type,
         $title,
         $live_snippets = [],
-        $prepare_docx = false
+        $prepare_docx = false,
+        $activity_type_id = NULL
     )
     {
         $this->renderer_uri = $renderer_uri;
@@ -90,6 +93,7 @@ class CRM_Civioffice_ConversionJob
         $this->title = $title;
         $this->live_snippets = $live_snippets;
         $this->prepare_docx = $prepare_docx;
+        $this->activity_type_id = $activity_type_id;
     }
 
     public function run(): bool
@@ -116,6 +120,53 @@ class CRM_Civioffice_ConversionJob
 
         if (!$this->temp_store->isReadOnly()) {
             $this->removeFilesAndFolder($source_folder);
+        }
+
+        // Create activity, if requested.
+        if (!empty($this->activity_type_id)) {
+            $live_snippets = CRM_Civioffice_LiveSnippets::get('name');
+            $live_snippet_values = $this->live_snippets;
+            foreach ($this->entity_IDs as $entity_id) {
+                $contact_id = NULL;
+                switch ($this->entity_type) {
+                    case 'contact':
+                        $contact_id = $entity_id;
+                        break;
+                    case 'contribution':
+                        $contact_id = \Civi\Api4\Contribution::get()
+                            ->addSelect('contact_id')
+                            ->addWhere('id', '=', $entity_id)
+                            ->execute()
+                            ->single()['contact_id'];
+                        break;
+                    case 'participant':
+                        $contact_id = \Civi\Api4\Participant::get()
+                            ->addSelect('contact_id')
+                            ->addWhere('id', '=', $entity_id)
+                            ->execute()
+                            ->single()['contact_id'];
+                        break;
+                }
+                civicrm_api3('Activity', 'create', [
+                    'activity_type_id' => $this->activity_type_id,
+                    'subject' => E::ts("Document (CiviOffice)"),
+                    'status_id' => 'Completed',
+                    'activity_date_time' => date("YmdHis"),
+                    'target_id' => [$contact_id],
+                    'details' => '<p>' . E::ts(
+                            'Created from document: %1',
+                            [1 => '<code>' . CRM_Civioffice_Configuration::getConfig()->getDocument($this->document_uri)->getName() . '</code>']
+                        ) . '</p>'
+                        . '<p>' . E::ts('Live Snippets used:') . '</p>'
+                        . (!empty($live_snippet_values) ? '<table><tr>' . implode(
+                                '</tr><tr>',
+                                array_map(function ($name, $value) use ($live_snippets) {
+                                    return '<th>' . $live_snippets[$name]['label'] . '</th>'
+                                        . '<td>' . $value . '</td>';
+                                }, array_keys($live_snippet_values), $live_snippet_values)
+                            ) . '</tr></table>' : ''),
+                ]);
+            }
         }
 
         return true;

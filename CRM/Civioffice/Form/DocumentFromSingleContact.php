@@ -111,7 +111,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
             'select',
             'activity_type_id',
             E::ts("Create Activity"),
-            $this->getActivityTypes(),
+            CRM_Civioffice_Configuration::getActivityTypes(),
             false,
             ['class' => 'crm-select2', 'placeholder' => E::ts("- don't create activity -")]
         );
@@ -255,25 +255,5 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
     protected function isLiveMode(): bool
     {
         return strpos($this->controller->getButtonName(), '_preview') === false;
-    }
-
-
-    /**
-     * Get a list of eligible activity types
-     */
-    protected function getActivityTypes()
-    {
-        $types = ['' => E::ts("- none -")];
-        $type_query = civicrm_api3('OptionValue', 'get', [
-            'option_group_id' => 'activity_type',
-            // TODO: Any reason for why to exclude reserved activity types?
-            'is_reserved' => 0,
-            'option.limit' => 0,
-            'return' => 'value,label',
-        ]);
-        foreach ($type_query['values'] as $type) {
-            $types[$type['value']] = $type['label'];
-        }
-        return $types;
     }
 }
