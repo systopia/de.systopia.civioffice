@@ -1,0 +1,14 @@
+{
+    "name": "systopia/de.systopia.civioffice",
+    "description": "CiviCRM integration for various exchangeable office suites",
+    "license": "AGPL-3.0",
+    "authors": [
+        {
+            "name": "SYSTOPIA",
+            "email": "info@systopia.de"
+        }
+    ],
+    "require": {
+        "phpoffice/phpword": "^0.18.3"
+    }
+}
