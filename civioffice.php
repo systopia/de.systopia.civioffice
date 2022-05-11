@@ -55,7 +55,7 @@ function civioffice_civicrm_config(&$config)
 
     \Civi::dispatcher()->addSubscriber(new CRM_Civioffice_Tokens('civioffice'));
 
-    if (interface_exists('\Civi\Mailbatch\AttachmentType\AttachmentTypeInterface')) {
+    if (interface_exists('\Civi\Mailattachment\AttachmentType\AttachmentTypeInterface')) {
         \Civi::dispatcher()->addSubscriber(new CRM_Civioffice_AttachmentProvider());
     }
 }

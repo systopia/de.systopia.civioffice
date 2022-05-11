@@ -13,10 +13,10 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
-use CRM_Civioffice_ExtensionUtil as E;
+use Civi\Mailattachment\Form\Attachments;
+use Civi\Mailattachment\AttachmentType\AttachmentTypeInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Civi\Mailbatch\AttachmentType\AttachmentTypeInterface;
-use Civi\Mailbatch\Form\Task\AttachmentsTrait;
+use CRM_Civioffice_ExtensionUtil as E;
 
 class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, AttachmentTypeInterface
 {
@@ -26,7 +26,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
     public static function getSubscribedEvents()
     {
         return [
-            'civi.mailbatch.attachmentTypes' => 'getAttachmentTypes',
+            'civi.mailattachment.attachmentTypes' => 'getAttachmentTypes',
         ];
     }
 
@@ -35,10 +35,16 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         $event->attachment_types['civioffice_document'] = [
             'label' => E::ts('CiviOffice Document'),
             'controller' => self::class,
+            'context' => [
+                'entity_types' => ['contact', 'contribution'],
+            ],
         ];
     }
 
-    public static function buildAttachmentForm(&$form, $attachment_id)
+    /**
+     * {@inheritDoc}
+     */
+    public static function buildAttachmentForm(&$form, $attachment_id, $prefix = '', $defaults = [])
     {
         $config = CRM_Civioffice_Configuration::getConfig();
 
@@ -53,7 +59,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         }
         $form->add(
             'select',
-            'attachments--' . $attachment_id . '--document_renderer_uri',
+            $prefix . 'attachments--' . $attachment_id . '--document_renderer_uri',
             E::ts("Document Renderer"),
             $document_renderer_list,
             true,
@@ -80,7 +86,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         }
         $form->add(
             'select',
-            'attachments--' . $attachment_id . '--document_uri',
+            $prefix . 'attachments--' . $attachment_id . '--document_uri',
             E::ts("Document"),
             $document_list,
             true,
@@ -88,7 +94,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         );
         $form->add(
             'select',
-            'attachments--' . $attachment_id . '--target_mime_type',
+            $prefix . 'attachments--' . $attachment_id . '--target_mime_type',
             E::ts("Target document type"),
             $output_mimetypes,
             true,
@@ -98,12 +104,13 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         // Add Live Snippets.
         $live_snippet_elements = CRM_Civioffice_LiveSnippets::addFormElements(
             $form,
-            'attachments--' . $attachment_id . '--'
+            $prefix . 'attachments--' . $attachment_id . '--',
+            $defaults['live_snippets']
         );
 
         $form->add(
             'text',
-            'attachments--' . $attachment_id . '--name',
+            $prefix . 'attachments--' . $attachment_id . '--name',
             E::ts('Attachment Name'),
             ['class' => 'huge'],
             false
@@ -111,52 +118,68 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
 
         $form->add(
             'checkbox',
-            'attachments--' . $attachment_id . '--prepare_docx',
+            $prefix . 'attachments--' . $attachment_id . '--prepare_docx',
             E::ts('Prepare DOCX documents'),
             false
         );
 
+        $form->setDefaults(
+            [
+                $prefix . 'attachments--' . $attachment_id . '--document_renderer_uri' => $defaults['document_renderer_uri'],
+                $prefix . 'attachments--' . $attachment_id . '--document_uri' => $defaults['document_uri'],
+                $prefix . 'attachments--' . $attachment_id . '--target_mime_type' => $defaults['target_mime_type'],
+                $prefix . 'attachments--' . $attachment_id . '--name' => $defaults['name'],
+                $prefix . 'attachments--' . $attachment_id . '--prepare_docx' => $defaults['prepare_docx'],
+            ]
+        );
+
         return [
-            'attachments--' . $attachment_id . '--document_renderer_uri' => 'attachment-civioffice_document-document_renderer_uri',
-            'attachments--' . $attachment_id . '--document_uri' => 'attachment-civioffice_document-document_uri',
-            'attachments--' . $attachment_id . '--target_mime_type' => 'attachment-civioffice_document-target_mime_type',
-            'attachments--' . $attachment_id . '--name' => 'attachment-civioffice_document-name',
-            'attachments--' . $attachment_id . '--prepare_docx' => 'attachment-civioffice_document-prepare_docx',
+            $prefix . 'attachments--' . $attachment_id . '--document_renderer_uri' => 'attachment-civioffice_document-document_renderer_uri',
+            $prefix . 'attachments--' . $attachment_id . '--document_uri' => 'attachment-civioffice_document-document_uri',
+            $prefix . 'attachments--' . $attachment_id . '--target_mime_type' => 'attachment-civioffice_document-target_mime_type',
+            $prefix . 'attachments--' . $attachment_id . '--name' => 'attachment-civioffice_document-name',
+            $prefix . 'attachments--' . $attachment_id . '--prepare_docx' => 'attachment-civioffice_document-prepare_docx',
         ] + array_fill_keys($live_snippet_elements, 'attachment-civioffice_document-live_snippet');
     }
 
-    public static function getAttachmentFormTemplate() {
-        return 'CRM/Civioffice/Form/AttachmentProvider.tpl';
+    public static function getAttachmentFormTemplate($type = 'tpl')
+    {
+        return in_array($type, ['tpl', 'hlp']) ? 'CRM/Civioffice/Form/AttachmentProvider.' . $type : null;
     }
 
-    public static function processAttachmentForm(&$form, $attachment_id)
+    /**
+     * {@inheritDoc}
+     */
+    public static function processAttachmentForm(&$form, $attachment_id, $prefix = '')
     {
         $values = $form->exportValues();
         $live_snippet_values = CRM_Civioffice_LiveSnippets::getFormElementValues(
             $form,
             false,
-            'attachments--' . $attachment_id . '--'
+            $prefix . 'attachments--' . $attachment_id . '--'
         );
         return [
-            'document_renderer_uri' => $values['attachments--' . $attachment_id . '--document_renderer_uri'],
-            'document_uri' => $values['attachments--' . $attachment_id . '--document_uri'],
-            'target_mime_type' => $values['attachments--' . $attachment_id . '--target_mime_type'],
-            'name' => $values['attachments--' . $attachment_id . '--name'],
+            'document_renderer_uri' => $values[$prefix . 'attachments--' . $attachment_id . '--document_renderer_uri'],
+            'document_uri' => $values[$prefix . 'attachments--' . $attachment_id . '--document_uri'],
+            'target_mime_type' => $values[$prefix . 'attachments--' . $attachment_id . '--target_mime_type'],
+            'name' => $values[$prefix . 'attachments--' . $attachment_id . '--name'],
             'live_snippets' => $live_snippet_values,
-            'prepare_docx' => !empty($values['attachments--' . $attachment_id . '--prepare_docx'])
+            'prepare_docx' => !empty($values[$prefix . 'attachments--' . $attachment_id . '--prepare_docx'])
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public static function buildAttachment($context, $attachment_values)
     {
-        $entity_id = $context['contact']['id'] ?? null;
         $civioffice_result = civicrm_api3(
             'CiviOffice',
             'convert',
             [
                 'document_uri' => $attachment_values['document_uri'],
-                'entity_ids' => $entity_id ? [$entity_id] : [],
-                'entity_type' => isset($context['contact']) ? 'contact' : null,
+                'entity_ids' => [$context['entity_id']],
+                'entity_type' => $context['entity_type'],
                 'renderer_uri' => $attachment_values['document_renderer_uri'],
                 'target_mime_type' => $attachment_values['target_mime_type'],
                 'live_snippets' => $attachment_values['live_snippets'],
@@ -170,10 +193,23 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         $result_store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
         foreach ($result_store->getDocuments() as $document) {
             $attachment_file = $document->getLocalTempCopy();
+            $mime_type = Attachments::getMimeType($attachment_file);
+            $file_extension = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
+
+            if (
+                !empty($attachment_values['name'])
+                && !empty($name_parts = explode('.', $attachment_values['name']))
+                && end($name_parts) != $file_extension
+            ) {
+                $attachment_values['name'] .= '.' . $file_extension;
+            }
+            else {
+                $attachment_values['name'] = $document->getName();
+            }
             $attachment = [
                 'fullPath' => $attachment_file,
-                'mime_type' => AttachmentsTrait::getMimeType($attachment_file),
-                'cleanName' => $attachment_values['name'],
+                'mime_type' => $mime_type,
+                'cleanName' => $attachment_values['name'] ?: $document->getName(),
             ];
         }
         return $attachment ?? null;

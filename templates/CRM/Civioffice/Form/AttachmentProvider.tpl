@@ -26,7 +26,8 @@
       <div class="label">
           {$form.$attachment_element.label}
           {capture assign="help_id"}id-{$attachment_element_type}{/capture}
-          {help id=$help_id title=$form.$attachment_element.label}
+          {capture assign="help_file"}{$attachment.help_template}{/capture}
+          {help id=$help_id title=$form.$attachment_element.label file=$help_file}
       </div>
       <div class="content">{$form.$attachment_element.html}</div>
       <div class="clear"></div>
