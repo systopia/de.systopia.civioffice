@@ -54,6 +54,28 @@
       <div class="clear"></div>
     </div>
 
+    <div class="crm-accordion-wrapper">
+
+      <div class="crm-accordion-header">{ts}Activity{/ts}</div>
+
+      <div class="crm-accordion-body">
+
+        <div class="crm-section">
+          <div class="label">{$form.activity_type_id.label}</div>
+          <div class="content">{$form.activity_type_id.html}</div>
+          <div class="clear"></div>
+        </div>
+
+        <div class="crm-section">
+          <div class="label">{$form.activity_attach_doc.label}</div>
+          <div class="content">{$form.activity_attach_doc.html}</div>
+          <div class="clear"></div>
+        </div>
+
+      </div>
+
+    </div>
+
       {include file="CRM/Civioffice/Form/LiveSnippets.tpl"}
 
     <div class="crm-submit-buttons">

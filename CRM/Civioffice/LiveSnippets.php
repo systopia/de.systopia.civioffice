@@ -23,7 +23,7 @@ class CRM_Civioffice_LiveSnippets
 
     public static $_liveSnippetTokens;
 
-    public static function get()
+    public static function get($index = NULL)
     {
         if (!isset(self::$_liveSnippets)) {
             try {
@@ -43,12 +43,12 @@ class CRM_Civioffice_LiveSnippets
                     ]
                 )['values'];
             } catch (Exception $exception) {
-                // The option groupo doesn't seem to exist. This can only be the case when a DB upgrade after updating
+                // The option group doesn't seem to exist. This can only be the case when a DB upgrade after updating
                 // is pending, so do nothing here.
                 self::$_liveSnippets = [];
             }
         }
-        return self::$_liveSnippets;
+        return $index ? array_combine(array_column(self::$_liveSnippets, $index), self::$_liveSnippets) : self::$_liveSnippets;
     }
 
     public static function getValues()

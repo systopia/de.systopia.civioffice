@@ -34,6 +34,27 @@ class CRM_Civioffice_Configuration
         return self::$singleton;
     }
 
+    /**
+     * Get a list of eligible activity types
+     *
+     * @return array
+     */
+    public static function getActivityTypes()
+    {
+        $types = ['' => E::ts("- none -")];
+        $type_query = civicrm_api3('OptionValue', 'get', [
+            'option_group_id' => 'activity_type',
+            // TODO: Any reason for why to exclude reserved activity types?
+            'is_reserved' => 0,
+            'option.limit' => 0,
+            'return' => 'value,label',
+        ]);
+        foreach ($type_query['values'] as $type) {
+            $types[$type['value']] = $type['label'];
+        }
+        return $types;
+    }
+
 
     /**
      * Get the list of active/all document stores

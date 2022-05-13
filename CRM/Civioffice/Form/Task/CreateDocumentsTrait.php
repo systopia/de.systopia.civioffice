@@ -105,6 +105,15 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
 
         $this->add(
             'select',
+            'activity_type_id',
+            E::ts("Create Activity"),
+            CRM_Civioffice_Configuration::getActivityTypes(),
+            false,
+            ['class' => 'crm-select2', 'placeholder' => E::ts("- don't create activity -")]
+        );
+
+        $this->add(
+            'select',
             'batch_size',
             E::ts("batch size for processing"),
             [
@@ -188,7 +197,8 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
                     $values['target_mime_type'],
                     E::ts('Initialized'),
                     $live_snippets,
-                    !empty($values['prepare_docx'])
+                    !empty($values['prepare_docx']),
+                    $values['activity_type_id']
                 )
             );
         }
