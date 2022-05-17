@@ -38,7 +38,7 @@ function civioffice_civicrm_searchTasks($objectType, &$tasks)
 function civioffice_civicrm_summaryActions(&$actions, $contactID)
 {
     // add "open document with single contact" action
-    if (CRM_Core_Permission::check('administer CiviCRM')) // todo correct?
+    if (CRM_Core_Permission::check('access CiviOffice')) // todo correct?
     {
         $actions['open_document_with_single_contact'] = [
             'ref'         => 'civioffice-render-single',
@@ -47,7 +47,7 @@ function civioffice_civicrm_summaryActions(&$actions, $contactID)
             'key'         => 'open_document_with_single_contact',
             'class'       => 'medium-popup',
             'href'        => CRM_Utils_System::url('civicrm/civioffice/document_from_single_contact', "reset=1"), // fixme contact id is passed twice as pid
-            'permissions' => ['view all contacts']
+            'permissions' => ['access CiviOffice']
         ];
     }
 }
@@ -208,6 +208,16 @@ function civioffice_civicrm_entityTypes(&$entityTypes)
 function civioffice_civicrm_themes(&$themes)
 {
     _civioffice_civix_civicrm_themes($themes);
+}
+
+/**
+ * Implements hook_civicrm_permission().
+ */
+function civioffice_civicrm_permission(&$permissions) {
+    $permissions['access CiviOffice'] = [
+        E::ts('Access CiviOffice'),
+        E::ts('Create documents using CiviOffice.'),
+    ];
 }
 
 // --- Functions below this ship commented out. Uncomment as required. ---

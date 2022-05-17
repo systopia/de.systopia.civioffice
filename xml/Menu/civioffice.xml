@@ -37,24 +37,24 @@
     <path>civicrm/civioffice/download</path>
     <page_callback>CRM_Civioffice_Form_Download</page_callback>
     <title>Download</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>access CiviOffice</access_arguments>
   </item>
   <item>
     <path>civicrm/civioffice/document_upload</path>
     <page_callback>CRM_Civioffice_Form_DocumentUpload</page_callback>
     <title>DocumentUpload</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>access CiviOffice</access_arguments>
   </item>
   <item>
     <path>civicrm/civioffice/document_from_single_contact</path>
     <page_callback>CRM_Civioffice_Form_DocumentFromSingleContact</page_callback>
     <title>DocumentFromSingleContact</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>access CiviOffice</access_arguments>
   </item>
   <item>
     <path>civicrm/civioffice/tokens</path>
     <page_callback>CRM_Civioffice_Page_Tokens</page_callback>
     <title>Tokens</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>access CiviOffice</access_arguments>
   </item>
 </menu>
