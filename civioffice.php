@@ -226,14 +226,40 @@ function civioffice_civicrm_themes(&$themes)
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_navigationMenu
  */
-//function civioffice_civicrm_navigationMenu(&$menu) {
-//  _civioffice_civix_insert_navigation_menu($menu, 'Mailings', array(
-//    'label' => E::ts('New subliminal message'),
-//    'name' => 'mailing_subliminal_message',
-//    'url' => 'civicrm/mailing/subliminal',
-//    'permission' => 'access CiviMail',
-//    'operator' => 'OR',
-//    'separator' => 0,
-//  ));
-//  _civioffice_civix_navigationMenu($menu);
-//}
+function civioffice_civicrm_navigationMenu(&$menu) {
+    _civioffice_civix_insert_navigation_menu($menu, 'Administer/Communications', array(
+        'label' => E::ts('CiviOffice'),
+        'name' => 'civioffice',
+        'operator' => 'OR',
+        'separator' => 0,
+        'icon' => 'crm-i fa-file-text',
+    ));
+    _civioffice_civix_insert_navigation_menu($menu, 'Administer/Communications/civioffice', array(
+        'label' => E::ts('CiviOffice Settings'),
+        'name' => 'civioffice_settings',
+        'url' => 'civicrm/admin/civioffice/settings',
+        'permission' => 'administer CiviCRM',
+        'operator' => 'OR',
+        'separator' => 0,
+        'icon' => 'crm-i fa-cogs',
+    ));
+    _civioffice_civix_insert_navigation_menu($menu, 'Administer/Communications/civioffice', array(
+        'label' => E::ts('Upload Documents'),
+        'name' => 'civioffice_document_upload',
+        'url' => 'civicrm/civioffice/document_upload',
+        'permission' => 'administer CiviCRM',
+        'operator' => 'OR',
+        'separator' => 0,
+        'icon' => 'crm-i fa-upload',
+    ));
+    _civioffice_civix_insert_navigation_menu($menu, 'Administer/Communications/civioffice', array(
+        'label' => E::ts('Available Tokens'),
+        'name' => 'civioffice_tokens',
+        'url' => 'civicrm/civioffice/tokens',
+        'permission' => 'administer CiviCRM',
+        'operator' => 'OR',
+        'separator' => 0,
+        'icon' => 'crm-i fa-code',
+    ));
+  _civioffice_civix_navigationMenu($menu);
+}
