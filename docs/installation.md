@@ -4,8 +4,8 @@
 
 The following components must be installed on the server:
 
-+ [unoconv](https://github.com/unoconv/)
-+ [libreoffice](https://www.libreoffice.org/)
+- [unoconv](https://github.com/unoconv/)
+- [libreoffice](https://www.libreoffice.org/)
 
 Note that CiviOffice requires at least CiviCRM Core 5.44.
 
@@ -29,16 +29,23 @@ click on *Install*. The extension will be set up.
 
 ## Basic configuration steps
 
-+ Go to Administration -> Administration Console -> Communication -> CiviOffice
+- Go to Administration -> Administration Console -> Communication -> CiviOffice
   Settings or ``/civicrm/admin/civioffice/settings`` to set up your document
   stores, renderers and editors
-+ The documents used in CiviOffice can be managed
+- The documents used in CiviOffice can be managed
   via ``/civicrm/civioffice/document_upload``. Currently you need to add that
   link to the navigation menu manually.
-+ Optional: Create an activity type such as "Created Document (CiviOffice)"
+- Optional: Create an activity type such as "Created Document (CiviOffice)"
 
 ## Known issues
 
 If the web server's user and the unoconv user are not identical, these
 permissions must be set. Otherwise unoconv/libreoffice cannot be used as a
 converter in CiviOffice.
+
+## Dependencies and configurations for extended functionalities
+
+- in order to integrate with the Donation Receipts extension, install de.systopia.donrec 2.1+ and select the template you want to use for cover letters in the extension settings
+- to send CiviOffice documents as email attachments, install de.systopia.mailattachment 1.0+ and
+    - for contacts and contributions, install de.systopia.mailbatch 2.0+
+    - for participants, install de.systopia.eventmessages 1.1+

@@ -1,10 +1,10 @@
 # Inserting dynamic content with "live Snippets"
 
-As of version 0.7, CiviOffice provides a means to insert dynamic content when
+CiviOffice provides a means to insert dynamic content when
 creating your document (although it still lacks a full-fledged text editor). The
 so-called "live snippets" offer a token-based approach to insert content that is
 neither static nor comes from CiviCRM data. This might be useful e.g. to insert
-a personal sentence into your standard letter.
+a personal address into your standard letter.
 
 ## Defining live snippets
 
