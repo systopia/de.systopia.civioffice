@@ -3,11 +3,16 @@
 Configuration options can be found at Administration → Administration Console
 → Communication → CiviOffice Settings or `/civicrm/admin/civioffice/settings`.
 
-**CiviOffice Document Stores** are locations where documents and templates are stored. Currently, the built-in local document store is the only available service. Future developments might integrate other Document Stores including remote services.
+**CiviOffice Document Stores** are locations where documents and templates are
+stored. Currently, the built-in local document store is the only available
+service. Future developments might integrate other Document Stores including
+remote services.
 
-**Document Renderers** are the internal services responsible for the processing of documents.  
+**Document Renderers** are the internal services responsible for the processing
+of documents.
 
-The column *Ready To Use* gives feedback on the successful activation of a component.
+The column *Ready To Use* gives feedback on the successful activation of a
+component.
 
 ## Document Stores
 
@@ -25,16 +30,20 @@ These options for document storage are currently available:
 
 ## Document Renderers
 
-The currently built-in renderers are *Local Universal Office Converter (unoconv)* and *Local Universal Office Converter (unoconv) implementing PhpWord*. The latter is required in order to convert HTML syntax to OOXML, the internal standard of .docx.
+The currently built-in renderers are *Local Universal Office Converter (
+unoconv)* and *Local Universal Office Converter (unoconv) implementing PhpWord*.
+The latter is required in order to convert HTML syntax to OOXML, the internal
+standard of .docx.
 
 You will have to enter the following:
 
 - **The path to the binary of unoconv**: Usually this is `/usr/bin/unoconv`.
-   The path can otherwise be determined with the following console
-   command: ``which unoconv``.
+  The path can otherwise be determined with the following console
+  command: ``which unoconv``.
 - **The path to the temp folder**: A subfolder of
-   CiviCRM's `templates_c` directory. As an example, on a Drupal-based site,
-   this might look like `/var/www/vhosts/[YOUR_DOMAIN]/httpdocs/dev/public/sites/default/files/civicrm/templates_c/civioffice`
+  CiviCRM's `templates_c` directory. As an example, on a Drupal-based site,
+  this might look
+  like `/var/www/vhosts/[YOUR_DOMAIN]/httpdocs/dev/public/sites/default/files/civicrm/templates_c/civioffice`
 
 The directory, here named ``civioffice``, must be created manually in the
 described path. Although the path (and name) might be set differently, we
@@ -51,7 +60,9 @@ warning with detailed information.
 (Editor modules are a planned feature, nothing to do here yet.)
 
 ## Live Snippets
-This is explained [here](/inserting-content-with-live-snippets/). You do not need any configured live snippets for CiviOffice to work.
+
+This is explained [here](/inserting-content-with-live-snippets/). You do not
+need any configured live snippets for CiviOffice to work.
 
 **Example of a working configuration menu:**
 ![CiviOffice configuration menu](img/civioffice-configuration.png "CiviOffice configuration menu")

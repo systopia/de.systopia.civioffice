@@ -11,7 +11,8 @@ Note that CiviOffice requires at least CiviCRM Core 5.44.
 
 ### Verifying successful unoconv installation
 
-If `unoconv --version` prints out the unoconv version, your installation was successful.
+If `unoconv --version` prints out the unoconv version, your installation was
+successful.
 
 ## Installing the extension
 
@@ -45,7 +46,10 @@ converter in CiviOffice.
 
 ## Dependencies and configurations for extended functionalities
 
-- in order to integrate with the Donation Receipts extension, install de.systopia.donrec 2.1+ and select the template you want to use for cover letters in the extension settings
-- to send CiviOffice documents as email attachments, install de.systopia.mailattachment 1.0+ and
-    - for contacts and contributions, install de.systopia.mailbatch 2.0+
-    - for participants, install de.systopia.eventmessages 1.1+
+- in order to integrate with the Donation Receipts extension, install
+  de.systopia.donrec 2.1+ and select the template you want to use for cover
+  letters in the extension settings
+- to send CiviOffice documents as email attachments, install
+  de.systopia.mailattachment 1.0+ and
+  - for contacts and contributions, install de.systopia.mailbatch 2.0+
+  - for participants, install de.systopia.eventmessages 1.1+
