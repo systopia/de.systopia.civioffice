@@ -80,10 +80,13 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
             throw new Exception('Document does not belong to DocumentStore, can not retrieve MIME type.');
         }
         // Fallback: Get a local temporary copy and retrieve MIME type using PHP.
-        if (!$mime_type = Civi::cache('civioffice_mime_type')->get($document->getURI())) {
+        $mime_type_cache = Civi::cache()->get('civioffice_mime_type');
+        $mime_type = $mime_type_cache[$document->getURI()] ?? NULL;
+        if (!$mime_type) {
             $local = $document->getLocalTempCopy();
             $mime_type = mime_content_type($local);
-            Civi::cache('civioffice_mime_type')->set($document->getURI(), $mime_type);
+            $mime_type_cache[$document->getURI()] = $mime_type;
+            Civi::cache()->set('civioffice_mime_type', $mime_type_cache);
         }
         return $mime_type;
     }

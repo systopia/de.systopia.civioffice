@@ -164,7 +164,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
             if (file_exists($absolute_path_with_file_name)) {
                 // todo: check for mime type
                 $local_path = substr($absolute_path_with_file_name, strlen($this->base_folder) + 1);
-                return new CRM_Civioffice_Document_Local($this, $this->mime_type, $local_path, $this->readonly);
+                return new CRM_Civioffice_Document_Local($this, $local_path, $this->readonly);
             }
         }
         return null;

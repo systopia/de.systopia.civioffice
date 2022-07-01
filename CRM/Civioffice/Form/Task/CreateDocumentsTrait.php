@@ -184,7 +184,7 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
         );
 
         $chunked_entities = array_chunk($this->entityIds, $values['batch_size']);
-        $temp_folder_path = (new CRM_Civioffice_DocumentStore_LocalTemp(CRM_Civioffice_MimeType::PDF))->getBaseFolder();
+        $temp_folder_path = (new CRM_Civioffice_DocumentStore_LocalTemp())->getBaseFolder();
 
         foreach ($chunked_entities as $entity_IDs) {
             $queue->createItem(

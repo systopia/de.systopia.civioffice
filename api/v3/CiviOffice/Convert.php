@@ -100,7 +100,7 @@ function civicrm_api3_civi_office_convert($params)
     $document_renderer = $configuration->getDocumentRenderer($renderer_uri);
     $document = $configuration->getDocument($document_uri);
 
-    $temp_store = new CRM_Civioffice_DocumentStore_LocalTemp($target_mime_type);
+    $temp_store = new CRM_Civioffice_DocumentStore_LocalTemp();
 
     $documents = $document_renderer->render(
         $document,
