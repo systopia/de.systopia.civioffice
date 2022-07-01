@@ -32,14 +32,6 @@ abstract class CRM_Civioffice_OfficeComponent
         $this->name = $name;
     }
 
-    /**
-     * Get a list of document mime types supported by this component
-     *
-     * @return array
-     *   list of mime types as strings
-     */
-    abstract public function getSupportedMimeTypes() : array;
-
 
     /**
      * Get the URL to configure this component

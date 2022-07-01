@@ -20,7 +20,7 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStore_Local
 {
-    public function __construct($mime_type, $temp_folder_path = null) // fixme: mime type used as id?
+    public function __construct($temp_folder_path = null)
     {
         // create tmp folder
         if (empty($temp_folder_path)) {
@@ -40,7 +40,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
             }
             mkdir($temp_folder_path);
         }
-        parent::__construct("tmp::{$temp_folder_path}", E::ts("Temporary Files"), $mime_type, false, false);
+        parent::__construct("tmp::{$temp_folder_path}", E::ts("Temporary Files"), false, false);
         $this->base_folder = $temp_folder_path;
         Civi::log()->debug("CiviOffice: Created local temp document store at: " . $this->base_folder);
     }
@@ -62,7 +62,6 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
         $file_path_including_filename = $this->base_folder . DIRECTORY_SEPARATOR . $file_name;
         return new CRM_Civioffice_Document_LocalTempfile(
             $this,
-            $this->mime_type,
             $file_path_including_filename
         );
     }
@@ -112,12 +111,12 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
      * @return CRM_Civioffice_DocumentStore_LocalTemp|null
      *     returns the local tmp store matching the uri, or null if it's not a local temp store URI
      */
-    public static function getByURI($uri, $mime_type = CRM_Civioffice_MimeType::PDF)
+    public static function getByURI($uri)
     {
         if (substr($uri, 0, 5) == 'tmp::') {
             $folder = substr($uri, 5);
             if (file_exists($folder)) {
-                return new CRM_Civioffice_DocumentStore_LocalTemp($mime_type, $folder);
+                return new CRM_Civioffice_DocumentStore_LocalTemp($folder);
             }
         }
         return null;

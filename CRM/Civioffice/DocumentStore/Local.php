@@ -25,20 +25,16 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     /** @var string local folder this store has access to */
     protected $base_folder;
 
-    /** @var string mime_type */
-    protected $mime_type;
-
     /** @var boolean should this be readable */
     protected $readonly;
 
     /** @var boolean should there be subfolders? */
     protected $has_subfolders;
 
-    public function __construct($uri, $name, $mime_type, $readonly, $has_subfolders)
+    public function __construct($uri, $name, $readonly, $has_subfolders)
     {
         parent::__construct($uri, $name);
         $this->base_folder = Civi::settings()->get(self::LOCAL_STATIC_PATH_SETTINGS_KEY);
-        $this->mime_type = $mime_type;
         $this->readonly = $readonly;
         $this->has_subfolders = $has_subfolders;
     }
@@ -74,7 +70,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
             }
 
             $base_folder = substr($full_path . DIRECTORY_SEPARATOR . $file_name, strlen($this->base_folder) + 1);
-            $documents[] = new CRM_Civioffice_Document_Local($this, $this->mime_type, $base_folder, $this->readonly);
+            $documents[] = new CRM_Civioffice_Document_Local($this, $base_folder, $this->readonly);
         }
 
         return $documents;
@@ -122,17 +118,6 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     public function isReadOnly() : bool
     {
         return $this->readonly;
-    }
-
-    /**
-     * Get a list of document mime types supported by this component
-     *
-     * @return array
-     *   list of mime types as strings
-     */
-    public function getSupportedMimeTypes() : array
-    {
-        return [$this->mime_type];
     }
 
 

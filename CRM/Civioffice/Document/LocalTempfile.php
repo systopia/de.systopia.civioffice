@@ -23,13 +23,13 @@ class CRM_Civioffice_Document_LocalTempfile extends CRM_Civioffice_Document
     /** @var string local folder this store has access to */
     protected $local_path;
 
-    public function __construct($document_store, $mime_type, $local_path)
+    public function __construct($document_store, $local_path)
     {
         if (!touch($local_path)) {
             throw new Exception(E::ts("Local path is not writable"));
         }
         $uri = 'localtmp::' . $local_path;
-        parent::__construct($document_store, $mime_type, $uri, basename($local_path));
+        parent::__construct($document_store, $uri, basename($local_path));
         $this->local_path = $local_path;
     }
 

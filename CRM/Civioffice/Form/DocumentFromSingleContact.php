@@ -202,6 +202,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
                 // generate & link attachment if requested
                 if (!empty($values['activity_attach_doc'])) {
                     foreach ($rendered_documents as $document) {
+                        /* @var \CRM_Civioffice_Document $document */
                         $path_of_local_copy = $document->getLocalTempCopy();
                         // attach rendered document
                         $attachments = [

@@ -23,6 +23,14 @@ use CRM_Civioffice_ExtensionUtil as E;
 abstract class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
 {
     /**
+     * Get a list of document mime types supported by this component
+     *
+     * @return array
+     *   list of mime types as strings
+     */
+    abstract public function getSupportedMimeTypes() : array;
+
+    /**
      * Get the output/generated mime types for this document renderer
      *
      * @return array
