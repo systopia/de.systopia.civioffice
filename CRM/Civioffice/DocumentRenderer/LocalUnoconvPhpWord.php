@@ -169,8 +169,16 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord extends CRM_Civioffice
             $templateProcessor->liveSnippetTokensToMacros();
 
             foreach ($live_snippets as $live_snippet_name => $live_snippet) {
+                // Replace tokens in live snippets (excluding nested live snippets).
+                $tokenContexts = [
+                    $entity_type => ['entity_id' => $entity_id],
+                ];
+                $live_snippet = $this->replaceAllTokens($live_snippet, $tokenContexts);
+
                 // Use a temporary Section element for adding the elements.
-                $section = new PhpWord\Element\Section(0);
+                $phpWord = PhpWord\IOFactory::load($transitional_docx_document->getAbsolutePath());
+                $section = $phpWord->addSection();
+                // TODO: addHtml() doesn't accept styles so added HTML elements don't get any existing styles applied.
                 PhpWord\Shared\Html::addHtml($section, $live_snippet);
                 // Replace live snippet macros, ...
                 if (
