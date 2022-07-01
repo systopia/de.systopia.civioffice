@@ -47,7 +47,7 @@ class CRM_Civioffice_Configuration
     {
         // todo: get from config
         $available_document_stores = [
-            new CRM_Civioffice_DocumentStore_Local('local_folder', "Local Folder", CRM_Civioffice_MimeType::DOCX, false, true),
+            new CRM_Civioffice_DocumentStore_Local('local_folder', "Local Folder", false, true),
             new CRM_Civioffice_DocumentStore_Upload(true),
             new CRM_Civioffice_DocumentStore_Upload(false),
         ];

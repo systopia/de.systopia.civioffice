@@ -83,7 +83,7 @@ class CRM_Civioffice_ConversionJob
     {
         $this->renderer_uri = $renderer_uri;
         $this->document_uri = $document_uri;
-        $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp($target_mime_type, $temp_folder_path);
+        $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp($temp_folder_path);
         $this->entity_IDs = $entity_IDs;
         $this->entity_type = $entity_type;
         $this->target_mime_type = $target_mime_type;
