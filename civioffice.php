@@ -38,18 +38,15 @@ function civioffice_civicrm_searchTasks($objectType, &$tasks)
 function civioffice_civicrm_summaryActions(&$actions, $contactID)
 {
     // add "open document with single contact" action
-    if (CRM_Core_Permission::check('access CiviOffice')) // todo correct?
-    {
-        $actions['open_document_with_single_contact'] = [
-            'ref'         => 'civioffice-render-single',
-            'title'       => E::ts('Create CiviOffice document'),
-            'weight'      => -110, // to the top!
-            'key'         => 'open_document_with_single_contact',
-            'class'       => 'medium-popup',
-            'href'        => CRM_Utils_System::url('civicrm/civioffice/document_from_single_contact', "reset=1"), // fixme contact id is passed twice as pid
-            'permissions' => ['access CiviOffice']
-        ];
-    }
+    $actions['open_document_with_single_contact'] = [
+        'ref'         => 'civioffice-render-single',
+        'title'       => E::ts('Create CiviOffice document'),
+        'weight'      => -110, // to the top!
+        'key'         => 'open_document_with_single_contact',
+        'class'       => 'medium-popup',
+        'href'        => CRM_Utils_System::url('civicrm/civioffice/document_from_single_contact', "reset=1"), // fixme contact id is passed twice as pid
+        'permissions' => ['access CiviOffice']
+    ];
 }
 
 /**
