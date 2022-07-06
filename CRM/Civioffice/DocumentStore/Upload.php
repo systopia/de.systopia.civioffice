@@ -39,14 +39,14 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
 
         // get the upload folder
         $config = CRM_Core_Config::singleton();
-        $base_folder = $config->uploadDir . 'civioffice_documents'; // working?
-        if (!file_exists($base_folder)) {
-            mkdir($base_folder);
+        $this->base_folder = $config->uploadDir . 'civioffice_documents'; // working?
+        if (!file_exists($this->base_folder)) {
+            mkdir($this->base_folder);
         }
 
         // get the user folder
         $user_folder = $common ? 'common' : 'contact_' . CRM_Core_Session::getLoggedInContactID();
-        $this->folder_name = $base_folder . DIRECTORY_SEPARATOR . $user_folder;
+        $this->folder_name = $this->base_folder . DIRECTORY_SEPARATOR . $user_folder;
         if (!file_exists($this->folder_name)) {
             mkdir($this->folder_name);
         }
