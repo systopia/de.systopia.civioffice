@@ -78,7 +78,7 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form
             $this->add(
                 'text',
                 'label',
-                E::ts('Label'),
+                E::ts('Name'),
                 null,
                 true
             );
@@ -90,7 +90,7 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form
             $this->add(
                 'text',
                 'name',
-                E::ts('Name'),
+                E::ts('Token'),
                 null,
                 true
             );
