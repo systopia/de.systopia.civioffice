@@ -1,8 +1,9 @@
 # Integrating With Donation Receipts
 
-If you are using [de.systopia.donrec](https://github.com/systopia/de.systopia.donrec) to
-create donation receipts, it can be integrated with CiviOffice to create cover
-letters for the receipts. The minimum version required for this is
+If you are using
+[de.systopia.donrec](https://github.com/systopia/de.systopia.donrec) to create
+donation receipts, it can be integrated with CiviOffice to create cover letters
+for the receipts. The minimum version required for this is
 de.systopia.donrec 2.1-alpha4.
 
 In the general settings for the donation receipts
@@ -14,4 +15,5 @@ will be created separately from the receipts, but sorted so they can be printed
 or merged together easily. 
 
 ## Known issues
-The "prepare docx documents" options to mitigate problems with MS-Word-generated files is not yet available in this workflow.
+The "prepare docx documents" options to mitigate problems with MS-Word-generated
+files is not yet available in this workflow.
