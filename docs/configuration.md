@@ -61,7 +61,7 @@ warning with detailed information.
 
 ## Live Snippets
 
-This is explained [here](/inserting-content-with-live-snippets/). You do not
+The usage of Live Snippets is explained in a later chapter. You do not
 need any configured live snippets for CiviOffice to work.
 
 **Example of a working configuration menu:**
