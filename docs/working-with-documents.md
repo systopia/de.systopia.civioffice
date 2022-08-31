@@ -12,6 +12,7 @@
     portion of the token is in bold font)
   + disable spell checking in your documents, especially make sure you don't
     apply exceptions from spell checking to bits of your tokens
++ Smarty syntax is not supported in CiviOffice templates. You can use HTML-to-OOXML conversion to work around this limitation (see the chapter on this).
 
 ## Managing document templates
 
