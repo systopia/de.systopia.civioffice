@@ -39,4 +39,12 @@ class CRM_Civioffice_Upgrader extends CRM_Civioffice_Upgrader_Base
         $customData->syncOptionGroup(E::path('resources/live_snippets_option_group.json'));
         return true;
     }
+
+    public function upgrade_0007(): bool
+    {
+        // TODO: Create default renderer instances (one for each RendererType with the same URI) and save them into settings.
+        //       - unoconv-local
+        //       - unoconv-local-phpword
+//        return true;
+    }
 }

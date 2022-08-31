@@ -18,7 +18,7 @@ use CRM_Civioffice_ExtensionUtil as E;
 /**
  *
  */
-class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_DocumentRenderer
+class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_DocumentRendererType
 {
     const MIN_UNOCONV_VERSION = '0.7'; // todo: determine
 
@@ -160,8 +160,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         string $target_mime_type,
         string $entity_type = 'contact',
         array $live_snippets = [],
-        bool $prepare_docx = false
+        array $configuration = []
     ): array {
+        $prepare_docx = $configuration['prepare_docx'];
         // for now DOCX is the only format being used for internal processing
         $internal_processing_format = CRM_Civioffice_MimeType::DOCX; // todo later on this can be determined by checking the $document_with_placeholders later on to allow different transition formats like .odt/.odf
         $needs_conversion = $target_mime_type != $internal_processing_format;
@@ -435,7 +436,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      */
     protected function lock()
     {
-        $lock_file = Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::UNOCONV_LOCK_PATH_SETTINGS_KEY);
+        $lock_file = Civi::settings()->get(CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_LOCK_PATH_SETTINGS_KEY);
         if ($lock_file) {
             $this->lock_file = fopen($lock_file,"r+");
             if (!flock($this->lock_file, LOCK_EX)) {
@@ -456,5 +457,15 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             fclose($this->lock_file);
             $this->lock_file = null;
         }
+    }
+
+    public static function supportedConfiguration(): array
+    {
+        return [
+            'unoconv_binary_path',
+            'unoconv_lock_file',
+            'temp_folder_path',
+            'prepare_docx',
+        ];
     }
 }

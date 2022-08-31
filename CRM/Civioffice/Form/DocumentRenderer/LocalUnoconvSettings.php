@@ -21,7 +21,13 @@ use CRM_Civioffice_ExtensionUtil as E;
  * @see https://docs.civicrm.org/dev/en/latest/framework/quickform/
  */
 class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core_Form {
+    protected CRM_Civioffice_DocumentRenderer $documentRenderer;
+
   public function buildQuickForm() {
+
+      // TODO: Retrieve renderer uri from request URL.
+      $uri = 'foobar';
+      $this->documentRenderer = CRM_Civioffice_DocumentRenderer::load($uri);
 
       // add form elements
       $this->add(
@@ -48,13 +54,21 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
           true
       );
 
-      $this->setDefaults(
-          [
-              'unoconv_binary_path' => Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::UNOCONV_BINARY_PATH_SETTINGS_KEY),
-              'unoconv_lock_file' => Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::UNOCONV_LOCK_PATH_SETTINGS_KEY),
-              'temp_folder_path' => Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY)
-          ]
-      );
+      if (isset($this->documentRenderer)) {
+          $this->setDefaults(
+              [
+                  'unoconv_binary_path' => $this->documentRenderer->get(
+                      CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_BINARY_PATH_SETTINGS_KEY
+                  ),
+                  'unoconv_lock_file' => $this->documentRenderer->get(
+                      CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_LOCK_PATH_SETTINGS_KEY
+                  ),
+                  'temp_folder_path' => $this->documentRenderer->get(
+                      CRM_Civioffice_DocumentRendererType_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY
+                  ),
+              ]
+          );
+      }
 
       $this->addButtons(
           [
@@ -123,11 +137,20 @@ class CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings extends CRM_Core
   public function postProcess() {
       $values = $this->exportValues();
 
-      // save to settings
-      Civi::settings()->set(CRM_Civioffice_DocumentRenderer_LocalUnoconv::UNOCONV_BINARY_PATH_SETTINGS_KEY, $values['unoconv_binary_path']);
-      Civi::settings()->set(CRM_Civioffice_DocumentRenderer_LocalUnoconv::UNOCONV_LOCK_PATH_SETTINGS_KEY, $values['unoconv_lock_file']);
-
       $values['temp_folder_path'] = rtrim($values['temp_folder_path'], '\/');
-      Civi::settings()->set(CRM_Civioffice_DocumentRenderer_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY, $values['temp_folder_path']);
+
+      if (!isset($this->documentRenderer)) {
+          $this->documentRenderer = new CRM_Civioffice_DocumentRenderer(
+              $values['uri'],
+              $values['name'],
+              []
+          );
+      }
+
+      $this->documentRenderer->set(CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_BINARY_PATH_SETTINGS_KEY, $values['unoconv_binary_path']);
+      $this->documentRenderer->set(CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_LOCK_PATH_SETTINGS_KEY, $values['unoconv_lock_file']);
+      $this->documentRenderer->set(CRM_Civioffice_DocumentRendererType_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY, $values['temp_folder_path']);
+
+      $this->documentRenderer->save();
   }
 }

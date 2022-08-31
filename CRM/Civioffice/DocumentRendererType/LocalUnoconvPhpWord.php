@@ -19,7 +19,7 @@ use PhpOffice\PhpWord;
 /**
  *
  */
-class CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord extends CRM_Civioffice_DocumentRenderer_LocalUnoconv
+class CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord extends CRM_Civioffice_DocumentRendererType_LocalUnoconv
 {
     const MIN_UNOCONV_VERSION = '0.7'; // todo: determine
 
@@ -71,8 +71,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord extends CRM_Civioffice
         string $target_mime_type,
         string $entity_type = 'contact',
         array $live_snippets = [],
-        bool $prepare_docx = false
+        array $configuration = []
     ): array {
+        $prepare_docx = $configuration['prepare_docx'];
         // for now DOCX is the only format being used for internal processing
         $internal_processing_format = CRM_Civioffice_MimeType::DOCX; // todo later on this can be determined by checking the $document_with_placeholders later on to allow different transition formats like .odt/.odf
         $needs_conversion = $target_mime_type != $internal_processing_format;
