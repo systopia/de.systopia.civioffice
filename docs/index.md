@@ -1,5 +1,7 @@
 # Introduction
 
+Short version: This extension allows you to use docx files as document templates in many CiviCRM workflows.
+
 Written communication with contacts is an essential aspect of the work of
 non-profit organisations. Typically, they have their own letter templates etc.
 Utilizing tokens to insert contact and other data, pdf documents for many
@@ -20,7 +22,7 @@ should give easy access to all users, although other input formats might be
 implemented later. As ouptut formats, .pdf and .docx have been implemented so
 far.
 
-**This documentation has been updated for CiviOffice 0.8.**
+**This documentation has been updated for CiviOffice 0.9.**
 
 ## Features
 
@@ -44,11 +46,10 @@ far.
   to send emails with personalized attachments (search result actions for
   contacts and contributions)
 - API
-
-## Planned features for version 1.0
-
 - HTML to OOXML conversion to allow for simple formatting within tokens (also a
   workaround for missing Smarty syntax)
+
+## Planned features for version 1.0
 - UI overhaul and usability improvements
 
 ## Intended future improvements
@@ -57,7 +58,7 @@ far.
   CiviCRM workflows
 - add WebDAV compatibility to connect to external document stores such as
   Nextcloud, Sharepoint, or GoogleDrive
-- integration with full-fledged text editor to customize templates before
+- integrate a full-fledged text editor to customize templates before
   processing
 
 ## Known issues
@@ -67,8 +68,7 @@ far.
   being split up by XML tags, making them infunctional. CiviOffice tries to
   mitigate this problem by optimizing the XML structure. Currently this 'repair
   functionality' is enabled with the option 'prepare .docx documents'. However,
-  there are some
-  things that CiviOffice can not repair (yet, or ever).
+  there are some things that CiviOffice can not repair (yet, or ever).
 
 **In order to avoid issues, you should:**
 
