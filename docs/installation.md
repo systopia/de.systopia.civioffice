@@ -36,6 +36,7 @@ click on *Install*. The extension will be set up.
 - The documents used in CiviOffice can be managed
   via ``/civicrm/civioffice/document_upload``. Currently you need to add that
   link to the navigation menu manually.
+- Assign the permission "Access CiviOffice" to user roles as needed.
 - Optional: Create an activity type such as "Created Document (CiviOffice)"
 
 ## Known issues
@@ -50,6 +51,6 @@ converter in CiviOffice.
   de.systopia.donrec 2.1+ and select the template you want to use for cover
   letters in the extension settings
 - to send CiviOffice documents as email attachments, install
-  de.systopia.mailattachment 1.0+ and
+  de.systopia.mailattachment 1.0+ and:
   - for contacts and contributions, install de.systopia.mailbatch 2.0+
   - for participants, install de.systopia.eventmessages 1.1+
