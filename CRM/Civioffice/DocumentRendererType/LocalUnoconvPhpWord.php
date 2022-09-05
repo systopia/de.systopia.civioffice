@@ -21,48 +21,17 @@ use PhpOffice\PhpWord;
  */
 class CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord extends CRM_Civioffice_DocumentRendererType_LocalUnoconv
 {
-    const MIN_UNOCONV_VERSION = '0.7'; // todo: determine
-
-    const UNOCONV_BINARY_PATH_SETTINGS_KEY = 'civioffice_unoconv_binary_path';
-    const UNOCONV_LOCK_PATH_SETTINGS_KEY = 'civioffice_unoconv_lock_file';
-    const TEMP_FOLDER_PATH_SETTINGS_KEY = 'civioffice_temp_folder_path';
-
-    /** @var string path to the unoconv binary */
-    protected $unoconv_path;
-
-    /** @var resource handle used for the lock */
-    protected $lock_file;
-
-    /**
-     * constructor
-     *
-     */
-    public function __construct()
+    public function __construct($uri = null, $name = null, array $configuration = [])
     {
-        parent::__construct('unoconv-local-phpword', E::ts("Local Universal Office Converter (unoconv) implementing PhpWord"));
-        $this->unoconv_path = Civi::settings()->get(self::UNOCONV_BINARY_PATH_SETTINGS_KEY);
-        if (empty($this->unoconv_path)) {
-            Civi::log()->debug("CiviOffice: Path to unoconv binary / wrapper script is missing");
-            $this->unoconv_path = "";
-        }
+        parent::__construct(
+            'unoconv-local-phpword',
+            E::ts("Local Universal Office Converter (unoconv) implementing PhpWord"),
+            $configuration
+        );
     }
 
     /**
-     * Render a document for a list of entities
-     *
-     * @param CRM_Civioffice_Document $document_with_placeholders
-     *   the document to be rendered
-     *
-     * @param array $entity_ids
-     *   entity ID, e.g. contact ids
-     * @param \CRM_Civioffice_DocumentStore_LocalTemp $temp_store
-     * @param string $target_mime_type
-     * @param string $entity_type
-     *   entity type, e.g. 'contact'
-     *
-     * @return array
-     *   list of documents with target file name
-     * @throws \Exception
+     * {@inheritDoc}
      */
     public function render(
         $document_with_placeholders,
@@ -70,10 +39,9 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord extends CRM_Civiof
         CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
         string $target_mime_type,
         string $entity_type = 'contact',
-        array $live_snippets = [],
-        array $configuration = []
+        array $live_snippets = []
     ): array {
-        $prepare_docx = $configuration['prepare_docx'];
+        $prepare_docx = $this->prepare_docx;
         // for now DOCX is the only format being used for internal processing
         $internal_processing_format = CRM_Civioffice_MimeType::DOCX; // todo later on this can be determined by checking the $document_with_placeholders later on to allow different transition formats like .odt/.odf
         $needs_conversion = $target_mime_type != $internal_processing_format;
@@ -99,7 +67,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord extends CRM_Civiof
                 . '&& for f in *.docx; do mv -- "$f" "${f%.docx}.docxsource"; done'
             );
 
-            $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f docx *.docxsource 2>&1";
+            $convert_command = "cd $temp_store_folder_path && {$this->unoconv_binary_path} -v -f docx *.docxsource 2>&1";
             [$exec_return_code, $exec_output] = $this->runCommand($convert_command);
             exec("cd $temp_store_folder_path && rm *.docxsource");
 
@@ -278,7 +246,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord extends CRM_Civiof
             return $tokenreplaced_documents;
         }
 
-        $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $file_ending_name *.docx 2>&1";
+        $convert_command = "cd $temp_store_folder_path && {$this->unoconv_binary_path} -v -f $file_ending_name *.docx 2>&1";
         [$exec_return_code, $exec_output] = $this->runCommand($convert_command);
 
         if ($exec_return_code != 0) {

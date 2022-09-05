@@ -99,7 +99,7 @@ class CRM_Civioffice_Configuration
      * @throws \Exception
      *   When a renderer could not be loaded from configuration.
      */
-    public static function getDocumentRenderers(bool $only_show_active): array
+    public static function getDocumentRenderers(bool $only_show_active = false): array
     {
         /* @var \CRM_Civioffice_DocumentRenderer[] $renderers */
         $renderers = array_map(
@@ -119,6 +119,25 @@ class CRM_Civioffice_Configuration
         }
 
         return $renderers;
+    }
+
+    public static function getDocumentRendererTypes()
+    {
+        // TODO: Implement using an event.
+        $types = [];
+        foreach (
+            [
+                new CRM_Civioffice_DocumentRendererType_LocalUnoconv(),
+                new CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord(),
+            ] as $type
+        ) {
+            /* @var \CRM_Civioffice_DocumentRendererType $type */
+            $types[$type->getURI()] = [
+                'label' => $type->getName(),
+                'class' => get_class($type),
+            ];
+        }
+        return $types;
     }
 
     /**

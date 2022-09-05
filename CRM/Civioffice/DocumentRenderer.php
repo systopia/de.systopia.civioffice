@@ -31,7 +31,7 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
     {
         parent::__construct($uri, $name);
         $this->configuration = $configuration;
-        $this->type = CRM_Civioffice_DocumentRendererType::create($configuration['type']);
+        $this->type = CRM_Civioffice_DocumentRendererType::create($configuration);
     }
 
     /**
@@ -80,8 +80,7 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
             $temp_store,
             $target_mime_type,
             $entity_type,
-            $live_snippets,
-            $this->configuration
+            $live_snippets
         );
     }
 

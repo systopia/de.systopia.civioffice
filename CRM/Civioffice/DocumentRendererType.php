@@ -23,8 +23,8 @@ use CRM_Civioffice_ExtensionUtil as E;
 abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_OfficeComponent
 {
     /**
-     * @param string $type
-     *   A class name of a document renderer type.
+     * @param array $configuration
+     *   The configuration for the Document Renderer Type.
      *
      * @return \CRM_Civioffice_DocumentRendererType
      *   The document renderer type object.
@@ -32,11 +32,23 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
      * @throws \Exception
      *   When the given document renderer type does not exist.
      */
-    public static function create(string $type) {
-        if (!class_exists($type)) {
-            throw new Exception('Document renderer type %s does not exist.', $type);
+    public static function create(array $configuration): CRM_Civioffice_DocumentRendererType
+    {
+        $types = CRM_Civioffice_Configuration::getDocumentRendererTypes();
+        if (!isset($types[$configuration['type']]) || !class_exists($types[$configuration['type']]['class'])) {
+            throw new Exception('Document renderer type %s does not exist.', $configuration['type']);
         }
-        return new $type();
+        return new $types[$configuration['type']]['class'](null, null, $configuration);
+    }
+
+    abstract public function buildSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form);
+
+    abstract public function validateSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form);
+
+    abstract public function postProcessSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form);
+
+    public static function getNextUri() {
+        return (new static())->getURI() . '-' . count(CRM_Civioffice_Configuration::getDocumentRenderers());
     }
 
     /**
@@ -77,8 +89,7 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
         CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
         string $target_mime_type,
         string $entity_type = 'contact',
-        array $live_snippets = [],
-        array $configuration = []
+        array $live_snippets = []
     ): array;
 
     /**
