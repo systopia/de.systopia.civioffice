@@ -31,7 +31,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
      * @var string $unoconv_binary_path
      *   The path to the unoconv binary.
      */
-    protected string $unoconv_binary_path;
+    protected $unoconv_binary_path;
 
     /**
      * @var resource $unoconv_lock_file_path
@@ -42,19 +42,19 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
     /**
      * @var string $temp_folder_path
      */
-    protected string $temp_folder_path;
+    protected $temp_folder_path;
 
     /**
      * @var bool $prepare_docx
      *   Whether to "prepare" DOCX files, i.e. try to repair common formatting mistakes.
      */
-    protected bool $prepare_docx;
+    protected $prepare_docx;
 
     public function __construct($uri = null, $name = null, array $configuration = [])
     {
         parent::__construct(
             $uri ?? 'unoconv-local',
-            $name ?? E::ts("Local Universal Office Converter (unoconv)")
+            $name ?? E::ts('Local Universal Office Converter (unoconv)')
         );
         foreach (static::supportedConfiguration() as $config_item) {
             $this->{$config_item} = $configuration[$config_item] ?? null;

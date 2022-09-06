@@ -55,7 +55,7 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
      */
     public function getConfigPageURL(): string
     {
-        // TODO: Implement getConfigPageURL() method. This will hold extra config for Live Snippets and DOCX preparation.
+        // TODO: Implement.
     }
 
     /**
@@ -84,24 +84,32 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
         );
     }
 
+    /**
+     * @return static
+     *
+     * @throws \Exception
+     */
     public static function load($uri): ?CRM_Civioffice_DocumentRenderer
     {
-        if ($configuration = Civi::settings()->get('civioffice_renderer_' . $uri)) {
-            $renderer = new self(
-                $uri,
-                $configuration['name'],
-                $configuration
-            );
+        if (
+            !isset(($renderer_list = Civi::settings()->get('civioffice_renderers') ?? [])[$uri])
+            || is_null($configuration = Civi::settings()->get('civioffice_renderer_' . $uri))
+        ) {
+            throw new Exception('Could not load renderer configuration with name %s', $uri);
         }
-        return $renderer ?? null;
+        return new static(
+            $uri,
+            $renderer_list[$uri],
+            $configuration
+        );
 
     }
 
     public function save() {
-        Civi::settings()->set('civioffice_renderer_' . $this->getURI(), $this->configuration);
-        if (!array_key_exists($this->getURI(), $renderer_names = Civi::settings()->get('civioffice_renderers'))) {
-            $renderer_names[$this->getURI()] = $this->getName();
-            Civi::settings()->set('civioffice_renderers', $renderer_names);
+        Civi::settings()->set('civioffice_renderer_' . $this->uri, $this->configuration);
+        if (!array_key_exists($this->uri, $renderer_list = Civi::settings()->get('civioffice_renderers'))) {
+            $renderer_list[$this->uri] = $this->name;
+            Civi::settings()->set('civioffice_renderers', $renderer_list);
         }
     }
 

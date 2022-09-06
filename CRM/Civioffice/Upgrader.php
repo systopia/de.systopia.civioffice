@@ -42,9 +42,41 @@ class CRM_Civioffice_Upgrader extends CRM_Civioffice_Upgrader_Base
 
     public function upgrade_0007(): bool
     {
-        // TODO: Create default renderer instances (one for each RendererType with the same URI) and save them into settings.
-        //       - unoconv-local
-        //       - unoconv-local-phpword
-//        return true;
+        // Create default renderer instances (one for each RendererType with the same URI) and save them with current
+        // settings.
+        $renderers = [
+            'unoconv-local' => new CRM_Civioffice_DocumentRenderer(
+                'unoconv-local',
+                E::ts('Local Universal Office Converter (unoconv)'),
+                [
+                    'type' => 'unoconv-local',
+                    'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
+                    'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
+                    'temp_folder_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
+                    'prepare_docx' => false,
+                ]
+            ),
+            'unoconv-local-phpword' => new CRM_Civioffice_DocumentRenderer(
+                'unoconv-local-phpword',
+                E::ts('Local Universal Office Converter (unoconv) implementing PhpWord'),
+                [
+                    'type' => 'unoconv-local-phpword',
+                    'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
+                    'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
+                    'temp_folder_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
+                    'prepare_docx' => false,
+                ]
+            ),
+        ];
+        foreach ($renderers as $renderer) {
+            $renderer->save();
+        }
+
+        // Remove (revert) legacy settings.
+        Civi::settings()->revert('civioffice_unoconv_binary_path');
+        Civi::settings()->revert('civioffice_unoconv_lock_file');
+        Civi::settings()->revert('civioffice_unoconv_binary_path');
+
+        return true;
     }
 }

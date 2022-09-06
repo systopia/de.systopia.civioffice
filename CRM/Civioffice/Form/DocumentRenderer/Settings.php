@@ -50,7 +50,9 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
         }
         else {
             $this->documentRendererType = CRM_Civioffice_DocumentRendererType::create(
-                CRM_Utils_Request::retrieve('type', 'Alphanumeric', $this)
+                [
+                    'type' => CRM_Utils_Request::retrieve('type', 'Alphanumeric', $this),
+                ]
             );
         }
     }

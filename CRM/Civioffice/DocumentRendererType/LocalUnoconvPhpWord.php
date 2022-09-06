@@ -25,7 +25,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord extends CRM_Civiof
     {
         parent::__construct(
             'unoconv-local-phpword',
-            E::ts("Local Universal Office Converter (unoconv) implementing PhpWord"),
+            E::ts('Local Universal Office Converter (unoconv) implementing PhpWord'),
             $configuration
         );
     }

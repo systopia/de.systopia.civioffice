@@ -103,13 +103,10 @@ class CRM_Civioffice_Configuration
     {
         /* @var \CRM_Civioffice_DocumentRenderer[] $renderers */
         $renderers = array_map(
-            function ($name) {
-                if (is_null($renderer = Civi::settings()->get('civioffice_renderer_' . $name))) {
-                    throw new Exception('Could not load renderer configuration with name %s', $name);
-                }
-                return $renderer;
+            function ($uri) {
+                return CRM_Civioffice_DocumentRenderer::load($uri);
             },
-            Civi::settings()->get('civioffice_renderers') ?? []
+            array_keys(Civi::settings()->get('civioffice_renderers')) ?? []
         );
 
         if ($only_show_active) {
