@@ -10,7 +10,7 @@
     <icon>admin/small/rela_type.png</icon>
   </item>
   <item>
-    <path>civicrm/civioffice/settings/renderer</path>
+    <path>civicrm/admin/civioffice/settings/renderer</path>
     <page_callback>CRM_Civioffice_Form_DocumentRenderer_Settings</page_callback>
     <title>Document Renderer Settings</title>
     <access_arguments>administer CiviCRM</access_arguments>

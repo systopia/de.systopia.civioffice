@@ -57,8 +57,8 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
         }
     }
 
-    public function buildQuickForm() {
-
+    public function buildQuickForm()
+    {
         $this->add(
             'text',
             'name',
@@ -66,22 +66,29 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
             ['class' => 'huge'],
             true
         );
+        if (isset($this->documentRenderer)) {
+            $this->setDefaults(
+                [
+                    'name' => $this->documentRenderer->getName(),
+                ]
+            );
+        }
 
         $this->documentRendererType->buildsettingsForm($this);
         $this->assign('rendererTypeSettingsTemplate', $this->documentRendererType::getSettingsFormTemplate());
 
-      $this->addButtons(
-          [
-              [
-                  'type' => 'submit',
-                  'name' => E::ts('Save'),
-                  'isDefault' => true,
-              ],
-          ]
-      );
+        $this->addButtons(
+            [
+                [
+                    'type' => 'submit',
+                    'name' => E::ts('Save'),
+                    'isDefault' => true,
+                ],
+            ]
+        );
 
-      parent::buildQuickForm();
-  }
+        parent::buildQuickForm();
+    }
 
     /**
      * Validate input data

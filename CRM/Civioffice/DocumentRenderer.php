@@ -55,7 +55,10 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
      */
     public function getConfigPageURL(): string
     {
-        // TODO: Implement.
+        return CRM_Utils_System::url(
+            'civicrm/admin/civioffice/settings/renderer',
+            'id=' . $this->uri
+        );
     }
 
     /**
