@@ -123,7 +123,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord extends CRM_Civiof
 
             // Replace live snippet tokens using PhpWord TemplateProcessor (resp. our extending variant of it).
             try {
-                $templateProcessor = new CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord_TemplateProcessor(
+                $templateProcessor = new CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord_TemplateProcessor(
                     $transitional_docx_document->getAbsolutePath()
                 );
             }
