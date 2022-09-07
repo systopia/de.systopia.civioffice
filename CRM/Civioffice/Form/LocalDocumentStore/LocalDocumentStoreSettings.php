@@ -33,9 +33,18 @@ class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends 
             true
         );
 
+        $this->add(
+            'text',
+            'local_temp_folder',
+            E::ts("Local temporary Folder (full path)"),
+            ['class' => 'huge'],
+            true
+        );
+
         $this->setDefaults(
             [
                 'local_folder' => Civi::settings()->get(CRM_Civioffice_DocumentStore_Local::LOCAL_STATIC_PATH_SETTINGS_KEY),
+                'local_temp_folder' => Civi::settings()->get(CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY),
             ]
         );
 
@@ -72,6 +81,17 @@ class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends 
             }
         }
 
+        if (!empty($this->_submitValues['local_temp_folder'])) {
+            $local_temp_folder = $this->_submitValues['local_temp_folder'];
+            if (!is_dir($local_temp_folder)) {
+                $this->_errors['local_temp_folder'] = E::ts("This is not a folder");
+            } else {
+                if (!is_readable($local_temp_folder)) {
+                    $this->_errors['local_temp_folder'] = E::ts("This folder cannot be accessed");
+                }
+            }
+        }
+
         return (0 == count($this->_errors));
     }
 
@@ -83,6 +103,7 @@ class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends 
 
         // store
         Civi::settings()->set(CRM_Civioffice_DocumentStore_Local::LOCAL_STATIC_PATH_SETTINGS_KEY, $values['local_folder']);
+        Civi::settings()->set(CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY, $values['local_temp_folder']);
     }
 
 }

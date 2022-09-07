@@ -52,7 +52,7 @@ class CRM_Civioffice_Upgrader extends CRM_Civioffice_Upgrader_Base
                     'type' => 'unoconv-local',
                     'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
                     'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
-                    'temp_folder_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
+                    'temp_folder_path' => Civi::settings()->get('civioffice_temp_folder_path'),
                     'prepare_docx' => false,
                 ]
             ),
@@ -63,7 +63,7 @@ class CRM_Civioffice_Upgrader extends CRM_Civioffice_Upgrader_Base
                     'type' => 'unoconv-local-phpword',
                     'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
                     'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
-                    'temp_folder_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
+                    'temp_folder_path' => Civi::settings()->get('civioffice_temp_folder_path'),
                     'prepare_docx' => false,
                 ]
             ),
@@ -72,10 +72,16 @@ class CRM_Civioffice_Upgrader extends CRM_Civioffice_Upgrader_Base
             $renderer->save();
         }
 
+        // Copy temporary directory configuration from renderer to store, as this configuration option moved there.
+        Civi::settings()->set(
+            CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY,
+            Civi::settings()->get('civioffice_temp_folder_path')
+        );
+
         // Remove (revert) legacy settings.
         Civi::settings()->revert('civioffice_unoconv_binary_path');
         Civi::settings()->revert('civioffice_unoconv_lock_file');
-        Civi::settings()->revert('civioffice_unoconv_binary_path');
+        Civi::settings()->revert('civioffice_temp_folder_path');
 
         return true;
     }

@@ -28,9 +28,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
 
             // fixme: remove last slash
             // todo: use entry from settings
-            $user_selectable_path = Civi::settings()->get(
-                CRM_Civioffice_DocumentRendererType_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY
-            );
+            $user_selectable_path = Civi::settings()->get(self::LOCAL_TEMP_PATH_SETTINGS_KEY);
             $current_user_id = CRM_Core_Session::singleton()->getLoggedInContactId();
 
             $temp_folder_path = $user_selectable_path . DIRECTORY_SEPARATOR . uniqid("civioffice_{$current_user_id}_");
