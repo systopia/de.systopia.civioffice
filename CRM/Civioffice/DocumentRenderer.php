@@ -110,10 +110,9 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
 
     public function save() {
         Civi::settings()->set('civioffice_renderer_' . $this->uri, $this->configuration);
-        if (!array_key_exists($this->uri, $renderer_list = Civi::settings()->get('civioffice_renderers'))) {
-            $renderer_list[$this->uri] = $this->name;
-            Civi::settings()->set('civioffice_renderers', $renderer_list);
-        }
+        $renderer_list = Civi::settings()->get('civioffice_renderers');
+        $renderer_list[$this->uri] = $this->name;
+        Civi::settings()->set('civioffice_renderers', $renderer_list);
     }
 
     /**
