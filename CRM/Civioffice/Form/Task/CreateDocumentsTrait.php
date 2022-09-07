@@ -98,12 +98,6 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
         );
 
         $this->add(
-            'checkbox',
-            'prepare_docx',
-            E::ts("Prepare DOCX documents")
-        );
-
-        $this->add(
             'select',
             'activity_type_id',
             E::ts("Create Activity"),
@@ -197,7 +191,6 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
                     $values['target_mime_type'],
                     E::ts('Initialized'),
                     $live_snippets,
-                    !empty($values['prepare_docx']),
                     $values['activity_type_id']
                 )
             );

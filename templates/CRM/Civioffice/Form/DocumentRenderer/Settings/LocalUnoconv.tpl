@@ -35,4 +35,11 @@
     <div class="clear"></div>
   </div>
 
+  <div class="crm-section">
+    <div class="help">{ts}Run the DOCX document through the converter prior to processing in order to optimise/repair possibly corrupted CiviCRM tokens in the document.{/ts}</div>
+    <div class="label">{$form.prepare_docx.label}</div>
+    <div class="content">{$form.prepare_docx.html}</div>
+    <div class="clear"></div>
+  </div>
+
 {/crmScope}

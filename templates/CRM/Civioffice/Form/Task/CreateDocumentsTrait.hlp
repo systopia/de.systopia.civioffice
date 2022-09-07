@@ -14,8 +14,4 @@
 
 {crmScope extensionKey='de.systopia.civioffice'}
 
-{htxt id='id-prepare_docx'}
-  <p>{ts}Run the DOCX document through the converter prior to processing in order to optimise/repair possibly corrupted CiviCRM tokens in the document.{/ts}</p>
-{/htxt}
-
 {/crmScope}

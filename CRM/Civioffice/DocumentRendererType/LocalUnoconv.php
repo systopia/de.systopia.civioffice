@@ -188,13 +188,20 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             true
         );
 
-        // TODO: Add form element for "Prepare DOCX documents" setting.
+        $form->add(
+            'checkbox',
+            'prepare_docx',
+            E::ts('Prepare DOCX documents'),
+            null,
+            false
+        );
 
         $form->setDefaults(
             [
                 'unoconv_binary_path' => $this->unoconv_binary_path,
                 'unoconv_lock_file_path' => $this->unoconv_lock_file_path,
                 'temp_folder_path' => $this->temp_folder_path,
+                'prepare_docx' => $this->prepare_docx,
             ]
         );
     }
@@ -262,6 +269,10 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         $renderer->set(
             CRM_Civioffice_DocumentRendererType_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY,
             $values['temp_folder_path']
+        );
+        $renderer->set(
+            CRM_Civioffice_DocumentRendererType_LocalUnoconv::PREPARE_DOCX_SETTINGS_KEY,
+            $values['prepare_docx']
         );
     }
 

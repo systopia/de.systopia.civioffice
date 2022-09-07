@@ -116,20 +116,12 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             false
         );
 
-        $form->add(
-            'checkbox',
-            $prefix . 'attachments--' . $attachment_id . '--prepare_docx',
-            E::ts('Prepare DOCX documents'),
-            false
-        );
-
         $form->setDefaults(
             [
                 $prefix . 'attachments--' . $attachment_id . '--document_renderer_uri' => $defaults['document_renderer_uri'],
                 $prefix . 'attachments--' . $attachment_id . '--document_uri' => $defaults['document_uri'],
                 $prefix . 'attachments--' . $attachment_id . '--target_mime_type' => $defaults['target_mime_type'],
                 $prefix . 'attachments--' . $attachment_id . '--name' => $defaults['name'],
-                $prefix . 'attachments--' . $attachment_id . '--prepare_docx' => $defaults['prepare_docx'],
             ]
         );
 
@@ -138,7 +130,6 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             $prefix . 'attachments--' . $attachment_id . '--document_uri' => 'attachment-civioffice_document-document_uri',
             $prefix . 'attachments--' . $attachment_id . '--target_mime_type' => 'attachment-civioffice_document-target_mime_type',
             $prefix . 'attachments--' . $attachment_id . '--name' => 'attachment-civioffice_document-name',
-            $prefix . 'attachments--' . $attachment_id . '--prepare_docx' => 'attachment-civioffice_document-prepare_docx',
         ] + array_fill_keys($live_snippet_elements, 'attachment-civioffice_document-live_snippet');
     }
 
@@ -164,7 +155,6 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             'target_mime_type' => $values[$prefix . 'attachments--' . $attachment_id . '--target_mime_type'],
             'name' => $values[$prefix . 'attachments--' . $attachment_id . '--name'],
             'live_snippets' => $live_snippet_values,
-            'prepare_docx' => !empty($values[$prefix . 'attachments--' . $attachment_id . '--prepare_docx'])
         ];
     }
 

@@ -102,12 +102,6 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
         );
 
         $this->add(
-            'checkbox',
-            'prepare_docx',
-            E::ts("Prepare DOCX documents")
-        );
-
-        $this->add(
             'select',
             'activity_type_id',
             E::ts("Create Activity"),
@@ -169,7 +163,6 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
             'renderer_uri' => $values['document_renderer_uri'],
             'target_mime_type' => $values['target_mime_type'],
             'live_snippets' => $live_snippet_values,
-            'prepare_docx' => !empty($values['prepare_docx']),
         ]);
         $result_store_uri = $render_result['values'][0];
         $result_store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
