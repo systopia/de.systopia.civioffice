@@ -235,13 +235,22 @@ function civioffice_civicrm_permission(&$permissions) {
  */
 function civioffice_civicrm_navigationMenu(&$menu) {
     _civioffice_civix_insert_navigation_menu($menu, 'Administer/Communications', array(
+        'label' => E::ts('CiviOffice Settings'),
+        'name' => 'civioffice_settings',
+        'url' => 'civicrm/admin/civioffice/settings',
+        'permission' => 'administer CiviCRM',
+        'operator' => 'OR',
+        'separator' => 0,
+        'icon' => 'crm-i fa-file-text',
+    ));
+    _civioffice_civix_insert_navigation_menu($menu, '', array(
         'label' => E::ts('CiviOffice'),
         'name' => 'civioffice',
         'operator' => 'OR',
         'separator' => 0,
         'icon' => 'crm-i fa-file-text',
     ));
-    _civioffice_civix_insert_navigation_menu($menu, 'Administer/Communications/civioffice', array(
+    _civioffice_civix_insert_navigation_menu($menu, 'civioffice', array(
         'label' => E::ts('CiviOffice Settings'),
         'name' => 'civioffice_settings',
         'url' => 'civicrm/admin/civioffice/settings',
@@ -250,20 +259,20 @@ function civioffice_civicrm_navigationMenu(&$menu) {
         'separator' => 0,
         'icon' => 'crm-i fa-cogs',
     ));
-    _civioffice_civix_insert_navigation_menu($menu, 'Administer/Communications/civioffice', array(
+    _civioffice_civix_insert_navigation_menu($menu, 'civioffice', array(
         'label' => E::ts('Upload Documents'),
         'name' => 'civioffice_document_upload',
         'url' => 'civicrm/civioffice/document_upload',
-        'permission' => 'administer CiviCRM',
+        'permission' => 'Access CiviOffice',
         'operator' => 'OR',
         'separator' => 0,
         'icon' => 'crm-i fa-upload',
     ));
-    _civioffice_civix_insert_navigation_menu($menu, 'Administer/Communications/civioffice', array(
+    _civioffice_civix_insert_navigation_menu($menu, 'civioffice', array(
         'label' => E::ts('Available Tokens'),
         'name' => 'civioffice_tokens',
         'url' => 'civicrm/civioffice/tokens',
-        'permission' => 'administer CiviCRM',
+        'permission' => 'Access CiviOffice',
         'operator' => 'OR',
         'separator' => 0,
         'icon' => 'crm-i fa-code',
