@@ -50,15 +50,13 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
      */
     protected $prepare_docx;
 
-    public function __construct($uri = null, $name = null, array $configuration = [])
+    public function __construct($uri = null, $name = null, array &$configuration = [])
     {
         parent::__construct(
             $uri ?? 'unoconv-local',
-            $name ?? E::ts('Local Universal Office Converter (unoconv)')
+            $name ?? E::ts('Local Universal Office Converter (unoconv)'),
+            $configuration
         );
-        foreach (static::supportedConfiguration() as $config_item) {
-            $this->{$config_item} = $configuration[$config_item] ?? null;
-        }
     }
 
     /**

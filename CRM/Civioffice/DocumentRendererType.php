@@ -22,6 +22,13 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_OfficeComponent
 {
+    public function __construct($uri = null, $name = null, array &$configuration = []) {
+        parent::__construct($uri, $name);
+        foreach (static::supportedConfiguration() as $config_item) {
+            $this->{$config_item} = $configuration[$config_item] ?? null;
+        }
+    }
+
     /**
      * @param array $configuration
      *   The configuration for the Document Renderer Type.
@@ -32,13 +39,13 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
      * @throws \Exception
      *   When the given document renderer type does not exist.
      */
-    public static function create(array $configuration): CRM_Civioffice_DocumentRendererType
+    public static function create(string $type, array $configuration = []): CRM_Civioffice_DocumentRendererType
     {
         $types = CRM_Civioffice_Configuration::getDocumentRendererTypes();
-        if (!isset($types[$configuration['type']]) || !class_exists($types[$configuration['type']]['class'])) {
-            throw new Exception('Document renderer type %s does not exist.', $configuration['type']);
+        if (!isset($types[$type]) || !class_exists($types[$type]['class'])) {
+            throw new Exception('Document renderer type %s does not exist.', $type);
         }
-        return new $types[$configuration['type']]['class'](null, null, $configuration);
+        return new $types[$type]['class'](null, null, $configuration);
     }
 
     abstract public function buildSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form);

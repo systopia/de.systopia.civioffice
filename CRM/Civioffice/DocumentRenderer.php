@@ -30,8 +30,10 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
     public function __construct(string $uri, string $name, array $configuration)
     {
         parent::__construct($uri, $name);
+        $type = $configuration['type'];
+        unset($configuration['type']);
         $this->configuration = $configuration;
-        $this->type = CRM_Civioffice_DocumentRendererType::create($configuration);
+        $this->type = CRM_Civioffice_DocumentRendererType::create($type, $configuration);
     }
 
     /**
@@ -109,7 +111,8 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
     }
 
     public function save() {
-        Civi::settings()->set('civioffice_renderer_' . $this->uri, $this->configuration);
+        $configuration = $this->configuration + ['type' => $this->type->getURI()];
+        Civi::settings()->set('civioffice_renderer_' . $this->uri, $configuration);
         $renderer_list = Civi::settings()->get('civioffice_renderers');
         $renderer_list[$this->uri] = $this->name;
         Civi::settings()->set('civioffice_renderers', $renderer_list);
