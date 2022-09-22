@@ -593,4 +593,14 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             self::PREPARE_DOCX_SETTINGS_KEY,
         ];
     }
+
+    public static function defaultConfiguration(): array
+    {
+        return [
+            'unoconv_binary_path' => '/usr/bin/unoconv',
+            'unoconv_lock_file_path' => '/var/www/unoconv.lock',
+            'temp_folder_path' => Civi::paths()->getPath('[civicrm.compile]/civioffice'),
+            'prepare_docx' => false,
+        ];
+    }
 }

@@ -15,6 +15,16 @@ class CRM_Civioffice_Upgrader extends CRM_Civioffice_Upgrader_Base
         // Create/synchronise the Live Snippets option group.
         $customData = new CRM_Civioffice_CustomData(E::LONG_NAME);
         $customData->syncOptionGroup(E::path('resources/live_snippets_option_group.json'));
+
+        // Create a default instance for each renderer type.
+        foreach (CRM_Civioffice_Configuration::getDocumentRendererTypes() as $uri => $type) {
+            $renderer = new CRM_Civioffice_DocumentRenderer(
+                $uri,
+                $type['label'],
+                $type['class']::defaultConfiguration() + ['type' => $uri]
+            );
+            $renderer->save();
+        }
     }
 
     /**

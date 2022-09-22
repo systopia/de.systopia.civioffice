@@ -229,6 +229,8 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
 
     abstract public static function supportedConfiguration(): array;
 
+    abstract public static function defaultConfiguration(): array;
+
     public static function supportsConfigurationItem($configurationItem): bool
     {
         return in_array($configurationItem, static::supportedConfiguration());
