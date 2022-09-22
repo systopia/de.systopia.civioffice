@@ -88,6 +88,13 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
         parent::buildQuickForm();
     }
 
+    public function setDefaults($defaultValues = null, $filter = null)
+    {
+        $defaultValues = array_filter($defaultValues, function($value) { return !is_null($value); });
+        $defaultValues += $this->documentRendererType::defaultConfiguration();
+        return parent::setDefaults($defaultValues, $filter);
+    }
+
     /**
      * Validate input data
      * This method is executed before postProcess()
