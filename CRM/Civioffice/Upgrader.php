@@ -23,6 +23,8 @@ class CRM_Civioffice_Upgrader extends CRM_Civioffice_Upgrader_Base
     public function uninstall()
     {
         // TODO: Remove civioffice_live_snippets option group.
+        // TODO: Remove settings created by this extension.
+        // TODO: Clean-up file cache (rendered files), using a cleanup interface.
     }
 
     /**
