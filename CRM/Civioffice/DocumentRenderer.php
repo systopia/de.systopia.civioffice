@@ -119,17 +119,17 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
      * @throws \Exception
      *   When the renderer type does not support a configuration item with the given name.
      */
-    public function get($configurationItemName) {
-        $this->type->checkConfigurationSupported($configurationItemName);
-        return $this->configuration[$configurationItemName];
+    public function getConfigItem($name) {
+        $this->type->checkConfigurationSupported($name);
+        return $this->configuration[$name];
     }
 
     /**
      * @throws \Exception
      *   When the renderer type does not support a configuration item with the given name.
      */
-    public function set($configurationItemName, $value) {
-        $this->type->checkConfigurationSupported($configurationItemName);
-        $this->configuration[$configurationItemName] = $value;
+    public function setConfigItem($name, $value) {
+        $this->type->checkConfigurationSupported($name);
+        $this->configuration[$name] = $value;
     }
 }

@@ -258,19 +258,19 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
 
         $values['temp_folder_path'] = rtrim($values['temp_folder_path'], '\/');
         $renderer = $form->getDocumentRenderer();
-        $renderer->set(
+        $renderer->setConfigItem(
             CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_BINARY_PATH_SETTINGS_KEY,
             $values['unoconv_binary_path']
         );
-        $renderer->set(
+        $renderer->setConfigItem(
             CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY,
             $values['unoconv_lock_file_path']
         );
-        $renderer->set(
+        $renderer->setConfigItem(
             CRM_Civioffice_DocumentRendererType_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY,
             $values['temp_folder_path']
         );
-        $renderer->set(
+        $renderer->setConfigItem(
             CRM_Civioffice_DocumentRendererType_LocalUnoconv::PREPARE_DOCX_SETTINGS_KEY,
             $values['prepare_docx']
         );
