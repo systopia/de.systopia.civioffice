@@ -150,6 +150,44 @@ class CRM_Civioffice_Configuration
         return null; // not found
     }
 
+    public function getDocuments($select2 = false)
+    {
+        $document_list = [];
+        // todo: only show supported source mime types
+        foreach ($this->getDocumentStores(true) as $document_store) {
+            foreach ($document_store->getDocuments() as $document) {  // todo: recursive
+                // TODO: Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
+                if (!CRM_Civioffice_MimeType::hasSpecificFileNameExtension(
+                    $document->getName(),
+                    CRM_Civioffice_MimeType::DOCX
+                )) {
+                    continue; // for now only allow/return docx files
+                }
+
+                $document_list[$document_store->getURI()][$document->getURI()] = $document;
+            }
+        }
+
+        if ($select2) {
+            $select2_options = array_map(function ($documents, $document_store_uri) {
+                return [
+                    'text' => self::getDocumentStore($document_store_uri)->getName(),
+                    'children' => array_values(
+                        array_map(function ($document) {
+                            return [
+                                'id' => $document->getUri(),
+                                'text' => $document->getName(),
+                            ];
+                        }, $documents)
+                    ),
+                ];
+            }, $document_list, array_keys($document_list));
+            $document_list = $select2_options;
+        }
+
+        return $document_list;
+    }
+
     /**
      * Get the document with the given URI
      *
