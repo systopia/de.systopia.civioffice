@@ -8,10 +8,13 @@
   mitigate this problem by optimizing the XML structure. However, there are some
   things that CiviOffice can not repair (yet). **In order to avoid issues, you
   should**
+  
   + make sure there are no mixed formatting properties in your tokens (e.g. a
     portion of the token is in bold font)
+    
   + disable spell checking in your documents, especially make sure you don't
     apply exceptions from spell checking to bits of your tokens
+    
 + Smarty syntax is not supported in CiviOffice templates. You can use
   HTML-to-OOXML conversion to work around this limitation (see the chapter on
   this).
