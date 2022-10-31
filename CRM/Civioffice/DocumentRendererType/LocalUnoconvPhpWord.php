@@ -142,36 +142,41 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord extends CRM_Civiof
                 $live_snippet = $this->replaceAllTokens($live_snippet, $tokenContexts);
 
                 // Use a temporary Section element for adding the elements.
-                $phpWord = PhpWord\IOFactory::load($transitional_docx_document->getAbsolutePath());
-                $section = $phpWord->addSection();
-                // TODO: addHtml() doesn't accept styles so added HTML elements don't get any existing styles applied.
-                PhpWord\Shared\Html::addHtml($section, $live_snippet);
-                // Replace live snippet macros, ...
-                if (
-                    count($elements = $section->getElements()) == 1
-                    && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
-                ) {
-                    // ... either as plain text (if there is only a single Text element), ...
-                    $templateProcessor->setValue('civioffice.live_snippets.' . $live_snippet_name, $live_snippet);
-                }
-                else {
-                    // ... or as HTML: Render all elements and replace the paragraph containing the macro.
-                    // Note: This will remove everything else around the macro.
-                    // TODO: Save and split surrounding contents and add them to the replaced block.
-                    //       This would be a logical assumption, since HTML elements will always make for a new
-                    //       paragraph, so that text before and after the macro would then become their own paragraphs.
-                    $elements_data = '';
-                    foreach ($section->getElements() as $element) {
-                        $elementName = substr(get_class($element), strrpos(get_class($element), '\\') + 1);
-                        $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
-
-                        $xmlWriter = new PhpWord\Shared\XMLWriter();
-                        /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
-                        $elementWriter = new $objectClass($xmlWriter, $element, false);
-                        $elementWriter->write();
-                        $elements_data .= $xmlWriter->getData();
+                try {
+                    $phpWord = PhpWord\IOFactory::load($transitional_docx_document->getAbsolutePath());
+                    $section = $phpWord->addSection();
+                    // TODO: addHtml() doesn't accept styles so added HTML elements don't get any existing styles applied.
+                    PhpWord\Shared\Html::addHtml($section, $live_snippet);
+                    // Replace live snippet macros, ...
+                    if (
+                        count($elements = $section->getElements()) == 1
+                        && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
+                    ) {
+                        // ... either as plain text (if there is only a single Text element), ...
+                        $templateProcessor->setValue('civioffice.live_snippets.' . $live_snippet_name, $live_snippet);
                     }
-                    $templateProcessor->replaceXmlBlock('civioffice.live_snippets.' . $live_snippet_name, $elements_data, 'w:p');
+                    else {
+                        // ... or as HTML: Render all elements and replace the paragraph containing the macro.
+                        // Note: This will remove everything else around the macro.
+                        // TODO: Save and split surrounding contents and add them to the replaced block.
+                        //       This would be a logical assumption, since HTML elements will always make for a new
+                        //       paragraph, so that text before and after the macro would then become their own paragraphs.
+                        $elements_data = '';
+                        foreach ($section->getElements() as $element) {
+                            $elementName = substr(get_class($element), strrpos(get_class($element), '\\') + 1);
+                            $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
+
+                            $xmlWriter = new PhpWord\Shared\XMLWriter();
+                            /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
+                            $elementWriter = new $objectClass($xmlWriter, $element, false);
+                            $elementWriter->write();
+                            $elements_data .= $xmlWriter->getData();
+                        }
+                        $templateProcessor->replaceXmlBlock('civioffice.live_snippets.' . $live_snippet_name, $elements_data, 'w:p');
+                    }
+                }
+                catch (Exception $exception) {
+                    throw new Exception(E::ts('Error loading/writing Word document: %1', [1 => $exception->getMessage()]));
                 }
             }
             $templateProcessor->saveAs($transitional_docx_document->getAbsolutePath());
