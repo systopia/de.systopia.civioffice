@@ -175,7 +175,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord extends CRM_Civiof
                         $templateProcessor->replaceXmlBlock('civioffice.live_snippets.' . $live_snippet_name, $elements_data, 'w:p');
                     }
                 }
-                catch (Exception $exception) {
+                catch (\PhpOffice\PhpWord\Exception\Exception $exception) {
                     throw new Exception(E::ts('Error loading/writing Word document: %1', [1 => $exception->getMessage()]));
                 }
             }
