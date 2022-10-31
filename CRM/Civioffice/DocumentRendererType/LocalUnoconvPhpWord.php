@@ -200,7 +200,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord extends CRM_Civiof
                 if (0 === substr_compare($fileName, '.xml', - strlen('.xml'))) {
                     $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
                     $fileContent = $this->replaceAllTokens($fileContent, [
-                        'contact' => ['entity_id' => $entity_id],
+                        $entity_type => ['entity_id' => $entity_id],
                     ]);
                 }
 
