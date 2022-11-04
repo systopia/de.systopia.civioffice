@@ -251,7 +251,7 @@ class CRM_Civioffice_Configuration
         $other_stores = self::getDocumentStores(false);
         /** @var CRM_Civioffice_DocumentStore $store */
         foreach ($other_stores as $store) {
-            if ($store->isStoreURI($document_store_uri)) {
+            if ($store->getURI() == $document_store_uri) {
                 return $store;
             }
         }
