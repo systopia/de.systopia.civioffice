@@ -190,6 +190,13 @@ class CRM_Civioffice_Configuration
         }
 
         if ($select2) {
+            foreach ($document_list as $store => &$documents) {
+                usort($documents, function($a, $b) {
+                    /* @var \CRM_Civioffice_Document $a */
+                    /* @var \CRM_Civioffice_Document $b */
+                    return strcasecmp($a->getName(), $b->getName());
+                });
+            }
             $select2_options = array_map(function ($documents, $document_store_uri) {
                 return [
                     'text' => self::getDocumentStore($document_store_uri)->getName(),
