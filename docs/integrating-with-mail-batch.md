@@ -7,16 +7,16 @@ attached to an email. However, you can also create personalized attachments base
 
 The additional tools you will need to install are:
 
-- de.systopia.mailattachment 1.0-alpha1 or higher
-- de.systopia.mailbatch-2.0-alpha1 or higher (provides a search action for
-  contacts and contributions)
-- de.systopia.eventmessages-1.1-beta1 or higher (provides a search action for
-  participants)
+- de.systopia.mailattachment 1.0 (or higher)
+- de.systopia.mailbatch-2.0 (or higher), this provides a search action for
+  contacts and contributions
+- de.systopia.eventmessages-1.1 (or higher), this provides a search action for
+  participants and rule-based, automatic emails to participants
 
 CiviOffice and the additional extensions will work without further
 configuration (when installed in sufficient versions).
 
-To use the feature, search for contacts or contributions and select the search
+To use the feature with regard to contacts or contributions, search for contacts or contributions and select the search
 action 'Send Emails (via MailBatch)'. In the options interface, under 'Attachments', select '
 CiviOffice Document' and choose the template you want to use for your
 attachments. Any valid tokens will be replaced in the usual way.
