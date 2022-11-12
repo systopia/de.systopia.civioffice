@@ -15,6 +15,8 @@
   + disable spell checking in your documents, especially make sure you don't
     apply exceptions from spell checking to bits of your tokens
     
++ It is also advisable not to use exotic image file types in your docs.
+
 + Smarty syntax is not supported in CiviOffice templates. You can use
   HTML-to-OOXML conversion to work around this limitation (see the chapter on
   this).
@@ -23,10 +25,9 @@
 
 With the integrated document stores for personal and shared uploads, the
 documents to be used as templates in CiviOffice can be managed via
-`/civicrm/civioffice/document_upload`. (A user with admin privileges can add a
-navigation menu item linked to that page.)
+`/civicrm/civioffice/document_upload`. (During installation, a navigation link to this page should have been created.)
 
-In future versions, other document stores can be added.
+In future versions, other document stores might be added. This could also be remote document servers such as NextCloud. Currently, only the local document store is available.
 
 You can use CiviCRM tokens in your document templates. A page listing all the
 tokens available in your system can be found at `/civicrm/civioffice/tokens`.
