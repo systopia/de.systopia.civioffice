@@ -19,10 +19,10 @@ The approach is to facilitate the use of a common file format (.docx) for
 templates that integrate with CiviCRM workflows, including CiviCRM tokens. .docx
 files can be created and edited with any text processing software, so the format
 should give easy access to all users, although other input formats might be
-implemented later. As ouptut formats, .pdf and .docx have been implemented so
+implemented in the future. As ouptut formats, .pdf and .docx have been implemented so
 far.
 
-**This documentation has been updated for CiviOffice 0.9.**
+**This documentation has been updated for CiviOffice 0.10.**
 
 ## Features
 
@@ -35,7 +35,7 @@ far.
 - create documents and activities for single contacts as well as many contacts (
   search result action)
 - create documents and activities for contributions and participants (search
-  result actions), enabling users to access for contributions, events,
+  result actions), enabling users to access data for contributions, events,
   participants etc. via tokens
 - convert to .pdf or export as processed .docx
 - integrate
@@ -67,7 +67,7 @@ far.
   properties of text elements. In some cases, this can lead to CiviCRM tokens
   being split up by XML tags, making them infunctional. CiviOffice tries to
   mitigate this problem by optimizing the XML structure. Currently this 'repair
-  functionality' is enabled with the option 'prepare .docx documents'. However,
+  functionality' is enabled with the configuration option 'prepare .docx documents'. However,
   there are some things that CiviOffice can not repair (yet, or ever).
 
 **In order to avoid issues, you should:**
