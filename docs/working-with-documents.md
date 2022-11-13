@@ -15,38 +15,30 @@
   + disable spell checking in your documents, especially make sure you don't
     apply exceptions from spell checking to bits of your tokens
     
-+ It is also advisable not to use exotic image file types in your docs.
++ It is also advisable not to use "exotic" image file types in your docs - the most common ones should work though.
 
-+ Smarty syntax is not supported in CiviOffice templates. You can use
-  HTML-to-OOXML conversion to work around this limitation (see the chapter on
-  this).
++ **Smarty syntax is not supported in CiviOffice templates.** You can use
+  HTML-to-OOXML conversion to work around this limitation (as described in a later chapter).
 
-## Managing document templates
+## Managing Document Templates
 
 With the integrated document stores for personal and shared uploads, the
 documents to be used as templates in CiviOffice can be managed via
 `/civicrm/civioffice/document_upload`. (During installation, a navigation link to this page should have been created.)
 
-In future versions, other document stores might be added. This could also be remote document servers such as NextCloud. Currently, only the local document store is available.
+The local document store can distinguish between private Documents (only available to the user who uploaded them) and shared documents (available to all users). Use the tabs to switch between both. With the appropriate permissions, you can upload, download and delete documents (currently, only .docx format is supported).
+
+In future versions, other document stores might be added. This could also be remote document servers such as NextCloud. Currently however, only the local document store is available - funding for further developement is welcome.
+
+## Using tokens to insert data into your templates
 
 You can use CiviCRM tokens in your document templates. A page listing all the
-tokens available in your system can be found at `/civicrm/civioffice/tokens`.
+tokens available in your system can be found at `/civicrm/civioffice/tokens`. (During installation, a navigation link to this page should have been created.)
+
 Note that it depends on the context whether or not a specific set of tokens is
-actually available. For example, contribution tokens will *not* work when
+actually functional! For example, contribution tokens will *not* work when
 operating on contacts (i.e. creating a document for a single contact, or many
-documents from a contact search result).
-
-### Available Documents
-
-With the blue icon next to the the heading, you can switch between the stores
-(*Shared Documents* / *Private Documents*), if both are configured. The table
-shows the available documents of the selected store. These can be deleted or
-downloaded under *Actions*.
-
-### Upload More
-
-If at least one document store is configured, a .docx file can be selected,
-uploaded and made available to others using the common button.
+documents from a contact search result). Contribution tokens will only be populated with data when you are operating on contributions, e.g. after a contribution search. 
 
 ## Creating a document for a single contact
 
@@ -56,15 +48,12 @@ open a form where you choose some settings for your document processing:
 
 - pick a document to be used as the template, a renderer to process it and the
   output format
-- 'Prepare DOCX documents' repairs the internal structure of documents which can
-  be malformed when created with MS Word (tokens are split up unnecessarily by
-  XML elements and thus not being processed); there are no known downsides of
-  using this option.
+- ~~'Prepare DOCX documents'~~ this option has been moved to global configuration, TODO: updated screenshot image 
 - choose whether you want to create an activity, and if so, whether to include
   the rendered document
 - if there are any live snippets configured in your system, you can fill them
   here (read more about live
-  snippets [here](/inserting-content-with-live-snippets/))
+  snippets [here](./inserting-content-with-live-snippets/))
 
 ![CiviOffice generate single document](img/civioffice-generate-single-document.png "CiviOffice generate documents")
 
@@ -96,7 +85,7 @@ space. This is particularly important for larger processing runs.**
 CiviOffice also provides search actions in contribution and participant search
 results. The processing options are the same as in the contact search action,
 however the data available through tokens will be different. For example, you
-can use tokens for the contribution amount or the event title belonging to a
-registration, respectively.
+can use a token for the contribution amount when operating on contribution search results, or for the event title belonging to a
+registration when operating on participant search results, respectively.
 
 
