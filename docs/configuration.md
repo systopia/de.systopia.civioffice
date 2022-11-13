@@ -1,7 +1,7 @@
 # Configuration
 
 Configuration options can be found at Administration → Administration Console
-→ Communication → CiviOffice Settings or `/civicrm/admin/civioffice/settings`.
+→ Communication → CiviOffice Settings or `/civicrm/admin/civioffice/settings`. (During installation, a navigation link to this page should have been created.) Accessing CiviOffice settings requires administrator privileges.
 
 **CiviOffice Document Stores** are locations where documents and templates are
 stored. Currently, the built-in local document store is the only available
@@ -55,9 +55,11 @@ The path entry is verified dynamically, so saving is only possible when an
 existing path is entered. In case of permission problems, you will receive a
 warning with detailed information.
 
+With the setting "Prepare DOCX documents", you configure your renderer to try to repair "broken" .docx files, i.e. where CiviCRM tokens are being split up by the internal docx structure elements unnecessarily. In short, your tokens aren't working anymore. The only known downside to this option is a certain performance loss which will only be relevant on large processing runs. So in general, it is advisable to enable this option. Also, make sure to follow the recommendations in the chapter on [working with documents](../working-with-documents/).
+
 ## Document Editors
 
-(Editor modules are a planned feature, nothing to do here yet.)
+Editor modules are a planned feature, currently you will have to edit your documents outside of CiviCRM before uploading them. Funding for an integrated editor module is very welcome.
 
 ## Live Snippets
 
