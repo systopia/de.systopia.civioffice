@@ -53,7 +53,7 @@ open a form where you choose some settings for your document processing:
   the rendered document
 - if there are any live snippets configured in your system, you can fill them
   here (read more about live
-  snippets [here](./inserting-content-with-live-snippets/))
+  snippets [here](../inserting-content-with-live-snippets/))
 
 ![CiviOffice generate single document](img/civioffice-generate-single-document.png "CiviOffice generate documents")
 
