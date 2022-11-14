@@ -86,7 +86,7 @@ class CRM_Civioffice_Form_DocumentUpload_TabHeader {
     $current = CRM_Utils_Request::retrieve(
       'selectedChild',
       'Alphanumeric'
-    );
+    ) ?? ($form->common ? 'shared' : 'private');
     if (isset($tabs[$current])) {
       $tabs[$current]['current'] = TRUE;
     }

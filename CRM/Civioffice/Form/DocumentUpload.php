@@ -23,7 +23,7 @@ use CRM_Civioffice_ExtensionUtil as E;
 class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
 {
     /** @var boolean  */
-    protected $common;
+    public $common;
 
     /** @var CRM_Civioffice_DocumentStore_Upload */
     protected $document_store;
@@ -33,9 +33,13 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
 
     public function preProcess()
     {
-        CRM_Civioffice_Form_DocumentUpload_TabHeader::build($this);
         $this->common = CRM_Utils_Request::retrieve('common', 'Boolean', $this);
         $this->assign('isTab', isset($this->common));
+        $tabs = CRM_Civioffice_Form_DocumentUpload_TabHeader::build($this);
+        $this->controller->_destination = CRM_Utils_System::url(
+            'civicrm/civioffice/document_upload',
+            'reset=1&selectedChild=' . \CRM_Civioffice_Form_DocumentUpload_TabHeader::getCurrentTab($tabs)
+        );
     }
 
     public function buildQuickForm()
@@ -64,6 +68,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
                         'info'
                     );
                 }
+                CRM_Utils_System::redirect($this->controller->_destination);
             }
 
             $this->add(
