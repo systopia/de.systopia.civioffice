@@ -1,6 +1,7 @@
 # Introduction
 
-Short version: This extension allows you to use docx files as document templates in many CiviCRM workflows.
+Short version: This extension allows you to use *DOCX* files as document
+templates in many CiviCRM workflows.
 
 Written communication with contacts is an essential aspect of the work of
 non-profit organisations. Typically, they have their own letter templates etc.
@@ -19,8 +20,8 @@ The approach is to facilitate the use of a common file format (.docx) for
 templates that integrate with CiviCRM workflows, including CiviCRM tokens. .docx
 files can be created and edited with any text processing software, so the format
 should give easy access to all users, although other input formats might be
-implemented in the future. As ouptut formats, .pdf and .docx have been implemented so
-far.
+implemented in the future. As ouptut formats, .pdf and .docx have been
+implemented so far.
 
 **This documentation has been updated for CiviOffice 0.10.**
 
@@ -67,8 +68,9 @@ far.
   properties of text elements. In some cases, this can lead to CiviCRM tokens
   being split up by XML tags, making them infunctional. CiviOffice tries to
   mitigate this problem by optimizing the XML structure. Currently this 'repair
-  functionality' is enabled with the configuration option 'prepare .docx documents'. However,
-  there are some things that CiviOffice can not repair (yet, or ever).
+  functionality' is enabled with the configuration option
+  'prepare .docx documents'. However, there are some things that CiviOffice can
+  not repair (yet, or ever).
 
 **In order to avoid issues, you should:**
 
