@@ -31,76 +31,61 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
     const SHARED_ID = 1;
     const PRIVATE_ID = 0;
 
+    public function preProcess()
+    {
+        CRM_Civioffice_Form_DocumentUpload_TabHeader::build($this);
+        $this->common = CRM_Utils_Request::retrieve('common', 'Boolean', $this);
+        $this->assign('isTab', isset($this->common));
+    }
 
     public function buildQuickForm()
     {
-        $this->common = CRM_Utils_Request::retrieve('common', 'Boolean', $this) ?? self::PRIVATE_ID;
+        // Only build for individual tabs.
+        if (isset($this->common)) {
+            $this->document_store = new CRM_Civioffice_DocumentStore_Upload($this->common);
 
-        $this->document_store = new CRM_Civioffice_DocumentStore_Upload($this->common);
-
-        // execute a download if requested
-        if (!empty($_REQUEST['download'])) {
-            $file = $this->getFilePath($_REQUEST['download']);
-            if ($file) {
-                $file_content = file_get_contents($file);
-                CRM_Utils_System::download(basename($file), mime_content_type($file), $file_content);
+            // execute a download if requested
+            if (!empty($_REQUEST['download'])) {
+                $file = $this->getFilePath($_REQUEST['download']);
+                if ($file) {
+                    $file_content = file_get_contents($file);
+                    CRM_Utils_System::download(basename($file), mime_content_type($file), $file_content);
+                }
             }
-        }
 
-        // execute a delete if requested
-        if (!empty($_REQUEST['delete'])) {
-            $file = $this->getFilePath($_REQUEST['delete']);
-            if ($file) {
-                unlink($file);
-                CRM_Core_Session::setStatus(
-                    E::ts("File '%1' deleted.", [1 => basename($file)]),
-                    E::ts("File Deleted"),
-                    'info'
-                );
+            // execute a delete if requested
+            if (!empty($_REQUEST['delete'])) {
+                $file = $this->getFilePath($_REQUEST['delete']);
+                if ($file) {
+                    unlink($file);
+                    CRM_Core_Session::setStatus(
+                        E::ts("File '%1' deleted.", [1 => basename($file)]),
+                        E::ts("File Deleted"),
+                        'info'
+                    );
+                }
             }
-        }
 
+            $this->add(
+                'File',
+                'upload_file',
+                E::ts('Upload Document'),
+                null,
+                false
+            );
 
-        switch ($this->common) {
-            case self::PRIVATE_ID:
-                $this->setTitle(E::ts("CiviOffice - Your Uploaded Documents"));
-                break;
-            case self::SHARED_ID:
-                $this->setTitle(E::ts("CiviOffice - Shared Uploaded Documents"));
-                break;
-        }
-
-
-        $this->add(
-            'File',
-            'upload_file',
-            E::ts('Upload Document'),
-            null,
-            false
-        );
-
-        $this->addButtons(
-            [
+            $this->addButtons(
                 [
-                    'type' => 'submit',
-                    'name' => E::ts('Upload'),
-                    'isDefault' => true,
-                ],
-            ]
-        );
+                    [
+                        'type' => 'submit',
+                        'name' => E::ts('Upload'),
+                        'isDefault' => true,
+                    ],
+                ]
+            );
 
-        // assign document list
-        $this->assign('document_list', $this->fileList());
-
-        // assign switch
-        if ($this->document_store->isSiblingStoreReady()) {
-            $switched_number = $this->common ^ 1; // XOR the value with 1 switches it both ways 1 <--> 0
-            $this->assign('switch_contexts_url',
-              CRM_Utils_System::url('civicrm/civioffice/document_upload', "common={$switched_number}"));
-            $this->assign('switch_contexts_icon',
-              $switched_number ? "fa-user" : "fa-slideshare");
-            $this->assign('switch_contexts_title',
-              $switched_number ? E::ts("Switch to shared documents") : E::ts("Switch to private documents"));
+            // assign document list
+            $this->assign('document_list', $this->fileList());
         }
 
         parent::buildQuickForm();
@@ -165,9 +150,11 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
                 'info'
             );
         }
+
+        // TODO: Redirect for avoiding reloads with the same action (e.g. delete).
+
         parent::postProcess();
     }
-
 
     /**
      * Extract a full path from the base64 encoded file name
