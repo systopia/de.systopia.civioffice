@@ -53,7 +53,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
         $output_mimetypes = null;
         $document_renderer_list = [];
         foreach ($config->getDocumentRenderers(true) as $dr) {
-            foreach ($dr->getSupportedOutputMimeTypes() as $mime_type) {
+            foreach ($dr->getType()->getSupportedOutputMimeTypes() as $mime_type) {
                 $output_mimetypes[$mime_type] = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
             }
             $document_renderer_list[$dr->getURI()] = $dr->getName();
@@ -99,12 +99,6 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
             $output_mimetypes,
             true,
             ['class' => 'crm-select2']
-        );
-
-        $this->add(
-            'checkbox',
-            'prepare_docx',
-            E::ts("Prepare DOCX documents")
         );
 
         $this->add(
@@ -169,7 +163,6 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
             'renderer_uri' => $values['document_renderer_uri'],
             'target_mime_type' => $values['target_mime_type'],
             'live_snippets' => $live_snippet_values,
-            'prepare_docx' => !empty($values['prepare_docx']),
         ]);
         $result_store_uri = $render_result['values'][0];
         $result_store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);

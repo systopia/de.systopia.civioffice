@@ -19,50 +19,19 @@ use PhpOffice\PhpWord;
 /**
  *
  */
-class CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord extends CRM_Civioffice_DocumentRenderer_LocalUnoconv
+class CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord extends CRM_Civioffice_DocumentRendererType_LocalUnoconv
 {
-    const MIN_UNOCONV_VERSION = '0.7'; // todo: determine
-
-    const UNOCONV_BINARY_PATH_SETTINGS_KEY = 'civioffice_unoconv_binary_path';
-    const UNOCONV_LOCK_PATH_SETTINGS_KEY = 'civioffice_unoconv_lock_file';
-    const TEMP_FOLDER_PATH_SETTINGS_KEY = 'civioffice_temp_folder_path';
-
-    /** @var string path to the unoconv binary */
-    protected $unoconv_path;
-
-    /** @var resource handle used for the lock */
-    protected $lock_file;
-
-    /**
-     * constructor
-     *
-     */
-    public function __construct()
+    public function __construct($uri = null, $name = null, array $configuration = [])
     {
-        parent::__construct('unoconv-local-phpword', E::ts("Local Universal Office Converter (unoconv) implementing PhpWord"));
-        $this->unoconv_path = Civi::settings()->get(self::UNOCONV_BINARY_PATH_SETTINGS_KEY);
-        if (empty($this->unoconv_path)) {
-            Civi::log()->debug("CiviOffice: Path to unoconv binary / wrapper script is missing");
-            $this->unoconv_path = "";
-        }
+        parent::__construct(
+            'unoconv-local-phpword',
+            E::ts('Local Universal Office Converter (unoconv) implementing PhpWord'),
+            $configuration
+        );
     }
 
     /**
-     * Render a document for a list of entities
-     *
-     * @param CRM_Civioffice_Document $document_with_placeholders
-     *   the document to be rendered
-     *
-     * @param array $entity_ids
-     *   entity ID, e.g. contact ids
-     * @param \CRM_Civioffice_DocumentStore_LocalTemp $temp_store
-     * @param string $target_mime_type
-     * @param string $entity_type
-     *   entity type, e.g. 'contact'
-     *
-     * @return array
-     *   list of documents with target file name
-     * @throws \Exception
+     * {@inheritDoc}
      */
     public function render(
         $document_with_placeholders,
@@ -70,9 +39,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord extends CRM_Civioffice
         CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
         string $target_mime_type,
         string $entity_type = 'contact',
-        array $live_snippets = [],
-        bool $prepare_docx = false
+        array $live_snippets = []
     ): array {
+        $prepare_docx = $this->prepare_docx;
         // for now DOCX is the only format being used for internal processing
         $internal_processing_format = CRM_Civioffice_MimeType::DOCX; // todo later on this can be determined by checking the $document_with_placeholders later on to allow different transition formats like .odt/.odf
         $needs_conversion = $target_mime_type != $internal_processing_format;
@@ -98,7 +67,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord extends CRM_Civioffice
                 . '&& for f in *.docx; do mv -- "$f" "${f%.docx}.docxsource"; done'
             );
 
-            $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f docx *.docxsource 2>&1";
+            $convert_command = "cd $temp_store_folder_path && {$this->unoconv_binary_path} -v -f docx *.docxsource 2>&1";
             [$exec_return_code, $exec_output] = $this->runCommand($convert_command);
             exec("cd $temp_store_folder_path && rm *.docxsource");
 
@@ -154,7 +123,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord extends CRM_Civioffice
 
             // Replace live snippet tokens using PhpWord TemplateProcessor (resp. our extending variant of it).
             try {
-                $templateProcessor = new CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord_TemplateProcessor(
+                $templateProcessor = new CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord_TemplateProcessor(
                     $transitional_docx_document->getAbsolutePath()
                 );
             }
@@ -173,36 +142,41 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord extends CRM_Civioffice
                 $live_snippet = $this->replaceAllTokens($live_snippet, $tokenContexts);
 
                 // Use a temporary Section element for adding the elements.
-                $phpWord = PhpWord\IOFactory::load($transitional_docx_document->getAbsolutePath());
-                $section = $phpWord->addSection();
-                // TODO: addHtml() doesn't accept styles so added HTML elements don't get any existing styles applied.
-                PhpWord\Shared\Html::addHtml($section, $live_snippet);
-                // Replace live snippet macros, ...
-                if (
-                    count($elements = $section->getElements()) == 1
-                    && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
-                ) {
-                    // ... either as plain text (if there is only a single Text element), ...
-                    $templateProcessor->setValue('civioffice.live_snippets.' . $live_snippet_name, $live_snippet);
-                }
-                else {
-                    // ... or as HTML: Render all elements and replace the paragraph containing the macro.
-                    // Note: This will remove everything else around the macro.
-                    // TODO: Save and split surrounding contents and add them to the replaced block.
-                    //       This would be a logical assumption, since HTML elements will always make for a new
-                    //       paragraph, so that text before and after the macro would then become their own paragraphs.
-                    $elements_data = '';
-                    foreach ($section->getElements() as $element) {
-                        $elementName = substr(get_class($element), strrpos(get_class($element), '\\') + 1);
-                        $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
-
-                        $xmlWriter = new PhpWord\Shared\XMLWriter();
-                        /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
-                        $elementWriter = new $objectClass($xmlWriter, $element, false);
-                        $elementWriter->write();
-                        $elements_data .= $xmlWriter->getData();
+                try {
+                    $phpWord = PhpWord\IOFactory::load($transitional_docx_document->getAbsolutePath());
+                    $section = $phpWord->addSection();
+                    // TODO: addHtml() doesn't accept styles so added HTML elements don't get any existing styles applied.
+                    PhpWord\Shared\Html::addHtml($section, $live_snippet);
+                    // Replace live snippet macros, ...
+                    if (
+                        count($elements = $section->getElements()) == 1
+                        && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
+                    ) {
+                        // ... either as plain text (if there is only a single Text element), ...
+                        $templateProcessor->setValue('civioffice.live_snippets.' . $live_snippet_name, $live_snippet);
                     }
-                    $templateProcessor->replaceXmlBlock('civioffice.live_snippets.' . $live_snippet_name, $elements_data, 'w:p');
+                    else {
+                        // ... or as HTML: Render all elements and replace the paragraph containing the macro.
+                        // Note: This will remove everything else around the macro.
+                        // TODO: Save and split surrounding contents and add them to the replaced block.
+                        //       This would be a logical assumption, since HTML elements will always make for a new
+                        //       paragraph, so that text before and after the macro would then become their own paragraphs.
+                        $elements_data = '';
+                        foreach ($section->getElements() as $element) {
+                            $elementName = substr(get_class($element), strrpos(get_class($element), '\\') + 1);
+                            $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
+
+                            $xmlWriter = new PhpWord\Shared\XMLWriter();
+                            /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
+                            $elementWriter = new $objectClass($xmlWriter, $element, false);
+                            $elementWriter->write();
+                            $elements_data .= $xmlWriter->getData();
+                        }
+                        $templateProcessor->replaceXmlBlock('civioffice.live_snippets.' . $live_snippet_name, $elements_data, 'w:p');
+                    }
+                }
+                catch (\PhpOffice\PhpWord\Exception\Exception $exception) {
+                    throw new Exception(E::ts('Error loading/writing Word document: %1', [1 => $exception->getMessage()]));
                 }
             }
             $templateProcessor->saveAs($transitional_docx_document->getAbsolutePath());
@@ -231,7 +205,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord extends CRM_Civioffice
                 if (0 === substr_compare($fileName, '.xml', - strlen('.xml'))) {
                     $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
                     $fileContent = $this->replaceAllTokens($fileContent, [
-                        'contact' => ['entity_id' => $entity_id],
+                        $entity_type => ['entity_id' => $entity_id],
                     ]);
                 }
 
@@ -277,7 +251,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord extends CRM_Civioffice
             return $tokenreplaced_documents;
         }
 
-        $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $file_ending_name *.docx 2>&1";
+        $convert_command = "cd $temp_store_folder_path && {$this->unoconv_binary_path} -v -f $file_ending_name *.docx 2>&1";
         [$exec_return_code, $exec_output] = $this->runCommand($convert_command);
 
         if ($exec_return_code != 0) {

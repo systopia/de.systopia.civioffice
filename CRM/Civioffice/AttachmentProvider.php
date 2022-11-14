@@ -52,7 +52,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         $output_mimetypes = null;
         $document_renderer_list = [];
         foreach ($config->getDocumentRenderers(true) as $dr) {
-            foreach ($dr->getSupportedOutputMimeTypes() as $mime_type) {
+            foreach ($dr->getType()->getSupportedOutputMimeTypes() as $mime_type) {
                 $output_mimetypes[$mime_type] = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
             }
             $document_renderer_list[$dr->getURI()] = $dr->getName();
@@ -73,7 +73,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             foreach ($document_store->getDocuments() as $document) {  // todo: recursive
                 /** @var CRM_Civioffice_Document $document */
                 foreach ($config->getDocumentRenderers(true) as $dr) {
-                    foreach ($dr->getSupportedMimeTypes() as $mime_type) {
+                    foreach ($dr->getType()->getSupportedMimeTypes() as $mime_type) {
                         // TODO: Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
                         if (CRM_Civioffice_MimeType::hasSpecificFileNameExtension($document->getName(), $mime_type)) {
                             // only return if mimetype matches with supported mimetypes
@@ -116,20 +116,12 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             false
         );
 
-        $form->add(
-            'checkbox',
-            $prefix . 'attachments--' . $attachment_id . '--prepare_docx',
-            E::ts('Prepare DOCX documents'),
-            false
-        );
-
         $form->setDefaults(
             [
                 $prefix . 'attachments--' . $attachment_id . '--document_renderer_uri' => $defaults['document_renderer_uri'],
                 $prefix . 'attachments--' . $attachment_id . '--document_uri' => $defaults['document_uri'],
                 $prefix . 'attachments--' . $attachment_id . '--target_mime_type' => $defaults['target_mime_type'],
                 $prefix . 'attachments--' . $attachment_id . '--name' => $defaults['name'],
-                $prefix . 'attachments--' . $attachment_id . '--prepare_docx' => $defaults['prepare_docx'],
             ]
         );
 
@@ -138,7 +130,6 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             $prefix . 'attachments--' . $attachment_id . '--document_uri' => 'attachment-civioffice_document-document_uri',
             $prefix . 'attachments--' . $attachment_id . '--target_mime_type' => 'attachment-civioffice_document-target_mime_type',
             $prefix . 'attachments--' . $attachment_id . '--name' => 'attachment-civioffice_document-name',
-            $prefix . 'attachments--' . $attachment_id . '--prepare_docx' => 'attachment-civioffice_document-prepare_docx',
         ] + array_fill_keys($live_snippet_elements, 'attachment-civioffice_document-live_snippet');
     }
 
@@ -164,7 +155,6 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             'target_mime_type' => $values[$prefix . 'attachments--' . $attachment_id . '--target_mime_type'],
             'name' => $values[$prefix . 'attachments--' . $attachment_id . '--name'],
             'live_snippets' => $live_snippet_values,
-            'prepare_docx' => !empty($values[$prefix . 'attachments--' . $attachment_id . '--prepare_docx'])
         ];
     }
 
@@ -183,7 +173,6 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
                 'renderer_uri' => $attachment_values['document_renderer_uri'],
                 'target_mime_type' => $attachment_values['target_mime_type'],
                 'live_snippets' => $attachment_values['live_snippets'],
-                'prepare_docx' => $attachment_values['prepare_docx'],
             ]
         );
         if (!empty($civioffice_result['is_error']) || empty($civioffice_result['values'][0])) {

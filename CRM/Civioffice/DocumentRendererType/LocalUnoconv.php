@@ -18,32 +18,45 @@ use CRM_Civioffice_ExtensionUtil as E;
 /**
  *
  */
-class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_DocumentRenderer
+class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_DocumentRendererType
 {
     const MIN_UNOCONV_VERSION = '0.7'; // todo: determine
 
-    const UNOCONV_BINARY_PATH_SETTINGS_KEY = 'civioffice_unoconv_binary_path';
-    const UNOCONV_LOCK_PATH_SETTINGS_KEY = 'civioffice_unoconv_lock_file';
-    const TEMP_FOLDER_PATH_SETTINGS_KEY = 'civioffice_temp_folder_path';
-
-    /** @var string path to the unoconv binary */
-    protected $unoconv_path;
-
-    /** @var resource handle used for the lock */
-    protected $lock_file;
+    const UNOCONV_BINARY_PATH_SETTINGS_KEY = 'unoconv_binary_path';
+    const UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY = 'unoconv_lock_file_path';
+    const TEMP_FOLDER_PATH_SETTINGS_KEY = 'temp_folder_path';
+    const PREPARE_DOCX_SETTINGS_KEY = 'prepare_docx';
 
     /**
-     * constructor
-     *
+     * @var string $unoconv_binary_path
+     *   The path to the unoconv binary.
      */
-    public function __construct($uri = null, $name = null)
+    protected $unoconv_binary_path;
+
+    /**
+     * @var resource $unoconv_lock_file_path
+     *   File resource handle used for the lock.
+     */
+    protected $unoconv_lock_file_path;
+
+    /**
+     * @var string $temp_folder_path
+     */
+    protected $temp_folder_path;
+
+    /**
+     * @var bool $prepare_docx
+     *   Whether to "prepare" DOCX files, i.e. try to repair common formatting mistakes.
+     */
+    protected $prepare_docx;
+
+    public function __construct($uri = null, $name = null, array &$configuration = [])
     {
-        parent::__construct($uri ?? 'unoconv-local', $name ?? E::ts("Local Universal Office Converter (unoconv)"));
-        $this->unoconv_path = Civi::settings()->get(self::UNOCONV_BINARY_PATH_SETTINGS_KEY);
-        if (empty($this->unoconv_path)) {
-            Civi::log()->debug("CiviOffice: Path to unoconv binary / wrapper script is missing");
-            $this->unoconv_path = "";
-        }
+        parent::__construct(
+            $uri ?? 'unoconv-local',
+            $name ?? E::ts('Local Universal Office Converter (unoconv)'),
+            $configuration
+        );
     }
 
     /**
@@ -51,17 +64,18 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      * Tests if the binary is there and responding
      *
      * @return boolean
-     *   is this renderer ready for use
+     *   Whether this renderer is ready for use.
      */
     public function isReady(): bool
     {
         try {
-            if (empty($this->unoconv_path)) {
+            if (empty($this->unoconv_binary_path)) {
                 // no unoconv binary or wrapper script provided
+                Civi::log()->debug("CiviOffice: Path to unoconv binary / wrapper script is missing");
                 return false;
             }
 
-            $temp_folder = Civi::settings()->get(self::TEMP_FOLDER_PATH_SETTINGS_KEY);
+            $temp_folder = $this->temp_folder_path;
 
             // fixme duplicated check in CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings->isReady() ?
             if (!is_writable($temp_folder)) {
@@ -91,7 +105,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             }
 
             // run a probe command
-            $probe_command = "{$this->unoconv_path} --version 2>&1";
+            $probe_command = "{$this->unoconv_binary_path} --version 2>&1";
             [$result_code, $output] = $this->runCommand($probe_command);
 
             if (!empty($result_code) && $result_code != 255) {
@@ -137,21 +151,131 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
     }
 
     /**
-     * Render a document for a list of entities
-     *
-     * @param CRM_Civioffice_Document $document_with_placeholders
-     *   the document to be rendered
-     *
-     * @param array $entity_ids
-     *   entity ID, e.g. contact ids
-     * @param \CRM_Civioffice_DocumentStore_LocalTemp $temp_store
-     * @param string $target_mime_type
-     * @param string $entity_type
-     *   entity type, e.g. 'contact'
-     *
-     * @return array
-     *   list of documents with target file name
-     * @throws \Exception
+     * {@inheritDoc}
+     */
+    public static function getSettingsFormTemplate() {
+        return 'CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form)
+    {
+        $form->add(
+            'text',
+            'unoconv_binary_path',
+            E::ts("Path to the <code>unoconv</code> binary"),
+            ['class' => 'huge'],
+            true
+        );
+
+        $form->add(
+            'text',
+            'unoconv_lock_file_path',
+            E::ts("Path to a lock files"),
+            ['class' => 'huge'],
+            false
+        );
+
+        $form->add(
+            'text',
+            'temp_folder_path',
+            E::ts("path to the working temp folder"),
+            ['class' => 'huge'],
+            true
+        );
+
+        $form->add(
+            'checkbox',
+            'prepare_docx',
+            E::ts('Prepare DOCX documents'),
+            null,
+            false
+        );
+
+        $form->setDefaults(
+            [
+                'unoconv_binary_path' => $this->unoconv_binary_path,
+                'unoconv_lock_file_path' => $this->unoconv_lock_file_path,
+                'temp_folder_path' => $this->temp_folder_path,
+                'prepare_docx' => $this->prepare_docx,
+            ]
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function validateSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form) {
+        $folder_to_check = $form->_submitValues['temp_folder_path'];
+        $unoconv_path_to_check = $form->_submitValues['unoconv_binary_path'];
+        $lockfile_to_check = $form->_submitValues['unoconv_lock_file_path'];
+
+        if (!empty($folder_to_check && !file_exists($folder_to_check))) {
+            mkdir($folder_to_check, 0777, true);
+        }
+
+        if (empty($folder_to_check)) { // needed?
+            $form->_errors['temp_folder_path'] = E::ts("Input is empty");
+        }
+
+        if (!is_writable($folder_to_check)) {
+            $form->_errors['temp_folder_path'] = E::ts("Unable to write temp folder");
+        }
+
+        if (!is_dir($folder_to_check)) {
+            $form->_errors['temp_folder_path'] = E::ts("This is not a folder");
+        }
+
+        if (!file_exists($unoconv_path_to_check)) {
+            $form->_errors['unoconv_binary_path'] = E::ts("File does not exist. Please provide a correct filename");
+        }
+
+        if (!empty($lockfile_to_check)) {
+            if (!file_exists($lockfile_to_check)) {
+                $form->_errors['unoconv_lock_file_path'] = E::ts(
+                    "Lock file does not exist. Please create as follows: 'touch %1 && chmod 777 %1'",
+                    [
+                        1 => $lockfile_to_check,
+                    ]
+                );
+            }
+            if (!is_writable($lockfile_to_check)) {
+                $form->_errors['unoconv_lock_file_path'] = E::ts(
+                    "Lock file cannot be written. Please run: 'chmod 777 %1'", [1 => $lockfile_to_check]);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function postProcessSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form) {
+        $values = $form->exportValues();
+
+        $values['temp_folder_path'] = rtrim($values['temp_folder_path'], '\/');
+        $renderer = $form->getDocumentRenderer();
+        $renderer->setConfigItem(
+            CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_BINARY_PATH_SETTINGS_KEY,
+            $values['unoconv_binary_path']
+        );
+        $renderer->setConfigItem(
+            CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY,
+            $values['unoconv_lock_file_path']
+        );
+        $renderer->setConfigItem(
+            CRM_Civioffice_DocumentRendererType_LocalUnoconv::TEMP_FOLDER_PATH_SETTINGS_KEY,
+            $values['temp_folder_path']
+        );
+        $renderer->setConfigItem(
+            CRM_Civioffice_DocumentRendererType_LocalUnoconv::PREPARE_DOCX_SETTINGS_KEY,
+            $values['prepare_docx']
+        );
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function render(
         $document_with_placeholders,
@@ -159,9 +283,9 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
         string $target_mime_type,
         string $entity_type = 'contact',
-        array $live_snippets = [],
-        bool $prepare_docx = false
+        array $live_snippets = []
     ): array {
+        $prepare_docx = $this->prepare_docx;
         // for now DOCX is the only format being used for internal processing
         $internal_processing_format = CRM_Civioffice_MimeType::DOCX; // todo later on this can be determined by checking the $document_with_placeholders later on to allow different transition formats like .odt/.odf
         $needs_conversion = $target_mime_type != $internal_processing_format;
@@ -187,7 +311,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
                 . '&& for f in *.docx; do mv -- "$f" "${f%.docx}.docxsource"; done'
             );
 
-            $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f docx *.docxsource 2>&1";
+            $convert_command = "cd $temp_store_folder_path && {$this->unoconv_binary_path} -v -f docx *.docxsource 2>&1";
             [$exec_return_code, $exec_output] = $this->runCommand($convert_command);
             exec("cd $temp_store_folder_path && rm *.docxsource");
 
@@ -311,7 +435,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
             return $tokenreplaced_documents;
         }
 
-        $convert_command = "cd $temp_store_folder_path && {$this->unoconv_path} -v -f $file_ending_name *.docx 2>&1";
+        $convert_command = "cd $temp_store_folder_path && {$this->unoconv_binary_path} -v -f $file_ending_name *.docx 2>&1";
         [$exec_return_code, $exec_output] = $this->runCommand($convert_command);
 
         if ($exec_return_code != 0) {
@@ -408,7 +532,7 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
         try {
             // make sure the unoconv path is in the environment
             //  see https://stackoverflow.com/a/43083964
-            $our_path = dirname($this->unoconv_path);
+            $our_path = dirname($this->unoconv_binary_path);
             $paths = explode(PATH_SEPARATOR, getenv('PATH'));
             if (!in_array($our_path, $paths)) {
                 $paths[] = $our_path;
@@ -435,10 +559,10 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      */
     protected function lock()
     {
-        $lock_file = Civi::settings()->get(CRM_Civioffice_DocumentRenderer_LocalUnoconv::UNOCONV_LOCK_PATH_SETTINGS_KEY);
+        $lock_file = Civi::settings()->get(CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY);
         if ($lock_file) {
-            $this->lock_file = fopen($lock_file,"r+");
-            if (!flock($this->lock_file, LOCK_EX)) {
+            $this->unoconv_lock_file_path = fopen($lock_file, "r+");
+            if (!flock($this->unoconv_lock_file_path, LOCK_EX)) {
                 throw new Exception(E::ts("Could not aquire unoconv lock. Sorry"));
             }
         }
@@ -449,12 +573,32 @@ class CRM_Civioffice_DocumentRenderer_LocalUnoconv extends CRM_Civioffice_Docume
      */
     protected function unlock()
     {
-        if ($this->lock_file) {
-            if (!flock($this->lock_file, LOCK_UN)) {
+        if ($this->unoconv_lock_file_path) {
+            if (!flock($this->unoconv_lock_file_path, LOCK_UN)) {
                 Civi::log()->debug("CiviOffice: Could not release unoconv lock.");
             }
-            fclose($this->lock_file);
-            $this->lock_file = null;
+            fclose($this->unoconv_lock_file_path);
+            $this->unoconv_lock_file_path = null;
         }
+    }
+
+    public static function supportedConfiguration(): array
+    {
+        return [
+            self::UNOCONV_BINARY_PATH_SETTINGS_KEY,
+            self::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY,
+            self::TEMP_FOLDER_PATH_SETTINGS_KEY,
+            self::PREPARE_DOCX_SETTINGS_KEY,
+        ];
+    }
+
+    public static function defaultConfiguration(): array
+    {
+        return [
+            'unoconv_binary_path' => '/usr/bin/unoconv',
+            'unoconv_lock_file_path' => '/var/www/unoconv.lock',
+            'temp_folder_path' => Civi::paths()->getPath('[civicrm.compile]/civioffice'),
+            'prepare_docx' => false,
+        ];
     }
 }

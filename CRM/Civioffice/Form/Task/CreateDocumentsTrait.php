@@ -46,7 +46,7 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
         $output_mimetypes = null;
         $document_renderer_list = [];
         foreach ($config->getDocumentRenderers(true) as $dr) {
-            foreach ($dr->getSupportedOutputMimeTypes() as $mime_type) {
+            foreach ($dr->getType()->getSupportedOutputMimeTypes() as $mime_type) {
                 $output_mimetypes[$mime_type] = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
             }
             $document_renderer_list[$dr->getURI()] = $dr->getName();
@@ -67,7 +67,7 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
             foreach ($document_store->getDocuments() as $document) {  // todo: recursive
                 /** @var CRM_Civioffice_Document $document */
                 foreach ($config->getDocumentRenderers(true) as $dr) {
-                    foreach ($dr->getSupportedMimeTypes() as $mime_type) {
+                    foreach ($dr->getType()->getSupportedMimeTypes() as $mime_type) {
                         // TODO: Mimetype checks could be handled differently in the future:
                         //       https://github.com/systopia/de.systopia.civioffice/issues/2
                         if (CRM_Civioffice_MimeType::hasSpecificFileNameExtension($document->getName(), $mime_type)) {
@@ -95,12 +95,6 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
             $output_mimetypes,
             true,
             ['class' => 'crm-select2']
-        );
-
-        $this->add(
-            'checkbox',
-            'prepare_docx',
-            E::ts("Prepare DOCX documents")
         );
 
         $this->add(
@@ -197,7 +191,6 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
                     $values['target_mime_type'],
                     E::ts('Initialized'),
                     $live_snippets,
-                    !empty($values['prepare_docx']),
                     $values['activity_type_id']
                 )
             );

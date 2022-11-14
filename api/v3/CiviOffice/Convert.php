@@ -68,13 +68,6 @@ function _civicrm_api3_civi_office_convert_spec(&$spec)
         'title' => E::ts('Live Snippets'),
         'description' => E::ts('Contents for tokens referring to configured Live Snippets.'),
     ];
-    $spec['prepare_docx'] = [
-        'name' => 'prepare_docx',
-        'type' => CRM_Utils_Type::T_BOOLEAN,
-        'api.default' => false,
-        'title' => E::ts('Prepare DOCX documents'),
-        'description' => E::ts('Run the DOCX document through the converter prior to processing in order to optimise/repair possibly corrupted CiviCRM tokens in the document.'),
-    ];
 }
 
 /**
@@ -94,7 +87,6 @@ function civicrm_api3_civi_office_convert($params)
     $renderer_uri = $params['renderer_uri'];
     $target_mime_type = $params['target_mime_type'];
     $live_snippets = $params['live_snippets'];
-    $prepare_docx = $params['prepare_docx'];
 
     $configuration = CRM_Civioffice_Configuration::getConfig();
     $document_renderer = $configuration->getDocumentRenderer($renderer_uri);
@@ -108,8 +100,7 @@ function civicrm_api3_civi_office_convert($params)
         $temp_store,
         $target_mime_type,
         $entity_type,
-        $live_snippets,
-        $prepare_docx
+        $live_snippets
     );
 
     return civicrm_api3_create_success([$temp_store->getURI()], $params, 'CiviOffice', 'convert');

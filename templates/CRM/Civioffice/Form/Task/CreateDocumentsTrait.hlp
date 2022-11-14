@@ -13,9 +13,7 @@
 +-------------------------------------------------------*}
 
 {crmScope extensionKey='de.systopia.civioffice'}
-
-{htxt id='id-prepare_docx'}
-  <p>{ts}Run the DOCX document through the converter prior to processing in order to optimise/repair possibly corrupted CiviCRM tokens in the document.{/ts}</p>
+{htxt id='id-batch_size'}
+  <p>{ts}Specifies how many documents will be created in a single request. Increasing this number might save some time on capable systems. This option is usually not necessary to be changed. If you encounter failures due to documents taking too long to generate, consider decreasing this number.{/ts}</p>
 {/htxt}
-
 {/crmScope}

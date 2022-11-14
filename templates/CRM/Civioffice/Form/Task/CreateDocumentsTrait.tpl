@@ -41,15 +41,9 @@
 
     <div class="crm-section">
       <div class="label">
-          {$form.prepare_docx.label}
-          {help id="id-prepare_docx" title=$form.label.label}
+          {$form.batch_size.label}
+          {help id="id-batch_size" title=$form.batch_size.label}
       </div>
-      <div class="content">{$form.prepare_docx.html}</div>
-      <div class="clear"></div>
-    </div>
-
-    <div class="crm-section">
-      <div class="label">{$form.batch_size.label}</div>
       <div class="content">{$form.batch_size.html}</div>
       <div class="clear"></div>
     </div>

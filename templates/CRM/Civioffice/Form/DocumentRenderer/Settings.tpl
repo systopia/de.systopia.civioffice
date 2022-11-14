@@ -14,4 +14,16 @@
 
 {crmScope extensionKey='de.systopia.civioffice'}
 
+  <div class="crm-section">
+    <div class="label">{$form.name.label}</div>
+    <div class="content">{$form.name.html}</div>
+    <div class="clear"></div>
+  </div>
+
+  {include file=$rendererTypeSettingsTemplate}
+
+  <div class="crm-submit-buttons">
+      {include file="CRM/common/formButtons.tpl" location="bottom"}
+  </div>
+
 {/crmScope}

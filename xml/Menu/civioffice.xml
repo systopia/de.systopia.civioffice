@@ -10,9 +10,9 @@
     <icon>admin/small/rela_type.png</icon>
   </item>
   <item>
-    <path>civicrm/admin/civioffice/settings/localunoconv</path>
-    <page_callback>CRM_Civioffice_Form_DocumentRenderer_LocalUnoconvSettings</page_callback>
-    <title>LocalUnoconv Settings</title>
+    <path>civicrm/admin/civioffice/settings/renderer</path>
+    <page_callback>CRM_Civioffice_Form_DocumentRenderer_Settings</page_callback>
+    <title>Document Renderer Settings</title>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>

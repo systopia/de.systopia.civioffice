@@ -45,6 +45,8 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
             }
         }
 
+        $this->assign('document_renderer_types', CRM_Civioffice_Configuration::getDocumentRendererTypes());
+
         foreach (CRM_Civioffice_LiveSnippets::get() as $live_snippet) {
             $live_snippet['current_content'] = Civi::contactSettings()->get('civioffice.live_snippets.' . $live_snippet['name']);
             $ui_components['live_snippets'][$live_snippet['id']] = $live_snippet;

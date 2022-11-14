@@ -39,15 +39,6 @@
       <div class="clear"></div>
     </div>
 
-    <div class="crm-section">
-      <div class="label">
-          {$form.prepare_docx.label}
-          {help id="id-prepare_docx" title=$form.label.label}
-      </div>
-      <div class="content">{$form.prepare_docx.html}</div>
-      <div class="clear"></div>
-    </div>
-
     <div class="crm-accordion-wrapper">
 
       <div class="crm-accordion-header">{ts}Activity{/ts}</div>

@@ -91,29 +91,50 @@ class CRM_Civioffice_Configuration
      * Get the list of active document stores
      *
      * @param boolean $only_show_active
-     *   return only active objects
+     *   Whether to return only active objects.
      *
      * @return \CRM_Civioffice_DocumentRenderer[]
+     *   An array of document renderers.
+     *
+     * @throws \Exception
+     *   When a renderer could not be loaded from configuration.
      */
-    public static function getDocumentRenderers(bool $only_show_active) : array
+    public static function getDocumentRenderers(bool $only_show_active = false): array
     {
-        // todo: get from config
-        $available_renderers = [
-            new CRM_Civioffice_DocumentRenderer_LocalUnoconv(),
-            new CRM_Civioffice_DocumentRenderer_LocalUnoconvPhpWord(),
-        ];
+        /* @var \CRM_Civioffice_DocumentRenderer[] $renderers */
+        $renderers = array_map(
+            function ($uri) {
+                return CRM_Civioffice_DocumentRenderer::load($uri);
+            },
+            array_keys(Civi::settings()->get('civioffice_renderers')) ?? []
+        );
 
-        if (!$only_show_active) return $available_renderers;
-
-        $active_renderers = [];
-        foreach ($available_renderers as $renderer) {
-            /** @var $renderer \CRM_Civioffice_DocumentRenderer */
-            if ($renderer->isReady()) {
-                $active_renderers[] = $renderer;
-            }
+        if ($only_show_active) {
+            $renderers = array_filter($renderers, function ($renderer) {
+                return $renderer->isReady();
+            });
         }
 
-        return $active_renderers;
+        return $renderers;
+    }
+
+    public static function getDocumentRendererTypes()
+    {
+        // TODO: Implement using an event.
+        $types = [];
+        foreach (
+            [
+                new CRM_Civioffice_DocumentRendererType_LocalUnoconv(),
+                new CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord(),
+            ] as $type
+        ) {
+            /* @var \CRM_Civioffice_DocumentRendererType $type */
+            $types[$type->getURI()] = [
+                'label' => $type->getName(),
+                'class' => get_class($type),
+            ];
+        }
+        return $types;
     }
 
     /**
