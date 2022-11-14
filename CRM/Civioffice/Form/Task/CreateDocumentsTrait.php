@@ -61,31 +61,17 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
         );
 
         // build document list
-        $document_list = [];
-        // TODO: Only show supported source mime types.
-        foreach ($config->getDocumentStores(true) as $document_store) {
-            foreach ($document_store->getDocuments() as $document) {  // todo: recursive
-                /** @var CRM_Civioffice_Document $document */
-                foreach ($config->getDocumentRenderers(true) as $dr) {
-                    foreach ($dr->getType()->getSupportedMimeTypes() as $mime_type) {
-                        // TODO: Mimetype checks could be handled differently in the future:
-                        //       https://github.com/systopia/de.systopia.civioffice/issues/2
-                        if (CRM_Civioffice_MimeType::hasSpecificFileNameExtension($document->getName(), $mime_type)) {
-                            // only return if mimetype matches with supported mimetypes
-                            $document_list[$document->getURI(
-                            )] = "[{$document_store->getName()}] {$document->getName()}";
-                        }
-                    }
-                }
-            }
-        }
+        $document_list = $config->getDocuments(true);
         $this->add(
-            'select',
+            'select2',
             'document_uri',
             E::ts("Document"),
             $document_list,
             true,
-            ['class' => 'crm-select2 huge']
+            [
+                'class' => 'huge',
+                'placeholder' => E::ts('- select -'),
+            ]
         );
 
         $this->add(

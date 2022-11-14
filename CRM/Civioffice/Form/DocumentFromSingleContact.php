@@ -68,28 +68,17 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
         );
 
         // build document list
-        $document_list = [];
-        // todo: only show supported source mime types
-        foreach ($config->getDocumentStores(true) as $document_store) {
-            foreach ($document_store->getDocuments() as $document) {  // todo: recursive
-                // TODO: Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
-                if (!CRM_Civioffice_MimeType::hasSpecificFileNameExtension(
-                    $document->getName(),
-                    CRM_Civioffice_MimeType::DOCX
-                )) {
-                    continue; // for now only allow/return docx files
-                }
-
-                $document_list[$document->getURI()] = "[{$document_store->getName()}] {$document->getName()}";
-            }
-        }
+        $document_list = $config->getDocuments(true);
         $this->add(
-            'select',
+            'select2',
             'document_uri',
             E::ts("Document"),
             $document_list,
             true,
-            ['class' => 'crm-select2 huge']
+            [
+                'class' => 'huge',
+                'placeholder' => E::ts('- select -'),
+            ]
         );
 
         $this->add(
