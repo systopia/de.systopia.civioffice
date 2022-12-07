@@ -28,6 +28,7 @@ class CRM_Civioffice_Page_Tokens extends CRM_Core_Page
                     'contributionId',
                     'participantId',
                     'eventId',
+                    'membershipId',
                 ],
                 'controller' => __CLASS__,
                 'smarty' => false,
