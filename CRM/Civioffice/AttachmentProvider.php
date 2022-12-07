@@ -36,7 +36,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             'label' => E::ts('CiviOffice Document'),
             'controller' => self::class,
             'context' => [
-                'entity_types' => ['contact', 'contribution', 'participant'],
+                'entity_types' => ['contact', 'contribution', 'participant', 'membership'],
             ],
         ];
     }

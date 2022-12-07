@@ -178,6 +178,18 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
             }
         }
 
+        // Add implicit contact token context for memberships.
+        if (
+            array_key_exists('membership', $token_contexts)
+            && !array_key_exists('contact', $token_contexts)
+        ) {
+            $membership = Api4\Membership::get()
+                ->addWhere('id', '=', $token_contexts['membership']['entity_id'])
+                ->execute()
+                ->single();
+            $token_contexts['contact'] = ['entity_id' => $membership['contact_id']];
+        }
+
         $identifier = 'document';
         $processor = new TokenProcessor(
             Civi::service('dispatcher'),
@@ -215,6 +227,10 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
                 case 'event':
                     $token_row->context('eventId', $context['entity_id']);
                     $token_row->context('event', $context['entity']);
+                    break;
+                case 'membership':
+                    $token_row->context('membershipId', $context['entity_id']);
+                    $token_row->context('membership', $context['entity']);
                     break;
                 default:
                     // todo: implement?

@@ -33,6 +33,14 @@ function civioffice_civicrm_searchTasks($objectType, &$tasks)
             'result' => false
         ];
     }
+    if ($objectType == 'membership')
+    {
+        $tasks[] = [
+            'title' => E::ts('Create Documents (CiviOffice)'),
+            'class' => 'CRM_Civioffice_Form_Task_CreateMembershipDocuments',
+            'result' => false
+        ];
+    }
 }
 
 function civioffice_civicrm_summaryActions(&$actions, $contactID)
