@@ -563,7 +563,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         if ($lock_file) {
             $this->unoconv_lock_file_path = fopen($lock_file, "r+");
             if (!flock($this->unoconv_lock_file_path, LOCK_EX)) {
-                throw new Exception(E::ts("Could not aquire unoconv lock. Sorry"));
+                throw new Exception(E::ts("CiviOffice: Could not acquire unoconv lock. Sorry"));
             }
         }
     }
