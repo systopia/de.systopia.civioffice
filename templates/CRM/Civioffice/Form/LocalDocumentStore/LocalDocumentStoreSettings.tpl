@@ -22,7 +22,7 @@
 </div>
 
 <div class="crm-section">
-  <div class="help">{ts}Path to temporary folder.<br>For example: <code>/path/to/civicrm/files/templates_c/civioffice</code>{/ts}</div>
+  <div class="help">{ts}Path to temporary folder.<br>For example: <code>/path/to/civicrm/files/templates_c/civioffice/temp</code>{/ts}</div>
   <div class="label">{$form.local_temp_folder.label}</div>
   <div class="content">{$form.local_temp_folder.html}</div>
   <div class="clear"></div>
