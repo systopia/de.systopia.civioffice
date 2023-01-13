@@ -43,7 +43,7 @@ abstract class CRM_Civioffice_MimeType
      *
      * @return array
      */
-    public static function mimeTypeToFileExtensionMap()
+    public static function mimeTypeToFileExtensionMap(): array
     {
         return [
             self::PDF  => 'pdf',
