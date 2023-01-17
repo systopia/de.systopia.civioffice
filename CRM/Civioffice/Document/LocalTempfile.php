@@ -26,7 +26,7 @@ class CRM_Civioffice_Document_LocalTempfile extends CRM_Civioffice_Document
     public function __construct($document_store, $local_path)
     {
         if (!touch($local_path)) {
-            throw new Exception(E::ts("Local path is not writable: $local_path"));
+            throw new Exception(E::ts('Local path is not writable: %1', [1 => $local_path]));
         }
         $uri = 'localtmp::' . $local_path;
         parent::__construct($document_store, $uri, basename($local_path));
