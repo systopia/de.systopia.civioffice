@@ -13,29 +13,19 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
-use Civi\Token\TokenProcessor;
 use CRM_Civioffice_ExtensionUtil as E;
 
-class CRM_Civioffice_Page_Tokens extends CRM_Core_Page
+/**
+ * Membership search task: Create CiviOffice documents for selected memberships.
+ */
+class CRM_Civioffice_Form_Task_CreateMembershipDocuments extends CRM_Member_Form_Task
 {
-    public function run()
-    {
-        $tokenProcessor = new TokenProcessor(
-            Civi::service('dispatcher'),
-            [
-                'schema' => [
-                    'contactId',
-                    'contributionId',
-                    'participantId',
-                    'eventId',
-                    'membershipId',
-                ],
-                'controller' => __CLASS__,
-                'smarty' => false,
-            ]
-        );
-        $this->assign('tokens', CRM_Utils_Token::formatTokensForDisplay($tokenProcessor->listTokens()));
+    use CRM_Civioffice_Form_Task_CreateDocumentsTrait;
 
-        return parent::run();
+    public function preProcess()
+    {
+        parent::preProcess();
+        $this->entityType = 'membership';
+        $this->entityIds = $this->_memberIds;
     }
 }

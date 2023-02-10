@@ -136,6 +136,13 @@ class CRM_Civioffice_ConversionJob
                             ->execute()
                             ->single()['contact_id'];
                         break;
+                    case 'membership':
+                        $contact_id = \Civi\Api4\Membership::get()
+                            ->addSelect('contact_id')
+                            ->addWhere('id', '=', $entity_id)
+                            ->execute()
+                            ->single()['contact_id'];
+                        break;
                 }
                 civicrm_api3('Activity', 'create', [
                     'activity_type_id' => $this->activity_type_id,
