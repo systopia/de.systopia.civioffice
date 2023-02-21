@@ -233,7 +233,7 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
                     $token_row->context('membership', $context['entity']);
                     break;
                 default:
-                    // todo: implement?
+                    // TODO: Implement for token contexts from external token providers.
                     throw new Exception('replaceAllTokens not implemented for entity ' . $entity_type);
                     break;
             }
