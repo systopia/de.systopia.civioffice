@@ -16,7 +16,7 @@
 use CRM_Civioffice_ExtensionUtil as E;
 use PhpOffice\PhpWord;
 
-class CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord_TemplateProcessor extends PhpWord\TemplateProcessor
+class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor extends PhpWord\TemplateProcessor
 {
     /**
      *

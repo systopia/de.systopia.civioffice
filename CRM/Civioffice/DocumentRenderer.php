@@ -118,6 +118,10 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
         Civi::settings()->set('civioffice_renderers', $renderer_list);
     }
 
+    public function getConfiguration() {
+        return $this->configuration;
+    }
+
     /**
      * @throws \Exception
      *   When the renderer type does not support a configuration item with the given name.

@@ -26,6 +26,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
     const UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY = 'unoconv_lock_file_path';
     const TEMP_FOLDER_PATH_SETTINGS_KEY = 'temp_folder_path';
     const PREPARE_DOCX_SETTINGS_KEY = 'prepare_docx';
+    const PHPWORD_TOKENS_SETTINGS_KEY = 'phpword_tokens';
 
     /**
      * @var string $unoconv_binary_path
@@ -49,6 +50,13 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
      *   Whether to "prepare" DOCX files, i.e. try to repair common formatting mistakes.
      */
     protected $prepare_docx;
+
+    /**
+     * @var bool $phpword_tokens
+     *   Whether to replace Live Snippet tokens using a PHPWord template processor, so that HTML in Live Snippets can be
+     *   converted to OOXML.
+     */
+    protected $phpword_tokens;
 
     public function __construct($uri = null, $name = null, array &$configuration = [])
     {
@@ -194,12 +202,21 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             false
         );
 
+        $form->add(
+            'checkbox',
+            'phpword_tokens',
+            E::ts('Use PHPWord macros for Live Snippet tokens'),
+            null,
+            false
+        );
+
         $form->setDefaults(
             [
                 'unoconv_binary_path' => $this->unoconv_binary_path,
                 'unoconv_lock_file_path' => $this->unoconv_lock_file_path,
                 'temp_folder_path' => $this->temp_folder_path,
                 'prepare_docx' => $this->prepare_docx,
+                'phpword_tokens' => $this->phpword_tokens,
             ]
         );
     }
@@ -271,6 +288,10 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         $renderer->setConfigItem(
             CRM_Civioffice_DocumentRendererType_LocalUnoconv::PREPARE_DOCX_SETTINGS_KEY,
             $values['prepare_docx']
+        );
+        $renderer->setConfigItem(
+            CRM_Civioffice_DocumentRendererType_LocalUnoconv::PHPWORD_TOKENS_SETTINGS_KEY,
+            $values['phpword_tokens']
         );
     }
 
@@ -362,10 +383,79 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
          *
          */
         foreach ($entity_ids as $entity_id) {
-            $zip = new ZipArchive();
-
             $new_file_name = $this->createDocumentName($entity_id, 'docx');
             $transitional_docx_document = $local_temp_store->getLocalCopyOfDocument($prepared_document ?? $document_with_placeholders, $new_file_name);
+            $tokenContexts = [
+                $entity_type => ['entity_id' => $entity_id],
+                // TODO: Add token contexts from external token providers.
+            ];
+
+            if ($this->phpword_tokens) {
+                // Replace live snippet tokens using PhpWord TemplateProcessor (resp. our extending variant of it).
+                try {
+                    $templateProcessor = new CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor(
+                        $transitional_docx_document->getAbsolutePath()
+                    );
+                }
+                catch (PhpWord\Exception\Exception $exception) {
+                    throw new Exception("Unoconv: Docx (zip) file seems to be broken or path is wrong");
+                }
+
+                // Replace CiviCRM tokens with PhpWord macros (convert format from "{token}" to "${macro}").
+                $templateProcessor->liveSnippetTokensToMacros();
+
+                foreach ($live_snippets as $live_snippet_name => $live_snippet) {
+                    // Replace tokens in live snippets (excluding nested live snippets).
+                    $live_snippet = $this->replaceAllTokens($live_snippet, $tokenContexts);
+
+                    // Use a temporary Section element for adding the elements.
+                    try {
+                        $phpWord = PhpWord\IOFactory::load($transitional_docx_document->getAbsolutePath());
+                        $section = $phpWord->addSection();
+                        // TODO: addHtml() doesn't accept styles so added HTML elements don't get any existing styles applied.
+                        PhpWord\Shared\Html::addHtml($section, $live_snippet);
+                        // Replace live snippet macros, ...
+                        if (
+                            count($elements = $section->getElements()) == 1
+                            && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
+                        ) {
+                            // ... either as plain text (if there is only a single Text element), ...
+                            $templateProcessor->setValue('civioffice.live_snippets.' . $live_snippet_name, $live_snippet);
+                        }
+                        else {
+                            // ... or as HTML: Render all elements and replace the paragraph containing the macro.
+                            // Note: This will remove everything else around the macro.
+                            // TODO: Save and split surrounding contents and add them to the replaced block.
+                            //       This would be a logical assumption, since HTML elements will always make for a new
+                            //       paragraph, so that text before and after the macro would then become their own paragraphs.
+                            $elements_data = '';
+                            foreach ($section->getElements() as $element) {
+                                $elementName = substr(get_class($element), strrpos(get_class($element), '\\') + 1);
+                                $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
+
+                                $xmlWriter = new PhpWord\Shared\XMLWriter();
+                                /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
+                                $elementWriter = new $objectClass($xmlWriter, $element, false);
+                                $elementWriter->write();
+                                $elements_data .= $xmlWriter->getData();
+                            }
+                            $templateProcessor->replaceXmlBlock('civioffice.live_snippets.' . $live_snippet_name, $elements_data, 'w:p');
+                        }
+                    }
+                    catch (\PhpOffice\PhpWord\Exception\Exception $exception) {
+                        throw new Exception(E::ts('Error loading/writing Word document: %1', [1 => $exception->getMessage()]));
+                    }
+                }
+                $templateProcessor->saveAs($transitional_docx_document->getAbsolutePath());
+            }
+            else {
+                // Register Live Snippet tokens for "leagcy" replacement.
+                $tokenContexts['civioffice']['live_snippets'] = $live_snippets;
+            }
+
+            // Replace all other tokens manually.
+            // TODO: Use PhpWord template processor for these as well.
+            $zip = new ZipArchive();
 
             // open xml file (like .docx) as a zip file, as in fact it is one
             $zip->open($transitional_docx_document->getAbsolutePath());
@@ -386,10 +476,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                  */
                 if (0 === substr_compare($fileName, '.xml', - strlen('.xml'))) {
                     $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
-                    $tokenContexts = [
-                        $entity_type => ['entity_id' => $entity_id],
-                        'civioffice' => ['live_snippets' => $live_snippets]
-                    ];
                     $fileContent = $this->replaceAllTokens($fileContent, $tokenContexts);
                 }
 
@@ -589,6 +675,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             self::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY,
             self::TEMP_FOLDER_PATH_SETTINGS_KEY,
             self::PREPARE_DOCX_SETTINGS_KEY,
+            self::PHPWORD_TOKENS_SETTINGS_KEY,
         ];
     }
 
@@ -599,6 +686,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             'unoconv_lock_file_path' => '/var/www/unoconv.lock',
             'temp_folder_path' => Civi::paths()->getPath('[civicrm.compile]/civioffice'),
             'prepare_docx' => false,
+            'phpword_tokens' => false,
         ];
     }
 }

@@ -90,6 +90,8 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
 
     public function setDefaults($defaultValues = null, $filter = null)
     {
+        // TODO: This sets new (unset) settings in existing renderers' forms to their default value, which might change
+        //       settings when this is not intended.
         $defaultValues = array_filter($defaultValues, function($value) { return !is_null($value); });
         $defaultValues += $this->documentRendererType::defaultConfiguration();
         return parent::setDefaults($defaultValues, $filter);
