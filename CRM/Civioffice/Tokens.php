@@ -28,6 +28,10 @@ class CRM_Civioffice_Tokens extends AbstractTokenSubscriber
 
     public static function getTokens() {
         // TODO: Trigger event for fetching tokens implemented elsewhere.
+        //       $tokens = [];
+        //       $tokens_event = GenericHookEvent::create($tokens);
+        //       Civi::dispatcher()->dispatch('civi.civioffice.tokens', $tokens_event);
+        //       return $tokens;
         return CRM_Civioffice_LiveSnippets::getTokens();
     }
 
@@ -37,6 +41,10 @@ class CRM_Civioffice_Tokens extends AbstractTokenSubscriber
             'live_snippets' => $e->getTokenProcessor()->rowContexts[0]['civioffice.live_snippets'],
         ];
         // TODO: Add tokens from external token providers.
+        //       $token_values = [];
+        //       $token_values_event = new GenericHookEvent($token_values);
+        //       $token_values_event = GenericHookEvent::create($token_values);
+        //       Civi::dispatcher()->dispatch('civi.civioffice.tokenvalues', $tokens_values_event);
 
         return $token_values;
     }

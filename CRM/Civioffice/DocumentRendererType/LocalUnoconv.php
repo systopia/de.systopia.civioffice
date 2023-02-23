@@ -394,7 +394,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             $transitional_docx_document = $local_temp_store->getLocalCopyOfDocument($prepared_document ?? $document_with_placeholders, $new_file_name);
             $tokenContexts = [
                 $entity_type => ['entity_id' => $entity_id],
-                // TODO: Add token contexts from external token providers.
+                // TODO: Add token contexts from external token providers, e.g. with a utility method.
             ];
 
             if ($this->phpword_tokens) {
