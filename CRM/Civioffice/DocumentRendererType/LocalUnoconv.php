@@ -14,6 +14,7 @@
 +-------------------------------------------------------*/
 
 use CRM_Civioffice_ExtensionUtil as E;
+use PhpOffice\PhpWord;
 
 /**
  *
