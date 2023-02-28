@@ -91,27 +91,36 @@ function _civioffice_civix_mixin_polyfill() {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_config
  */
-function _civioffice_civix_civicrm_config(&$config = NULL) {
+function _civioffice_civix_civicrm_config($config = NULL) {
   static $configured = FALSE;
   if ($configured) {
     return;
   }
   $configured = TRUE;
 
-  $template = CRM_Core_Smarty::singleton();
-
   $extRoot = __DIR__ . DIRECTORY_SEPARATOR;
-  $extDir = $extRoot . 'templates';
-
-  if (is_array($template->template_dir)) {
-    array_unshift($template->template_dir, $extDir);
-  }
-  else {
-    $template->template_dir = [$extDir, $template->template_dir];
-  }
-
   $include_path = $extRoot . PATH_SEPARATOR . get_include_path();
   set_include_path($include_path);
+  _civioffice_civix_mixin_polyfill();
+}
+
+/**
+ * Implements hook_civicrm_install().
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_install
+ */
+function _civioffice_civix_civicrm_install() {
+  _civioffice_civix_civicrm_config();
+  _civioffice_civix_mixin_polyfill();
+}
+
+/**
+ * (Delegated) Implements hook_civicrm_enable().
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
+ */
+function _civioffice_civix_civicrm_enable(): void {
+  _civioffice_civix_civicrm_config();
   _civioffice_civix_mixin_polyfill();
 }
 
@@ -195,15 +204,4 @@ function _civioffice_civix_fixNavigationMenuItems(&$nodes, &$maxNavID, $parentID
       _civioffice_civix_fixNavigationMenuItems($nodes[$origKey]['child'], $maxNavID, $nodes[$origKey]['attributes']['navID']);
     }
   }
-}
-
-/**
- * (Delegated) Implements hook_civicrm_entityTypes().
- *
- * Find any *.entityType.php files, merge their content, and return.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
- */
-function _civioffice_civix_civicrm_entityTypes(&$entityTypes) {
-  $entityTypes = array_merge($entityTypes, []);
 }

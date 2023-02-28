@@ -66,18 +66,6 @@ function civioffice_civicrm_config(&$config)
 }
 
 /**
- * Implements hook_civicrm_entityTypes().
- *
- * Declare entity types provided by this module.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
- */
-function civioffice_civicrm_entityTypes(&$entityTypes)
-{
-    _civioffice_civix_civicrm_entityTypes($entityTypes);
-}
-
-/**
  * Implements hook_civicrm_permission().
  */
 function civioffice_civicrm_permission(&$permissions) {
