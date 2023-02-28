@@ -50,7 +50,7 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form
                     'getsingle',
                     [
                         'id' => $option_value_id,
-                        'option_group_id' => $option_group_id,
+                        'option_group_id' => $this->option_group_id,
                     ]
                 );
             } catch (Exception $exception) {
