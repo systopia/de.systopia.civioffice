@@ -121,7 +121,7 @@ class CRM_Civioffice_LiveSnippets
             $element_names[] = $element_name;
             $default_values[$element_name] = $defaults[$live_snippet['name']] ?? $live_snippet_values[$live_snippet['name']];
             $live_snippet_elements[$live_snippet['name']] = 'live_snippets_' . $live_snippet['name'];
-            $live_snippet_descriptions[$live_snippet['name']] = $live_snippet['description'];
+            $live_snippet_descriptions[$live_snippet['name']] = $live_snippet['description'] ?? '';
         }
         $form->assign('live_snippet_elements', $live_snippet_elements);
         $form->assign('live_snippet_descriptions', $live_snippet_descriptions);
