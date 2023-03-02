@@ -36,10 +36,16 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
     protected $unoconv_binary_path;
 
     /**
-     * @var resource $unoconv_lock_file_path
-     *   File resource handle used for the lock.
+     * @var string $unoconv_lock_file_path
+     *   Path of file used for the lock.
      */
     protected $unoconv_lock_file_path;
+
+    /**
+     * @var resource $unoconv_lock_file
+     *   File resource handle used for the lock.
+     */
+    protected $unoconv_lock_file = null;
 
     /**
      * @var string $temp_folder_path
@@ -646,10 +652,10 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
      */
     protected function lock()
     {
-        $lock_file = Civi::settings()->get(CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY);
-        if ($lock_file) {
-            $this->unoconv_lock_file_path = fopen($lock_file, "r+");
-            if (!flock($this->unoconv_lock_file_path, LOCK_EX)) {
+        $lock_file_path = $this->unoconv_lock_file_path;
+        if ($lock_file_path) {
+            $this->unoconv_lock_file = fopen($lock_file_path, "r+");
+            if (!flock($this->unoconv_lock_file, LOCK_EX)) {
                 throw new Exception(E::ts("CiviOffice: Could not acquire unoconv lock. Sorry"));
             }
         }
@@ -660,12 +666,12 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
      */
     protected function unlock()
     {
-        if ($this->unoconv_lock_file_path) {
-            if (!flock($this->unoconv_lock_file_path, LOCK_UN)) {
+        if ($this->unoconv_lock_file) {
+            if (!flock($this->unoconv_lock_file, LOCK_UN)) {
                 Civi::log()->debug("CiviOffice: Could not release unoconv lock.");
             }
-            fclose($this->unoconv_lock_file_path);
-            $this->unoconv_lock_file_path = null;
+            fclose($this->unoconv_lock_file);
+            $this->unoconv_lock_file = null;
         }
     }
 
