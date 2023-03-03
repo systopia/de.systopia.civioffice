@@ -90,7 +90,13 @@ class CRM_Civioffice_LiveSnippets
         }
     }
 
-    public static function getTokens()
+    /**
+     * Token event for dispatcher
+     * @param $event
+     *
+     * @return void
+     */
+    public static function getTokens($event): void
     {
         if (!isset(self::$_liveSnippetTokens)) {
             self::$_liveSnippetTokens = [];
@@ -98,7 +104,8 @@ class CRM_Civioffice_LiveSnippets
                 self::$_liveSnippetTokens['live_snippets.' . $live_snippet['name']] = $live_snippet['label'];
             }
         }
-        return self::$_liveSnippetTokens;
+
+        $event->tokens = self::$_liveSnippetTokens;
     }
 
     /**
