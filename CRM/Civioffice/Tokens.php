@@ -38,11 +38,9 @@ class CRM_Civioffice_Tokens extends AbstractTokenSubscriber
         $token_values = [
             'live_snippets' => $e->getTokenProcessor()->rowContexts[0]['civioffice.live_snippets'],
         ];
-        // TODO: Add tokens from external token providers.
-        //       $token_values = [];
-        //       $token_values_event = new GenericHookEvent($token_values);
-        //       $token_values_event = GenericHookEvent::create($token_values);
-        //       Civi::dispatcher()->dispatch('civi.civioffice.tokenvalues', $tokens_values_event);
+
+        $token_values_event = \Civi\Core\Event\GenericHookEvent::create(['tokens_values' => &$token_values]);
+        Civi::dispatcher()->dispatch('civi.civioffice.tokenvalues', $token_values_event);
 
         return $token_values;
     }
