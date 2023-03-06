@@ -125,7 +125,6 @@ class CRM_Civioffice_Configuration
         foreach (
             [
                 new CRM_Civioffice_DocumentRendererType_LocalUnoconv(),
-                new CRM_Civioffice_DocumentRendererType_LocalUnoconvPhpWord(),
             ] as $type
         ) {
             /* @var \CRM_Civioffice_DocumentRendererType $type */
