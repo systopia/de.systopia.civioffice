@@ -193,6 +193,8 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
                                 'type' => $document->getMimeType(),
                             ],
                         ];
+                        // TODO: Use the "Attachment.create" API for permanently moving files, as without it, the
+                        //       temporary file might get deleted.
                         CRM_Core_BAO_File::processAttachment($attachments, 'civicrm_activity', $activity['id']);
                     }
                 }
