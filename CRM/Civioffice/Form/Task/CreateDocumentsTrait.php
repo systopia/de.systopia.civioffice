@@ -40,7 +40,11 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
         $this->setTitle(E::ts('CiviOffice - Generate multiple Documents'));
 
         $config = CRM_Civioffice_Configuration::getConfig();
-        $defaults = [];
+        $defaults = [
+            'activity_type_id' => Civi::contactSettings()->get(
+                'civioffice_create_' . static::class . '_activity_type'
+            ),
+        ];
 
         // add list of document renderers and supported output mime types
         $output_mimetypes = null;
@@ -180,6 +184,13 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
                     $values['activity_type_id']
                 )
             );
+        }
+
+        // Store default value for activity type in current contact's settings.
+        try {
+            Civi::contactSettings()->set('civioffice_create_' . static::class . '_activity_type', $values['activity_type_id'] ?? '');
+        } catch (CRM_Core_Exception $ex) {
+            Civi::log()->warning("CiviOffice: Couldn't save defaults: " . $ex->getMessage());
         }
 
         // Save current page link (e.g. search page)

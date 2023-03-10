@@ -201,6 +201,17 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
             }
         }
 
+        // Store default values for activity type and attachment selection in current contact's settings.
+        try {
+            Civi::contactSettings()->set(self::UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE, $values['activity_type_id'] ?? '');
+            Civi::contactSettings()->set(
+                self::UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT,
+                $values['activity_attach_doc'] ?? 0
+            );
+        } catch (CRM_Core_Exception $ex) {
+            Civi::log()->warning("CiviOffice: Couldn't save defaults: " . $ex->getMessage());
+        }
+
         switch (count($rendered_documents)) {
             case 0: // something's wrong
                 throw new Exception(E::ts("Rendering Error!"));
@@ -212,17 +223,6 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
 
             default:
                 $result_store->downloadZipped();
-        }
-
-        // save defaults
-        try {
-            Civi::contactSettings()->set(self::UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE, $values['activity_type_id'] ?? '');
-            Civi::contactSettings()->set(
-                self::UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT,
-                $values['activity_attach_doc'] ?? 0
-            );
-        } catch (CRM_Core_Exception $ex) {
-            Civi::log()->warning("CiviOffice: Couldn't save defaults: " . $ex->getMessage());
         }
     }
 

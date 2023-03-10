@@ -60,12 +60,6 @@
           <div class="clear"></div>
         </div>
 
-        <div class="crm-section">
-          <div class="label">{$form.activity_attach_doc.label}</div>
-          <div class="content">{$form.activity_attach_doc.html}</div>
-          <div class="clear"></div>
-        </div>
-
       </div>
 
     </div>
