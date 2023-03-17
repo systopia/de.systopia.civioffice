@@ -36,6 +36,7 @@ class CRM_Civioffice_Tokens extends AbstractTokenSubscriber
     public function prefetch(TokenValueEvent $e)
     {
         $token_values = [
+            // TODO: Do not access rowContexts directly, use TokenRow! Also make sure we use the "tet/html" format.
             'live_snippets' => $e->getTokenProcessor()->rowContexts[0]['civioffice.live_snippets'],
         ];
 

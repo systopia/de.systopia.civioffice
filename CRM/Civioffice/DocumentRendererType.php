@@ -137,7 +137,7 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
      * @throws \Exception
      *   When replacing tokens fails or replacing tokens for the given entity is not implemented.
      */
-    public function replaceAllTokens($string, $token_contexts = []): string
+    public function replaceAllTokens($string, $token_contexts = [], $format = 'text/plain'): string
     {
         $token_contexts_schema = static::processTokenContexts($token_contexts);
         $identifier = 'document';
@@ -149,7 +149,7 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
                 'schema' => array_keys($token_contexts_schema),
             ]
         );
-        $processor->addMessage($identifier, $string, 'text/plain');
+        $processor->addMessage($identifier, $string, $format);
         $token_row = $processor->addRow($token_contexts_schema);
         $processor->evaluate();
         return $token_row->render($identifier);
