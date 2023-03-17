@@ -392,105 +392,21 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         foreach ($entity_ids as $entity_id) {
             $new_file_name = $this->createDocumentName($entity_id, 'docx');
             $transitional_docx_document = $local_temp_store->getLocalCopyOfDocument($prepared_document ?? $document_with_placeholders, $new_file_name);
-            $tokenContexts = [
+            $token_contexts = [
                 $entity_type => ['entity_id' => $entity_id],
                 // TODO: Add token contexts from external token providers, e.g. with a utility method.
             ];
 
-            if ($this->phpword_tokens) {
-                // Replace live snippet tokens using PhpWord TemplateProcessor (resp. our extending variant of it).
-                try {
-                    $templateProcessor = new CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor(
-                        $transitional_docx_document->getAbsolutePath()
-                    );
-                }
-                catch (PhpWord\Exception\Exception $exception) {
-                    throw new Exception("Unoconv: Docx (zip) file seems to be broken or path is wrong");
-                }
-
-                // Replace CiviCRM tokens with PhpWord macros (convert format from "{token}" to "${macro}").
-                $templateProcessor->liveSnippetTokensToMacros();
-
-                foreach ($live_snippets as $live_snippet_name => $live_snippet) {
-                    // Replace tokens in live snippets (excluding nested live snippets).
-                    $live_snippet = $this->replaceAllTokens($live_snippet, $tokenContexts);
-
-                    // Use a temporary Section element for adding the elements.
-                    try {
-                        $phpWord = PhpWord\IOFactory::load($transitional_docx_document->getAbsolutePath());
-                        $section = $phpWord->addSection();
-                        // TODO: addHtml() doesn't accept styles so added HTML elements don't get any existing styles applied.
-                        PhpWord\Shared\Html::addHtml($section, $live_snippet);
-                        // Replace live snippet macros, ...
-                        if (
-                            count($elements = $section->getElements()) == 1
-                            && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
-                        ) {
-                            // ... either as plain text (if there is only a single Text element), ...
-                            $templateProcessor->setValue('civioffice.live_snippets.' . $live_snippet_name, $live_snippet);
-                        }
-                        else {
-                            // ... or as HTML: Render all elements and replace the paragraph containing the macro.
-                            // Note: This will remove everything else around the macro.
-                            // TODO: Save and split surrounding contents and add them to the replaced block.
-                            //       This would be a logical assumption, since HTML elements will always make for a new
-                            //       paragraph, so that text before and after the macro would then become their own paragraphs.
-                            $elements_data = '';
-                            foreach ($section->getElements() as $element) {
-                                $elementName = substr(get_class($element), strrpos(get_class($element), '\\') + 1);
-                                $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
-
-                                $xmlWriter = new PhpWord\Shared\XMLWriter();
-                                /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
-                                $elementWriter = new $objectClass($xmlWriter, $element, false);
-                                $elementWriter->write();
-                                $elements_data .= $xmlWriter->getData();
-                            }
-                            $templateProcessor->replaceXmlBlock('civioffice.live_snippets.' . $live_snippet_name, $elements_data, 'w:p');
-                        }
-                    }
-                    catch (\PhpOffice\PhpWord\Exception\Exception $exception) {
-                        throw new Exception(E::ts('Error loading/writing Word document: %1', [1 => $exception->getMessage()]));
-                    }
-                }
-                $templateProcessor->saveAs($transitional_docx_document->getAbsolutePath());
+            // Replace tokens in live snippets (excluding nested live snippets).
+            // TODO: This should be done during token evvaluation.
+            foreach ($live_snippets as $live_snippet_name => &$live_snippet) {
+                // TODO: Do not use the generic token replacement method, it is intended for document-level replacement.
+                $live_snippet = parent::replaceAllTokens($live_snippet, $token_contexts);
             }
-            else {
-                // Register Live Snippet tokens for "leagcy" replacement.
-                $tokenContexts['civioffice']['live_snippets'] = $live_snippets;
-            }
+            // Register Live Snippet tokens for "leagcy" replacement.
+            $token_contexts['civioffice']['live_snippets'] = $live_snippets;
 
-            // Replace all other tokens manually.
-            // TODO: Use PhpWord template processor for these as well.
-            $zip = new ZipArchive();
-
-            // open xml file (like .docx) as a zip file, as in fact it is one
-            $zip->open($transitional_docx_document->getAbsolutePath());
-            $numberOfFiles = $zip->numFiles;
-            if (empty($numberOfFiles)) throw new Exception("Unoconv: Docx (zip) file seems to be broken or path is wrong");
-
-            // iterate through all docx components (files in zip)
-            for ($i = 0; $i < $numberOfFiles; $i++) {
-                // Step 1/4 unpack xml (.docx) file and handle it as a zip file as it is one
-                $fileContent = $zip->getFromIndex($i);
-                $fileName = $zip->getNameIndex($i);
-
-                // Step 2/4 replace tokens
-                /**
-                 * TODO: Skip irrelevant parts, like binary files (images, etc.).
-                 *   @url https://github.com/systopia/de.systopia.civioffice/issues/13
-                 *   As a first step, we filter for XML files only.
-                 */
-                if (0 === substr_compare($fileName, '.xml', - strlen('.xml'))) {
-                    $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
-                    $fileContent = $this->replaceAllTokens($fileContent, $tokenContexts);
-                }
-
-                // Step 3/4 repack it again as xml (docx)
-                $zip->addFromString($fileName, $fileContent);
-            }
-
-            $zip->close();
+            $this->replaceDocxTokens($transitional_docx_document, $token_contexts);
 
             $tokenreplaced_documents[] = $temp_store->addFile($this->createDocumentName($entity_id, $file_ending_name));
         }
@@ -557,6 +473,114 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         }
 
         return $tokenreplaced_documents;
+    }
+
+    public function replaceDocxTokens(CRM_Civioffice_Document $transitional_docx_document, array $token_contexts) {
+        // TODO: For PhpWord replacement, use template processor.
+        if ($this->phpword_tokens) {
+            // TODO:
+            //   - Register CiviCRM tokens with a token processor.
+            //   - Convert all CiviCRM tokens to PhpWord template processor macros.
+            //   - Retrieve all macros used in the current document
+            //   - Evaluate tokens (do not render token messages using the TokenProcessor)
+            //   - Replace macros with token values retrieved from the TokenProcessor with getRows()
+            //     - depending on the row format (text/plain or text/html) with addHtml() or not
+
+            // Create a PhpWord TemplateProcessor.
+            try {
+                $templateProcessor = new CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor(
+                    $transitional_docx_document->getAbsolutePath()
+                );
+            }
+            catch (PhpWord\Exception\Exception $exception) {
+                throw new Exception("Unoconv: Docx (zip) file seems to be broken or path is wrong");
+            }
+
+            // Replace CiviCRM tokens with PhpWord macros (convert format from "{token}" to "${macro}").
+            $templateProcessor->civiTokensToMacros();
+            $usedMacroVariables = $templateProcessor->getVariables();
+
+            $phpWord = PhpWord\IOFactory::load($transitional_docx_document->getAbsolutePath());
+
+            // Replace contained tokens.
+            foreach ($usedMacroVariables as $macroVariable) {
+                // Format each variable as a CiviCRM token and evaluate it.
+                $rendered_token_row = $this->replaceAllTokens('{' . $macroVariable . '}', $token_contexts);
+                // Use a temporary Section element for adding the elements.
+                try {
+                    $section = $phpWord->addSection();
+                    // Note: addHtml() does not accept styles, so added HTML elements do not get applied any existing
+                    // styles.
+                    PhpWord\Shared\Html::addHtml($section, $rendered_token_row);
+                    if (
+                        count($elements = $section->getElements()) == 1
+                        && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
+                    ) {
+                        // ... either as plain text (if there is only a single Text element), ...
+                        $templateProcessor->setValue($macroVariable, $rendered_token_row);
+                    }
+                    else {
+                        // ... or as HTML: Render all elements and replace the paragraph containing the macro.
+                        // Note: This will remove everything else around the macro.
+                        // TODO: Save and split surrounding contents and add them to the replaced block.
+                        //       This would be a logical assumption, since HTML elements will always make for a new
+                        //       paragraph, moving text before and after the macro into their own paragraphs.
+                        $elements_data = '';
+                        foreach ($section->getElements() as $element) {
+                            $elementName = substr(
+                                get_class($element),
+                                strrpos(get_class($element), '\\') + 1
+                            );
+                            $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
+
+                            $xmlWriter = new PhpWord\Shared\XMLWriter();
+                            /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
+                            $elementWriter = new $objectClass($xmlWriter, $element, false);
+                            $elementWriter->write();
+                            $elements_data .= $xmlWriter->getData();
+                        }
+                        $templateProcessor->replaceXmlBlock($macroVariable, $elements_data, 'w:p');
+                    }
+                }
+                catch (\PhpOffice\PhpWord\Exception\Exception $exception) {
+                    throw new Exception(
+                        E::ts('Error loading/writing Word document: %1', [1 => $exception->getMessage()])
+                    );
+                }
+            }
+            $templateProcessor->saveAs($transitional_docx_document->getAbsolutePath());
+        } else {
+            // Replace tokens manually.
+            $zip = new ZipArchive();
+
+            // open xml file (like .docx) as a zip file, as in fact it is one
+            $zip->open($transitional_docx_document->getAbsolutePath());
+            $numberOfFiles = $zip->numFiles;
+            if (empty($numberOfFiles)) throw new Exception("Unoconv: Docx (zip) file seems to be broken or path is wrong");
+
+            // iterate through all docx components (files in zip)
+            for ($i = 0; $i < $numberOfFiles; $i++) {
+                // Step 1/4 unpack xml (.docx) file and handle it as a zip file as it is one
+                $fileContent = $zip->getFromIndex($i);
+                $fileName = $zip->getNameIndex($i);
+
+                // Step 2/4 replace tokens
+                /**
+                 * TODO: Skip irrelevant parts, like binary files (images, etc.).
+                 *   @url https://github.com/systopia/de.systopia.civioffice/issues/13
+                 *   As a first step, we filter for XML files only.
+                 */
+                if (0 === substr_compare($fileName, '.xml', - strlen('.xml'))) {
+                    $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
+                    $fileContent = $this->replaceAllTokens($fileContent, $token_contexts);
+                }
+
+                // Step 3/4 repack it again as xml (docx)
+                $zip->addFromString($fileName, $fileContent);
+            }
+
+            $zip->close();
+        }
     }
 
     /**

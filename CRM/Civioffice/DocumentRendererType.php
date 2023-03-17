@@ -139,6 +139,41 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
      */
     public function replaceAllTokens($string, $token_contexts = []): string
     {
+        $token_contexts_schema = static::processTokenContexts($token_contexts);
+        $identifier = 'document';
+        $processor = new TokenProcessor(
+            Civi::service('dispatcher'),
+            [
+                'controller' => __CLASS__,
+                'smarty' => false,
+                'schema' => array_keys($token_contexts_schema),
+            ]
+        );
+        $processor->addMessage($identifier, $string, 'text/plain');
+        $token_row = $processor->addRow($token_contexts_schema);
+        $processor->evaluate();
+        return $token_row->render($identifier);
+    }
+
+    /**
+     * Adds implicit token contexts and builds the corresponding TokenProcessor context schema.
+     *
+     * @param array $token_contexts
+     *   An array of token contexts, with entity types as keys and an array with context as values, e. g.
+     *   [
+     *     'contribution' => ['entity_id' => 123],
+     *   ]
+     *   This will be extended with the corresponding contact, and anything else that can be implicitly derived from the
+     *   entity given.
+     *
+     * @return array
+     *   The TokenProcessor context schema, including all explicit and implicit token contexts.
+     *
+     * @throws \CRM_Core_Exception
+     * @throws \Civi\API\Exception\UnauthorizedException
+     */
+    public static function processTokenContexts(array &$token_contexts): array
+    {
         // Add implicit contact token context for contributions.
         if (
             array_key_exists('contribution', $token_contexts)
@@ -171,8 +206,7 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
                         ['participant_id' => $participant['id']]
                     );
                     $token_contexts['contribution'] = ['entity_id' => $participant_payment['contribution_id']];
-                }
-                catch (Exception $exception) {
+                } catch (Exception $exception) {
                     // No participant payment, nothing to do.
                 }
             }
@@ -190,47 +224,27 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
             $token_contexts['contact'] = ['entity_id' => $membership['contact_id']];
         }
 
-        $identifier = 'document';
-        $processor = new TokenProcessor(
-            Civi::service('dispatcher'),
-            array_keys($token_contexts) + [
-                'controller' => __CLASS__,
-                'smarty' => false,
-            ]
-        );
-        $processor->addMessage($identifier, $string, 'text/plain');
-        $token_row = $processor->addRow();
-
+        // Translate entity types into token contexts.
+        $token_contexts_schema = [];
         foreach ($token_contexts as $entity_type => $context) {
             switch ($entity_type) {
                 case 'civioffice':
-                    $token_row->context('civioffice.live_snippets', $context['live_snippets']);
+                    $token_contexts_schema['civioffice.live_snippets'] = $context['live_snippets'];
                     break;
                 case 'contact':
-                    $token_row->context('contactId', $context['entity_id']);
-
-                    /*
-                     * FIXME: Unfortunately we get &lt; and &gt; from civi backend so we need to decode them back to < and > with htmlspecialchars_decode()
-                     * This is postponed as it might be risky as it either breaks xml or leads to further problems
-                     * https://github.com/systopia/de.systopia.civioffice/issues/3
-                     */
-
+                    $token_contexts_schema['contactId'] = $context['entity_id'];
                     break;
                 case 'contribution':
-                    $token_row->context('contributionId', $context['entity_id']);
-                    $token_row->context('contribution', $context['entity']);
+                    $token_contexts_schema['contributionId'] = $context['entity_id'];
                     break;
                 case 'participant':
-                    $token_row->context('participantId', $context['entity_id']);
-                    $token_row->context('participant', $context['entity']);
+                    $token_contexts_schema['participantId'] = $context['entity_id'];
                     break;
                 case 'event':
-                    $token_row->context('eventId', $context['entity_id']);
-                    $token_row->context('event', $context['entity']);
+                    $token_contexts_schema['eventId'] = $context['entity_id'];
                     break;
                 case 'membership':
-                    $token_row->context('membershipId', $context['entity_id']);
-                    $token_row->context('membership', $context['entity']);
+                    $token_contexts_schema['membershipId'] = $context['entity_id'];
                     break;
                 default:
                     // TODO: Implement for token contexts from external token providers.
@@ -238,9 +252,7 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
                     break;
             }
         }
-
-        $processor->evaluate();
-        return $token_row->render($identifier);
+        return $token_contexts_schema;
     }
 
     /*
