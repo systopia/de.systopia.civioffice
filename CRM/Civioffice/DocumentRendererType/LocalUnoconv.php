@@ -401,7 +401,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             // TODO: This should be done during token evvaluation.
             foreach ($live_snippets as $live_snippet_name => &$live_snippet) {
                 // TODO: Do not use the generic token replacement method, it is intended for document-level replacement.
-                $live_snippet = parent::replaceAllTokens($live_snippet, $token_contexts, 'text/html');
+                $live_snippet = parent::evaluateTokens($live_snippet, $token_contexts, 'text/html');
             }
             // Register Live Snippet tokens for "leagcy" replacement.
             $token_contexts['civioffice']['live_snippets'] = $live_snippets;
@@ -505,8 +505,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             // Replace contained tokens.
             foreach ($usedMacroVariables as $macroVariable) {
                 // Format each variable as a CiviCRM token and evaluate it (for HTML context).
-                // TODO: Live Snippets register their token values as "text/plain" - find out where to change this.
-                $rendered_token_row = $this->replaceAllTokens('{' . $macroVariable . '}', $token_contexts, 'text/html');
+                $rendered_token_row = $this->evaluateTokens('{' . $macroVariable . '}', $token_contexts, 'text/html');
                 // Use a temporary Section element for adding the elements.
                 try {
                     $section = $phpWord->addSection();
@@ -573,7 +572,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                  */
                 if (0 === substr_compare($fileName, '.xml', - strlen('.xml'))) {
                     $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
-                    $fileContent = $this->replaceAllTokens($fileContent, $token_contexts);
+                    $fileContent = $this->evaluateTokens($fileContent, $token_contexts);
                 }
 
                 // Step 3/4 repack it again as xml (docx)

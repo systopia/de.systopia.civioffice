@@ -22,11 +22,21 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_OfficeComponent
 {
+    protected TokenProcessor $tokenProcessor;
+
     public function __construct($uri = null, $name = null, array &$configuration = []) {
         parent::__construct($uri, $name);
         foreach (static::supportedConfiguration() as $config_item) {
             $this->{$config_item} = $configuration[$config_item] ?? null;
         }
+
+        $this->tokenProcessor = new TokenProcessor(
+            Civi::service('dispatcher'),
+            [
+                'controller' => __CLASS__,
+                'smarty' => false,
+            ]
+        );
     }
 
     /**
@@ -137,21 +147,14 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
      * @throws \Exception
      *   When replacing tokens fails or replacing tokens for the given entity is not implemented.
      */
-    public function replaceAllTokens($string, $token_contexts = [], $format = 'text/plain'): string
+    public function evaluateTokens($string, $token_contexts = [], $format = 'text/plain'): string
     {
-        $token_contexts_schema = static::processTokenContexts($token_contexts);
+        $token_contexts_schema = $this->processTokenContexts($token_contexts);
         $identifier = 'document';
-        $processor = new TokenProcessor(
-            Civi::service('dispatcher'),
-            [
-                'controller' => __CLASS__,
-                'smarty' => false,
-                'schema' => array_keys($token_contexts_schema),
-            ]
-        );
-        $processor->addMessage($identifier, $string, $format);
-        $token_row = $processor->addRow($token_contexts_schema);
-        $processor->evaluate();
+        $this->tokenProcessor->addMessage($identifier, $string, $format);
+        $token_row = $this->tokenProcessor->addRow($token_contexts_schema)
+            ->format($format);
+        $this->tokenProcessor->evaluate();
         return $token_row->render($identifier);
     }
 
@@ -172,7 +175,7 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
      * @throws \CRM_Core_Exception
      * @throws \Civi\API\Exception\UnauthorizedException
      */
-    public static function processTokenContexts(array &$token_contexts): array
+    public function processTokenContexts(array &$token_contexts): array
     {
         // Add implicit contact token context for contributions.
         if (
@@ -252,6 +255,8 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
                     break;
             }
         }
+
+        $this->tokenProcessor->addSchema(array_keys($token_contexts_schema));
         return $token_contexts_schema;
     }
 
