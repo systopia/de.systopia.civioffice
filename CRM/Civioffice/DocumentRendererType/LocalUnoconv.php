@@ -498,14 +498,14 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
 
             // Replace CiviCRM tokens with PhpWord macros (convert format from "{token}" to "${macro}").
             $used_tokens = $templateProcessor->civiTokensToMacros();
-            $usedMacroVariables = $templateProcessor->getVariables();
+            $used_macro_variables = $templateProcessor->getVariables();
 
             $phpWord = PhpWord\IOFactory::load($transitional_docx_document->getAbsolutePath());
 
             // Replace contained tokens.
-            foreach ($usedMacroVariables as $macroVariable) {
+            foreach ($used_macro_variables as $macro_variable) {
                 // Format each variable as a CiviCRM token and evaluate it (for HTML context).
-                $rendered_token_row = $this->evaluateTokens('{' . $macroVariable . '}', $token_contexts, 'text/html');
+                $rendered_token_row = $this->evaluateTokens('{' . $macro_variable . '}', $token_contexts, 'text/html');
                 // Use a temporary Section element for adding the elements.
                 try {
                     $section = $phpWord->addSection();
@@ -518,7 +518,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                         || empty($elements)
                     ) {
                         // ... either as plain text (if there is only a single Text element), ...
-                        $templateProcessor->setValue($macroVariable, $rendered_token_row);
+                        $templateProcessor->setValue($macro_variable, $rendered_token_row);
                     }
                     else {
                         // ... or as HTML: Render all elements and replace the paragraph containing the macro.
@@ -540,7 +540,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                             $elementWriter->write();
                             $elements_data .= $xmlWriter->getData();
                         }
-                        $templateProcessor->replaceXmlBlock($macroVariable, $elements_data, 'w:p');
+                        $templateProcessor->replaceXmlBlock($macro_variable, $elements_data, 'w:p');
                     }
                 }
                 catch (\PhpOffice\PhpWord\Exception\Exception $exception) {
