@@ -39,9 +39,6 @@ class CRM_Civioffice_Tokens extends AbstractTokenSubscriber
             'live_snippets' => $e->getTokenProcessor()->getContextValues('civioffice.live_snippets')[0] ?? [],
         ];
 
-        $token_values_event = \Civi\Core\Event\GenericHookEvent::create(['tokens_values' => &$token_values]);
-        Civi::dispatcher()->dispatch('civi.civioffice.tokenvalues', $token_values_event);
-
         return $token_values;
     }
 
