@@ -211,13 +211,6 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
         return $token_contexts_schema;
     }
 
-    /*
-     * Could be used to convert larger batches of strings and/or contact ids
-     */
-    public function multipleReplaceAllTokens()
-    {
-    }
-
     abstract public static function supportedConfiguration(): array;
 
     abstract public static function defaultConfiguration(): array;
