@@ -497,7 +497,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             }
 
             // Replace CiviCRM tokens with PhpWord macros (convert format from "{token}" to "${macro}").
-            $templateProcessor->civiTokensToMacros();
+            $used_tokens = $templateProcessor->civiTokensToMacros();
             $usedMacroVariables = $templateProcessor->getVariables();
 
             $phpWord = PhpWord\IOFactory::load($transitional_docx_document->getAbsolutePath());

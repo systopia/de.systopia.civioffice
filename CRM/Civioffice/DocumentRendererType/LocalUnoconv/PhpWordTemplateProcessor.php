@@ -42,8 +42,13 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
         );
     }
 
-    public function civiTokensToMacros()
+    /**
+     * @return array
+     *   An array of CiviCRM tokens found in the document.
+     */
+    public function civiTokensToMacros(): array
     {
+        $tokens = [];
         foreach (
             [
                 &$this->tempDocumentHeaders,
@@ -63,7 +68,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
             $filterRegex = "\|($filterNameRegex(?:$filterArgRegex)?)"; /* MATCHES: '|whiz:"bang":"bang"' */
             $fullRegex = ";\{$tokenRegex(?:$filterRegex)?\};";
 
-            $tempDocPart = preg_replace(
+            $tempDocPart = preg_replace_callback(
                 $fullRegex,
                 /*
                  * The match contains:
@@ -75,9 +80,18 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
                  * We just prefix the token with a "$" as macro names can contain anything,
                  * @see \PhpOffice\PhpWord\TemplateProcessor::getVariablesForPart()
                  */
-                '\$$0',
+                function($matches) use (&$tokens) {
+                    $tokens[$matches[0]] = [
+                        'entity' => $matches[1],
+                        'field' => $matches[2],
+                        'filter' => $matches[3] ?? NULL,
+                    ];
+                    return '$' . $matches[0];
+                },
                 $tempDocPart
             );
         }
+
+        return $tokens;
     }
 }
