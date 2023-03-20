@@ -43,6 +43,8 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
     }
 
     /**
+     * Replaces CiviCRM tokens with PhpWord macros (converts format from "{token}" to "${macro}").
+     *
      * @return array
      *   An array of CiviCRM tokens found in the document.
      */
@@ -93,5 +95,54 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
         }
 
         return $tokens;
+    }
+
+    public function replaceHtmlToken($macro_variable, $rendered_token_message) {
+        static $phpWord;
+        if (!isset($phpWord)) {
+            $phpWord = PhpWord\IOFactory::load($this->tempDocumentFilename);
+        }
+        try {
+            // Use a temporary Section element for adding the elements.
+            $section = $phpWord->addSection();
+            // Note: addHtml() does not accept styles, so added HTML elements do not get applied any existing
+            // styles.
+            PhpWord\Shared\Html::addHtml($section, $rendered_token_message);
+            if (
+                count($elements = $section->getElements()) == 1
+                && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
+                || empty($elements)
+            ) {
+                // ... either as plain text (if there is only a single Text element or nothing), ...
+                $this->setValue($macro_variable, $rendered_token_message);
+            }
+            else {
+                // ... or as HTML: Render all elements and replace the paragraph containing the macro.
+                // Note: This will remove the entire paragraph element around the macro.
+                // TODO: Save and split surrounding contents and add them to the replaced block.
+                //       This would be a logical assumption, since HTML elements will always make for a new
+                //       paragraph, moving text before and after the macro into their own paragraphs.
+                $elements_data = '';
+                foreach ($section->getElements() as $element) {
+                    $elementName = substr(
+                        get_class($element),
+                        strrpos(get_class($element), '\\') + 1
+                    );
+                    $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
+
+                    $xmlWriter = new PhpWord\Shared\XMLWriter();
+                    /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
+                    $elementWriter = new $objectClass($xmlWriter, $element, false);
+                    $elementWriter->write();
+                    $elements_data .= $xmlWriter->getData();
+                }
+                $this->replaceXmlBlock($macro_variable, $elements_data, 'w:p');
+            }
+        }
+        catch (\PhpOffice\PhpWord\Exception\Exception $exception) {
+            throw new Exception(
+                E::ts('Error loading/writing Word document: %1', [1 => $exception->getMessage()])
+            );
+        }
     }
 }

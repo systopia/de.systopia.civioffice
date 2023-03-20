@@ -392,21 +392,24 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         foreach ($entity_ids as $entity_id) {
             $new_file_name = $this->createDocumentName($entity_id, 'docx');
             $transitional_docx_document = $local_temp_store->getLocalCopyOfDocument($prepared_document ?? $document_with_placeholders, $new_file_name);
+
+            // Register token contexts and add token row for this entity.
             $token_contexts = [
                 $entity_type => ['entity_id' => $entity_id],
                 // TODO: Add token contexts from external token providers, e.g. with a utility method.
             ];
+            $token_contexts_schema = $this->processTokenContexts($token_contexts);
+            $token_row = $this->tokenProcessor->addRow($token_contexts_schema)
+                ->format('text/html');
 
-            // Replace tokens in live snippets (excluding nested live snippets).
-            // TODO: This should be done during token evvaluation.
-            foreach ($live_snippets as $live_snippet_name => &$live_snippet) {
-                // TODO: Do not use the generic token replacement method, it is intended for document-level replacement.
-                $live_snippet = parent::evaluateTokens($live_snippet, $token_contexts, 'text/html');
-            }
-            // Register Live Snippet tokens for "leagcy" replacement.
+            // Replace tokens in Live Snippets and update token contexts.
+            $this->replaceLiveSnippetTokens($live_snippets, $token_row);
             $token_contexts['civioffice']['live_snippets'] = $live_snippets;
+            $token_contexts_schema = $this->processTokenContexts($token_contexts);
+            $token_row->context($token_contexts_schema);
 
-            $this->replaceDocxTokens($transitional_docx_document, $token_contexts);
+            // Replace tokens in the document.
+            $this->replaceDocxTokens($transitional_docx_document, $token_row);
 
             $tokenreplaced_documents[] = $temp_store->addFile($this->createDocumentName($entity_id, $file_ending_name));
         }
@@ -475,18 +478,16 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         return $tokenreplaced_documents;
     }
 
-    public function replaceDocxTokens(CRM_Civioffice_Document $transitional_docx_document, array $token_contexts) {
-        // TODO: For PhpWord replacement, use template processor.
-        if ($this->phpword_tokens) {
-            // TODO:
-            //   - Register CiviCRM tokens with a token processor.
-            //   - Convert all CiviCRM tokens to PhpWord template processor macros.
-            //   - Retrieve all macros used in the current document
-            //   - Evaluate tokens (do not render token messages using the TokenProcessor)
-            //   - Replace macros with token values retrieved from the TokenProcessor with getRows()
-            //     - depending on the row format (text/plain or text/html) with addHtml() or not
+    public function replaceLiveSnippetTokens(array &$live_snippets, \Civi\Token\TokenRow $row) {
+        foreach ($live_snippets as $live_snippet_name => &$live_snippet) {
+            $this->tokenProcessor->addMessage($live_snippet_name, $live_snippet, 'text/html');
+            $this->tokenProcessor->evaluate();
+            $live_snippet = $this->tokenProcessor->render($live_snippet_name, $row);
+        }
+    }
 
-            // Create a PhpWord TemplateProcessor.
+    public function replaceDocxTokens(CRM_Civioffice_Document $transitional_docx_document, \Civi\Token\TokenRow $token_row) {
+        if ($this->phpword_tokens) {
             try {
                 $templateProcessor = new CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor(
                     $transitional_docx_document->getAbsolutePath()
@@ -496,58 +497,20 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                 throw new Exception("Unoconv: Docx (zip) file seems to be broken or path is wrong");
             }
 
-            // Replace CiviCRM tokens with PhpWord macros (convert format from "{token}" to "${macro}").
             $used_tokens = $templateProcessor->civiTokensToMacros();
-            $used_macro_variables = $templateProcessor->getVariables();
 
-            $phpWord = PhpWord\IOFactory::load($transitional_docx_document->getAbsolutePath());
+            // Register all tokens as token messages and evaluate.
+            foreach ($used_tokens as $token => $token_params) {
+                $this->tokenProcessor->addMessage($token, $token, 'text/html');
+            }
+            $this->tokenProcessor->evaluate();
 
             // Replace contained tokens.
+            $used_macro_variables = $templateProcessor->getVariables();
             foreach ($used_macro_variables as $macro_variable) {
-                // Format each variable as a CiviCRM token and evaluate it (for HTML context).
-                $rendered_token_row = $this->evaluateTokens('{' . $macro_variable . '}', $token_contexts, 'text/html');
-                // Use a temporary Section element for adding the elements.
-                try {
-                    $section = $phpWord->addSection();
-                    // Note: addHtml() does not accept styles, so added HTML elements do not get applied any existing
-                    // styles.
-                    PhpWord\Shared\Html::addHtml($section, $rendered_token_row);
-                    if (
-                        count($elements = $section->getElements()) == 1
-                        && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
-                        || empty($elements)
-                    ) {
-                        // ... either as plain text (if there is only a single Text element), ...
-                        $templateProcessor->setValue($macro_variable, $rendered_token_row);
-                    }
-                    else {
-                        // ... or as HTML: Render all elements and replace the paragraph containing the macro.
-                        // Note: This will remove everything else around the macro.
-                        // TODO: Save and split surrounding contents and add them to the replaced block.
-                        //       This would be a logical assumption, since HTML elements will always make for a new
-                        //       paragraph, moving text before and after the macro into their own paragraphs.
-                        $elements_data = '';
-                        foreach ($section->getElements() as $element) {
-                            $elementName = substr(
-                                get_class($element),
-                                strrpos(get_class($element), '\\') + 1
-                            );
-                            $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
-
-                            $xmlWriter = new PhpWord\Shared\XMLWriter();
-                            /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
-                            $elementWriter = new $objectClass($xmlWriter, $element, false);
-                            $elementWriter->write();
-                            $elements_data .= $xmlWriter->getData();
-                        }
-                        $templateProcessor->replaceXmlBlock($macro_variable, $elements_data, 'w:p');
-                    }
-                }
-                catch (\PhpOffice\PhpWord\Exception\Exception $exception) {
-                    throw new Exception(
-                        E::ts('Error loading/writing Word document: %1', [1 => $exception->getMessage()])
-                    );
-                }
+                // Format each variable as a CiviCRM token and render it.
+                $rendered_token_message = $this->tokenProcessor->render('{' . $macro_variable . '}', $token_row);
+                $templateProcessor->replaceHtmlToken($macro_variable, $rendered_token_message);
             }
             $templateProcessor->saveAs($transitional_docx_document->getAbsolutePath());
         } else {
@@ -573,7 +536,9 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                  */
                 if (0 === substr_compare($fileName, '.xml', - strlen('.xml'))) {
                     $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
-                    $fileContent = $this->evaluateTokens($fileContent, $token_contexts);
+                    $this->tokenProcessor->addMessage('document', $fileContent, 'text/plain');
+                    $this->tokenProcessor->evaluate();
+                    $fileContent = $token_row->render('document');
                 }
 
                 // Step 3/4 repack it again as xml (docx)

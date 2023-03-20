@@ -110,55 +110,6 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
     ): array;
 
     /**
-     * resolve all tokens
-     *
-     * @param array $token_names
-     *   the list of all token names to be replaced
-     *
-     * @param integer $entity_id
-     *   entity ID, e.g. contact_id
-     *
-     * @param string $entity_type
-     *   entity type, e.g. 'contact'
-     *
-     * @return array
-     *   list of token_name => token value
-     */
-    public function resolveTokens($token_names, $entity_id, $entity_type = 'contact'): array
-    {
-        // TODO: implement
-        // TODO: use additional token system
-        throw new Exception('resolveTokens not implemented');
-    }
-
-    /**
-     * Replace all tokens with {token_name} and {$smarty_var.attribute} format
-     *
-     * @param $string
-     *   A string including tokens to be replaced.
-     * @param string $entity_type
-     *   The entity type, e.g. 'contact'. The entity type "civioffice" refers to tokens defined by CiviOffice itself.
-     * @param array $token_contexts
-     *   A list of token contexts, keyed by token entity (e.g. "contact" or "civioffice").
-     *
-     * @return string
-     *   The input string with the tokens replaced.
-     *
-     * @throws \Exception
-     *   When replacing tokens fails or replacing tokens for the given entity is not implemented.
-     */
-    public function evaluateTokens($string, $token_contexts = [], $format = 'text/plain'): string
-    {
-        $token_contexts_schema = $this->processTokenContexts($token_contexts);
-        $identifier = 'document';
-        $this->tokenProcessor->addMessage($identifier, $string, $format);
-        $token_row = $this->tokenProcessor->addRow($token_contexts_schema)
-            ->format($format);
-        $this->tokenProcessor->evaluate();
-        return $token_row->render($identifier);
-    }
-
-    /**
      * Adds implicit token contexts and builds the corresponding TokenProcessor context schema.
      *
      * @param array $token_contexts
