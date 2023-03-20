@@ -24,6 +24,8 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
 {
     protected TokenProcessor $tokenProcessor;
 
+    protected array $liveSnippets = [];
+
     public function __construct($uri = null, $name = null, array &$configuration = []) {
         parent::__construct($uri, $name);
         foreach (static::supportedConfiguration() as $config_item) {
@@ -126,8 +128,12 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
      * @throws \CRM_Core_Exception
      * @throws \Civi\API\Exception\UnauthorizedException
      */
-    public function processTokenContexts(array &$token_contexts): array
+    public function processTokenContexts(string $entity_type, int $entity_id): \Civi\Token\TokenRow
     {
+        $token_contexts = [
+            $entity_type => ['entity_id' => $entity_id],
+        ];
+
         // Add implicit contact token context for contributions.
         if (
             array_key_exists('contribution', $token_contexts)
@@ -201,14 +207,32 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
                     $token_contexts_schema['membershipId'] = $context['entity_id'];
                     break;
                 default:
-                    // TODO: Implement for token contexts from external token providers.
-                    throw new Exception('replaceAllTokens not implemented for entity ' . $entity_type);
+                    // TODO: Support token contexts for entity types by external providers.
+                    throw new Exception('Could not determine token context for entity type' . $entity_type);
                     break;
             }
         }
 
         $this->tokenProcessor->addSchema(array_keys($token_contexts_schema));
-        return $token_contexts_schema;
+        $token_row = $this->tokenProcessor->addRow($token_contexts_schema)
+            ->format('text/html');
+
+        // Replace tokens in Live Snippets and update token contexts.
+        $this->replaceLiveSnippetTokens($token_row);
+        $token_contexts_schema['civioffice.live_snippets'] = $this->liveSnippets;
+        $token_row->context($token_contexts_schema);
+
+        return $token_row;
+    }
+
+    abstract public function replaceTokens(CRM_Civioffice_Document $document, string $entity_type, int $entity_id);
+
+    public function replaceLiveSnippetTokens(\Civi\Token\TokenRow $row) {
+        foreach ($this->liveSnippets as $live_snippet_name => &$live_snippet) {
+            $this->tokenProcessor->addMessage($live_snippet_name, $live_snippet, 'text/html');
+            $this->tokenProcessor->evaluate();
+            $live_snippet = $this->tokenProcessor->render($live_snippet_name, $row);
+        }
     }
 
     abstract public static function supportedConfiguration(): array;

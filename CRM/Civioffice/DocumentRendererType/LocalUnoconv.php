@@ -313,14 +313,14 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         string $entity_type = 'contact',
         array $live_snippets = []
     ): array {
-        $prepare_docx = $this->prepare_docx;
+        $this->liveSnippets = $live_snippets;
         // for now DOCX is the only format being used for internal processing
         $internal_processing_format = CRM_Civioffice_MimeType::DOCX; // todo later on this can be determined by checking the $document_with_placeholders later on to allow different transition formats like .odt/.odf
         $needs_conversion = $target_mime_type != $internal_processing_format;
 
         // "Convert" DOCX files to DOCX in order to "repair" stuff, e.g. tokens that might have got split in the OOXML
         // due to spell checking or formatting.
-        if ($prepare_docx && $internal_processing_format == CRM_Civioffice_MimeType::DOCX) {
+        if ($this->prepare_docx && $internal_processing_format == CRM_Civioffice_MimeType::DOCX) {
             $lock = new CRM_Core_Lock('civicrm.office.civi_office_unoconv_local', 60, true);
             if (!$lock->acquire()) {
                 throw new Exception(E::ts("Too many parallel conversions. Try using a smaller batch size"));
@@ -391,26 +391,11 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
          */
         foreach ($entity_ids as $entity_id) {
             $new_file_name = $this->createDocumentName($entity_id, 'docx');
-            $transitional_docx_document = $local_temp_store->getLocalCopyOfDocument($prepared_document ?? $document_with_placeholders, $new_file_name);
-
-            // Register token contexts and add token row for this entity.
-            $token_contexts = [
-                $entity_type => ['entity_id' => $entity_id],
-                // TODO: Add token contexts from external token providers, e.g. with a utility method.
-            ];
-            $token_contexts_schema = $this->processTokenContexts($token_contexts);
-            $token_row = $this->tokenProcessor->addRow($token_contexts_schema)
-                ->format('text/html');
-
-            // Replace tokens in Live Snippets and update token contexts.
-            $this->replaceLiveSnippetTokens($live_snippets, $token_row);
-            $token_contexts['civioffice']['live_snippets'] = $live_snippets;
-            $token_contexts_schema = $this->processTokenContexts($token_contexts);
-            $token_row->context($token_contexts_schema);
-
-            // Replace tokens in the document.
-            $this->replaceDocxTokens($transitional_docx_document, $token_row);
-
+            $transitional_docx_document = $local_temp_store->getLocalCopyOfDocument(
+                $prepared_document ?? $document_with_placeholders,
+                $new_file_name
+            );
+            $this->replaceTokens($transitional_docx_document, $entity_type, (int) $entity_id);
             $tokenreplaced_documents[] = $temp_store->addFile($this->createDocumentName($entity_id, $file_ending_name));
         }
 
@@ -478,19 +463,13 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         return $tokenreplaced_documents;
     }
 
-    public function replaceLiveSnippetTokens(array &$live_snippets, \Civi\Token\TokenRow $row) {
-        foreach ($live_snippets as $live_snippet_name => &$live_snippet) {
-            $this->tokenProcessor->addMessage($live_snippet_name, $live_snippet, 'text/html');
-            $this->tokenProcessor->evaluate();
-            $live_snippet = $this->tokenProcessor->render($live_snippet_name, $row);
-        }
-    }
+    public function replaceTokens(CRM_Civioffice_Document $document, string $entity_type, int $entity_id) {
+        $token_row = $this->processTokenContexts($entity_type, $entity_id);
 
-    public function replaceDocxTokens(CRM_Civioffice_Document $transitional_docx_document, \Civi\Token\TokenRow $token_row) {
         if ($this->phpword_tokens) {
             try {
                 $templateProcessor = new CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor(
-                    $transitional_docx_document->getAbsolutePath()
+                    $document->getAbsolutePath()
                 );
             }
             catch (PhpWord\Exception\Exception $exception) {
@@ -512,13 +491,13 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                 $rendered_token_message = $this->tokenProcessor->render('{' . $macro_variable . '}', $token_row);
                 $templateProcessor->replaceHtmlToken($macro_variable, $rendered_token_message);
             }
-            $templateProcessor->saveAs($transitional_docx_document->getAbsolutePath());
+            $templateProcessor->saveAs($document->getAbsolutePath());
         } else {
             // Replace tokens manually.
             $zip = new ZipArchive();
 
             // open xml file (like .docx) as a zip file, as in fact it is one
-            $zip->open($transitional_docx_document->getAbsolutePath());
+            $zip->open($document->getAbsolutePath());
             $numberOfFiles = $zip->numFiles;
             if (empty($numberOfFiles)) throw new Exception("Unoconv: Docx (zip) file seems to be broken or path is wrong");
 
