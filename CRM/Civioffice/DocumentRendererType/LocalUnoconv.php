@@ -515,6 +515,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                     if (
                         count($elements = $section->getElements()) == 1
                         && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
+                        || empty($elements)
                     ) {
                         // ... either as plain text (if there is only a single Text element), ...
                         $templateProcessor->setValue($macroVariable, $rendered_token_row);
