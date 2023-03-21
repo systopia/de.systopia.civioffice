@@ -19,30 +19,6 @@ use PhpOffice\PhpWord;
 class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor extends PhpWord\TemplateProcessor
 {
     /**
-     * @deprecated
-     *
-     * @use self::civiTokensToMacros()
-     */
-    public function liveSnippetTokensToMacros()
-    {
-        $this->tempDocumentHeaders = preg_replace(
-            '/({civioffice\.live_snippets\..*?})/',
-            '\$$1',
-            $this->tempDocumentHeaders
-        );
-        $this->tempDocumentMainPart = preg_replace(
-            '/(\{civioffice\.live_snippets\..*?\})/',
-            '\$$1',
-            $this->tempDocumentMainPart
-        );
-        $this->tempDocumentFooters = preg_replace(
-            '/({civioffice\.live_snippets\..*?})/',
-            '\$$1',
-            $this->tempDocumentFooters
-        );
-    }
-
-    /**
      * Replaces CiviCRM tokens with PhpWord macros (converts format from "{token}" to "${macro}").
      *
      * @return array
