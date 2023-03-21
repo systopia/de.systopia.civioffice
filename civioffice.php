@@ -64,7 +64,6 @@ function civioffice_civicrm_summaryActions(&$actions, $contactID)
  */
 function civioffice_civicrm_config(&$config)
 {
-    Civi::dispatcher()->addListener('civi.civioffice.tokens', 'CRM_Civioffice_LiveSnippets::getTokens');
     _civioffice_civix_civicrm_config($config);
 
     \Civi::dispatcher()->addSubscriber(new CRM_Civioffice_Tokens('civioffice'));
