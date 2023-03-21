@@ -186,31 +186,14 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
 
         // Translate entity types into token contexts.
         $token_contexts_schema = [];
+        $entity_token_context = static::entityTokenContext();
         foreach ($token_contexts as $entity_type => $context) {
-            switch ($entity_type) {
-                case 'civioffice':
-                    $token_contexts_schema['civioffice.live_snippets'] = $context['live_snippets'];
-                    break;
-                case 'contact':
-                    $token_contexts_schema['contactId'] = $context['entity_id'];
-                    break;
-                case 'contribution':
-                    $token_contexts_schema['contributionId'] = $context['entity_id'];
-                    break;
-                case 'participant':
-                    $token_contexts_schema['participantId'] = $context['entity_id'];
-                    break;
-                case 'event':
-                    $token_contexts_schema['eventId'] = $context['entity_id'];
-                    break;
-                case 'membership':
-                    $token_contexts_schema['membershipId'] = $context['entity_id'];
-                    break;
-                default:
-                    // TODO: Support token contexts for entity types by external providers.
-                    throw new Exception('Could not determine token context for entity type' . $entity_type);
-                    break;
+            if (!isset($entity_token_context[$entity_type])) {
+                throw new Exception(
+                    E::ts('Could not determine token context for entity type %1.', [1 => $entity_type])
+                );
             }
+            $token_contexts_schema[$entity_token_context[$entity_type]] = $context['entity_id'];
         }
 
         $this->tokenProcessor->addSchema(array_keys($token_contexts_schema));
@@ -223,6 +206,28 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
         $token_row->context($token_contexts_schema);
 
         return $token_row;
+    }
+
+    /**
+     * Builds a mapping of entity type names and their corresponding token context schema
+     *
+     * @return string[]
+     */
+    public static function entityTokenContext(): array {
+        // Define token contexts for entity types natively supported by CiviOffice.
+        $token_context = [
+            'contact' => 'contactId',
+            'contribution' => 'contributionId',
+            'participant' => 'participantId',
+            'event' => 'eventId',
+            'membership' => 'membershipId',
+        ];
+
+        // Let other extensions define token contexts for additional entity types.
+        $token_context_event = \Civi\Core\Event\GenericHookEvent::create(['context' => &$token_context]);
+        Civi::dispatcher()->dispatch('civi.civioffice.entitytokencontext', $token_context_event);
+
+        return $token_context;
     }
 
     abstract public function replaceTokens(CRM_Civioffice_Document $document, string $entity_type, int $entity_id);
