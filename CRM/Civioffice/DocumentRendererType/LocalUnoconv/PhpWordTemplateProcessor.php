@@ -98,6 +98,11 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
                 // TODO: Save and split surrounding contents and add them to the replaced block.
                 //       This would be a logical assumption, since HTML elements will always make for a new
                 //       paragraph, moving text before and after the macro into their own paragraphs.
+                //       See \PhpOffice\PhpWord\TemplateProcessor::setComplexValue().
+                //       Since Section is not in the required namespace for elements supported by this method, all
+                //       elements contained in the $section will have to be wrapped inside a
+                //       \PhpOffice\PhpWord\Writer\Word2007\Element\Container element, which in turn will have to be
+                //       passed to \PhpOffice\PhpWord\TemplateProcessor::setComplexValue().
                 $elements_data = '';
                 foreach ($section->getElements() as $element) {
                     $elementName = substr(
