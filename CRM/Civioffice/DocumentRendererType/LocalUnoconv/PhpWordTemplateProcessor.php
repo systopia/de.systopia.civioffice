@@ -115,9 +115,9 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
                 $this->replaceXmlBlock($macro_variable, $elements_data, 'w:p');
             }
         }
-        catch (\PhpOffice\PhpWord\Exception\Exception $exception) {
+        catch (Exception $exception) {
             throw new Exception(
-                E::ts('Error loading/writing Word document: %1', [1 => $exception->getMessage()]),
+                E::ts('Error loading/writing PhpWord document: %1', [1 => $exception->getMessage()]),
                 $exception->getCode(),
                 $exception
             );
