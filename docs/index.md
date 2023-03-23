@@ -47,7 +47,7 @@ implemented so far.
   to send emails with personalized attachments (search result actions for
   contacts and contributions)
 - API
-- HTML to OOXML conversion to allow for simple formatting within tokens (also a
+- (X)HTML to OOXML conversion to allow for simple formatting within tokens (also a
   workaround for missing Smarty syntax)
 
 ## Planned features for version 1.0
