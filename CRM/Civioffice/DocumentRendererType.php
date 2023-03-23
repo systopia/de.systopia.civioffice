@@ -26,6 +26,8 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
 
     protected array $liveSnippets = [];
 
+    protected static $tokenContext;
+
     public function __construct($uri = null, $name = null, array &$configuration = []) {
         parent::__construct($uri, $name);
         foreach (static::supportedConfiguration() as $config_item) {
@@ -213,20 +215,22 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
      * @return string[]
      */
     public static function entityTokenContext(): array {
-        // Define token contexts for entity types natively supported by CiviOffice.
-        $token_context = [
-            'contact' => 'contactId',
-            'contribution' => 'contributionId',
-            'participant' => 'participantId',
-            'event' => 'eventId',
-            'membership' => 'membershipId',
-        ];
+        if (!isset(static::$tokenContext)) {
+            // Define token contexts for entity types natively supported by CiviOffice.
+            static::$tokenContext = [
+                'contact' => 'contactId',
+                'contribution' => 'contributionId',
+                'participant' => 'participantId',
+                'event' => 'eventId',
+                'membership' => 'membershipId',
+            ];
 
-        // Let other extensions define token contexts for additional entity types.
-        $token_context_event = \Civi\Core\Event\GenericHookEvent::create(['context' => &$token_context]);
-        Civi::dispatcher()->dispatch('civi.civioffice.entitytokencontext', $token_context_event);
+            // Let other extensions define token contexts for additional entity types.
+            $token_context_event = \Civi\Core\Event\GenericHookEvent::create(['context' => &static::$tokenContext]);
+            Civi::dispatcher()->dispatch('civi.civioffice.entitytokencontext', $token_context_event);
+        }
 
-        return $token_context;
+        return static::$tokenContext;
     }
 
     abstract public function replaceTokens(CRM_Civioffice_Document $document, string $entity_type, int $entity_id);
