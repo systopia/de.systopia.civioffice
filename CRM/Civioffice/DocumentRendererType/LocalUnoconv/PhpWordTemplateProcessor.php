@@ -76,7 +76,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
     public function replaceHtmlToken($macro_variable, $rendered_token_message) {
         static $phpWord;
         if (!isset($phpWord)) {
-            $phpWord = PhpWord\IOFactory::load($this->tempDocumentFilename);
+            $phpWord = new PhpWord\PhpWord();
         }
         try {
             // Use a temporary Section element for adding the elements.
