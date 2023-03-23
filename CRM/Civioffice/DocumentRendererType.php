@@ -112,18 +112,17 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
     ): array;
 
     /**
-     * Adds implicit token contexts and builds the corresponding TokenProcessor context schema.
+     * Adds implicit token contexts, builds the corresponding TokenProcessor context schema for the token processor, and
+     * adds a token row.
      *
-     * @param array $token_contexts
-     *   An array of token contexts, with entity types as keys and an array with context as values, e. g.
-     *   [
-     *     'contribution' => ['entity_id' => 123],
-     *   ]
-     *   This will be extended with the corresponding contact, and anything else that can be implicitly derived from the
-     *   entity given.
+     * @param string $entity_type
+     *   The CiviCRM entity type to process token context for.
      *
-     * @return array
-     *   The TokenProcessor context schema, including all explicit and implicit token contexts.
+     * @param int $entity_id
+     *   The CiviCRM entity ID to process token context for.
+     *
+     * @return \Civi\Token\TokenRow
+     *   The token processor row with the processed token context.
      *
      * @throws \CRM_Core_Exception
      * @throws \Civi\API\Exception\UnauthorizedException
@@ -209,7 +208,7 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
     }
 
     /**
-     * Builds a mapping of entity type names and their corresponding token context schema
+     * Builds a mapping of entity type names and their corresponding token context schema identifiers.
      *
      * @return string[]
      */
