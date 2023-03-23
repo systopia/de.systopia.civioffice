@@ -129,44 +129,44 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
      * @throws \CRM_Core_Exception
      * @throws \Civi\API\Exception\UnauthorizedException
      */
-    public function processTokenContexts(string $entity_type, int $entity_id): \Civi\Token\TokenRow
+    public function processTokenContext(string $entity_type, int $entity_id): \Civi\Token\TokenRow
     {
-        $token_contexts = [
+        $entities = [
             $entity_type => ['entity_id' => $entity_id],
         ];
 
         // Add implicit contact token context for contributions.
         if (
-            array_key_exists('contribution', $token_contexts)
-            && !array_key_exists('contact', $token_contexts)
+            array_key_exists('contribution', $entities)
+            && !array_key_exists('contact', $entities)
         ) {
             $contribution = Api4\Contribution::get()
-                ->addWhere('id', '=', $token_contexts['contribution']['entity_id'])
+                ->addWhere('id', '=', $entities['contribution']['entity_id'])
                 ->execute()
                 ->single();
-            $token_contexts['contact'] = ['entity_id' => $contribution['contact_id']];
+            $entities['contact'] = ['entity_id' => $contribution['contact_id']];
         }
 
         // Add implicit contact and event token contexts for participants.
-        if (array_key_exists('participant', $token_contexts)) {
+        if (array_key_exists('participant', $entities)) {
             $participant = Api4\Participant::get()
-                ->addWhere('id', '=', $token_contexts['participant']['entity_id'])
+                ->addWhere('id', '=', $entities['participant']['entity_id'])
                 ->execute()
                 ->single();
-            if (!array_key_exists('contact', $token_contexts)) {
-                $token_contexts['contact'] = ['entity_id' => $participant['contact_id']];
+            if (!array_key_exists('contact', $entities)) {
+                $entities['contact'] = ['entity_id' => $participant['contact_id']];
             }
-            if (!array_key_exists('event', $token_contexts)) {
-                $token_contexts['event'] = ['entity_id' => $participant['event_id']];
+            if (!array_key_exists('event', $entities)) {
+                $entities['event'] = ['entity_id' => $participant['event_id']];
             }
-            if (!array_key_exists('contribution', $token_contexts)) {
+            if (!array_key_exists('contribution', $entities)) {
                 try {
                     $participant_payment = civicrm_api3(
                         'ParticipantPayment',
                         'getsingle',
                         ['participant_id' => $participant['id']]
                     );
-                    $token_contexts['contribution'] = ['entity_id' => $participant_payment['contribution_id']];
+                    $entities['contribution'] = ['entity_id' => $participant_payment['contribution_id']];
                 } catch (Exception $exception) {
                     // No participant payment, nothing to do.
                 }
@@ -175,73 +175,89 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
 
         // Add implicit contact token context for memberships.
         if (
-            array_key_exists('membership', $token_contexts)
-            && !array_key_exists('contact', $token_contexts)
+            array_key_exists('membership', $entities)
+            && !array_key_exists('contact', $entities)
         ) {
             $membership = Api4\Membership::get()
-                ->addWhere('id', '=', $token_contexts['membership']['entity_id'])
+                ->addWhere('id', '=', $entities['membership']['entity_id'])
                 ->execute()
                 ->single();
-            $token_contexts['contact'] = ['entity_id' => $membership['contact_id']];
+            $entities['contact'] = ['entity_id' => $membership['contact_id']];
         }
 
-        // Translate entity types into token contexts.
-        $token_contexts_schema = [];
-        $entity_token_context = static::entityTokenContext();
-        foreach ($token_contexts as $entity_type => $context) {
-            if (!isset($entity_token_context[$entity_type])) {
-                throw new Exception(
-                    E::ts('Could not determine token context for entity type %1.', [1 => $entity_type])
-                );
+        // Translate entity types into token contexts known to CiviOffice.
+        $entity_token_contexts = [
+            'contact' => 'contactId',
+            'contribution' => 'contributionId',
+            'participant' => 'participantId',
+            'event' => 'eventId',
+            'membership' => 'membershipId',
+        ];
+        $context = [];
+        foreach ($entities as $entity_type => $contextId) {
+            if (isset($entity_token_contexts[$entity_type])) {
+                $context[$entity_token_contexts[$entity_type]] = $contextId['entity_id'];
             }
-            $token_contexts_schema[$entity_token_context[$entity_type]] = $context['entity_id'];
         }
 
-        $this->tokenProcessor->addSchema(array_keys($token_contexts_schema));
-        $token_row = $this->tokenProcessor->addRow($token_contexts_schema)
+        // Let other extensions define additional token contexts, for the given entity or generically.
+        Civi::dispatcher()->dispatch(
+            'civi.civioffice.tokenContext',
+            \Civi\Core\Event\GenericHookEvent::create(
+                [
+                    'context' => &$context,
+                    'entity_type' => $entity_type,
+                    'entity_id' => $entity_id,
+                ]
+            )
+        );
+
+        // Reset (re-instantiate) the token processor per document for not evaluating with previous token rows.
+        $this->tokenProcessor = static::createTokenProcessor($context);
+        $token_row = $this->tokenProcessor->addRow($context)
             ->format('text/html');
 
         // Replace tokens in Live Snippets and update token contexts.
-        $this->replaceLiveSnippetTokens($token_row);
-        $token_contexts_schema['civioffice.live_snippets'] = $this->liveSnippets;
-        $token_row->context($token_contexts_schema);
+        $this->replaceLiveSnippetTokens($context);
+        $context['civioffice.live_snippets'] = $this->liveSnippets;
+        $token_row->context($context);
 
         return $token_row;
     }
 
-    /**
-     * Builds a mapping of entity type names and their corresponding token context schema identifiers.
-     *
-     * @return string[]
-     */
-    public static function entityTokenContext(): array {
-        if (!isset(static::$tokenContext)) {
-            // Define token contexts for entity types natively supported by CiviOffice.
-            static::$tokenContext = [
-                'contact' => 'contactId',
-                'contribution' => 'contributionId',
-                'participant' => 'participantId',
-                'event' => 'eventId',
-                'membership' => 'membershipId',
-            ];
-
-            // Let other extensions define token contexts for additional entity types.
-            $token_context_event = \Civi\Core\Event\GenericHookEvent::create(['context' => &static::$tokenContext]);
-            Civi::dispatcher()->dispatch('civi.civioffice.entitytokencontext', $token_context_event);
-        }
-
-        return static::$tokenContext;
+    protected static function createTokenProcessor(array $context)
+    {
+        $token_processor = new TokenProcessor(
+            Civi::service('dispatcher'),
+            [
+                'controller' => __CLASS__,
+                'smarty' => false,
+            ]
+        );
+        $token_processor->addSchema(array_keys($context));
+        return $token_processor;
     }
 
-    abstract public function replaceTokens(CRM_Civioffice_Document $document, string $entity_type, int $entity_id);
+    /**
+     * @param \CRM_Civioffice_Document $document
+     * @param string $entity_type
+     * @param int[] $entity_ids
+     *
+     * @return void
+     */
+    abstract public function replaceTokens(CRM_Civioffice_Document $document, string $entity_type, array $entity_ids): void;
 
-    public function replaceLiveSnippetTokens(\Civi\Token\TokenRow $row) {
+    public function replaceLiveSnippetTokens(array $context) {
+        // Use a separate token processor for replacing Live Snippet tokens (with the same context).
+        $token_processor = static::createTokenProcessor($context);
+        $token_row = $token_processor->addRow($context)
+            ->format('text/html');
         foreach ($this->liveSnippets as $live_snippet_name => $live_snippet) {
-            $this->tokenProcessor->addMessage($live_snippet_name, $live_snippet, 'text/html');
+            $token_processor->addMessage($live_snippet_name, $live_snippet, 'text/html');
         }
-        $this->tokenProcessor->evaluate();
+        $token_processor->evaluate();
         foreach ($this->liveSnippets as $live_snippet_name => &$live_snippet) {
-            $live_snippet = $this->tokenProcessor->render($live_snippet_name, $row);
+            $live_snippet = $token_processor->render($live_snippet_name, $row);
         }
     }
 
