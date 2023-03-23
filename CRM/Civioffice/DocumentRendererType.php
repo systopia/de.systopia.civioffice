@@ -233,9 +233,11 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
     abstract public function replaceTokens(CRM_Civioffice_Document $document, string $entity_type, int $entity_id);
 
     public function replaceLiveSnippetTokens(\Civi\Token\TokenRow $row) {
-        foreach ($this->liveSnippets as $live_snippet_name => &$live_snippet) {
+        foreach ($this->liveSnippets as $live_snippet_name => $live_snippet) {
             $this->tokenProcessor->addMessage($live_snippet_name, $live_snippet, 'text/html');
-            $this->tokenProcessor->evaluate();
+        }
+        $this->tokenProcessor->evaluate();
+        foreach ($this->liveSnippets as $live_snippet_name => &$live_snippet) {
             $live_snippet = $this->tokenProcessor->render($live_snippet_name, $row);
         }
     }
