@@ -29,6 +29,8 @@ class CRM_Civioffice_Page_Tokens extends CRM_Core_Page
                     'participantId',
                     'eventId',
                     'membershipId',
+                    'activityId',
+                    'caseId',
                     // TODO: - Implement for token contexts from external token providers.
                     //       - Add a note about checkActive() being implemented correctly, i. e. checking the
                     //         TokenProcessor's context schema.
