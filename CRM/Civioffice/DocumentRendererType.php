@@ -257,7 +257,7 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
         }
         $token_processor->evaluate();
         foreach ($this->liveSnippets as $live_snippet_name => &$live_snippet) {
-            $live_snippet = $token_processor->render($live_snippet_name, $row);
+            $live_snippet = $token_processor->render($live_snippet_name, $token_row);
         }
     }
 
