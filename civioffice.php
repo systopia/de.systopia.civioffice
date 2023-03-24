@@ -11,28 +11,28 @@ function civioffice_civicrm_searchTasks($objectType, &$tasks)
 {
     switch ($objectType) {
         case 'contact':
-            $tasks[] = [
+            $tasks['civioffice'] = [
                 'title' => E::ts('Create Documents (CiviOffice)'),
                 'class' => 'CRM_Civioffice_Form_Task_CreateDocuments',
                 'result' => false,
             ];
             break;
         case 'contribution':
-            $tasks[] = [
+            $tasks['civioffice'] = [
                 'title' => E::ts('Create Documents (CiviOffice)'),
                 'class' => 'CRM_Civioffice_Form_Task_CreateContributionDocuments',
                 'result' => false,
             ];
             break;
         case 'event':
-            $tasks[] = [
+            $tasks['civioffice'] = [
                 'title' => E::ts('Create Documents (CiviOffice)'),
                 'class' => 'CRM_Civioffice_Form_Task_CreateParticipantDocuments',
                 'result' => false,
             ];
             break;
         case 'membership':
-            $tasks[] = [
+            $tasks['civioffice'] = [
                 'title' => E::ts('Create Documents (CiviOffice)'),
                 'class' => 'CRM_Civioffice_Form_Task_CreateMembershipDocuments',
                 'result' => false,
