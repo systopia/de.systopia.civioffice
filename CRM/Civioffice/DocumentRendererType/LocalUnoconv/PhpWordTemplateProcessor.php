@@ -84,13 +84,18 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
             // Note: addHtml() does not accept styles, so added HTML elements do not get applied any existing
             // styles.
             PhpWord\Shared\Html::addHtml($section, $rendered_token_message);
+            $elements = $section->getElements();
+            $elementCount = count($elements);
             if (
-                count($elements = $section->getElements()) == 1
-                && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
-                || empty($elements)
+                $elementCount === 1 && $elements[0] instanceof PhpOffice\PhpWord\Element\Text
+                || $elementCount === 0
             ) {
                 // ... either as plain text (if there is only a single Text element or nothing), ...
                 $this->setValue($macro_variable, $rendered_token_message);
+            }
+            elseif ($elementCount === 1) {
+                // ... or as single complex value from HTML
+                $this->setComplexValue($macro_variable, $elements[0]);
             }
             else {
                 // ... or as HTML: Render all elements and replace the paragraph containing the macro.
@@ -99,25 +104,24 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
                 //       This would be a logical assumption, since HTML elements will always make for a new
                 //       paragraph, moving text before and after the macro into their own paragraphs.
                 //       See \PhpOffice\PhpWord\TemplateProcessor::setComplexValue().
-                //       Since Section is not in the required namespace for elements supported by this method, all
-                //       elements contained in the $section will have to be wrapped inside a
-                //       \PhpOffice\PhpWord\Writer\Word2007\Element\Container element, which in turn will have to be
-                //       passed to \PhpOffice\PhpWord\TemplateProcessor::setComplexValue().
-                $elements_data = '';
-                foreach ($section->getElements() as $element) {
+                //       It cannot be used with Section objects, because Section is not in the required namespace for
+                //       elements supported by this method.
+                //       When just putting the section in a \PhpOffice\PhpWord\Writer\Word2007\Element\Container and
+                //       using the same code as in setComplexValue() no content appears.
+                $xmlWriter = new PhpWord\Shared\XMLWriter();
+                foreach ($elements as $element) {
                     $elementName = substr(
                         get_class($element),
                         strrpos(get_class($element), '\\') + 1
                     );
                     $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
 
-                    $xmlWriter = new PhpWord\Shared\XMLWriter();
                     /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
                     $elementWriter = new $objectClass($xmlWriter, $element, false);
                     $elementWriter->write();
-                    $elements_data .= $xmlWriter->getData();
                 }
-                $this->replaceXmlBlock($macro_variable, $elements_data, 'w:p');
+
+                $this->replaceXmlBlock($macro_variable, $xmlWriter->getData(), 'w:p');
             }
         }
         catch (Exception $exception) {
