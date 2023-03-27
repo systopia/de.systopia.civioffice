@@ -30,7 +30,7 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'civi.civioffice.documentstores' => 'getDefaultDocumentStores',
+            'civi.civioffice.documentStores' => 'getDefaultDocumentStores',
         ];
     }
 
@@ -83,7 +83,7 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface
         $document_stores = [];
         /* @var \CRM_Civioffice_DocumentStore[] $document_stores */
         $document_stores_event = GenericHookEvent::create(['document_stores' => &$document_stores]);
-        Civi::dispatcher()->dispatch('civi.civioffice.documentstores', $document_stores_event);
+        Civi::dispatcher()->dispatch('civi.civioffice.documentStores', $document_stores_event);
 
         if ($active_only) {
             $document_stores = array_filter($document_stores, function($document_store) {
