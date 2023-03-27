@@ -13,14 +13,26 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+use Civi\Core\Event\GenericHookEvent;
 use CRM_Civioffice_ExtensionUtil as E;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * CiviOffice Configuration
  */
-class CRM_Civioffice_Configuration
+class CRM_Civioffice_Configuration implements EventSubscriberInterface
 {
     protected static $singleton = null;
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            'civi.civioffice.documentStores' => 'getDefaultDocumentStores',
+        ];
+    }
 
     /**
      * @return CRM_Civioffice_Configuration
@@ -59,31 +71,50 @@ class CRM_Civioffice_Configuration
     /**
      * Get the list of active/all document stores
      *
-     * @param boolean $only_show_active
+     * @param boolean $active_only
      *   return only active/all objects
      *
      * @return \CRM_Civioffice_DocumentStore[]
      */
-    public static function getDocumentStores(bool $only_show_active) : array
+    public static function getDocumentStores(bool $active_only) : array
     {
-        // todo: get from config
-        $available_document_stores = [
-            new CRM_Civioffice_DocumentStore_Local('local_folder', "Local Folder", false, true),
-            new CRM_Civioffice_DocumentStore_Upload(true),
-            new CRM_Civioffice_DocumentStore_Upload(false),
-        ];
+        // Fetch document stores with an event.
+        // CiviOffice self-subscribes to that event with this very class, which implements the EventSubscriberInterface.
+        $document_stores = [];
+        /* @var \CRM_Civioffice_DocumentStore[] $document_stores */
+        $document_stores_event = GenericHookEvent::create(['document_stores' => &$document_stores]);
+        Civi::dispatcher()->dispatch('civi.civioffice.documentStores', $document_stores_event);
 
-        if (!$only_show_active) return $available_document_stores;
-
-        $active_document_stores = [];
-        foreach ($available_document_stores as $ds) {
-            /** @var $ds CRM_Civioffice_DocumentStore */
-            if ($ds->isReady()) {
-                $active_document_stores[] = $ds;
-            }
+        if ($active_only) {
+            $document_stores = array_filter($document_stores, function($document_store) {
+               return $document_store->isReady();
+            });
         }
 
-        return $active_document_stores;
+        return $document_stores;
+    }
+
+    /**
+     * Defines document stores shipped with CiviOffice:
+     * - a configurable local directory on the server
+     * - a configurable local directory with a user interface for uploading documents (shared for all contacts/users)
+     * - a configurable local directory with a user interface for uploading documents (per contact/user)
+     *
+     * @param GenericHookEvent $event
+     *   The subscribed event. Document stores are in an implicit property "document_stores", which is an array of
+     *   instances of CRM_Civioffice_DocumentStore.
+     *
+     * @return void
+     */
+    public static function getDefaultDocumentStores($event) {
+        $event->document_stores[] = new CRM_Civioffice_DocumentStore_Local(
+            'local_folder',
+            'Local Folder',
+            false,
+            true
+        );
+        $event->document_stores[] = new CRM_Civioffice_DocumentStore_Upload(true);
+        $event->document_stores[] = new CRM_Civioffice_DocumentStore_Upload(false);
     }
 
 
