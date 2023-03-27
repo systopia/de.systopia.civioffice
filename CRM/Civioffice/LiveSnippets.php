@@ -89,8 +89,7 @@ class CRM_Civioffice_LiveSnippets
             self::storeValue($name, $value);
         }
     }
-
-    public static function getTokens()
+    public static function getTokens(): array
     {
         if (!isset(self::$_liveSnippetTokens)) {
             self::$_liveSnippetTokens = [];
@@ -98,6 +97,7 @@ class CRM_Civioffice_LiveSnippets
                 self::$_liveSnippetTokens['live_snippets.' . $live_snippet['name']] = $live_snippet['label'];
             }
         }
+
         return self::$_liveSnippetTokens;
     }
 

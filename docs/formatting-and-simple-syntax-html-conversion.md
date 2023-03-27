@@ -4,6 +4,8 @@ If you insert certain HTML elements into Live Snippets, CiviOffice will convert
 them into OOXML which allows users to do some basic formatting, e.g. a list or
 bold font. The HTML elements that can be rendered by CiviOffice are
 [these](https://github.com/PHPOffice/PHPWord/blob/be0190cd5d8f95b4be08d5853b107aa4e352759a/src/PhpWord/Shared/Html.php#L166-L198).
+Note that valid (X)HTML is required, so a line break will have to be `<br />`
+instead of HTML5-style `<br>`.
 
 ## A workaround to insert some Smarty-based logic into your CiviOffice documents
 

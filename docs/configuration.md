@@ -32,10 +32,7 @@ These options for document storage are currently available:
 
 ## Document Renderers
 
-The currently built-in renderers are *Local Universal Office Converter (
-unoconv)* and *Local Universal Office Converter (unoconv) implementing PhpWord*.
-The latter is required in order to convert HTML syntax to OOXML, the internal
-standard of .docx.
+The currently built-in renderer is *Local Universal Office Converter (unoconv)*.
 
 You will have to enter the following:
 
@@ -46,6 +43,9 @@ You will have to enter the following:
   CiviCRM's `templates_c` directory. As an example, on a Drupal-based site,
   this might look
   like `/var/www/vhosts/[YOUR_DOMAIN]/httpdocs/dev/public/sites/default/files/civicrm/templates_c/civioffice`
+- Whether token replacement should be done using a *PhpWord* template processor.
+  This option allows converting some (X)HTML elements in tokens, e.g. line
+  breaks.
 
 The directory, here named ``civioffice``, must be created manually in the
 described path. Although the path (and name) might be set differently, we

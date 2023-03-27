@@ -18,9 +18,7 @@
 + It is also advisable not to use "exotic" image file types in your docs - the
   most common ones should work though.
 
-+ **Smarty syntax is not supported in CiviOffice templates.** You can use
-  HTML-to-OOXML conversion to work around this limitation (as described in a
-  later chapter).
++ Smarty syntax is not supported in CiviOffice templates.
 
 ## Managing Document Templates
 

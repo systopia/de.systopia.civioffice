@@ -33,7 +33,7 @@ class CRM_Civioffice_Tokens extends AbstractTokenSubscriber
     public function prefetch(TokenValueEvent $e)
     {
         $token_values = [
-            'live_snippets' => $e->getTokenProcessor()->rowContexts[0]['civioffice.live_snippets'],
+            'live_snippets' => $e->getTokenProcessor()->getContextValues('civioffice.live_snippets')[0] ?? [],
         ];
 
         return $token_values;
@@ -42,6 +42,13 @@ class CRM_Civioffice_Tokens extends AbstractTokenSubscriber
     public function evaluateToken(TokenRow $row, $entity, $field, $prefetch = null)
     {
         [$token_type, $token_name] = explode('.', $field);
+
+        // Set row format for Live Snippets to HTML (default) or an explicitly defined context format.
+        $processor_context = $row->tokenProcessor->context['civioffice'] ?? [];
+        if ($token_type == 'live_snippets') {
+            $row->format($processor_context['format'] ?? 'text/html');
+        }
+
         $row->tokens($entity, $field, $prefetch[$token_type][$token_name] ?? '');
     }
 }
