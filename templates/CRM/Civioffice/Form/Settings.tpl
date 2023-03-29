@@ -62,7 +62,7 @@
     <div id="help">{ts}Renders or converts documents{/ts}</div>
 
     {foreach from=$document_renderer_types item="document_renderer_type" key="document_renderer_type_id"}
-      {capture assign="addDocumentRendererUrl"}{crmURL p="civicrm/admin/civioffice/settings/renderer" q="op=add&type=$document_renderer_type_id"}{/capture}
+      {capture assign="addDocumentRendererUrl"}{crmURL p="civicrm/admin/civioffice/settings/renderer" q="action=add&type=$document_renderer_type_id"}{/capture}
       <a class="button crm-popup" href="{$addDocumentRendererUrl}">
           {ts 1=$document_renderer_type.label}Add %1 Document Renderer{/ts}
       </a>
@@ -87,10 +87,11 @@
               <td>{if $component.is_ready}{ts}Yes{/ts}{else}{ts}No{/ts}{/if}</td>
               <td>
                   {if $component.config_url}
-                    <a class="button crm-popup" href="{$component.config_url}">{ts}configure{/ts}</a>
+                    <a class="button crm-popup" href="{$component.config_url}">{ts}Configure{/ts}</a>
                   {else}
                       {ts}no configuration available{/ts}
                   {/if}
+                <a class="button crm-popup" href="{$component.delete_url}">{ts}Delete{/ts}</a>
               </td>
 
             </tr>

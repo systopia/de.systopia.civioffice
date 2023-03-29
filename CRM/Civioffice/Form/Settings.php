@@ -40,6 +40,7 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
                     'name'        => $instance->getName(),
                     'description' => $instance->getDescription(),
                     'config_url'  => $instance->getConfigPageURL(),
+                    'delete_url'  => $instance->getDeleteURL(),
                     'is_ready'    => $instance->isReady()
                 ];
             }

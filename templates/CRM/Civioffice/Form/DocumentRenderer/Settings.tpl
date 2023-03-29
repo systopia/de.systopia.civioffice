@@ -13,17 +13,31 @@
 +-------------------------------------------------------*}
 
 {crmScope extensionKey='de.systopia.civioffice'}
+  <div class="crm-block crm-form-block">
 
-  <div class="crm-section">
-    <div class="label">{$form.name.label}</div>
-    <div class="content">{$form.name.html}</div>
-    <div class="clear"></div>
+    <div class="crm-submit-buttons">
+        {include file="CRM/common/formButtons.tpl" location="top"}
+    </div>
+
+      {if $action eq 8}
+          {* Delete *}
+        <div class="messages status no-popup">
+          <p>{icon icon="fa-info-circle"}{/icon}
+              {ts}Are you sure you want to delete this Document Renderer?{/ts} {ts}This action cannot be undone.{/ts}</p>
+        </div>
+      {else}
+          {* Add or Update *}
+        <div class="crm-section">
+          <div class="label">{$form.name.label}</div>
+          <div class="content">{$form.name.html}</div>
+          <div class="clear"></div>
+        </div>
+          {include file=$rendererTypeSettingsTemplate}
+      {/if}
+
+    <div class="crm-submit-buttons">
+        {include file="CRM/common/formButtons.tpl" location="bottom"}
+    </div>
+
   </div>
-
-  {include file=$rendererTypeSettingsTemplate}
-
-  <div class="crm-submit-buttons">
-      {include file="CRM/common/formButtons.tpl" location="bottom"}
-  </div>
-
 {/crmScope}

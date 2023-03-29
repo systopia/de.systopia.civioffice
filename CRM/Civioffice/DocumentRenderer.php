@@ -59,7 +59,15 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
     {
         return CRM_Utils_System::url(
             'civicrm/admin/civioffice/settings/renderer',
-            'id=' . $this->uri
+            'id=' . $this->uri . '&action=update'
+        );
+    }
+
+    public function getDeleteURL(): ?string
+    {
+        return CRM_Utils_System::url(
+            'civicrm/admin/civioffice/settings/renderer',
+            'id=' . $this->uri . '&action=delete'
         );
     }
 
@@ -115,6 +123,13 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
         Civi::settings()->set('civioffice_renderer_' . $this->uri, $configuration);
         $renderer_list = Civi::settings()->get('civioffice_renderers');
         $renderer_list[$this->uri] = $this->name;
+        Civi::settings()->set('civioffice_renderers', $renderer_list);
+    }
+
+    public function delete() {
+        Civi::settings()->revert('civioffice_renderer_' . $this->uri);
+        $renderer_list = Civi::settings()->get('civioffice_renderers');
+        unset($renderer_list[$this->uri]);
         Civi::settings()->set('civioffice_renderers', $renderer_list);
     }
 

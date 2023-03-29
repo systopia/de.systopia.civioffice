@@ -44,45 +44,76 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
 
     public function preProcess()
     {
-        if ($uri = CRM_Utils_Request::retrieve('id', 'Alphanumeric')) {
+        // Restrict supported actions.
+        if (!($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD | CRM_Core_Action::DELETE))) {
+            throw new Exception(E::ts('Invalid action.'));
+        }
+
+        // Require ID for editing/deleting.
+        if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::DELETE)) {
+            if (!$uri = CRM_Utils_Request::retrieve('id', 'Alphanumeric', $this)) {
+                throw new Exception(E::ts('Missing Document Renderer ID.'));
+            }
             $this->documentRenderer = CRM_Civioffice_DocumentRenderer::load($uri);
             $this->documentRendererType = $this->documentRenderer->getType();
         }
-        else {
-            $this->documentRendererType = CRM_Civioffice_DocumentRendererType::create(
-                CRM_Utils_Request::retrieve('type', 'Alphanumeric', $this)
-            );
+
+        // Require type for adding.
+        if ($this->_action & (CRM_Core_Action::ADD)) {
+            if (!$type = CRM_Utils_Request::retrieve('type', 'Alphanumeric', $this)) {
+                throw new Exception(E::ts('Missing Document Renderer type.'));
+            }
+            $this->documentRendererType = CRM_Civioffice_DocumentRendererType::create($type);
         }
+
+        // Make sure to redirect to the CiviOffice settings page.
+        CRM_Core_Session::singleton()->replaceUserContext(
+            CRM_Utils_System::url(
+                'civicrm/admin/civioffice/settings',
+                "reset=1"
+            )
+        );
     }
 
     public function buildQuickForm()
     {
-        $this->add(
-            'text',
-            'name',
-            E::ts('Name'),
-            ['class' => 'huge'],
-            true
-        );
-        if (isset($this->documentRenderer)) {
-            $this->setDefaults(
+        if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD)) {
+            $this->add(
+                'text',
+                'name',
+                E::ts('Name'),
+                ['class' => 'huge'],
+                true
+            );
+            if (isset($this->documentRenderer)) {
+                $this->setDefaults(
+                    [
+                        'name' => $this->documentRenderer->getName(),
+                    ]
+                );
+            }
+
+            $this->documentRendererType->buildsettingsForm($this);
+            $this->assign('rendererTypeSettingsTemplate', $this->documentRendererType::getSettingsFormTemplate());
+
+            $this->addButtons(
                 [
-                    'name' => $this->documentRenderer->getName(),
+                    [
+                        'type' => 'submit',
+                        'name' => E::ts('Save'),
+                        'isDefault' => true,
+                    ],
                 ]
             );
         }
+        elseif ($this->_action == CRM_Core_Action::DELETE) {
+            // No form elements to add, markup is being defined in the template.
+        }
 
-        $this->documentRendererType->buildsettingsForm($this);
-        $this->assign('rendererTypeSettingsTemplate', $this->documentRendererType::getSettingsFormTemplate());
-
-        $this->addButtons(
-            [
-                [
-                    'type' => 'submit',
-                    'name' => E::ts('Save'),
-                    'isDefault' => true,
-                ],
-            ]
+        $this->addDefaultButtons(
+            $this->_action & CRM_Core_Action::DELETE ? E::ts('Delete') : E::ts('Save'),
+            'submit',
+            'cancel'
         );
 
         parent::buildQuickForm();
@@ -106,26 +137,34 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
     {
         parent::validate();
 
-        $this->documentRendererType->validateSettingsForm($this);
+        if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD)) {
+            $this->documentRendererType->validateSettingsForm($this);
+        }
 
         return (count($this->_errors) == 0);
     }
 
   public function postProcess() {
-      $values = $this->exportValues();
+      // Create/update/delete option value.
+      if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD)) {
+          $values = $this->exportValues();
 
-      if (!isset($this->documentRenderer)) {
-          $this->documentRenderer = new CRM_Civioffice_DocumentRenderer(
-              $this->documentRendererType::getNextUri(),
-              $values['name'],
-              [
-                  'type' => $this->documentRendererType->getURI(),
-              ]
-          );
+          if (!isset($this->documentRenderer)) {
+              $this->documentRenderer = new CRM_Civioffice_DocumentRenderer(
+                  $this->documentRendererType::getNextUri(),
+                  $values['name'],
+                  [
+                      'type' => $this->documentRendererType->getURI(),
+                  ]
+              );
+          }
+
+          $this->documentRendererType->postProcessSettingsForm($this);
+
+          $this->documentRenderer->save();
       }
-
-      $this->documentRendererType->postProcessSettingsForm($this);
-
-      $this->documentRenderer->save();
+      elseif ($this->_action & (CRM_Core_Action::DELETE)) {
+          $this->documentRenderer->delete();
+      }
   }
 }

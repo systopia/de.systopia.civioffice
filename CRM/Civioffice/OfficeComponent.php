@@ -42,6 +42,16 @@ abstract class CRM_Civioffice_OfficeComponent
     abstract public function getConfigPageURL() : string;
 
     /**
+     * Get the URL to delete this component
+     *
+     * @return string|null
+     */
+    public function getDeleteURL(): ?string
+    {
+        return null;
+    }
+
+    /**
      * Is this component ready, i.e. properly
      *   configured and connected
      *
