@@ -114,6 +114,7 @@ function civioffice_civicrm_navigationMenu(&$menu) {
     _civioffice_civix_insert_navigation_menu($menu, '', array(
         'label' => E::ts('CiviOffice'),
         'name' => 'civioffice',
+        'permission' => 'access CiviOffice',
         'operator' => 'OR',
         'separator' => 0,
         'icon' => 'crm-i fa-file-text',
