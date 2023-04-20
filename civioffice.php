@@ -9,37 +9,48 @@ use CRM_Civioffice_ExtensionUtil as E;
 
 function civioffice_civicrm_searchTasks($objectType, &$tasks)
 {
-    if ($objectType == 'contact')
-    {
-        $tasks[] = [
-            'title' => E::ts('Create Documents (CiviOffice)'),
-            'class' => 'CRM_Civioffice_Form_Task_CreateDocuments',
-            'result' => false
-        ];
-    }
-    if ($objectType == 'contribution')
-    {
-        $tasks[] = [
-            'title' => E::ts('Create Documents (CiviOffice)'),
-            'class' => 'CRM_Civioffice_Form_Task_CreateContributionDocuments',
-            'result' => false
-        ];
-    }
-    if ($objectType == 'event')
-    {
-        $tasks[] = [
-            'title' => E::ts('Create Documents (CiviOffice)'),
-            'class' => 'CRM_Civioffice_Form_Task_CreateParticipantDocuments',
-            'result' => false
-        ];
-    }
-    if ($objectType == 'membership')
-    {
-        $tasks[] = [
-            'title' => E::ts('Create Documents (CiviOffice)'),
-            'class' => 'CRM_Civioffice_Form_Task_CreateMembershipDocuments',
-            'result' => false
-        ];
+    switch ($objectType) {
+        case 'contact':
+            $tasks['civioffice'] = [
+                'title' => E::ts('Create Documents (CiviOffice)'),
+                'class' => 'CRM_Civioffice_Form_Task_CreateDocuments',
+                'result' => false,
+            ];
+            break;
+        case 'contribution':
+            $tasks['civioffice'] = [
+                'title' => E::ts('Create Documents (CiviOffice)'),
+                'class' => 'CRM_Civioffice_Form_Task_CreateContributionDocuments',
+                'result' => false,
+            ];
+            break;
+        case 'event':
+            $tasks['civioffice'] = [
+                'title' => E::ts('Create Documents (CiviOffice)'),
+                'class' => 'CRM_Civioffice_Form_Task_CreateParticipantDocuments',
+                'result' => false,
+            ];
+            break;
+        case 'membership':
+            $tasks['civioffice'] = [
+                'title' => E::ts('Create Documents (CiviOffice)'),
+                'class' => 'CRM_Civioffice_Form_Task_CreateMembershipDocuments',
+                'result' => false,
+            ];
+            break;
+        case 'activity':
+            $tasks['civioffice'] = [
+                'title' => E::ts('Create Documents (CiviOffice)'),
+                'class' => 'CRM_Civioffice_Form_Task_CreateActivityDocuments',
+                'result' => false,
+            ];
+            break;
+        case 'case':
+            $tasks['civioffice'] = [
+                'title' => E::ts('Create Documents (CiviOffice)'),
+                'class' => 'CRM_Civioffice_Form_Task_CreateCaseDocuments',
+                'result' => false,
+            ];
     }
 }
 

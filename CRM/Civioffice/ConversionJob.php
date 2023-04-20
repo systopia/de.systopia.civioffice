@@ -143,6 +143,23 @@ class CRM_Civioffice_ConversionJob
                             ->execute()
                             ->single()['contact_id'];
                         break;
+                    case 'activity':
+                        $contact_id = \Civi\Api4\ActivityContact::get()
+                            ->addSelect('contact_id')
+                            ->addWhere('activity_id', '=', $entity_id)
+                            ->addWhere('record_type_id:name', '=', 'Activity Source')
+                            ->execute()
+                            // Use the first record, if any, as there might be more than one.
+                            ->first()['contact_id'] ?? null;
+                        break;
+                    case 'case':
+                        $contact_id = \Civi\Api4\CaseContact::get()
+                            ->addSelect('contact_id')
+                            ->addWhere('case_id', '=', $entity_id)
+                            ->execute()
+                            // Use the first record, if any, as there might be more than one.
+                            ->first()['contact_id'] ?? null;
+                        break;
                 }
                 civicrm_api3('Activity', 'create', [
                     'activity_type_id' => $this->activity_type_id,

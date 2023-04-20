@@ -185,6 +185,51 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
             $entities['contact'] = ['entity_id' => $membership['contact_id']];
         }
 
+        // Add implicit contact and case token context for activities.
+        if (
+            array_key_exists('activity', $entities)
+        ) {
+            if (!array_key_exists('contact', $entities)) {
+                if (
+                    $activityContact = Api4\ActivityContact::get()
+                        ->addSelect('contact_id')
+                        ->addWhere('activity_id', '=', $entities['activity']['entity_id'])
+                        ->addWhere('record_type_id:name', '=', 'Activity Source')
+                        ->execute()
+                        // Use the first record, as there might be more than one.
+                        ->first()
+                ) {
+                    $entities['contact'] = ['entity_id' => $activityContact['contact_id']];
+                }
+            }
+            if (!array_key_exists('case', $entities)) {
+                $activity = Api4\Activity::get()
+                    ->addSelect('case_id')
+                    ->addWhere('id', '=', $entities['activity']['entity_id'])
+                    ->addWhere('case_id', 'IS NOT EMPTY')
+                    ->execute()
+                    ->single();
+                $entities['case'] = ['entity_id' => $activity['case_id']];
+            }
+        }
+
+        // Add implicit contact token context for cases.
+        if (
+            array_key_exists('case', $entities)
+            && !array_key_exists('contact', $entities)
+        ) {
+            if (
+                $caseContact = Api4\CaseContact::get()
+                    ->addSelect('contact_id')
+                    ->addWhere('case_id', '=', $entities['case']['entity_id'])
+                    ->execute()
+                    // Use the first record, as there might be more than one.
+                    ->first()
+            ) {
+                $entities['contact'] = ['entity_id' => $caseContact['contact_id']];
+            }
+        }
+
         // Translate entity types into token contexts known to CiviOffice.
         $entity_token_contexts = [
             'contact' => 'contactId',
@@ -192,6 +237,8 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
             'participant' => 'participantId',
             'event' => 'eventId',
             'membership' => 'membershipId',
+            'activity' => 'activityId',
+            'case' => 'caseId',
         ];
         $context = [];
         foreach ($entities as $entity_type => $contextId) {
