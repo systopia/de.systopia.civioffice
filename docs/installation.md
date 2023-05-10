@@ -21,22 +21,21 @@ available from the built-in extensions catalog.
 
 First, download an official release archive from the release page. Unpack the
 archive and move the directory into your extensions directory (e.g.,
-`.../civicrm/ext/`; you can find the exact location in your CiviCRM settings (
-Administer/System Settings/Directories)).
+`.../civicrm/ext/`). You can find the exact location in your CiviCRM settings (
+Administer > System Settings > Directories).
 
 Next, open the extensions page in the CiviCRM settings (Administer/System
 Settings/Extensions). Find the extension CiviOffice in the *Extensions* tab and
-click on *Install*. The extension will be set up.
+click on *Install*. The extension will be set up, including new navigation menu items.
 
 ## Basic configuration steps
 
-- Go to Administration -> Administration Console -> Communication -> CiviOffice
-  Settings or ``/civicrm/admin/civioffice/settings`` to set up your document
+- Assign the permission "Access CiviOffice" to user roles as needed.
+- In the new CiviOffice navigation, go to CiviOffice
+  Settings to set up your document
   stores, renderers and editors
 - The documents used in CiviOffice can be managed
-  via ``/civicrm/civioffice/document_upload``. Currently you need to add that
-  link to the navigation menu manually.
-- Assign the permission "Access CiviOffice" to user roles as needed.
+  via under "Upload Documents" 
 - Optional: Create an activity type such as "Created Document (CiviOffice)"
 
 ## Known issues
