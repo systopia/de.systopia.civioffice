@@ -17,8 +17,7 @@ The additional tools you will need to install are:
 CiviOffice and the additional extensions will work without further
 configuration (when installed in sufficient versions).
 
-To use the feature with regard to contacts or contributions, search for contacts
-or contributions and select the search action 'Send Emails (via MailBatch)'. In
+To use the feature with regard to contacts, contributions, or memberships, search for contacts (or contributions, or memberships) and select the search action 'Send Emails (via MailBatch)'. In
 the options interface, under 'Attachments', select 'CiviOffice Document' and
 choose the template you want to use for your attachments. Any valid tokens will
 be replaced in the usual way.
@@ -33,3 +32,5 @@ email communication to event participants (e.g. whenever a participant
 registration changes from status pending to confirmed, send out this email ...).
 CiviOffice-generated personalized attachments can also be attached to those
 automatic emails!
+
+**Please note:** There is no MailBatch integration for CiviCase yet, so you can only create pdfs for cases so far. 
