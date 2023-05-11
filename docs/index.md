@@ -62,11 +62,11 @@ implemented so far.
   properties of text elements. In some cases, this can lead to CiviCRM tokens
   being split up by XML tags, making them infunctional. CiviOffice tries to
   mitigate this problem by optimizing the XML structure. Currently this 'repair
-  functionality' is enabled with the configuration option
+  functionality' is enabled with the configuration option 
   'prepare .docx documents'. However, there are some things that CiviOffice can
   not repair (yet, or ever).
 
-**In order to avoid issues, you should:**
+**In order to avoid issues with infunctional tokens, you should:**
 
 - make sure there are no mixed formatting properties in your tokens (e.g. a
   portion of the token is in bold font)
