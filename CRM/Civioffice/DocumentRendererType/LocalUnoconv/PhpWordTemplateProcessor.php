@@ -35,16 +35,17 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
             ] as &$tempDocPart
         ) {
             // Regex code borrowed from \Civi\Token\TokenProcessor::visitTokens().
+            // Adapted to allow '&quot;' instead of '"'.
 
             // The regex is a bit complicated, we so break it down into fragments.
             // Consider the example '{foo.bar|whiz:"bang":"bang"}'. Each fragment matches the following:
             $tokenRegex = '([\w]+)\.([\w:\.]+)'; /* MATCHES: 'foo.bar' */
-            $filterArgRegex = ':[\w": %\-_()\[\]\+/#@!,\.\?]*'; /* MATCHES: ':"bang":"bang"' */
+            $filterArgRegex = ':([\w": %\-_()\[\]\+/#@!,\.\?]|&quot;)*'; /* MATCHES: ':"bang":"bang"' */
             // Key rule of filterArgRegex is to prohibit '{}'s because they may parse ambiguously. So you *might* relax
-            // it to: $filterArgRegex = ':[^{}\n]*'; /* MATCHES: ':"bang":"bang"' */
+            // it to: $filterArgRegex = ':[^{}\n]*'; /* MATCHES: ':"bang":"bang"' or ':&quot;bang&quot;' */
             $filterNameRegex = "\w+"; /* MATCHES: 'whiz' */
             $filterRegex = "\|($filterNameRegex(?:$filterArgRegex)?)"; /* MATCHES: '|whiz:"bang":"bang"' */
-            $fullRegex = ";\{$tokenRegex(?:$filterRegex)?\};";
+            $fullRegex = "~\{$tokenRegex(?:$filterRegex)?\}~";
 
             $tempDocPart = preg_replace_callback(
                 $fullRegex,
@@ -59,12 +60,13 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
                  * @see \PhpOffice\PhpWord\TemplateProcessor::getVariablesForPart()
                  */
                 function($matches) use (&$tokens) {
-                    $tokens[$matches[0]] = [
+                    $token = str_replace('&quot;', '"', $matches[0]);
+                    $tokens[$token] = [
                         'entity' => $matches[1],
                         'field' => $matches[2],
                         'filter' => $matches[3] ?? NULL,
                     ];
-                    return '$' . $matches[0];
+                    return '$' . $token;
                 },
                 $tempDocPart
             );
