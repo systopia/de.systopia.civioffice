@@ -38,6 +38,10 @@ msgstr ""
 msgid "Local path is not writable: %1"
 msgstr ""
 
+#: ./CRM/Civioffice/DocumentRendererType/LocalUnoconv/PhpWordTemplateProcessor.php
+msgid "Error loading/writing PhpWord document: %1"
+msgstr ""
+
 #: ./CRM/Civioffice/DocumentRendererType/LocalUnoconv.php ./CRM/Civioffice/Upgrader.php
 msgid "Local Universal Office Converter (unoconv)"
 msgstr ""
@@ -56,6 +60,10 @@ msgstr ""
 
 #: ./CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "Prepare DOCX documents"
+msgstr ""
+
+#: ./CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
+msgid "Use PHPWord macros for Live Snippet tokens"
 msgstr ""
 
 #: ./CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
@@ -82,7 +90,7 @@ msgstr ""
 msgid "Lock file cannot be written. Please run: 'chmod 777 %1'"
 msgstr ""
 
-#: ./CRM/Civioffice/DocumentRendererType/LocalUnoconv.php ./CRM/Civioffice/DocumentRendererType/LocalUnoconvPhpWord.php
+#: ./CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "Too many parallel conversions. Try using a smaller batch size"
 msgstr ""
 
@@ -92,18 +100,6 @@ msgstr ""
 
 #: ./CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "CiviOffice: Could not acquire unoconv lock. Sorry"
-msgstr ""
-
-#: ./CRM/Civioffice/DocumentRendererType/LocalUnoconvPhpWord.php ./CRM/Civioffice/Upgrader.php
-msgid "Local Universal Office Converter (unoconv) implementing PhpWord"
-msgstr ""
-
-#: ./CRM/Civioffice/DocumentRendererType/LocalUnoconvPhpWord.php
-msgid "Error loading/writing Word document: %1"
-msgstr ""
-
-#: ./CRM/Civioffice/DocumentRendererType/LocalUnoconvPhpWord.php
-msgid "This document renderer employs the <code>unoconv</code> script on your server to convert documents using LibreOffice and implements PhpWord for replacing CiviCRM tokens."
 msgstr ""
 
 #: ./CRM/Civioffice/DocumentStore/Local.php
@@ -166,12 +162,28 @@ msgstr ""
 msgid "Rendering Error!"
 msgstr ""
 
+#: ./CRM/Civioffice/Form/DocumentRenderer/Settings.php ./CRM/Civioffice/Form/LiveSnippet.php
+msgid "Invalid action."
+msgstr ""
+
+#: ./CRM/Civioffice/Form/DocumentRenderer/Settings.php
+msgid "Missing Document Renderer ID."
+msgstr ""
+
+#: ./CRM/Civioffice/Form/DocumentRenderer/Settings.php
+msgid "Missing Document Renderer type."
+msgstr ""
+
 #: ./CRM/Civioffice/Form/DocumentRenderer/Settings.php ./CRM/Civioffice/Form/LiveSnippet.php ./templates/CRM/Civioffice/Form/DocumentUpload.tpl ./templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Name"
 msgstr ""
 
 #: ./CRM/Civioffice/Form/DocumentRenderer/Settings.php ./CRM/Civioffice/Form/LiveSnippet.php ./CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.php ./CRM/Civioffice/Form/Settings.php ./CRM/Civioffice/Form/UploadDocumentStore/UploadDocumentStoreSettings.php
 msgid "Save"
+msgstr ""
+
+#: ./CRM/Civioffice/Form/DocumentRenderer/Settings.php ./CRM/Civioffice/Form/LiveSnippet.php ./templates/CRM/Civioffice/Form/DocumentUpload.tpl ./templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Delete"
 msgstr ""
 
 #: ./CRM/Civioffice/Form/DocumentUpload/TabHeader.php
@@ -255,10 +267,6 @@ msgid "Download Error"
 msgstr ""
 
 #: ./CRM/Civioffice/Form/LiveSnippet.php
-msgid "Invalid action."
-msgstr ""
-
-#: ./CRM/Civioffice/Form/LiveSnippet.php
 msgid "Missing Live Snippet ID."
 msgstr ""
 
@@ -280,10 +288,6 @@ msgstr ""
 
 #: ./CRM/Civioffice/Form/LiveSnippet.php ./templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Token"
-msgstr ""
-
-#: ./CRM/Civioffice/Form/LiveSnippet.php ./templates/CRM/Civioffice/Form/DocumentUpload.tpl ./templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Delete"
 msgstr ""
 
 #: ./CRM/Civioffice/Form/LiveSnippet.php
@@ -344,6 +348,10 @@ msgstr ""
 
 #: ./CRM/Civioffice/Form/UploadDocumentStore/UploadDocumentStoreSettings.php
 msgid "Private Document Upload Enabled"
+msgstr ""
+
+#: ./CRM/Civioffice/Upgrader.php
+msgid "Local Universal Office Converter (unoconv) implementing PhpWord"
 msgstr ""
 
 #: ./api/v3/CiviOffice/Convert.php
@@ -454,6 +462,18 @@ msgstr ""
 msgid "Run the DOCX document through the converter prior to processing in order to optimise/repair possibly corrupted CiviCRM tokens in the document."
 msgstr ""
 
+#: ./templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
+msgid "Whether to replace Live Snippet tokens using a PHPWord template processor, so that HTML in Live Snippets can be converted to OOXML."
+msgstr ""
+
+#: ./templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl
+msgid "Are you sure you want to delete this Document Renderer?"
+msgstr ""
+
+#: ./templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl ./templates/CRM/Civioffice/Form/LiveSnippet.tpl
+msgid "This action cannot be undone."
+msgstr ""
+
 #: ./templates/CRM/Civioffice/Form/DocumentUpload.tpl
 msgid "Available Documents"
 msgstr ""
@@ -504,10 +524,6 @@ msgstr ""
 
 #: ./templates/CRM/Civioffice/Form/LiveSnippet.tpl
 msgid "Are you sure you want to delete this Live Snippet?"
-msgstr ""
-
-#: ./templates/CRM/Civioffice/Form/LiveSnippet.tpl
-msgid "This action cannot be undone."
 msgstr ""
 
 #: ./templates/CRM/Civioffice/Form/LiveSnippet.tpl
@@ -572,6 +588,10 @@ msgstr ""
 
 #: ./templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Add %1 Document Renderer"
+msgstr ""
+
+#: ./templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Configure"
 msgstr ""
 
 #: ./templates/CRM/Civioffice/Form/Settings.tpl
