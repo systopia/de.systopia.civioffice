@@ -26,7 +26,8 @@ Administer > System Settings > Directories).
 
 Next, open the extensions page in the CiviCRM settings (Administer/System
 Settings/Extensions). Find the extension CiviOffice in the *Extensions* tab and
-click on *Install*. The extension will be set up, including new navigation menu items.
+click on *Install*. The extension will be set up, including new navigation menu
+items.
 
 ## Basic configuration steps
 
@@ -35,7 +36,7 @@ click on *Install*. The extension will be set up, including new navigation menu 
   Settings to set up your document
   stores, renderers and editors
 - The documents used in CiviOffice can be managed
-  via under "Upload Documents" 
+  via under "Upload Documents"
 - Optional: Create an activity type such as "Created Document (CiviOffice)"
 
 ## Known issues
