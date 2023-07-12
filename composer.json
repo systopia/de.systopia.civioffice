@@ -1,6 +1,6 @@
 {
     "name": "systopia/de.systopia.civioffice",
-    "description": "CiviCRM integration for various exchangeable office suites",
+    "description": "CiviCRM integration to use docx files as templates to create personalized documents in various CiviCRM workflows",
     "license": "AGPL-3.0",
     "authors": [
         {
