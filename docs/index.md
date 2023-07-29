@@ -52,6 +52,7 @@ implemented so far.
 - APIs
 - (X)HTML to OOXML conversion to allow for simple formatting within tokens (also
   a workaround for missing Smarty syntax)
+- PHP 8 compatibility
 
 ## Intended future improvements
 
