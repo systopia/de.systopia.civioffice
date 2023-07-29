@@ -91,10 +91,10 @@ processing options. This is different from the form for a single contact:
 delete the created document from the main memory and thus free up the memory
 space. This is particularly important for larger processing runs.**
 
-## Creating documents for contributions and participants
+## Creating documents for contributions, memberships, participants, and cases
 
-CiviOffice also provides search actions in contribution and participant search
-results. The processing options are the same as in the contact search action,
+CiviOffice also provides search actions in contribution, membership, participant, and case search
+results. The processing options are the similar as in the contact search action,
 however the data available through tokens will be different. For example, you
 can use a token for the contribution amount when operating on contribution
 search results, or for the event title belonging to a registration when
