@@ -63,7 +63,7 @@ internal docx structure elements unnecessarily. In short, your tokens aren't
 working anymore. The only known downside to this option is a certain performance
 loss which will only be relevant on large processing runs. So in general, it is
 advisable to enable this option. Also, make sure to follow the recommendations
-in the chapter on [working with documents](../working-with-documents/).
+in the chapter on [working with documents](usage/working-with-documents.md).
 
 ## Document Editors
 
