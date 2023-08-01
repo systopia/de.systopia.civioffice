@@ -18,6 +18,7 @@ nav:
     - 'Sending Emails With Personalized Attachments': usage/integrating-with-mail-batch.md
   - 'Developer Information':
     - 'Modify Token Context': developer-information/modify-token-context.md
+    - 'Custom Document Stores': developer-information/custom-document-stores.md
 
 markdown_extensions:
   - attr_list
