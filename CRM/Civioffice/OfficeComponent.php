@@ -37,7 +37,8 @@ abstract class CRM_Civioffice_OfficeComponent
      * Get the URL to configure this component
      *
      * @return string
-     *   URL
+     *   URL to the configuration page, or an empty string if this component
+     *   needs no configuration.
      */
     abstract public function getConfigPageURL() : string;
 
