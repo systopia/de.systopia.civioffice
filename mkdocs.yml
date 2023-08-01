@@ -16,6 +16,8 @@ nav:
     - 'Custom Fonts': usage/custom-fonts.md
     - 'Integrating With Donation Receipts': usage/integrating-with-donation-receipts.md
     - 'Sending Emails With Personalized Attachments': usage/integrating-with-mail-batch.md
+  - 'Developer Information':
+    - 'Modify Token Context': developer-information/modify-token-context.md
 
 markdown_extensions:
   - attr_list
