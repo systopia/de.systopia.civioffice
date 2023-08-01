@@ -3,6 +3,8 @@
 Short version: This extension allows you to use *DOCX* files as document
 templates in many CiviCRM workflows. It also features development interfaces that allow programmers to integrate CiviOffice with other extensions.
 
+This documentation refers to version 1.0.0 of CiviOffice.
+
 ## Concept
 
 Written communication with contacts is an essential aspect of the work of
