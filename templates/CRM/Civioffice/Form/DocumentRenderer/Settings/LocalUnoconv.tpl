@@ -22,16 +22,9 @@
   </div>
 
   <div class="crm-section">
-    <div class="help">{ts}We strongly recommend creating a system wide lock file on this server to synchronise access. You can create such a file doing this in the server console:<br><code>touch /some/accessible/path/unoconv.lock && chmod 777 /some/accessible/path/unoconv.lock</code><br>Please note: This path needs to be equal in every civicrm environment on this server. Otherwise locking is only active for this very civicrm instance!{/ts}</div>
+    <div class="help">{ts}We strongly recommend creating a system-wide lock file on this server to synchronise access. (It may only run one unoconv process at the same time.) You can create such a file doing this in the server console:<br><code>touch /some/accessible/path/unoconv.lock && chmod 777 /some/accessible/path/unoconv.lock</code><br>Please note: This path needs to be equal in every civicrm environment on this server. Otherwise, locking is only active for this very civicrm instance!{/ts}</div>
     <div class="label">{$form.unoconv_lock_file_path.label}</div>
     <div class="content">{$form.unoconv_lock_file_path.html}</div>
-    <div class="clear"></div>
-  </div>
-
-  <div class="crm-section">
-    <div class="help">{ts}Working / temp path where files are stored until a download happens.<br>For example: <code>.../civicrm/templates_c/civioffice/temp</code>{/ts}<br>Be aware: This folder will be created if it doesn't exist</div>
-    <div class="label">{$form.temp_folder_path.label}</div>
-    <div class="content">{$form.temp_folder_path.html}</div>
     <div class="clear"></div>
   </div>
 

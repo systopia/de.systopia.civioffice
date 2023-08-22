@@ -64,7 +64,6 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
                     'type' => 'unoconv-local',
                     'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
                     'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
-                    'temp_folder_path' => Civi::settings()->get('civioffice_temp_folder_path'),
                     'prepare_docx' => false,
                 ]
             ),
@@ -75,7 +74,6 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
                     'type' => 'unoconv-local',
                     'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
                     'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
-                    'temp_folder_path' => Civi::settings()->get('civioffice_temp_folder_path'),
                     'prepare_docx' => false,
                     'phpword_tokens' => true,
                 ]
@@ -116,4 +114,19 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
         }
         return true;
     }
+
+  public function upgrade_0009(): bool
+  {
+    // Drop "temp_folder_path" from unoconv renderer settings.
+    foreach (Civi::settings()->get('civioffice_renderers') ?? [] as $renderer_uri => $renderer_name) {
+      $configuration = Civi::settings()->get('civioffice_renderer_' . $renderer_uri);
+      if (($configuration['type'] ?? NULL) === 'unoconv-local') {
+        $this->ctx->log->info('Drop "temp_folder_path" from settings of renderer ' . $renderer_name . '.');
+        unset($configuration['temp_folder_path']);
+        Civi::settings()->set('civioffice_renderer_' . $renderer_uri, $configuration);
+      }
+    }
+
+    return true;
+  }
 }
