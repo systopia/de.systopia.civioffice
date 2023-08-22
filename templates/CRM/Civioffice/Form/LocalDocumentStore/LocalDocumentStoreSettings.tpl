@@ -15,14 +15,14 @@
 {crmScope extensionKey='de.systopia.civioffice'}
 
 <div class="crm-section">
-  <div class="help">{ts}Path to storage folder.<br>For example: <code>/var/civioffice/previous_documents</code>{/ts}</div>
+  <div class="help">{ts}Path to storage folder.<br>For example: <code>{$local_folder_suggestion}</code>{/ts}</div>
   <div class="label">{$form.local_folder.label}</div>
   <div class="content">{$form.local_folder.html}</div>
   <div class="clear"></div>
 </div>
 
 <div class="crm-section">
-  <div class="help">{ts}Path to temporary folder.<br>For example: <code>/path/to/civicrm/files/templates_c/civioffice/temp</code>{/ts}</div>
+  <div class="help">{ts}Path to temporary folder.<br>For example: <code>{$local_temp_folder_suggestion}</code>{/ts}</div>
   <div class="label">{$form.local_temp_folder.label}</div>
   <div class="content">{$form.local_temp_folder.html}</div>
   <div class="clear"></div>

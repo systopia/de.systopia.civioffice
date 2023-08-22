@@ -36,7 +36,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
                 unlink($temp_folder_path);
                 Civi::log()->debug("CiviOffice: Temp folder already exists. Deleting and trying to create a new one");
             }
-            mkdir($temp_folder_path);
+            mkdir($temp_folder_path, 0777, true);
         }
         parent::__construct("tmp::{$temp_folder_path}", E::ts("Temporary Files"), false, false);
         $this->base_folder = $temp_folder_path;
