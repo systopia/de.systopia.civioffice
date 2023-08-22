@@ -12,6 +12,11 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
      */
     public function install()
     {
+        Civi::settings()->set(
+            CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY,
+            sys_get_temp_dir() . '/civioffice'
+        );
+
         // Create/synchronise the Live Snippets option group.
         $customData = new CRM_Civioffice_CustomData(E::LONG_NAME);
         $customData->syncOptionGroup(E::path('resources/live_snippets_option_group.json'));

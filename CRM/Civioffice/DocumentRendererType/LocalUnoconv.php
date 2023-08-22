@@ -640,7 +640,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
     {
         return [
             'unoconv_binary_path' => '/usr/bin/unoconv',
-            'unoconv_lock_file_path' => '/var/www/unoconv.lock',
+            'unoconv_lock_file_path' => CRM_Civioffice_Configuration::getHomeFolder() . '/unoconv.lock',
             'prepare_docx' => false,
             'phpword_tokens' => false,
         ];
