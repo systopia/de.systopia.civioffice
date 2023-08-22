@@ -13,6 +13,7 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+use Civi\Civioffice\CiviofficeSession;
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
@@ -31,7 +32,12 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
 
     public function buildQuickForm()
     {
-        $this->tmp_folder = CRM_Utils_Request::retrieve('tmp_folder', 'String', $this);
+        $tmp_folder_path_hash = CRM_Utils_Request::retrieve('id', 'String', $this) ?? '';
+        $this->tmp_folder = CiviofficeSession::getInstance()->getTempFolderPath($tmp_folder_path_hash);
+        if (null === $this->tmp_folder) {
+            \CRM_Utils_System::civiExit(404);
+        }
+
         $this->return_url = CRM_Utils_Request::retrieve('return_url', 'String', $this);
         $this->instant_download = CRM_Utils_Request::retrieve('instant_download', 'Boolean', $this);
 
@@ -187,6 +193,8 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
 
     private function removeFilesAndFolder(string $folder_path): void
     {
+        CiviofficeSession::getInstance()->removeTempFolderPath($folder_path);
+
         // delete tmp folder
         foreach (scandir($folder_path) as $file) {
             if ($file != '.' && $file != '..') {
