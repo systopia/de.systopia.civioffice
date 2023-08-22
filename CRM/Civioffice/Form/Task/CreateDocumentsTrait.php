@@ -13,6 +13,7 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+use Civi\Civioffice\CiviofficeSession;
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
@@ -169,6 +170,7 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
 
         $chunked_entities = array_chunk($this->entityIds, $values['batch_size']);
         $temp_folder_path = (new CRM_Civioffice_DocumentStore_LocalTemp())->getBaseFolder();
+        $temp_folder_path_hash = CiviofficeSession::getInstance()->storeTempFolderPath($temp_folder_path);
 
         foreach ($chunked_entities as $entity_IDs) {
             $queue->createItem(
@@ -200,7 +202,7 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
         // Start a runner on the queue.
         $download_link = CRM_Utils_System::url(
             'civicrm/civioffice/download',
-            "tmp_folder=$temp_folder_path&return_url=$return_link&instant_download=0"
+            "id=$temp_folder_path_hash&return_url=$return_link&instant_download=0"
         );
 
         $runner = new CRM_Queue_Runner(
