@@ -80,21 +80,23 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
         if (!isset($phpWord)) {
             $phpWord = new PhpWord\PhpWord();
         }
+
+        $outputEscapingEnabled = PhpWord\Settings::isOutputEscapingEnabled();
+        PhpWord\Settings::setOutputEscapingEnabled(true);
         try {
             // Use a temporary Section element for adding the elements.
             $section = $phpWord->addSection();
             // Note: addHtml() does not accept styles, so added HTML elements do not get applied any existing
             // styles.
             PhpWord\Shared\Html::addHtml($section, $rendered_token_message);
-            if (
-                count($elements = $section->getElements()) == 1
-                && is_a($elements[0],'PhpOffice\\PhpWord\\Element\\Text')
-                || empty($elements)
-            ) {
+            $elements = $section->getElements();
+            if ([] === $elements) {
+                $this->setValue($macro_variable, '');
+            } else if (count($elements) === 1 && $elements[0] instanceof PhpWord\Element\Text) {
                 // ... either as plain text (if there is only a single Text element or nothing), ...
-                $this->setValue($macro_variable, $rendered_token_message);
-            }
-            else {
+                // Note: $rendered_token_message shouldn't be used directly because it may contain HTML entities.
+                $this->setValue($macro_variable, $elements[0]->getText());
+            } else {
                 // ... or as HTML: Render all elements and replace the paragraph containing the macro.
                 // Note: This will remove the entire paragraph element around the macro.
                 // TODO: Save and split surrounding contents and add them to the replaced block.
@@ -106,7 +108,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
                 //       \PhpOffice\PhpWord\Writer\Word2007\Element\Container element, which in turn will have to be
                 //       passed to \PhpOffice\PhpWord\TemplateProcessor::setComplexValue().
                 $elements_data = '';
-                foreach ($section->getElements() as $element) {
+                foreach ($elements as $element) {
                     $elementName = substr(
                         get_class($element),
                         strrpos(get_class($element), '\\') + 1
@@ -121,13 +123,14 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
                 }
                 $this->replaceXmlBlock($macro_variable, $elements_data, 'w:p');
             }
-        }
-        catch (Exception $exception) {
+        } catch (Exception $exception) {
             throw new Exception(
                 E::ts('Error loading/writing PhpWord document: %1', [1 => $exception->getMessage()]),
                 $exception->getCode(),
                 $exception
             );
+        } finally {
+            PhpWord\Settings::setOutputEscapingEnabled($outputEscapingEnabled);
         }
     }
 }
