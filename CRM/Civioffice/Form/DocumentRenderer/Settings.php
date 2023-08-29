@@ -61,7 +61,7 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
         // Require type for adding.
         if ($this->_action & (CRM_Core_Action::ADD)) {
             if (!$type = CRM_Utils_Request::retrieve('type', 'Alphanumeric', $this)) {
-                throw new Exception(E::ts('Missing Document Renderer type.'));
+                throw new Exception(E::ts('Missing Document Renderer.'));
             }
             $this->documentRendererType = CRM_Civioffice_DocumentRendererType::create($type);
         }

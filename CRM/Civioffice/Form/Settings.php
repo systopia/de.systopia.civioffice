@@ -76,7 +76,7 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
 
         CRM_Core_Session::setStatus(
             E::ts("Settings Saved"),
-            E::ts("The CiviOffice Configuration has been updated"),
+            E::ts("The CiviOffice configuration has been updated"),
             'info'
         );
         parent::postProcess();

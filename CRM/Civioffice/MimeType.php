@@ -20,7 +20,7 @@ abstract class CRM_Civioffice_MimeType
     public const ZIP = 'application/zip';
 
     /**
-     * Map te mime type to the file ending without a pre dot
+     * Map te MIME type to the file ending without a pre dot
      *
      * @param $mime_type
      *
@@ -34,12 +34,12 @@ abstract class CRM_Civioffice_MimeType
         if (isset($mapping[$mime_type])) {
             return $mapping[$mime_type];
         } else {
-            throw new Exception('Unknown mime type "{$mime_type}", needs to be implemented.');
+            throw new Exception('Unknown MIME type "{$mime_type}", needs to be implemented.');
         }
     }
 
     /**
-     * Get a list of mime type to file extension
+     * Get a list of MIME type to file extension
      *
      * @return array
      */
@@ -53,14 +53,14 @@ abstract class CRM_Civioffice_MimeType
     }
 
     /**
-     * Checks if the file ending/extension matches with the given fully qualified mime type
+     * Checks if the file ending/extension matches with the given fully qualified MIME type
      *
-     * Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
+     * MIME type checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
      *
      * @param $file_name
      * @param $mime_type
      *
-     * @return bool Returns true if given mime type is equal to ending/extension
+     * @return bool Returns true if given MIME type is equal to ending/extension
      * @throws \Exception
      */
     public static function hasSpecificFileNameExtension($file_name, $mime_type): bool

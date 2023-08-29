@@ -184,7 +184,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
 
             $this->base_folder = $this->folder_name; // better to use only one?
             if (file_exists($absolute_path_with_file_name)) {
-                // todo: check for mime type
+                // todo: check for MIME type
                 $local_path = substr($absolute_path_with_file_name, strlen($this->folder_name) + 1);
                 return new CRM_Civioffice_Document_Local($this, $local_path, true);
             }
@@ -201,9 +201,9 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
     public function getDescription(): string
     {
         if ($this->common) {
-            return E::ts("Shared Uploaded Documents. There is no folder setup needed as the CiviCRM internal upload folder is being used here. Be aware. If enabled very user has full access to upload documents.");
+            return E::ts("Shared Uploaded Documents. There is no folder setup needed as the CiviCRM internal upload folder is being used here. Be aware: If enabled every user has full access to upload documents.");
         } else {
-            return E::ts("My Uploaded Documents. Users only have access to files being uploaded by themself. The CiviCRM internal upload folder is being used");
+            return E::ts("My Uploaded Documents. Users only have access to files being uploaded by themself. The CiviCRM internal upload folder is used.");
         }
     }
 

@@ -169,7 +169,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
             // todo: disallow '..' for security
             $absolute_path_with_file_name = $this->base_folder . DIRECTORY_SEPARATOR . $file_name_with_ending;
             if (file_exists($absolute_path_with_file_name)) {
-                // todo: check for mime type
+                // todo: check for MIME type
                 $local_path = substr($absolute_path_with_file_name, strlen($this->base_folder) + 1);
                 return new CRM_Civioffice_Document_Local($this, $local_path, $this->readonly);
             }

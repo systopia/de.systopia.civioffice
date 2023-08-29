@@ -46,7 +46,7 @@ class CRM_Civioffice_ConversionJob
 
     /**
      * @var string $target_mime_type
-     *   Mime type of target file (like pdf)
+     *   MIME type of target file (like application/pdf)
      */
     protected $target_mime_type;
 

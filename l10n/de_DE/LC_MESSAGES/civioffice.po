@@ -50,7 +50,7 @@ msgstr "Dokument (CiviOffice)"
 #: CRM/Civioffice/ConversionJob.php
 #: CRM/Civioffice/Form/DocumentFromSingleContact.php
 msgid "Created from document: %1"
-msgstr "Von Dokument erzeugt: %1"
+msgstr "Aus Dokument erzeugt: %1"
 
 #: CRM/Civioffice/ConversionJob.php
 #: CRM/Civioffice/Form/DocumentFromSingleContact.php
@@ -63,7 +63,7 @@ msgstr "Lokaler Pfad ist nicht beschreibbar: %1"
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv/PhpWordTemplateProcessor.php
 msgid "Error loading/writing PhpWord document: %1"
-msgstr "Fehler beim Laden/Speichern eines Word-Dokuments: %1"
+msgstr "Fehler beim Laden/Speichern eines PhpWord-Dokuments: %1"
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 #: CRM/Civioffice/Upgrader.php
@@ -71,16 +71,12 @@ msgid "Local Universal Office Converter (unoconv)"
 msgstr "Lokaler Universal Office Converter (unoconv)"
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Path to the <code>unoconv</code> binary"
-msgstr "Pfad zur <code>unoconv</code>-Bibliothek"
+msgid "Path to the <code>unoconv</code> executable"
+msgstr "Pfad zur ausführbaren <code>unoconv</code> Datei"
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Path to a lock files"
+msgid "Path to a lock file"
 msgstr "Pfad zu einer Sperrdatei"
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "path to the working temp folder"
-msgstr "Pfad zu einem Ordner, der als Arbeitsverzeichnis verwendet wird"
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "Prepare DOCX documents"
@@ -91,38 +87,25 @@ msgid "Use PHPWord macros for Live Snippet tokens"
 msgstr "PHPWord-Makros für LiveSnippet-Token verwenden"
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Input is empty"
-msgstr "Eingabe ist leer"
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Unable to write temp folder"
-msgstr "In temporären Ordner kann nicht geschrieben werden."
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-#: CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.php
-msgid "This is not a folder"
-msgstr "Dies ist kein Ordner."
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "File does not exist. Please provide a correct filename"
+msgid "File does not exist. Please provide a correct filename."
 msgstr "Datei existiert nicht. Bitte einen korrekten Dateinamen angeben."
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid ""
-"Lock file does not exist. Please create as follows: 'touch %1 && chmod 777 "
-"%1'"
-msgstr ""
-"Sperrdatei existiert nicht. Bitte wie folgt erzeugen: 'touch %1 && chmod 777 "
-"%1'"
+msgid "Cannot create lock file"
+msgstr "Sperrdatei kann nicht erstellt werden"
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Lock file cannot be written. Please run: 'chmod 777 %1'"
-msgstr ""
-"Sperrdatei kann nicht geschrieben werden. Bitte führen Sie folgendes aus: "
-"'chmod 777 %1'"
+msgid "This is not a file"
+msgstr "Dies ist keine Datei"
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Too many parallel conversions. Try using a smaller batch size"
+msgid "Lock file cannot be written. Please run: \"chmod 777 %1\""
+msgstr ""
+"Sperrdatei kann nicht geschrieben werden. Bitte führen Sie Folgendes aus: "
+"\"chmod 777 %1\""
+
+#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
+msgid "Too many parallel conversions. Try using a smaller batch size."
 msgstr ""
 "Zu viele parallele Konvertierungen. Versuchen Sie eine kleinere Stapelgröße."
 
@@ -135,7 +118,7 @@ msgstr ""
 "Server, um Dokumente mit LibrOffice zu konvertieren."
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "CiviOffice: Could not acquire unoconv lock. Sorry"
+msgid "CiviOffice: Could not acquire unoconv lock."
 msgstr "CiviOffice: Konnte keine unoconv-Sperre erhalten."
 
 #: CRM/Civioffice/DocumentStore/Local.php
@@ -166,7 +149,7 @@ msgstr "Meine hochgeladenen Dateien"
 #: CRM/Civioffice/DocumentStore/Upload.php
 msgid ""
 "Shared Uploaded Documents. There is no folder setup needed as the CiviCRM "
-"internal upload folder is being used here. Be aware. If enabled very user "
+"internal upload folder is being used here. Be aware: If enabled every user "
 "has full access to upload documents."
 msgstr ""
 "Geteilte hochgeladene Dokumente. Es ist keine Ordnerkonfiguration "
@@ -177,20 +160,20 @@ msgstr ""
 #: CRM/Civioffice/DocumentStore/Upload.php
 msgid ""
 "My Uploaded Documents. Users only have access to files being uploaded by "
-"themself. The CiviCRM internal upload folder is being used"
+"themself. The CiviCRM internal upload folder is used."
 msgstr ""
 "Meine hochgeladenen Dokumente. Benutzer haben nur Zugriff auf Dateien, die "
 "sie selbst hochgeladen haben. Der CiviCRM-interne Ordner für hochgeladene "
 "Dateien wird verwendet."
 
 #: CRM/Civioffice/Form/DocumentFromSingleContact.php
-msgid "CiviOffice - Generate a single Document"
+msgid "CiviOffice - Generate a Single Document"
 msgstr "CiviOffice - Einzelnes Dokument erzeugen"
 
 #: CRM/Civioffice/Form/DocumentFromSingleContact.php
 #: CRM/Civioffice/Form/Task/CreateDocumentsTrait.php
 msgid "- select -"
-msgstr "- Auswählen -"
+msgstr "- auswählen -"
 
 #: CRM/Civioffice/Form/DocumentFromSingleContact.php
 #: CRM/Civioffice/Form/Task/CreateDocumentsTrait.php
@@ -232,13 +215,11 @@ msgid "Missing Document Renderer ID."
 msgstr "Fehlende Dokument-Renderer-ID."
 
 #: CRM/Civioffice/Form/DocumentRenderer/Settings.php
-msgid "Missing Document Renderer type."
+msgid "Missing Document Renderer."
 msgstr "Fehlender Dokument-Renderer."
 
 #: CRM/Civioffice/Form/DocumentRenderer/Settings.php
 #: CRM/Civioffice/Form/LiveSnippet.php
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-#: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Name"
 msgstr "Name"
 
@@ -252,8 +233,6 @@ msgstr "Speichern"
 
 #: CRM/Civioffice/Form/DocumentRenderer/Settings.php
 #: CRM/Civioffice/Form/LiveSnippet.php
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-#: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Delete"
 msgstr "Löschen"
 
@@ -266,8 +245,8 @@ msgid "Shared Documents"
 msgstr "Geteilte Dokumente"
 
 #: CRM/Civioffice/Form/DocumentUpload.php
-msgid "File '%1' deleted."
-msgstr "Datei '%1' gelöscht."
+msgid "File '%1' deleted"
+msgstr "Datei '%1' gelöscht"
 
 #: CRM/Civioffice/Form/DocumentUpload.php
 msgid "File Deleted"
@@ -278,7 +257,6 @@ msgid "Upload Document"
 msgstr "Dokument hochladen"
 
 #: CRM/Civioffice/Form/DocumentUpload.php
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
 msgid "Upload"
 msgstr "Hochladen"
 
@@ -287,15 +265,15 @@ msgid "%1 MB"
 msgstr "%1 MB"
 
 #: CRM/Civioffice/Form/DocumentUpload.php
+msgid "File type docx expected"
+msgstr "Dateityp docx erwartet"
+
+#: CRM/Civioffice/Form/DocumentUpload.php
 msgid "Error"
 msgstr "Fehler"
 
 #: CRM/Civioffice/Form/DocumentUpload.php
-msgid "Filetype docx expected"
-msgstr "Dateityp docx erwartet"
-
-#: CRM/Civioffice/Form/DocumentUpload.php
-msgid "Uploaded file '%1'"
+msgid "File \"%1\" uploaded"
 msgstr "Datei '%1' hochgeladen"
 
 #: CRM/Civioffice/Form/DocumentUpload.php
@@ -311,8 +289,6 @@ msgid "CiviOffice - Download"
 msgstr "CiviOffice - Herunterladen"
 
 #: CRM/Civioffice/Form/Download.php
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-#: templates/CRM/Civioffice/Form/Download.tpl
 msgid "Download"
 msgstr "Herunterladen"
 
@@ -325,7 +301,7 @@ msgid "Document-%1.*"
 msgstr "Dokument-%1.*"
 
 #: CRM/Civioffice/Form/Download.php
-msgid "CiviOffice Documents.zip"
+msgid "CiviOffice-Documents.zip"
 msgstr "CiviOffice-Dokumente.zip"
 
 #: CRM/Civioffice/Form/Download.php
@@ -349,22 +325,18 @@ msgid "Invalid Live Snippet ID."
 msgstr "Ungültige Live-Snippet-ID."
 
 #: CRM/Civioffice/Form/LiveSnippet.php
-#: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Add Live Snippet"
 msgstr "Live-Snippet hinzufügen"
 
 #: CRM/Civioffice/Form/LiveSnippet.php
-#: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Edit Live Snippet"
 msgstr "Live-Snippet bearbeiten"
 
 #: CRM/Civioffice/Form/LiveSnippet.php
-#: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Description"
 msgstr "Beschreibung"
 
 #: CRM/Civioffice/Form/LiveSnippet.php
-#: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Token"
 msgstr "Platzhalter"
 
@@ -373,7 +345,7 @@ msgid "Another Live Snippet with this name already exists."
 msgstr "Ein anderes Live-Snippet mit diesem Namen existiert bereits."
 
 #: CRM/Civioffice/Form/LiveSnippet.php
-msgid "The name can only contain lowercae letters, numbers and underscores."
+msgid "The name may only contain lowercase letters, numbers and underscores."
 msgstr ""
 "Der Name darf nur Kleinbuchstaben, Ziffern und Unterstriche beinhalten."
 
@@ -382,12 +354,20 @@ msgid "Local Folder (full path)"
 msgstr "Lokaler Ordner (vollständiger Pfad)"
 
 #: CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.php
-msgid "Local temporary Folder (full path)"
+msgid "Local Temporary Folder (full path)"
 msgstr "Lokaler temporärer Ordner (vollständiger Pfad)"
 
 #: CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.php
+msgid "Could not create directory"
+msgstr "Verzeichnis konnte nicht erstellt werden"
+
+#: CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.php
+msgid "This is not a folder"
+msgstr "Dies ist kein Ordner"
+
+#: CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.php
 msgid "This folder cannot be accessed"
-msgstr "Auf diesen Ordner kann nicht zugegriffen werden."
+msgstr "Auf diesen Ordner kann nicht zugegriffen werden"
 
 #: CRM/Civioffice/Form/Settings.php
 msgid "CiviOffice - Configuration"
@@ -398,8 +378,8 @@ msgid "Settings Saved"
 msgstr "Einstellungen gespeichert"
 
 #: CRM/Civioffice/Form/Settings.php
-msgid "The CiviOffice Configuration has been updated"
-msgstr "Die CviOffice-Konfiguration wurde aktualisiert."
+msgid "The CiviOffice configuration has been updated"
+msgstr "Die CviOffice-Konfiguration wurde aktualisiert"
 
 #: CRM/Civioffice/Form/Task/CreateDocumentsTrait.php
 msgid "CiviOffice - Generate multiple Documents"
@@ -435,16 +415,16 @@ msgstr "Lokaler Universal Office Converter (unoconv) mit PhpWord"
 
 #: api/v3/CiviOffice/Convert.php
 msgid ""
-"Document URI. E.g.: \"local::common/vorlage_kontakte_und_zuwendungen.docx\""
+"Document URI, e.g. \"local::common/template_contacts_and_contributions.docx\""
 msgstr ""
 "Dokument-URI, z.B. \"local::common/vorlage_kontakte_und_zuwendungen.docx\""
 
 #: api/v3/CiviOffice/Convert.php
 msgid "URI of document."
-msgstr "URI des Dokuments"
+msgstr "URI des Dokuments."
 
 #: api/v3/CiviOffice/Convert.php
-msgid "Array of entity ids. E.g.: \"[362, 614]\""
+msgid "Array of entity ids, e.g. \"[362, 614]\""
 msgstr "Liste von Entitäts-IDs, z.B. \"[362, 614]\""
 
 #: api/v3/CiviOffice/Convert.php
@@ -452,379 +432,33 @@ msgid "One or multiple entity as an array"
 msgstr "Eine oder mehrere Entitäten als Liste"
 
 #: api/v3/CiviOffice/Convert.php
-msgid "Entity type. E.g.: \"contact\", \"contribution\",..."
-msgstr "Entitätstyp, z.B. \"contact\", \"contribution\""
+msgid "Entity type, e.g. \"contact\" or \"contribution\""
+msgstr "Entitätstyp, z.B. \"contact\" oder  \"contribution\""
 
 #: api/v3/CiviOffice/Convert.php
 msgid "Entity type for token replacement"
-msgstr "Entitytyp für Platzhalterersetzung"
+msgstr "Entitätstyp für Platzhalterersetzung"
 
 #: api/v3/CiviOffice/Convert.php
-msgid "Renderer URI. E.g.: \"unoconv-local\""
+msgid "Renderer URI, e.g. \"unoconv-local\""
 msgstr "Renderer-URI, z.B. \"unoconv-local\""
 
 #: api/v3/CiviOffice/Convert.php
 msgid "URI of the renderer."
-msgstr "URI des Renderers"
+msgstr "URI des Renderers."
 
 #: api/v3/CiviOffice/Convert.php
-msgid "Target / final mime type. E.g.: \"application/pdf\""
+msgid "Target MIME type, e.g. \"application/pdf\""
 msgstr "Ziel-MIME-Typ, z.B. \"application/pdf\""
 
 #: api/v3/CiviOffice/Convert.php
-msgid "Renderer converts given file to this mimetype"
-msgstr "der Renderer konvertiert die angegebene Datei zu diesem MIME-Typ."
+msgid "Renderer converts given file to this MIME type"
+msgstr "Renderer konvertiert die angegebene Datei zu diesem MIME-Typ"
 
 #: api/v3/CiviOffice/Convert.php
-#: templates/CRM/Civioffice/Form/AttachmentProvider.tpl
-#: templates/CRM/Civioffice/Form/LiveSnippets.tpl
-#: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Live Snippets"
 msgstr "Live-Snippets"
 
 #: api/v3/CiviOffice/Convert.php
 msgid "Contents for tokens referring to configured Live Snippets."
-msgstr "Inhlte für Platzhalter konfigurierter Live-Snippets."
-
-#: civioffice.php
-msgid "Create Documents (CiviOffice)"
-msgstr "Dokumente erzeugen (CiviOffice)"
-
-#: civioffice.php
-msgid "Create CiviOffice document"
-msgstr "CiviOffice-Dokument erzeugen"
-
-#: civioffice.php
-msgid "Access CiviOffice"
-msgstr "Zugriff auf CiviOffice"
-
-#: civioffice.php
-msgid "Create documents using CiviOffice."
-msgstr "Dokumente mit CiviOffice erzeugen"
-
-#: civioffice.php
-msgid "CiviOffice Settings"
-msgstr "CiviOffice-Einstellungen"
-
-#: civioffice.php
-msgid "CiviOffice"
-msgstr "CiviOffice"
-
-#: civioffice.php
-msgid "Upload Documents"
-msgstr "Dokumente hochladen"
-
-#: civioffice.php
-msgid "Available Tokens"
-msgstr "Verfügbare Token"
-
-#: settings/civioffice.setting.php
-msgid "CiviOffice renderers."
-msgstr "CiviOffice-Renderer"
-
-#: settings/civioffice.setting.php
-msgid "CiviOffice Renderers"
-msgstr "CiviOffice-Renderer"
-
-#: templates/CRM/Civioffice/Form/DocumentFromSingleContact.tpl
-#: templates/CRM/Civioffice/Form/Task/CreateDocumentsTrait.tpl
-msgid "Activity"
-msgstr "Aktivität"
-
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
-msgid "Please provide the path of your Unoconv binary."
-msgstr "Bitte geben Sie den Pfad Ihrer unoconv-Bibliothek an."
-
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
-msgid ""
-"We strongly recommend creating a system wide lock file on this server to "
-"synchronise access. You can create such a file doing this in the server "
-"console:<br><code>touch /some/accessible/path/unoconv.lock && chmod 777 /"
-"some/accessible/path/unoconv.lock</code><br>Please note: This path needs to "
-"be equal in every civicrm environment on this server. Otherwise locking is "
-"only active for this very civicrm instance!"
-msgstr ""
-"Wir empfehlen dringend, eine systemweite Sperrdatei auf diesem Server zu "
-"erstellen, um den Zugriff zu synchronisieren. Sie können eine solche Datei "
-"wie folgt in der Serverkonsole erstellen:<br><code>touch /some/accessible/"
-"path/unoconv.lock && chmod 777 /some/accessible/path/unoconv.lock</"
-"code><br>Bitte beachten Sie: dieser Pfad muss in jeder CiviCRM-Umgebung auf "
-"diesem Server gleich sein. Andernfalls ist das Sperren nur für diese eine "
-"CiviCRM-Instanz aktiv!"
-
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
-msgid ""
-"Working / temp path where files are stored until a download happens.<br>For "
-"example: <code>.../civicrm/templates_c/civioffice/temp</code>"
-msgstr ""
-"Pfad zu einem Arbeits-/temporären Verzeichnis, in dem Dateien bis zum "
-"Herunterladen gespeichert werden.<br>Zum Beispiel: <code>.../civicrm/"
-"templates_c/civioffice/temp</code>"
-
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
-msgid ""
-"Run the DOCX document through the converter prior to processing in order to "
-"optimise/repair possibly corrupted CiviCRM tokens in the document."
-msgstr ""
-"Das DOCX-Dokument vor der eigentlichen Verarbeitung durch den Konverter "
-"laufen lassen, um eventuell beschädigte CiviCRM-Platzhalter im Dokument zu "
-"optimieren/reparieren."
-
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
-msgid ""
-"Whether to replace Live Snippet tokens using a PHPWord template processor, "
-"so that HTML in Live Snippets can be converted to OOXML."
-msgstr ""
-"Ob Live-Snippet-Token unter Verwendung der PHPWord-Vorlagenverarbeitung "
-"ersetzt werden, damit HTML in Live-Snippets in das OOXML-Format konvertiert "
-"werden kann."
-
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl
-msgid "Are you sure you want to delete this Document Renderer?"
-msgstr "Sind Sie sicher, dass Sie diesen Dokument-Renderer löschen möchten?"
-
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl
-#: templates/CRM/Civioffice/Form/LiveSnippet.tpl
-msgid "This action cannot be undone."
-msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
-
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-msgid "Available Documents"
-msgstr "Verfügbare Dokumente"
-
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-msgid "Size"
-msgstr "Größe"
-
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-msgid "Actions"
-msgstr "Aktionen"
-
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-msgid "Delete File"
-msgstr "Datei löschen"
-
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-msgid "Download File"
-msgstr "Datei herunterladen"
-
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-msgid "No documents available"
-msgstr "Keine Dokumente verfügbar"
-
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-msgid "Upload More"
-msgstr "Mehr hochladen"
-
-#: templates/CRM/Civioffice/Form/Download.tpl
-msgid ""
-"Please click the download button only once. Clicking the button will trigger "
-"generating your zip file which may take a long time depending on the size "
-"and complexity of your documents.<br>Afterwards please always use the \"back "
-"to previous page\" button to finish this process"
-msgstr ""
-"Bitte die Herunterladen-Schaltfläche nur einmal betätigen. Das Betätigen der "
-"Schaltfläche wird die Erzeugung Ihrer ZIP-Datei anstoßen, was in "
-"Abhängigkeit von der Größe und Komplexität Ihres Dokuments eine längere Zeit "
-"in Anspruch nehmen kann.<br>Anschließend verwenden Sie bitte immer die "
-"Schaltfläche \"Zurück zur vorherigen Seite\", um den Prozess abzuschließen."
-
-#: templates/CRM/Civioffice/Form/LiveSnippet.hlp
-msgid "A label for identifying the live snippet in user interfaces."
-msgstr ""
-"Eine Beschriftung zur Identifizierung des Live-Snippets in der "
-"Benutzeroberfläche"
-
-#: templates/CRM/Civioffice/Form/LiveSnippet.hlp
-msgid "A description for explaining how to use this Live Snippet."
-msgstr ""
-"Eine Beschreibung zur Erklärung, wie dieses Live-Snippet verwendet werden "
-"soll."
-
-#: templates/CRM/Civioffice/Form/LiveSnippet.hlp
-msgid "A name to use for the token name."
-msgstr "Ein Name zur Verwendung für den Namen des Platzhalters"
-
-#: templates/CRM/Civioffice/Form/LiveSnippet.hlp
-msgid "Example:"
-msgstr "Beispiel:"
-
-#: templates/CRM/Civioffice/Form/LiveSnippet.tpl
-msgid "Are you sure you want to delete this Live Snippet?"
-msgstr "Sind Sie sicher, dass Sie dieses Live-Snippet löschen möchten?"
-
-#: templates/CRM/Civioffice/Form/LiveSnippet.tpl
-msgid ""
-"Note that when changing a Live Snippet's name, previously entered values for "
-"the snippet, which are stored per contact/user, will not be available "
-"anymore."
-msgstr ""
-"Beachten Sie, dass bei Veränderung des Namens eines Live-Snippet zuvor "
-"eingegebene Werte für das Live-Snippet, die pro Kontakt/Benutzer gespeichert "
-"werden, nicht mehr verfügbar sein werden."
-
-#: templates/CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.tpl
-msgid ""
-"Path to storage folder.<br>For example: <code>/var/civioffice/"
-"previous_documents</code>"
-msgstr ""
-"Pfad zu Ablageordner, z.B. <code>/var/civioffice/previous_documents</code>"
-
-#: templates/CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.tpl
-msgid ""
-"Path to temporary folder.<br>For example: <code>/path/to/civicrm/files/"
-"templates_c/civioffice/temp</code>"
-msgstr ""
-"Pfad zu temporärem Ordner, z.B. <code>/path/to/civicrm/files/templates_c/"
-"civioffice/temp</code>"
-
-#: templates/CRM/Civioffice/Form/Settings.hlp
-msgid "The last value used is stored for each contact for later use."
-msgstr ""
-"Der zuletzt eingegebene Wert wird pro Kontakt/Benutzer für spätere "
-"Verwendung gespeichert."
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "CiviOffice Document Stores"
-msgstr "CiviOffice-Dokumentenspeicher"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Document Stores are used to store files"
-msgstr "Dokumentenspeicher werden zum Speichern von Dokumenten verwendet."
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Ready to use"
-msgstr "einsatzbereit"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Config"
-msgstr "Konfiguration"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Yes"
-msgstr "Ja"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "No"
-msgstr "Nein"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "configure"
-msgstr "Konfigurieren"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "no configuration available"
-msgstr "Keine Konfiguration verfügbar"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "No document stores available"
-msgstr "Keine Dokumentspeicher verfügbar"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "CiviOffice Document Renderers (Converters)"
-msgstr "CiviOffice-Dokument-Renderer"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Renders or converts documents"
-msgstr "Erzeugt oder konvertiert Dokumente"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Add %1 Document Renderer"
-msgstr "Dokument-Renderer %1 hinzufügen"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Configure"
-msgstr "Konfigurieren"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "No document renderers available"
-msgstr "Keine Dokument-Renderer verfügbar"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "CiviOffice Document Editors"
-msgstr "CiviOffice-Dokumenteditoren"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Editors can be used to edit CiviOffice documents."
-msgstr ""
-"Editoren können zum Bearbeiten von CiviOffice-Dokumenten verwendet werden."
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "No document editors available"
-msgstr "Keine Dokumenteditoren verfügbar"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid ""
-"Live Snippets allow you to edit sections of your document during its "
-"generation using CiviOffice Live Snippet tokens."
-msgstr ""
-"Live-Snippets ermöglichen das Bearbeiten von Abschnitten eines Dokuments "
-"während der Erzeugung unter Verwendung von CiviOffice-Live-Snippet-"
-"Platzhaltern."
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Current Default Content"
-msgstr "Derzeitiger Standardinhalt"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Operations"
-msgstr "Operationen"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Edit"
-msgstr "Bearbeiten"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "No Live Snippets available"
-msgstr "Keine Live-Snippets verfügbar"
-
-#: templates/CRM/Civioffice/Form/Task/CreateDocumentsTrait.hlp
-msgid ""
-"Specifies how many documents will be created in a single request. Increasing "
-"this number might save some time on capable systems. This option is usually "
-"not necessary to be changed. If you encounter failures due to documents "
-"taking too long to generate, consider decreasing this number."
-msgstr ""
-"Legt fest, wie viele Dokumente in einer einzelnen Anfrage erzeugt werden. "
-"Eine Erhöhung dieser Zahl kann auf leistungsfähigen System Zeit sparen. "
-"Diese Option muss normalerweise nicht verändert werden. Wenn es zu Fehlern "
-"kommt, weil die Erstellung von Dokumenten zu lange dauert, sollten Sie diese "
-"Zahl verringern."
-
-#: templates/CRM/Civioffice/Page/Tokens.tpl
-msgid ""
-"This page lists all tokens CiviOffice is potentially able to replace in "
-"documents, however, this depends on the context. E.g. contribution tokens "
-"are only available in a context of generating documents for particular "
-"contributions, whereas general tokens, such as for domain or date, are "
-"always available."
-msgstr ""
-"Diese Seite führt alle Token auf, die CiviOffice potenziell in Dokumenten "
-"ersetzen kann, allerdings hängt dies vom Kontext ab. So sind z. B. "
-"Zuwendungs-Token nur im Zusammenhang mit der Erstellung von Dokumenten für "
-"einzelne Zuwendungen verfügbar, während allgemeine Token, wie z. B. für "
-"Domäne oder Datum, immer verfügbar sind."
-
-#~ msgid ""
-#~ "This document renderer employs the <code>unoconv</code> script on your "
-#~ "server to convert documents using LibreOffice and implements PhpWord for "
-#~ "replacing CiviCRM tokens."
-#~ msgstr ""
-#~ "Dieser Dokument-Renderer verwendet das <code>unoconv</code>-Skript auf "
-#~ "Ihrem Server, um Dokumente mit LibreOffice zu konvertieren und "
-#~ "implementiert PhpWord zum Ersetzen von CiviCRM-Token."
-
-#~ msgid "CiviOffice - Your Uploaded Documents"
-#~ msgstr "CiviOffice - Ihre hochgeladenen Dokumente"
-
-#~ msgid "CiviOffice - Shared Uploaded Documents"
-#~ msgstr "CiviOffice - Geteilte hochgeladene Dokumente"
-
-#~ msgid "Switch to private documents"
-#~ msgstr "Zu privaten Dokumenten wechseln"
-
-#~ msgid "Label"
-#~ msgstr "Beschriftung"
-
-#~ msgid "Upgrade %1 to revision %2"
-#~ msgstr "%1 auf Revision %2 aktualisieren"
+msgstr "Inhalte für Platzhalter konfigurierter Live-Snippets."

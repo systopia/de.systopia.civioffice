@@ -29,28 +29,28 @@ function _civicrm_api3_civi_office_convert_spec(&$spec)
         'name'         => 'document_uri',
         'api.required' => 1,
         'type' => CRM_Utils_Type::T_STRING,
-        'title'        => E::ts('Document URI. E.g.: "local::common/vorlage_kontakte_und_zuwendungen.docx"'),
+        'title'        => E::ts('Document URI, e.g. "local::common/template_contacts_and_contributions.docx"'),
         'description'  => E::ts('URI of document.'),
     ];
     $spec['entity_ids'] = [
         'name'         => 'entity_ids',
         'api.required' => 1,
         'type' => CRM_Utils_Type::T_INT,
-        'title'        => E::ts('Array of entity ids. E.g.: "[362, 614]"'),
+        'title'        => E::ts('Array of entity ids, e.g. "[362, 614]"'),
         'description'  => E::ts('One or multiple entity as an array'),
     ];
     $spec['entity_type'] = [
         'name'         => 'entity_type',
         'api.required' => 1,
         'type' => CRM_Utils_Type::T_STRING,
-        'title'        => E::ts('Entity type. E.g.: "contact", "contribution",...'),
+        'title'        => E::ts('Entity type, e.g. "contact" or "contribution"'),
         'description'  => E::ts('Entity type for token replacement'),
     ];
     $spec['renderer_uri']            = [
         'name'         => 'renderer_uri',
         'api.required' => 1,
         'type' => CRM_Utils_Type::T_STRING,
-        'title'        => E::ts('Renderer URI. E.g.: "unoconv-local"'),
+        'title'        => E::ts('Renderer URI, e.g. "unoconv-local"'),
         'description'  => E::ts('URI of the renderer.'),
     ];
 
@@ -58,8 +58,8 @@ function _civicrm_api3_civi_office_convert_spec(&$spec)
         'name'         => 'target_mime_type',
         'api.required' => 1,
         'type' => CRM_Utils_Type::T_STRING,
-        'title'        => E::ts('Target / final mime type. E.g.: "application/pdf"'),
-        'description'  => E::ts('Renderer converts given file to this mimetype'),
+        'title'        => E::ts('Target MIME type, e.g. "application/pdf"'),
+        'description'  => E::ts('Renderer converts given file to this MIME type'),
     ];
     $spec['live_snippets'] = [
         'name' => 'live_snippets',
