@@ -143,7 +143,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
                     $zip->close();
                 }
                 $mime_type = CRM_Civioffice_MimeType::ZIP;
-                $file_name = E::ts('CiviOffice-Documents.zip');
+                $file_name = E::ts('CiviOffice Documents.zip');
             }
 
             // trigger download

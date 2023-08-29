@@ -34,7 +34,7 @@ abstract class CRM_Civioffice_MimeType
         if (isset($mapping[$mime_type])) {
             return $mapping[$mime_type];
         } else {
-            throw new Exception('Unknown MIME type "{$mime_type}", needs to be implemented.');
+            throw new Exception(sprintf('Missing implementation for MIME type "%s"', $mime_type));
         }
     }
 

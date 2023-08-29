@@ -29,37 +29,37 @@ function _civicrm_api3_civi_office_convert_spec(&$spec)
         'name'         => 'document_uri',
         'api.required' => 1,
         'type' => CRM_Utils_Type::T_STRING,
-        'title'        => E::ts('Document URI, e.g. "local::common/template_contacts_and_contributions.docx"'),
-        'description'  => E::ts('URI of document.'),
+        'title'        => E::ts('Document URI'),
+        'description'  => E::ts('URI of document, e.g. "local::common/example.docx".'),
     ];
     $spec['entity_ids'] = [
         'name'         => 'entity_ids',
         'api.required' => 1,
         'type' => CRM_Utils_Type::T_INT,
-        'title'        => E::ts('Array of entity ids, e.g. "[362, 614]"'),
-        'description'  => E::ts('One or multiple entity as an array'),
+        'title'        => E::ts('Array of entity IDs'),
+        'description'  => E::ts('One or more entity IDs as an array, e.g. "[123, 456]".'),
     ];
     $spec['entity_type'] = [
         'name'         => 'entity_type',
         'api.required' => 1,
         'type' => CRM_Utils_Type::T_STRING,
-        'title'        => E::ts('Entity type, e.g. "contact" or "contribution"'),
-        'description'  => E::ts('Entity type for token replacement'),
+        'title'        => E::ts('Entity type'),
+        'description'  => E::ts('Entity type for token replacement, e.g. "contact" or "contribution".'),
     ];
     $spec['renderer_uri']            = [
         'name'         => 'renderer_uri',
         'api.required' => 1,
         'type' => CRM_Utils_Type::T_STRING,
-        'title'        => E::ts('Renderer URI, e.g. "unoconv-local"'),
-        'description'  => E::ts('URI of the renderer.'),
+        'title'        => E::ts('Renderer URI'),
+        'description'  => E::ts('URI of the renderer, e.g. "unoconv-local".'),
     ];
 
     $spec['target_mime_type']            = [
         'name'         => 'target_mime_type',
         'api.required' => 1,
         'type' => CRM_Utils_Type::T_STRING,
-        'title'        => E::ts('Target MIME type, e.g. "application/pdf"'),
-        'description'  => E::ts('Renderer converts given file to this MIME type'),
+        'title'        => E::ts('Target MIME type'),
+        'description'  => E::ts('Renderer converts given file to this MIME type, e.g. "application/pdf".'),
     ];
     $spec['live_snippets'] = [
         'name' => 'live_snippets',

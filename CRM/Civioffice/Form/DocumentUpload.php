@@ -63,7 +63,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
                 if ($file) {
                     unlink($file);
                     CRM_Core_Session::setStatus(
-                        E::ts("File '%1' deleted", [1 => basename($file)]),
+                        E::ts('File "%1" has been deleted.', [1 => basename($file)]),
                         E::ts("File Deleted"),
                         'info'
                     );
@@ -131,7 +131,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
             // TODO: MIME type checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
             if (!CRM_Civioffice_MimeType::hasSpecificFileNameExtension($file_name, CRM_Civioffice_MimeType::DOCX)) {
                 CRM_Core_Session::setStatus(
-                    E::ts("File type docx expected"),
+                    E::ts("File type docx is expected."),
                     E::ts("Error"),
                     'info'
                 );
@@ -140,7 +140,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
                 $destination = $this->document_store->getFolder() . DIRECTORY_SEPARATOR . $file_name;
                 move_uploaded_file($upload_file_infos['tmp_name'], $destination);
                 CRM_Core_Session::setStatus(
-                    E::ts('File "%1" uploaded', [1 => $upload_file_infos['name']]),
+                    E::ts('File "%1" has been uploaded.', [1 => $upload_file_infos['name']]),
                     E::ts("Document Stored"),
                     'info'
                 );

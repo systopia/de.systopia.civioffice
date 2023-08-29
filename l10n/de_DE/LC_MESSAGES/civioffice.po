@@ -160,7 +160,7 @@ msgstr ""
 #: CRM/Civioffice/DocumentStore/Upload.php
 msgid ""
 "My Uploaded Documents. Users only have access to files being uploaded by "
-"themself. The CiviCRM internal upload folder is used."
+"themselves. The CiviCRM internal upload folder is used."
 msgstr ""
 "Meine hochgeladenen Dokumente. Benutzer haben nur Zugriff auf Dateien, die "
 "sie selbst hochgeladen haben. Der CiviCRM-interne Ordner für hochgeladene "
@@ -245,8 +245,8 @@ msgid "Shared Documents"
 msgstr "Geteilte Dokumente"
 
 #: CRM/Civioffice/Form/DocumentUpload.php
-msgid "File '%1' deleted"
-msgstr "Datei '%1' gelöscht"
+msgid "File \"%1\" has been deleted."
+msgstr "Datei \"%1\" wurde gelöscht."
 
 #: CRM/Civioffice/Form/DocumentUpload.php
 msgid "File Deleted"
@@ -265,16 +265,16 @@ msgid "%1 MB"
 msgstr "%1 MB"
 
 #: CRM/Civioffice/Form/DocumentUpload.php
-msgid "File type docx expected"
-msgstr "Dateityp docx erwartet"
+msgid "File type docx is expected."
+msgstr "Dateityp docx wird erwartet."
 
 #: CRM/Civioffice/Form/DocumentUpload.php
 msgid "Error"
 msgstr "Fehler"
 
 #: CRM/Civioffice/Form/DocumentUpload.php
-msgid "File \"%1\" uploaded"
-msgstr "Datei '%1' hochgeladen"
+msgid "File \"%1\" has been uploaded."
+msgstr "Datei \"'%1\" wurde hochgeladen."
 
 #: CRM/Civioffice/Form/DocumentUpload.php
 msgid "Document Stored"
@@ -297,7 +297,7 @@ msgid "Document-%1.*"
 msgstr "Dokument-%1.*"
 
 #: CRM/Civioffice/Form/Download.php
-msgid "CiviOffice-Documents.zip"
+msgid "CiviOffice Documents.zip"
 msgstr "CiviOffice-Dokumente.zip"
 
 #: CRM/Civioffice/Form/Download.php
@@ -374,8 +374,8 @@ msgid "Settings Saved"
 msgstr "Einstellungen gespeichert"
 
 #: CRM/Civioffice/Form/Settings.php
-msgid "The CiviOffice configuration has been updated"
-msgstr "Die CviOffice-Konfiguration wurde aktualisiert"
+msgid "The CiviOffice configuration has been updated."
+msgstr "Die CviOffice-Konfiguration wurde aktualisiert."
 
 #: CRM/Civioffice/Form/Task/CreateDocumentsTrait.php
 msgid "CiviOffice - Generate multiple Documents"
@@ -410,46 +410,49 @@ msgid "Local Universal Office Converter (unoconv) implementing PhpWord"
 msgstr "Lokaler Universal Office Converter (unoconv) mit PhpWord"
 
 #: api/v3/CiviOffice/Convert.php
+msgid "Document URI"
+msgstr "Dokument-URI"
+
+#: api/v3/CiviOffice/Convert.php
+msgid "URI of document, e.g. \"local::common/example.docx\"."
+msgstr "Dokument-URI, z.B. \"local::common/beispiel.docx\"."
+
+#: api/v3/CiviOffice/Convert.php
+msgid "Array of entity IDs"
+msgstr "Liste von Entitäts-IDs"
+
+#: api/v3/CiviOffice/Convert.php
+msgid "One or more entity IDs as an array, e.g. \"[123, 456]\"."
+msgstr "Eine oder mehrere Entitäten als Liste, z.B. \"[123, 456]\"."
+
+#: api/v3/CiviOffice/Convert.php
+msgid "Entity type"
+msgstr "Entitätstyp"
+
+#: api/v3/CiviOffice/Convert.php
 msgid ""
-"Document URI, e.g. \"local::common/template_contacts_and_contributions.docx\""
+"Entity type for token replacement, e.g. \"contact\" or \"contribution\"."
 msgstr ""
-"Dokument-URI, z.B. \"local::common/vorlage_kontakte_und_zuwendungen.docx\""
+"Entitätstyp für Tokenersetzung, z.B. \"contact\" oder  \"contribution\"."
 
 #: api/v3/CiviOffice/Convert.php
-msgid "URI of document."
-msgstr "URI des Dokuments."
+msgid "Renderer URI"
+msgstr "Renderer-URI"
 
 #: api/v3/CiviOffice/Convert.php
-msgid "Array of entity ids, e.g. \"[362, 614]\""
-msgstr "Liste von Entitäts-IDs, z.B. \"[362, 614]\""
+msgid "URI of the renderer, e.g. \"unoconv-local\"."
+msgstr "Renderer-URI, z.B. \"unoconv-local\"."
 
 #: api/v3/CiviOffice/Convert.php
-msgid "One or multiple entity as an array"
-msgstr "Eine oder mehrere Entitäten als Liste"
+msgid "Target MIME type"
+msgstr "Ausgabedokumenttyp"
 
 #: api/v3/CiviOffice/Convert.php
-msgid "Entity type, e.g. \"contact\" or \"contribution\""
-msgstr "Entitätstyp, z.B. \"contact\" oder  \"contribution\""
-
-#: api/v3/CiviOffice/Convert.php
-msgid "Entity type for token replacement"
-msgstr "Entitätstyp für Platzhalterersetzung"
-
-#: api/v3/CiviOffice/Convert.php
-msgid "Renderer URI, e.g. \"unoconv-local\""
-msgstr "Renderer-URI, z.B. \"unoconv-local\""
-
-#: api/v3/CiviOffice/Convert.php
-msgid "URI of the renderer."
-msgstr "URI des Renderers."
-
-#: api/v3/CiviOffice/Convert.php
-msgid "Target MIME type, e.g. \"application/pdf\""
-msgstr "Ziel-MIME-Typ, z.B. \"application/pdf\""
-
-#: api/v3/CiviOffice/Convert.php
-msgid "Renderer converts given file to this MIME type"
-msgstr "Renderer konvertiert die angegebene Datei zu diesem MIME-Typ"
+msgid ""
+"Renderer converts given file to this MIME type, e.g. \"application/pdf\"."
+msgstr ""
+"Renderer konvertiert die angegebene Datei zu diesem MIME-Typ, z.B. "
+"\"application/pdf\"."
 
 #: api/v3/CiviOffice/Convert.php
 msgid "Live Snippets"
