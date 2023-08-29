@@ -280,10 +280,6 @@ msgstr "Datei '%1' hochgeladen"
 msgid "Document Stored"
 msgstr "Dokument gespeichert"
 
-#: CRM/Civioffice/Form/DocumentUpload.php
-msgid "No file or empty file name selected"
-msgstr "Keine Datei oder leerer Dateiname ausgewählt"
-
 #: CRM/Civioffice/Form/Download.php
 msgid "CiviOffice - Download"
 msgstr "CiviOffice - Herunterladen"

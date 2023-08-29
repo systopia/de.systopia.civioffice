@@ -76,7 +76,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
                 'upload_file',
                 E::ts('Upload Document'),
                 null,
-                false
+                true
             );
 
             $this->addButtons(
@@ -148,12 +148,6 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
                 // update document list
                 $this->assign('document_list', $this->fileList());
             }
-        } else {
-            CRM_Core_Session::setStatus(
-                E::ts("No file or empty file name selected"),
-                E::ts("Error"),
-                'info'
-            );
         }
 
         // TODO: Redirect for avoiding reloads with the same action (e.g. delete).

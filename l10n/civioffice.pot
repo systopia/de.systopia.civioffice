@@ -218,10 +218,6 @@ msgstr ""
 msgid "Document Stored"
 msgstr ""
 
-#: CRM/Civioffice/Form/DocumentUpload.php
-msgid "No file or empty file name selected"
-msgstr ""
-
 #: CRM/Civioffice/Form/Download.php
 msgid "CiviOffice - Download"
 msgstr ""
