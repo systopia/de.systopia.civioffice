@@ -52,7 +52,7 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
         // Require ID for editing/deleting.
         if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::DELETE)) {
             if (!$uri = CRM_Utils_Request::retrieve('id', 'Alphanumeric', $this)) {
-                throw new Exception(E::ts('Missing Document Renderer ID.'));
+                throw new Exception(E::ts('Missing document renderer ID.'));
             }
             $this->documentRenderer = CRM_Civioffice_DocumentRenderer::load($uri);
             $this->documentRendererType = $this->documentRenderer->getType();
@@ -61,7 +61,7 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
         // Require type for adding.
         if ($this->_action & (CRM_Core_Action::ADD)) {
             if (!$type = CRM_Utils_Request::retrieve('type', 'Alphanumeric', $this)) {
-                throw new Exception(E::ts('Missing Document Renderer.'));
+                throw new Exception(E::ts('Missing document renderer type.'));
             }
             $this->documentRendererType = CRM_Civioffice_DocumentRendererType::create($type);
         }

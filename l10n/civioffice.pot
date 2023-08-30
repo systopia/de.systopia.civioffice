@@ -155,11 +155,11 @@ msgid "Invalid action."
 msgstr ""
 
 #: CRM/Civioffice/Form/DocumentRenderer/Settings.php
-msgid "Missing Document Renderer ID."
+msgid "Missing document renderer ID."
 msgstr ""
 
 #: CRM/Civioffice/Form/DocumentRenderer/Settings.php
-msgid "Missing Document Renderer."
+msgid "Missing document renderer type."
 msgstr ""
 
 #: CRM/Civioffice/Form/DocumentRenderer/Settings.php CRM/Civioffice/Form/LiveSnippet.php

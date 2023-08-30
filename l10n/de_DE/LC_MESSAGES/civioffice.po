@@ -211,12 +211,14 @@ msgid "Invalid action."
 msgstr "Ungültige Aktion."
 
 #: CRM/Civioffice/Form/DocumentRenderer/Settings.php
-msgid "Missing Document Renderer ID."
+#, fuzzy
+#| msgid "Missing Document Renderer ID."
+msgid "Missing document renderer ID."
 msgstr "Fehlende Dokument-Renderer-ID."
 
 #: CRM/Civioffice/Form/DocumentRenderer/Settings.php
-msgid "Missing Document Renderer."
-msgstr "Fehlender Dokument-Renderer."
+msgid "Missing document renderer type."
+msgstr "Fehlender Dokument-Renderer-Typ."
 
 #: CRM/Civioffice/Form/DocumentRenderer/Settings.php
 #: CRM/Civioffice/Form/LiveSnippet.php
