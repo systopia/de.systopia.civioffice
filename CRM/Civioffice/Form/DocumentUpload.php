@@ -63,7 +63,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
                 if ($file) {
                     unlink($file);
                     CRM_Core_Session::setStatus(
-                        E::ts("File '%1' deleted.", [1 => basename($file)]),
+                        E::ts('File "%1" has been deleted.', [1 => basename($file)]),
                         E::ts("File Deleted"),
                         'info'
                     );
@@ -76,7 +76,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
                 'upload_file',
                 E::ts('Upload Document'),
                 null,
-                false
+                true
             );
 
             $this->addButtons(
@@ -128,11 +128,11 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
 
             // TODO: check if file already exists?
             // check if file ends with docx
-            // TODO: Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
+            // TODO: MIME type checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
             if (!CRM_Civioffice_MimeType::hasSpecificFileNameExtension($file_name, CRM_Civioffice_MimeType::DOCX)) {
                 CRM_Core_Session::setStatus(
+                    E::ts("File type docx is expected."),
                     E::ts("Error"),
-                    E::ts("Filetype docx expected"),
                     'info'
                 );
             } else {
@@ -140,7 +140,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
                 $destination = $this->document_store->getFolder() . DIRECTORY_SEPARATOR . $file_name;
                 move_uploaded_file($upload_file_infos['tmp_name'], $destination);
                 CRM_Core_Session::setStatus(
-                    E::ts("Uploaded file '%1'", [1 => $upload_file_infos['name']]),
+                    E::ts('File "%1" has been uploaded.', [1 => $upload_file_infos['name']]),
                     E::ts("Document Stored"),
                     'info'
                 );
@@ -148,12 +148,6 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form
                 // update document list
                 $this->assign('document_list', $this->fileList());
             }
-        } else {
-            CRM_Core_Session::setStatus(
-                E::ts("Error"),
-                E::ts("No file or empty file name selected"),
-                'info'
-            );
         }
 
         // TODO: Redirect for avoiding reloads with the same action (e.g. delete).

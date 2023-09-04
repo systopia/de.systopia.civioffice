@@ -140,7 +140,7 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form
             if (!preg_match('/^[a-z0-9_\,]+$/', $values['name'])) {
                 $this->setElementError(
                     'name',
-                    E::ts('The name can only contain lowercae letters, numbers and underscores.')
+                    E::ts('The name may only contain lowercase letters, numbers and underscores.')
                 );
             }
         }

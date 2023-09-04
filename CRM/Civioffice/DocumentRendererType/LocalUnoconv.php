@@ -127,10 +127,10 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
     }
 
     /**
-     * Get the output/generated mime types for this document renderer
+     * Get the output/generated MIME types for this document renderer
      *
      * @return array
-     *   list of mime types
+     *   list of MIME types
      */
     public function getSupportedOutputMimeTypes(): array
     {
@@ -141,12 +141,12 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
     }
 
     /**
-     * Get a list of document mime types supported by this component
+     * Get a list of document MIME types supported by this component
      *
      * @return array
-     *   list of mime types as strings
+     *   list of MIME types as strings
      */
-    public function getSupportedMimeTypes(): array // FIXME: Input or output mime types?
+    public function getSupportedMimeTypes(): array // FIXME: Input or output MIME types?
     {
         return [CRM_Civioffice_MimeType::DOCX];
     }
@@ -166,7 +166,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         $form->add(
             'text',
             'unoconv_binary_path',
-            E::ts("Path to the <code>unoconv</code> binary"),
+            E::ts("Path to the <code>unoconv</code> executable"),
             ['class' => 'huge'],
             true
         );
@@ -174,7 +174,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         $form->add(
             'text',
             'unoconv_lock_file_path',
-            E::ts("Path to a lock files"),
+            E::ts("Path to a lock file"),
             ['class' => 'huge'],
             false
         );
@@ -213,7 +213,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         $unoconv_lock_file_path = $form->_submitValues['unoconv_lock_file_path'];
 
         if (!file_exists($unoconv_binary_path)) {
-            $form->_errors['unoconv_binary_path'] = E::ts("File does not exist. Please provide a correct filename");
+            $form->_errors['unoconv_binary_path'] = E::ts("File does not exist. Please provide a correct filename.");
         }
 
         if (!empty($lockfile_to_check)) {
@@ -225,7 +225,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
               $form->_errors['unoconv_lock_file_path'] = E::ts('This is not a file');
             } else if (!is_writable($unoconv_lock_file_path)) {
                 $form->_errors['unoconv_lock_file_path'] = E::ts(
-                    "Lock file cannot be written. Please run: 'chmod 777 %1'", [1 => $unoconv_lock_file_path]);
+                    'Lock file cannot be written. Please run: "chmod 777 %1"', [1 => $unoconv_lock_file_path]);
             }
         }
     }
@@ -276,7 +276,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         if ($this->prepare_docx && $internal_processing_format == CRM_Civioffice_MimeType::DOCX) {
             $lock = new CRM_Core_Lock('civicrm.office.civi_office_unoconv_local', 60, true);
             if (!$lock->acquire()) {
-                throw new Exception(E::ts("Too many parallel conversions. Try using a smaller batch size"));
+                throw new Exception(E::ts("Too many parallel conversions. Try using a smaller batch size."));
             }
 
             $temp_store_folder_path = $temp_store->getBaseFolder();
@@ -325,7 +325,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             // currently, this execution needs to be serialised (see https://github.com/systopia/de.systopia.civioffice/issues/6)
             $lock = new CRM_Core_Lock('civicrm.office.civi_office_unoconv_local', 60, true);
             if (!$lock->acquire()) {
-                throw new Exception(E::ts("Too many parallel conversions. Try using a smaller batch size"));
+                throw new Exception(E::ts("Too many parallel conversions. Try using a smaller batch size."));
             }
         }
 
@@ -607,7 +607,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         if ($lock_file_path) {
             $this->unoconv_lock_file = fopen($lock_file_path, "r+");
             if (!flock($this->unoconv_lock_file, LOCK_EX)) {
-                throw new Exception(E::ts("CiviOffice: Could not acquire unoconv lock. Sorry"));
+                throw new Exception(E::ts("CiviOffice: Could not acquire unoconv lock."));
             }
         }
     }

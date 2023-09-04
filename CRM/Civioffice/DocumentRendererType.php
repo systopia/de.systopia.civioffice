@@ -73,18 +73,18 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
     }
 
     /**
-     * Get a list of document mime types supported by this component
+     * Get a list of document MIME types supported by this component
      *
      * @return array
-     *   list of mime types as strings
+     *   list of MIME types as strings
      */
     abstract public function getSupportedMimeTypes() : array;
 
     /**
-     * Get the output/generated mime types for this document renderer
+     * Get the output/generated MIME types for this document renderer
      *
      * @return array
-     *   list of mime types
+     *   list of MIME types
      */
     public abstract function getSupportedOutputMimeTypes(): array;
 

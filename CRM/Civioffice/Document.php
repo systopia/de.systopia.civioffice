@@ -49,10 +49,10 @@ abstract class CRM_Civioffice_Document
     }
 
     /**
-     * Get the file's mime type
+     * Get the file's MIME type
      *
      * @return string
-     *   mime type
+     *   MIME type
      */
     public function getMimeType() : string
     {

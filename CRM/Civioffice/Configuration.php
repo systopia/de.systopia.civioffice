@@ -204,7 +204,7 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface
     public function getDocuments($select2 = false)
     {
         $document_list = [];
-        // todo: only show supported source mime types
+        // todo: only show supported source MIME types
         foreach ($this->getDocumentStores(true) as $document_store) {
             foreach ($document_store->getDocuments() as $document) {  // todo: recursive
                 // TODO: Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2

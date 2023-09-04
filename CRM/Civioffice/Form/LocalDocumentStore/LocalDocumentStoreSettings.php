@@ -36,7 +36,7 @@ class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends 
         $this->add(
             'text',
             'local_temp_folder',
-            E::ts("Local temporary Folder (full path)"),
+            E::ts("Local Temporary Folder (full path)"),
             ['class' => 'huge'],
             true
         );

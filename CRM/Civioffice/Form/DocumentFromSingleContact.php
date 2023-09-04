@@ -47,9 +47,9 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
         $this->setAttribute('data-no-ajax-submit', 'true');
         $this->contact_id = CRM_Utils_Request::retrieve('cid', 'Int', $this, true);
         $this->assign('user_id', $this->contact_id);
-        $this->setTitle(E::ts("CiviOffice - Generate a single Document"));
+        $this->setTitle(E::ts("CiviOffice - Generate a Single Document"));
 
-        // add list of document renderers and supported output mime types
+        // add list of document renderers and supported output MIME types
         $output_mimetypes = null;
         $document_renderer_list = [];
         foreach ($config->getDocumentRenderers(true) as $dr) {

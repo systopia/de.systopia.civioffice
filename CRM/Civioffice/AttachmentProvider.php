@@ -48,7 +48,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
     {
         $config = CRM_Civioffice_Configuration::getConfig();
 
-        // add list of document renderers and supported output mime types
+        // add list of document renderers and supported output MIME types
         $output_mimetypes = null;
         $document_renderer_list = [];
         foreach ($config->getDocumentRenderers(true) as $dr) {
@@ -68,7 +68,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
 
         // build document list
         $document_list = [];
-        // todo: only show supported source mime types
+        // todo: only show supported source MIME types
         foreach ($config->getDocumentStores(true) as $document_store) {
             foreach ($document_store->getDocuments() as $document) {  // todo: recursive
                 /** @var CRM_Civioffice_Document $document */

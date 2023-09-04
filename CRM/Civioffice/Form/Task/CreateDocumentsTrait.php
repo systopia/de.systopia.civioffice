@@ -47,7 +47,7 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
             ),
         ];
 
-        // add list of document renderers and supported output mime types
+        // add list of document renderers and supported output MIME types
         $output_mimetypes = null;
         $document_renderer_list = [];
         foreach ($config->getDocumentRenderers(true) as $dr) {
