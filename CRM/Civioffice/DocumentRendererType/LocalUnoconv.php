@@ -54,8 +54,8 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
 
     /**
      * @var bool $phpword_tokens
-     *   Whether to replace Live Snippet tokens using a PHPWord template processor, so that HTML in Live Snippets can be
-     *   converted to OOXML.
+     *   Whether to replace tokens using a PHPWord template processor, so that HTML in Live Snippets can be converted to
+     *   OOXML.
      */
     protected $phpword_tokens;
 
@@ -190,7 +190,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         $form->add(
             'checkbox',
             'phpword_tokens',
-            E::ts('Use PHPWord macros for Live Snippet tokens'),
+            E::ts('Use PHPWord macros for token replacement'),
             null,
             false
         );

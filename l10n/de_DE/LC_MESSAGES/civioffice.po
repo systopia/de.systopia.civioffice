@@ -83,8 +83,8 @@ msgid "Prepare DOCX documents"
 msgstr "DOCX-Dokumente vorbereiten"
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Use PHPWord macros for Live Snippet tokens"
-msgstr "PHPWord-Makros für LiveSnippet-Token verwenden"
+msgid "Use PHPWord macros for token replacement"
+msgstr "PHPWord-Makros für Token-Ersetzung verwenden"
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "File does not exist. Please provide a correct filename."

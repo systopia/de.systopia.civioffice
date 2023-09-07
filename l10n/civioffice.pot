@@ -59,7 +59,7 @@ msgid "Prepare DOCX documents"
 msgstr ""
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Use PHPWord macros for Live Snippet tokens"
+msgid "Use PHPWord macros for token replacement"
 msgstr ""
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php

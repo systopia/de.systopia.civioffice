@@ -36,7 +36,7 @@
   </div>
 
   <div class="crm-section">
-    <div class="help">{ts}Whether to replace Live Snippet tokens using a PHPWord template processor, so that HTML in Live Snippets can be converted to OOXML.{/ts}</div>
+    <div class="help">{ts}Whether to replace tokens using a PHPWord template processor, so that HTML in Live Snippets can be converted to OOXML.{/ts}</div>
     <div class="label">{$form.phpword_tokens.label}</div>
     <div class="content">{$form.phpword_tokens.html}</div>
     <div class="clear"></div>
