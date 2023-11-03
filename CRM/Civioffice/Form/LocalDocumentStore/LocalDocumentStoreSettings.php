@@ -85,7 +85,7 @@ class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends 
 
         if (!empty($this->_submitValues['local_temp_folder'])) {
             $local_temp_folder = $this->_submitValues['local_temp_folder'];
-            if (!file_exists($local_temp_folder) && !mkdir($local_folder, 0777, true)) {
+            if (!file_exists($local_temp_folder) && !mkdir($local_temp_folder, 0777, true)) {
               $this->_errors['local_temp_folder'] = E::ts('Could not create directory');
             } else if (!is_dir($local_temp_folder)) {
                 $this->_errors['local_temp_folder'] = E::ts("This is not a folder");
