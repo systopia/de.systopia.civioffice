@@ -209,12 +209,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
      * {@inheritDoc}
      */
     public function validateSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form) {
-        $unoconv_binary_path = $form->_submitValues['unoconv_binary_path'];
         $unoconv_lock_file_path = $form->_submitValues['unoconv_lock_file_path'];
-
-        if (!file_exists($unoconv_binary_path)) {
-            $form->_errors['unoconv_binary_path'] = E::ts("File does not exist. Please provide a correct filename.");
-        }
 
         if (!empty($lockfile_to_check)) {
             if (!file_exists($unoconv_lock_file_path)) {
