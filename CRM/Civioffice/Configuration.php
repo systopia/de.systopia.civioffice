@@ -315,19 +315,33 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface
      */
     public static function getHomeFolder(): string
     {
-        // try environment
-        if (!empty($_SERVER['HOME'])) {
-            return $_SERVER['HOME'];
+        // For UNIX support
+        if (getenv('HOME')) {
+            $home = getenv('HOME');
         }
-
-        // Get process user's home directory.
-        $user_info = posix_getpwuid(posix_getuid());
-        if (!empty($user_info['dir'])) {
-            return $user_info['dir'];
+        // For >= Windows8 support
+        elseif (getenv('HOMEDRIVE') && getenv('HOMEPATH')) {
+            $home = getenv('HOMEDRIVE').getenv('HOMEPATH');
         }
-
-        // todo: what else to check?
-        Civi::log()->warning("CiviOffice: Couldn't determine web user's home folder.");
-        return '~';
+        elseif (!empty($_SERVER['HOME'])) {
+            $home = $_SERVER['HOME'];
+        }
+        elseif ($user_info = posix_getpwuid(posix_getuid()) && !empty($user_info['dir'])) {
+          // Get process user's home directory.
+            $home = $user_info['dir'];
+        }
+        elseif(function_exists('exec')) {
+            if(strncasecmp(PHP_OS, 'WIN', 3) === 0) {
+                $home = exec("echo %userprofile%");
+            }
+            else {
+                $home = exec("echo ~");
+            }
+        }
+        if (empty($home)) {
+            Civi::log()->warning("CiviOffice: Couldn't determine web user's home folder.");
+            $home = '~';
+        }
+        return $home;
     }
 }

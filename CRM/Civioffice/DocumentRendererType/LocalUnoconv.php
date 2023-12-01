@@ -92,7 +92,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                 mkdir("{$home_folder}.cache");
             }
             if (!is_writable("{$home_folder}.cache")) {
-                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.cache");
+                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {$home_folder}.cache");
                 return false;
             }
 
@@ -101,7 +101,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                 mkdir("{$home_folder}.config");
             }
             if (!is_writable("{$home_folder}.config")) {
-                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.config");
+                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {$home_folder}.config");
                 return false;
             }
 
