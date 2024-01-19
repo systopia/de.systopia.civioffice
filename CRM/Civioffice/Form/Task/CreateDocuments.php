@@ -25,7 +25,7 @@ class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
     public function preProcess()
     {
         parent::preProcess();
-        $this->entityType = 'contact';
+        $this->entityType = 'Contact';
         $this->entityIds = $this->_contactIds;
     }
 }

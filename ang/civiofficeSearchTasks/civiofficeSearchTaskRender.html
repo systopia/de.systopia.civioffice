@@ -1,0 +1,77 @@
+<div id="bootstrap-theme">
+  <form id="renderForm" name="renderForm" class="form-horizontal" ng-controller="civiOfficeSearchTaskRender as $ctrl" ng-submit="$ctrl.render()">
+    <div class="form-group">
+      <label for="renderer" class="col-sm-2 control-label">{{ ts('Renderer') }}</label>
+      <div class="col-sm-10">
+        <select id="renderer" class="form-control" ng-model="renderer" ng-required="true"
+                ng-options="renderer as renderer.name for renderer in $ctrl.renderers track by renderer.uri">
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="documentUri" class="col-sm-2 control-label">{{ ts('Document') }}</label>
+      <div class="col-sm-10">
+        <select2 id="documentUri" class="form-control" ng-model="documentUri" ng-required="true"
+                 s2-options="document.uri as document.name for document in $ctrl.documents track by document.uri"
+                 options="{placeholder: ts('Select')}">
+        </select2>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="mimeType" class="col-sm-2 control-label">{{ ts('File Type') }}</label>
+      <div class="col-sm-10">
+        <select id="mimeType" class="form-control" ng-model="mimeType" ng-required="true"
+                ng-options="key for (key, value) in renderer.supported_output_file_types">
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="activityTypeId" class="col-sm-2 control-label">{{ ts('Create Activity') }}</label>
+      <div class="col-sm-10">
+        <select2 id="activityTypeId" class="form-control" ng-model="activityTypeId"
+                 s2-options="activityType.id as activityType.label for activityType in $ctrl.activityTypes track by activityType.id"
+                 options="{placeholder: ts('None'), allowClear: true}">
+        </select2>
+      </div>
+    </div>
+
+    <div ng-show="$ctrl.liveSnippets" class="panel-group" id="accordion" role="tablist">
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="liveSnippetsHeading">
+          <span class="panel-title">
+            <a role="button" data-toggle="collapse" href="#liveSnippets" aria-expanded="true" aria-controls="liveSnippets">
+              {{:: ts('Live Snippets') }}
+            </a>
+          </span>
+        </div>
+        <div id="liveSnippets" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="liveSnippetsHeading">
+          <div class="panel-body">
+            <div class="form-group" ng-repeat="liveSnippet in $ctrl.liveSnippets">
+              <div class="col-sm-2">
+                <label for="{{'liveSnippet.' + liveSnippet.name}}" class="control-label">{{ liveSnippet.label }}</label>
+                <p><small>{{ liveSnippet.description }}</small></p>
+              </div>
+              <div class="col-sm-10">
+                <textarea id="{{'liveSnippet.' + liveSnippet.name}}" class="form-control" ng-model="liveSnippets[liveSnippet.name]"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-right">
+      {{:: ts('The result will be opened in a new browser tab. Your browser may ask to open a popup.') }}
+    </p>
+    <div class="buttons text-right">
+      <button type="submit" class="btn btn-primary" ng-disabled="renderForm.$invalid || $ctrl.run">
+        <i class="crm-i fa-{{ $ctrl.run ? 'spin fa-spinner' : 'check' }}"></i>
+        {{:: model.ids.length === 1 ? ts('Create Document') : ts('Create %1 Documents', {1: model.ids.length}) }}
+      </button>
+      <button type="button" ng-click="$ctrl.cancel()" class="btn btn-danger" ng-hide="$ctrl.run">
+        <i class="crm-i fa-times"></i>
+        {{:: ts('Cancel') }}
+      </button>
+    </div>
+  </form>
+</div>

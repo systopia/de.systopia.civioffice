@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.5/phpunit.xsd"
+         colors="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         forceCoversAnnotation="true"
+         bootstrap="tests/phpunit/bootstrap.php">
+
+  <php>
+    <ini name="error_reporting" value="-1" />
+    <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=0&amp;baselineFile=./tests/ignored-deprecations.json"/>
+    <!-- With nikic/php-parser v4.18.0 and v5.0.0 code coverage fails -->
+    <!-- See https://github.com/symfony/symfony/issues/53459 -->
+    <env name="SYMFONY_PHPUNIT_REQUIRE" value="nikic/php-parser:4.17" />
+  </php>
+
+  <testsuites>
+    <testsuite name="Extension Test Suite">
+      <directory>./tests/phpunit</directory>
+    </testsuite>
+  </testsuites>
+  <filter>
+    <whitelist>
+      <directory suffix=".php">api</directory>
+      <directory suffix=".php">CRM</directory>
+      <directory suffix=".php">Civi</directory>
+      <exclude>
+        <directory>CRM/*/DAO</directory>
+      </exclude>
+    </whitelist>
+  </filter>
+  <listeners>
+    <listener class="Civi\Test\CiviTestListener">
+      <arguments/>
+    </listener>
+  </listeners>
+</phpunit>

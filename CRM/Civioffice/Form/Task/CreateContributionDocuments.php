@@ -25,7 +25,7 @@ class CRM_Civioffice_Form_Task_CreateContributionDocuments extends CRM_Contribut
     public function preProcess()
     {
         parent::preProcess();
-        $this->entityType = 'contribution';
+        $this->entityType = 'Contribution';
         $this->entityIds = $this->_contributionIds;
     }
 }

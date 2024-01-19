@@ -15,8 +15,10 @@
 
 abstract class CRM_Civioffice_MimeType
 {
-    public const DOCX = 'application/vnd.openxmlformats-officedocument.wordprocessingm';
+    public const DOCX = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
     public const PDF = 'application/pdf';
+
     public const ZIP = 'application/zip';
 
     /**

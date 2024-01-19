@@ -25,7 +25,7 @@ class CRM_Civioffice_Form_Task_CreateCaseDocuments extends CRM_Case_Form_Task
     public function preProcess()
     {
         parent::preProcess();
-        $this->entityType = 'case';
+        $this->entityType = 'Case';
         $this->entityIds = $this->_caseIds;
     }
 }

@@ -40,7 +40,7 @@ class CRM_Civioffice_ConversionJob
 
     /**
      * @var string $entity_type
-     *   Type of entity (like 'contact' ID)
+     *   Type of entity (e.g. 'Contact')
      */
     protected $entity_type;
 
@@ -119,31 +119,31 @@ class CRM_Civioffice_ConversionJob
             foreach ($this->entity_IDs as $entity_id) {
                 $contact_id = NULL;
                 switch ($this->entity_type) {
-                    case 'contact':
+                    case 'Contact':
                         $contact_id = $entity_id;
                         break;
-                    case 'contribution':
+                    case 'Contribution':
                         $contact_id = \Civi\Api4\Contribution::get()
                             ->addSelect('contact_id')
                             ->addWhere('id', '=', $entity_id)
                             ->execute()
                             ->single()['contact_id'];
                         break;
-                    case 'participant':
+                    case 'Participant':
                         $contact_id = \Civi\Api4\Participant::get()
                             ->addSelect('contact_id')
                             ->addWhere('id', '=', $entity_id)
                             ->execute()
                             ->single()['contact_id'];
                         break;
-                    case 'membership':
+                    case 'Membership':
                         $contact_id = \Civi\Api4\Membership::get()
                             ->addSelect('contact_id')
                             ->addWhere('id', '=', $entity_id)
                             ->execute()
                             ->single()['contact_id'];
                         break;
-                    case 'activity':
+                    case 'Activity':
                         $contact_id = \Civi\Api4\ActivityContact::get()
                             ->addSelect('contact_id')
                             ->addWhere('activity_id', '=', $entity_id)
@@ -152,7 +152,7 @@ class CRM_Civioffice_ConversionJob
                             // Use the first record, if any, as there might be more than one.
                             ->first()['contact_id'] ?? null;
                         break;
-                    case 'case':
+                    case 'Case':
                         $contact_id = \Civi\Api4\CaseContact::get()
                             ->addSelect('contact_id')
                             ->addWhere('case_id', '=', $entity_id)

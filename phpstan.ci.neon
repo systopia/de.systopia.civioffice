@@ -1,0 +1,20 @@
+includes:
+	- phpstan.neon.dist
+
+parameters:
+	scanDirectories:
+		- ci/vendor/civicrm/civicrm-core/api/
+		- ci/vendor/civicrm/civicrm-core/CRM/
+		- ci/vendor/civicrm/civicrm-core/ext/
+	bootstrapFiles:
+		- ci/vendor/autoload.php
+	# Because we test with different versions in CI we have unmatched errors
+	reportUnmatchedIgnoredErrors: false
+	ignoreErrors:
+		# Errors we get when using "prefer-lowest"
+		- '#::getSubscribedEvents\(\) return type has no value type specified in iterable type array.$#'
+		-
+			message: '#Dead catch - CRM_Core_Exception is never thrown in the try block.#'
+			path: */Civi/Civioffice/EntitySubscriber/ParticipantCiviOfficeTokenSubscriber.php
+		# CiviCRM <5.45
+		- '#^Call to an undefined method Civi\\Api4\\Generic\\DAOGetFieldsAction::setLanguage\(\).$#'

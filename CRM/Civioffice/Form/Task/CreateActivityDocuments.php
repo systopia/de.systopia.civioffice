@@ -25,7 +25,7 @@ class CRM_Civioffice_Form_Task_CreateActivityDocuments extends CRM_Activity_Form
     public function preProcess()
     {
         parent::preProcess();
-        $this->entityType = 'activity';
+        $this->entityType = 'Activity';
         $this->entityIds = $this->_activityHolderIds;
     }
 }
