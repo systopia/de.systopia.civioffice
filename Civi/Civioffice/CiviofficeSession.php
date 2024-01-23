@@ -18,31 +18,33 @@ namespace Civi\Civioffice;
 
 final class CiviofficeSession {
 
-  private static ?self $instance = null;
+  private static ?self $instance = NULL;
 
   private \CRM_Core_Session $session;
 
   public static function getInstance(): self {
-      return self::$instance ??= new self(\CRM_Core_Session::singleton());
+    // @phpstan-ignore-next-line
+    return self::$instance ??= new self(\CRM_Core_Session::singleton());
   }
 
-  public function __construct(?\CRM_Core_Session $session) {
-      $this->session = $session;
+  public function __construct(\CRM_Core_Session $session) {
+    $this->session = $session;
   }
 
   /**
    * @see storeTempFolderPath()
    */
   public function getTempFolderPath(string $hash): ?string {
-      return $this->session->get('temp_' . $hash, 'civioffice');
+    // @phpstan-ignore-next-line
+    return $this->session->get('temp_' . $hash, 'civioffice');
   }
 
   /**
    * @see storeTempFolderPath()
    */
   public function removeTempFolderPath(string $temp_folder_path): void {
-      $hash = sha1($temp_folder_path);
-      $this->session->set('temp_' . $hash, null, 'civioffice');
+    $hash = sha1($temp_folder_path);
+    $this->session->set('temp_' . $hash, NULL, 'civioffice');
   }
 
   /**
@@ -57,4 +59,5 @@ final class CiviofficeSession {
 
     return $hash;
   }
+
 }
