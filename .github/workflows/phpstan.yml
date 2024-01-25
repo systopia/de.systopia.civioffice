@@ -4,6 +4,11 @@ on:
   pull_request:
     paths:
       - '**.php'
+      - composer.json
+      - tools/phpstan/composer.json
+      - ci/composer.json
+      - phpstan.ci.neon
+      - phpstan.neon.dist
 
 jobs:
   phpstan:

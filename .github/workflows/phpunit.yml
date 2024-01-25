@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - '**.php'
+      - composer.json
+      - tools/phpunit/composer.json
+      - phpunit.xml.dist
 
 env:
   # On github CI machine creating the "/vendor" volume fails otherwise with: read-only file system: unknown

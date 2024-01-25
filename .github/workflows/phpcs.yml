@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - '**.php'
+      - tools/phpcs/composer.json
+      - phpcs.xml.dist
 
 jobs:
   phpcs:
