@@ -21,13 +21,14 @@ declare(strict_types = 1);
 /** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
 use Civi\Civioffice\Api4\Action\Civioffice\RenderWebAction;
-use Civi\Civioffice\EntitySubscriber\ActivityCiviOfficeTokenSubscriber;
-use Civi\Civioffice\EntitySubscriber\CaseCiviOfficeTokenSubscriber;
-use Civi\Civioffice\EntitySubscriber\ContactCiviOfficeTokenSubscriber;
-use Civi\Civioffice\EntitySubscriber\ContributionCiviOfficeTokenSubscriber;
-use Civi\Civioffice\EntitySubscriber\EventCiviOfficeTokenSubscriber;
-use Civi\Civioffice\EntitySubscriber\MembershipCiviOfficeTokenSubscriber;
-use Civi\Civioffice\EntitySubscriber\ParticipantCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\ActivityCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\CaseCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\CiviOfficeSearchKitTaskSubscriber;
+use Civi\Civioffice\EventSubscriber\ContactCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\ContributionCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\EventCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\MembershipCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\ParticipantCiviOfficeTokenSubscriber;
 use Civi\Civioffice\Render\Queue\RenderQueueBuilderFactory;
 use Civi\Civioffice\Render\Queue\RenderQueueRunner;
 
@@ -43,6 +44,9 @@ $container->autowire(RenderQueueRunner::class)
 $container->autowire(RenderWebAction::class)
   ->setPublic(TRUE)
   ->setShared(TRUE);
+
+$container->autowire(CiviOfficeSearchKitTaskSubscriber::class)
+  ->addTag('kernel.event_subscriber');
 
 $container->autowire(ActivityCiviOfficeTokenSubscriber::class)
   ->addTag('kernel.event_subscriber');

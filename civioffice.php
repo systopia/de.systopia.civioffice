@@ -88,33 +88,6 @@ function civioffice_civicrm_searchTasks($objectType, &$tasks)
     }
 }
 
-/**
- * Implements hook_civicrm_searchKitTasks().
- *
- * @phpstan-param array<string, array<string, array<string, mixed>>> $tasks
- */
-function civioffice_civicrm_searchKitTasks(array &$tasks, bool $checkPermissions, ?int $userID): void
-{
-    $entityTypes = [
-        'Activity',
-        'Case',
-        'Contact',
-        'Contribution',
-        'Event',
-        'Membership',
-        'Participant',
-    ];
-
-    foreach ($entityTypes as $entityType) {
-        $tasks[$entityType]['civiofficeRender'] = [
-            'module' => 'civiofficeSearchTasks',
-            'title' => E::ts('Create Documents (CiviOffice)'),
-            'icon' => 'fa-file-text-o',
-            'uiDialog' => ['templateUrl' => '~/civiofficeSearchTasks/civiofficeSearchTaskRender.html'],
-        ];
-    }
-}
-
 function civioffice_civicrm_summaryActions(&$actions, $contactID)
 {
     // add "open document with single contact" action
