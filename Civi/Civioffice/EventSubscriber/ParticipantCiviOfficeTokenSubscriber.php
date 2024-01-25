@@ -17,27 +17,42 @@
 
 declare(strict_types = 1);
 
-namespace Civi\Civioffice\EntitySubscriber;
+namespace Civi\Civioffice\EventSubscriber;
 
-use Civi\Api4\Membership;
+use Civi\Api4\Participant;
 use Civi\Core\Event\GenericHookEvent;
 
-final class MembershipCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviOfficeTokenSubscriber {
+final class ParticipantCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviOfficeTokenSubscriber {
 
   public function onCiviOfficeTokenContext(GenericHookEvent $event): void {
     parent::onCiviOfficeTokenContext($event);
 
     if ($this->getEntityType() === $event->entity_type) {
-      $membership = Membership::get(FALSE)
+      $participant = Participant::get(FALSE)
         ->addWhere('id', '=', $event->entity_id)
         ->execute()
         ->single();
-      $event->context['contactId'] = $membership['contact_id'];
+      $event->context['contactId'] = $participant['contact_id'];
+      $event->context['eventId'] = $participant['event_id'];
+
+      try {
+        /** @var array{contribution_id: int|string} $participant_payment */
+        $participant_payment = civicrm_api3(
+          'ParticipantPayment',
+          'getsingle',
+          ['participant_id' => $participant['id']]
+        );
+        $event->context['contributionId'] = (int) $participant_payment['contribution_id'];
+      }
+      catch (\CRM_Core_Exception $exception) {
+        // No participant payment, nothing to do.
+        // @ignoreException
+      }
     }
   }
 
   protected function getEntityType(): string {
-    return 'Membership';
+    return 'Participant';
   }
 
 }

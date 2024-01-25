@@ -17,12 +17,12 @@
 
 declare(strict_types = 1);
 
-namespace Civi\Civioffice\EntitySubscriber;
+namespace Civi\Civioffice\EventSubscriber;
 
-final class EventCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviOfficeTokenSubscriber {
+final class ContactCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviOfficeTokenSubscriber {
 
   protected function getEntityType(): string {
-    return 'Event';
+    return 'Contact';
   }
 
 }

@@ -17,31 +17,27 @@
 
 declare(strict_types = 1);
 
-namespace Civi\Civioffice\EntitySubscriber;
+namespace Civi\Civioffice\EventSubscriber;
 
-use Civi\Api4\CaseContact;
+use Civi\Api4\Contribution;
 use Civi\Core\Event\GenericHookEvent;
 
-final class CaseCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviOfficeTokenSubscriber {
+final class ContributionCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviOfficeTokenSubscriber {
 
   public function onCiviOfficeTokenContext(GenericHookEvent $event): void {
     parent::onCiviOfficeTokenContext($event);
 
     if ($this->getEntityType() === $event->entity_type) {
-      $caseContact = CaseContact::get(FALSE)
-        ->addSelect('contact_id')
-        ->addWhere('case_id', '=', $event->entity_id)
+      $contribution = Contribution::get(FALSE)
+        ->addWhere('id', '=', $event->entity_id)
         ->execute()
-        // Use the first record, as there might be more than one.
-        ->first();
-      if (NULL !== $caseContact) {
-        $event->context['contactId'] = $caseContact['contact_id'];
-      }
+        ->single();
+      $event->context['contactId'] = $contribution['contact_id'];
     }
   }
 
   protected function getEntityType(): string {
-    return 'Case';
+    return 'Contribution';
   }
 
 }

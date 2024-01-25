@@ -17,42 +17,31 @@
 
 declare(strict_types = 1);
 
-namespace Civi\Civioffice\EntitySubscriber;
+namespace Civi\Civioffice\EventSubscriber;
 
-use Civi\Api4\Participant;
+use Civi\Api4\CaseContact;
 use Civi\Core\Event\GenericHookEvent;
 
-final class ParticipantCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviOfficeTokenSubscriber {
+final class CaseCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviOfficeTokenSubscriber {
 
   public function onCiviOfficeTokenContext(GenericHookEvent $event): void {
     parent::onCiviOfficeTokenContext($event);
 
     if ($this->getEntityType() === $event->entity_type) {
-      $participant = Participant::get(FALSE)
-        ->addWhere('id', '=', $event->entity_id)
+      $caseContact = CaseContact::get(FALSE)
+        ->addSelect('contact_id')
+        ->addWhere('case_id', '=', $event->entity_id)
         ->execute()
-        ->single();
-      $event->context['contactId'] = $participant['contact_id'];
-      $event->context['eventId'] = $participant['event_id'];
-
-      try {
-        /** @var array{contribution_id: int|string} $participant_payment */
-        $participant_payment = civicrm_api3(
-          'ParticipantPayment',
-          'getsingle',
-          ['participant_id' => $participant['id']]
-        );
-        $event->context['contributionId'] = (int) $participant_payment['contribution_id'];
-      }
-      catch (\CRM_Core_Exception $exception) {
-        // No participant payment, nothing to do.
-        // @ignoreException
+        // Use the first record, as there might be more than one.
+        ->first();
+      if (NULL !== $caseContact) {
+        $event->context['contactId'] = $caseContact['contact_id'];
       }
     }
   }
 
   protected function getEntityType(): string {
-    return 'Participant';
+    return 'Case';
   }
 
 }

@@ -17,7 +17,7 @@
 
 declare(strict_types = 1);
 
-namespace Civi\Civioffice\EntitySubscriber;
+namespace Civi\Civioffice\EventSubscriber;
 
 use Civi\Api4\Activity;
 use Civi\Api4\ActivityContact;
