@@ -21,6 +21,6 @@ namespace Civi\Civioffice\Api4;
 
 final class CiviofficePermissions {
 
-  public const ACCESS = 'access CiviCRM';
+  public const ACCESS = 'access CiviOffice';
 
 }

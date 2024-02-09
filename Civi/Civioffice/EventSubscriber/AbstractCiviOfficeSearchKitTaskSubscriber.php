@@ -19,6 +19,7 @@ declare(strict_types = 1);
 
 namespace Civi\Civioffice\EventSubscriber;
 
+use Civi\Civioffice\Api4\CiviofficePermissions;
 use Civi\Core\Event\GenericHookEvent;
 use CRM_Civioffice_ExtensionUtil as E;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -33,6 +34,10 @@ abstract class AbstractCiviOfficeSearchKitTaskSubscriber implements EventSubscri
   }
 
   public function onSearchKitTasks(GenericHookEvent $event): void {
+    if (!\CRM_Core_Permission::check(CiviofficePermissions::ACCESS)) {
+      return;
+    }
+
     foreach ($this->getEntityTypes() as $entityType) {
       $event->tasks[$entityType]['civiofficeRender'] = [
         'module' => 'civiofficeSearchTasks',
