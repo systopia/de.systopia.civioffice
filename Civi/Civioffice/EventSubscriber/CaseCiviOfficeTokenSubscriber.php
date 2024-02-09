@@ -28,11 +28,13 @@ final class CaseCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviOfficeTo
     parent::onCiviOfficeTokenContext($event);
 
     if ($this->getEntityType() === $event->entity_type) {
+      // Add implicit contact token context for cases.
       $caseContact = CaseContact::get(FALSE)
         ->addSelect('contact_id')
         ->addWhere('case_id', '=', $event->entity_id)
-        ->execute()
         // Use the first record, as there might be more than one.
+        ->setLimit(1)
+        ->execute()
         ->first();
       if (NULL !== $caseContact) {
         $event->context['contactId'] = $caseContact['contact_id'];

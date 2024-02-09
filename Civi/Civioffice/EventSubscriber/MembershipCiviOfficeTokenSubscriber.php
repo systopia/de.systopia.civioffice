@@ -28,6 +28,7 @@ final class MembershipCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviOf
     parent::onCiviOfficeTokenContext($event);
 
     if ($this->getEntityType() === $event->entity_type) {
+      // Add implicit contact token context for memberships.
       $membership = Membership::get(FALSE)
         ->addWhere('id', '=', $event->entity_id)
         ->execute()

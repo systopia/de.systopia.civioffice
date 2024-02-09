@@ -28,6 +28,7 @@ final class ParticipantCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviO
     parent::onCiviOfficeTokenContext($event);
 
     if ($this->getEntityType() === $event->entity_type) {
+      // Add implicit contact and event token contexts for participants.
       $participant = Participant::get(FALSE)
         ->addWhere('id', '=', $event->entity_id)
         ->execute()

@@ -29,12 +29,14 @@ final class ActivityCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviOffi
     parent::onCiviOfficeTokenContext($event);
 
     if ($this->getEntityType() === $event->entity_type) {
+      // Add implicit contact and case token context for activities.
       $activityContact = ActivityContact::get(FALSE)
         ->addSelect('contact_id')
         ->addWhere('activity_id', '=', $event->entity_id)
         ->addWhere('record_type_id:name', '=', 'Activity Source')
-        ->execute()
         // Use the first record, as there might be more than one.
+        ->setLimit(1)
+        ->execute()
         ->first();
       if (NULL !== $activityContact) {
         $event->context['contactId'] = $activityContact['contact_id'];
