@@ -37,14 +37,9 @@ final class GetFieldsAction extends BasicGetFieldsAction {
       ->setAction($this->getAction())
       ->setLoadOptions($this->getLoadOptions())
       ->setOrderBy($this->getOrderBy())
+      ->setLanguage($this->language)
       ->addWhere('name', 'IN', ['label', 'name', 'description'])
       ->addValue('option_group_id:name', 'civioffice_live_snippets');
-
-    // Property "language" is not available in CiviCRM <5.45
-    // @phpstan-ignore-next-line
-    if (property_exists($this, 'language')) {
-      $action->setLanguage($this->language);
-    }
 
     $fields = $action->execute()->getArrayCopy();
 

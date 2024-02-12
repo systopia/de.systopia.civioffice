@@ -9,6 +9,6 @@
         }
     },
     "require": {
-        "civicrm/civicrm-core": "^5.44"
+        "civicrm/civicrm-core": "^5.54"
     }
 }

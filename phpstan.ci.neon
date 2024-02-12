@@ -16,5 +16,3 @@ parameters:
 		-
 			message: '#Dead catch - CRM_Core_Exception is never thrown in the try block.#'
 			path: */Civi/Civioffice/EventSubscriber/ParticipantCiviOfficeTokenSubscriber.php
-		# CiviCRM <5.45
-		- '#^Call to an undefined method Civi\\Api4\\Generic\\DAOGetFieldsAction::setLanguage\(\).$#'

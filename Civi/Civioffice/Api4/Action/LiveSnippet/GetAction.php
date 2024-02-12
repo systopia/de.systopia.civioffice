@@ -40,13 +40,8 @@ final class GetAction extends AbstractGetAction {
       ->setLimit($this->getLimit())
       ->setWhere($this->getWhere())
       ->setOrderBy($this->getOrderBy())
+      ->setLanguage($this->language)
       ->addWhere('option_group_id:name', '=', 'civioffice_live_snippets');
-
-    // Property "language" is not available in CiviCRM <5.45
-    // @phpstan-ignore-next-line
-    if (property_exists($this, 'language')) {
-      $action->setLanguage($this->language);
-    }
 
     $result->exchangeArray($action->execute()->getArrayCopy());
 
