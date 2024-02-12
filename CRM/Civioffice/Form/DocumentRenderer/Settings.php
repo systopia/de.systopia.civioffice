@@ -158,6 +158,9 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
                   ]
               );
           }
+          else {
+            $this->documentRenderer->setName($values['name']);
+          }
 
           $this->documentRendererType->postProcessSettingsForm($this);
 
