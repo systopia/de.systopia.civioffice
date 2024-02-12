@@ -67,6 +67,6 @@ abstract class CRM_Civioffice_MimeType
     {
         $extension = self::mapMimeTypeToFileExtension($mime_type);
 
-        return (bool)preg_match("#\w+\.{$extension}$#", $file_name);
+        return pathinfo($file_name, PATHINFO_EXTENSION) === $extension;
     }
 }
