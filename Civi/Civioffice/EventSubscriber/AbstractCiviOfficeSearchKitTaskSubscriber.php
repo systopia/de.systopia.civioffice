@@ -34,7 +34,7 @@ abstract class AbstractCiviOfficeSearchKitTaskSubscriber implements EventSubscri
   }
 
   public function onSearchKitTasks(GenericHookEvent $event): void {
-    if (!\CRM_Core_Permission::check(CiviofficePermissions::ACCESS)) {
+    if ($event->checkPermissions && !\CRM_Core_Permission::check(CiviofficePermissions::ACCESS, $event->userId)) {
       return;
     }
 
