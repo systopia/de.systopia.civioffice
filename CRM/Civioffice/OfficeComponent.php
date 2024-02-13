@@ -83,6 +83,11 @@ abstract class CRM_Civioffice_OfficeComponent
         return $this->name;
     }
 
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
     /**
      * Get the (localised) component description
      *
