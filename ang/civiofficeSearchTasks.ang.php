@@ -13,6 +13,5 @@ return [
   ],
   'requires' => [
     'api4',
-    'rt.select2',
   ],
 ];
