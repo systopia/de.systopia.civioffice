@@ -13,6 +13,7 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+use Civi\Core\Event\GenericHookEvent;
 use Civi\Token\TokenProcessor;
 use Civi\Api4;
 use CRM_Civioffice_ExtensionUtil as E;
@@ -109,7 +110,7 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
         array $entity_ids,
         CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
         string $target_mime_type,
-        string $entity_type = 'contact',
+        string $entity_type = 'Contact',
         array $live_snippets = []
     ): array;
 
@@ -131,132 +132,16 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
      */
     public function processTokenContext(string $entity_type, int $entity_id): \Civi\Token\TokenRow
     {
-        $entities = [
-            $entity_type => ['entity_id' => $entity_id],
-        ];
-
-        // Add implicit contact token context for contributions.
-        if (
-            array_key_exists('contribution', $entities)
-            && !array_key_exists('contact', $entities)
-        ) {
-            $contribution = Api4\Contribution::get()
-                ->addWhere('id', '=', $entities['contribution']['entity_id'])
-                ->execute()
-                ->single();
-            $entities['contact'] = ['entity_id' => $contribution['contact_id']];
-        }
-
-        // Add implicit contact and event token contexts for participants.
-        if (array_key_exists('participant', $entities)) {
-            $participant = Api4\Participant::get()
-                ->addWhere('id', '=', $entities['participant']['entity_id'])
-                ->execute()
-                ->single();
-            if (!array_key_exists('contact', $entities)) {
-                $entities['contact'] = ['entity_id' => $participant['contact_id']];
-            }
-            if (!array_key_exists('event', $entities)) {
-                $entities['event'] = ['entity_id' => $participant['event_id']];
-            }
-            if (!array_key_exists('contribution', $entities)) {
-                try {
-                    $participant_payment = civicrm_api3(
-                        'ParticipantPayment',
-                        'getsingle',
-                        ['participant_id' => $participant['id']]
-                    );
-                    $entities['contribution'] = ['entity_id' => $participant_payment['contribution_id']];
-                } catch (Exception $exception) {
-                    // No participant payment, nothing to do.
-                }
-            }
-        }
-
-        // Add implicit contact token context for memberships.
-        if (
-            array_key_exists('membership', $entities)
-            && !array_key_exists('contact', $entities)
-        ) {
-            $membership = Api4\Membership::get()
-                ->addWhere('id', '=', $entities['membership']['entity_id'])
-                ->execute()
-                ->single();
-            $entities['contact'] = ['entity_id' => $membership['contact_id']];
-        }
-
-        // Add implicit contact and case token context for activities.
-        if (
-            array_key_exists('activity', $entities)
-        ) {
-            if (!array_key_exists('contact', $entities)) {
-                if (
-                    $activityContact = Api4\ActivityContact::get()
-                        ->addSelect('contact_id')
-                        ->addWhere('activity_id', '=', $entities['activity']['entity_id'])
-                        ->addWhere('record_type_id:name', '=', 'Activity Source')
-                        ->execute()
-                        // Use the first record, as there might be more than one.
-                        ->first()
-                ) {
-                    $entities['contact'] = ['entity_id' => $activityContact['contact_id']];
-                }
-            }
-            if (!array_key_exists('case', $entities)) {
-                $activity = Api4\Activity::get()
-                    ->addSelect('case_id')
-                    ->addWhere('id', '=', $entities['activity']['entity_id'])
-                    ->addWhere('case_id', 'IS NOT EMPTY')
-                    ->execute()
-                    ->single();
-                $entities['case'] = ['entity_id' => $activity['case_id']];
-            }
-        }
-
-        // Add implicit contact token context for cases.
-        if (
-            array_key_exists('case', $entities)
-            && !array_key_exists('contact', $entities)
-        ) {
-            if (
-                $caseContact = Api4\CaseContact::get()
-                    ->addSelect('contact_id')
-                    ->addWhere('case_id', '=', $entities['case']['entity_id'])
-                    ->execute()
-                    // Use the first record, as there might be more than one.
-                    ->first()
-            ) {
-                $entities['contact'] = ['entity_id' => $caseContact['contact_id']];
-            }
-        }
-
-        // Translate entity types into token contexts known to CiviOffice.
-        $entity_token_contexts = [
-            'contact' => 'contactId',
-            'contribution' => 'contributionId',
-            'participant' => 'participantId',
-            'event' => 'eventId',
-            'membership' => 'membershipId',
-            'activity' => 'activityId',
-            'case' => 'caseId',
-        ];
         $context = [];
-        foreach ($entities as $entity_type => $contextId) {
-            if (isset($entity_token_contexts[$entity_type])) {
-                $context[$entity_token_contexts[$entity_type]] = $contextId['entity_id'];
-            }
-        }
 
-        // Let other extensions define additional token contexts, for the given entity or generically.
+        // Let the token contexts be defined, for the given entity or generically.
         Civi::dispatcher()->dispatch(
             'civi.civioffice.tokenContext',
-            \Civi\Core\Event\GenericHookEvent::create(
-                [
-                    'context' => &$context,
-                    'entity_type' => $entity_type,
-                    'entity_id' => $entity_id,
-                ]
-            )
+            GenericHookEvent::create([
+                  'context' => &$context,
+                  'entity_type' => $entity_type,
+                  'entity_id' => $entity_id,
+            ])
         );
 
         // Reset (re-instantiate) the token processor per document for not evaluating with previous token rows.

@@ -25,7 +25,7 @@ class CRM_Civioffice_Form_Task_CreateParticipantDocuments extends CRM_Event_Form
     public function preProcess()
     {
         parent::preProcess();
-        $this->entityType = 'participant';
+        $this->entityType = 'Participant';
         $this->entityIds = $this->_participantIds;
     }
 }

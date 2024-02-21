@@ -201,7 +201,19 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface
         return null; // not found
     }
 
-    public function getDocuments($select2 = false)
+  /**
+   * @phpstan-type documentListT array<string, array<string, \CRM_Civioffice_Document>>
+   *   Document store URI and document URI are the keys.
+   *
+   * @phpstan-type select2OptionsT list<array{
+   *   text: string,
+   *   children: list<array{id: string, text: string}>,
+   * }>
+   *   To be used in a Select2 field.
+   *
+   * @phpstan-return documentListT|select2OptionsT
+   */
+    public function getDocuments(bool $select2 = false): array
     {
         $document_list = [];
         // todo: only show supported source MIME types

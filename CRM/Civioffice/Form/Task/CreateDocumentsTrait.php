@@ -14,6 +14,8 @@
 +-------------------------------------------------------*/
 
 use Civi\Civioffice\CiviofficeSession;
+use Civi\Civioffice\Render\Queue\RenderQueueBuilderFactory;
+use Civi\Civioffice\Render\Queue\RenderQueueRunner;
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
@@ -159,34 +161,18 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
         // Extract and store live snippet values.
         $live_snippets = CRM_Civioffice_LiveSnippets::getFormElementValues($this);
 
-        // Initialize a queue.
-        $queue = CRM_Queue_Service::singleton()->create(
-            [
-                'type' => 'Sql',
-                'name' => 'civioffice_document_task_' . CRM_Core_Session::singleton()->getLoggedInContactId(),
-                'reset' => true,
-            ]
-        );
-
-        $chunked_entities = array_chunk($this->entityIds, $values['batch_size']);
-        $temp_folder_path = (new CRM_Civioffice_DocumentStore_LocalTemp())->getBaseFolder();
-        $temp_folder_path_hash = CiviofficeSession::getInstance()->storeTempFolderPath($temp_folder_path);
-
-        foreach ($chunked_entities as $entity_IDs) {
-            $queue->createItem(
-                new CRM_Civioffice_ConversionJob(
-                    $values['document_renderer_uri'],
-                    $values['document_uri'],
-                    $temp_folder_path,
-                    $entity_IDs,
-                    $this->entityType,
-                    $values['target_mime_type'],
-                    E::ts('Initialized'),
-                    $live_snippets,
-                    $values['activity_type_id']
-                )
-            );
-        }
+        /** @var \Civi\Civioffice\Render\Queue\RenderQueueBuilderFactory $queueBuilderFactory */
+        $queueBuilderFactory = \Civi::service(RenderQueueBuilderFactory::class);
+        $queue = $queueBuilderFactory->createQueueBuilder()
+          ->setEntityType($this->entityType)
+          ->setEntityIds($this->entityIds)
+          ->setRendererUri($values['document_renderer_uri'])
+          ->setDocumentUri($values['document_uri'])
+          ->setMimeType($values['target_mime_type'])
+          ->setBatchSize((int) $values['batch_size'])
+          ->setActivityTypeId('' === $values['activity_type_id'] ? NULL : (int) $values['activity_type_id'])
+          ->setLiveSnippets($live_snippets)
+          ->build();
 
         // Store default value for activity type in current contact's settings.
         try {
@@ -195,29 +181,8 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
             Civi::log()->warning("CiviOffice: Couldn't save defaults: " . $ex->getMessage());
         }
 
-        // Save current page link (e.g. search page)
-        $return_link = html_entity_decode(CRM_Core_Session::singleton()->readUserContext());
-        $return_link = base64_encode($return_link);
-
-        // Start a runner on the queue.
-        $download_link = CRM_Utils_System::url(
-            'civicrm/civioffice/download',
-            "id=$temp_folder_path_hash&return_url=$return_link&instant_download=0"
-        );
-
-        $runner = new CRM_Queue_Runner(
-            [
-                'title' => E::ts(
-                    "Generating %1 files",
-                    [1 => count($this->entityIds)]
-                ),
-                'queue' => $queue,
-                'errorMode' => CRM_Queue_Runner::ERROR_ABORT,
-                'onEndUrl' => $download_link,
-            ]
-        );
-        $runner->runAllViaWeb();
-
-        parent::postProcess();
+        /** @var \Civi\Civioffice\Render\Queue\RenderQueueRunner $queueRunner */
+        $queueRunner = \Civi::service(RenderQueueRunner::class);
+        $queueRunner->runViaWebRedirect($queue, CRM_Core_Session::singleton()->readUserContext());
     }
 }

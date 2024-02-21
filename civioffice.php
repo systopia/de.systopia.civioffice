@@ -1,11 +1,45 @@
 <?php
+declare(strict_types = 1);
 
 require_once 'civioffice.civix.php';
 
-// phpcs:disable
 use CRM_Civioffice_ExtensionUtil as E;
+use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Config\Resource\GlobResource;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-// phpcs:enable
+function _civioffice_composer_autoload(): void {
+  if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    $classLoader = require_once __DIR__ . '/vendor/autoload.php';
+    if ($classLoader instanceof \Composer\Autoload\ClassLoader) {
+      // Re-register class loader to append it. (It's automatically prepended.)
+      $classLoader->unregister();
+      $classLoader->register();
+    }
+  }
+}
+
+/**
+ * Implements hook_civicrm_container().
+ */
+function civioffice_civicrm_container(ContainerBuilder $container): void
+{
+    _civioffice_composer_autoload();
+
+    $globResource = new GlobResource(__DIR__ . '/services', '/*.php', FALSE);
+    // Container will be rebuilt if a *.php file is added to services
+    $container->addResource($globResource);
+    foreach ($globResource->getIterator() as $path => $info) {
+        // Container will be rebuilt if file changes
+        $container->addResource(new FileResource($path));
+        require $path;
+    }
+
+    if (function_exists('_civioffice_test_civicrm_container')) {
+        // Allow to use different services in tests.
+        _civioffice_test_civicrm_container($container);
+    }
+}
 
 function civioffice_civicrm_searchTasks($objectType, &$tasks)
 {
@@ -75,6 +109,7 @@ function civioffice_civicrm_summaryActions(&$actions, $contactID)
  */
 function civioffice_civicrm_config(&$config)
 {
+    _civioffice_composer_autoload();
     _civioffice_civix_civicrm_config($config);
 
     \Civi::dispatcher()->addSubscriber(new CRM_Civioffice_Tokens('civioffice'));

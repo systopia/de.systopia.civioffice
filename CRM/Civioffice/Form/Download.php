@@ -42,7 +42,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
         $this->instant_download = CRM_Utils_Request::retrieve('instant_download', 'Boolean', $this);
 
         if ($this->instant_download) {
-            $this->zipIfNeededAndDownload($this->tmp_folder);
+            $this->zipIfNeededAndDownload($this->tmp_folder, 'inline');
             $this->removeFilesAndFolder($this->tmp_folder);
             CRM_Utils_System::civiExit();
         }
@@ -87,7 +87,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
      * @return void
      * @throws \Exception
      */
-    public function zipIfNeededAndDownload(string $folder_path): void
+    public function zipIfNeededAndDownload(string $folder_path, string $content_disposition = 'attachment'): void
     {
         // TODO: verify folder
         if (!preg_match('#civioffice_\w+$#', $folder_path)) {
@@ -150,7 +150,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
             if (file_exists($file_path_name)) {
                 // set file metadata
                 header("Content-Type: $mime_type");
-                header("Content-Disposition: attachment; filename=" . $file_name);
+                header(sprintf('Content-Disposition: %s; filename=%s', $content_disposition, $file_name));
                 header('Content-Length: ' . filesize($file_path_name));
 
                 // dump file contents in stream and exit

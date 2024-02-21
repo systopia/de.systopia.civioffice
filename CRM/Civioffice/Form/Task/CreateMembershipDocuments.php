@@ -25,7 +25,7 @@ class CRM_Civioffice_Form_Task_CreateMembershipDocuments extends CRM_Member_Form
     public function preProcess()
     {
         parent::preProcess();
-        $this->entityType = 'membership';
+        $this->entityType = 'Membership';
         $this->entityIds = $this->_memberIds;
     }
 }

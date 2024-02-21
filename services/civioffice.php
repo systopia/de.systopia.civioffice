@@ -1,0 +1,64 @@
+<?php
+/*
+ * Copyright (C) 2024 SYSTOPIA GmbH
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as published by
+ *  the Free Software Foundation in version 3.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+declare(strict_types = 1);
+
+// phpcs:disable Drupal.Commenting.DocComment.ContentAfterOpen
+/** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
+
+use Civi\Civioffice\Api4\Action\Civioffice\RenderWebAction;
+use Civi\Civioffice\EventSubscriber\ActivityCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\CaseCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\CiviOfficeSearchKitTaskSubscriber;
+use Civi\Civioffice\EventSubscriber\ContactCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\ContributionCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\EventCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\MembershipCiviOfficeTokenSubscriber;
+use Civi\Civioffice\EventSubscriber\ParticipantCiviOfficeTokenSubscriber;
+use Civi\Civioffice\Render\Queue\RenderQueueBuilderFactory;
+use Civi\Civioffice\Render\Queue\RenderQueueRunner;
+
+if (!$container->has(\CRM_Queue_Service::class)) {
+  $container->autowire(\CRM_Queue_Service::class, \CRM_Queue_Service::class);
+}
+
+$container->autowire(RenderQueueBuilderFactory::class)
+  ->setPublic(TRUE);
+$container->autowire(RenderQueueRunner::class)
+  ->setPublic(TRUE);
+
+$container->autowire(RenderWebAction::class)
+  ->setPublic(TRUE)
+  ->setShared(TRUE);
+
+$container->autowire(CiviOfficeSearchKitTaskSubscriber::class)
+  ->addTag('kernel.event_subscriber');
+
+$container->autowire(ActivityCiviOfficeTokenSubscriber::class)
+  ->addTag('kernel.event_subscriber');
+$container->autowire(CaseCiviOfficeTokenSubscriber::class)
+  ->addTag('kernel.event_subscriber');
+$container->autowire(ContactCiviOfficeTokenSubscriber::class)
+  ->addTag('kernel.event_subscriber');
+$container->autowire(ContributionCiviOfficeTokenSubscriber::class)
+  ->addTag('kernel.event_subscriber');
+$container->autowire(EventCiviOfficeTokenSubscriber::class)
+  ->addTag('kernel.event_subscriber');
+$container->autowire(MembershipCiviOfficeTokenSubscriber::class)
+  ->addTag('kernel.event_subscriber');
+$container->autowire(ParticipantCiviOfficeTokenSubscriber::class)
+  ->addTag('kernel.event_subscriber');
