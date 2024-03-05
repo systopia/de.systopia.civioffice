@@ -21,6 +21,7 @@ declare(strict_types = 1);
 /** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
 use Civi\Civioffice\Api4\Action\Civioffice\RenderWebAction;
+use Civi\Civioffice\DependencyInjection\Compiler\Api4ActionPropertyAutowireFixPass;
 use Civi\Civioffice\EventSubscriber\ActivityCiviOfficeTokenSubscriber;
 use Civi\Civioffice\EventSubscriber\CaseCiviOfficeTokenSubscriber;
 use Civi\Civioffice\EventSubscriber\CiviOfficeSearchKitTaskSubscriber;
@@ -31,10 +32,13 @@ use Civi\Civioffice\EventSubscriber\MembershipCiviOfficeTokenSubscriber;
 use Civi\Civioffice\EventSubscriber\ParticipantCiviOfficeTokenSubscriber;
 use Civi\Civioffice\Render\Queue\RenderQueueBuilderFactory;
 use Civi\Civioffice\Render\Queue\RenderQueueRunner;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 if (!$container->has(\CRM_Queue_Service::class)) {
   $container->autowire(\CRM_Queue_Service::class, \CRM_Queue_Service::class);
 }
+
+$container->addCompilerPass(new Api4ActionPropertyAutowireFixPass(), PassConfig::TYPE_BEFORE_REMOVING);
 
 $container->autowire(RenderQueueBuilderFactory::class)
   ->setPublic(TRUE);
