@@ -111,14 +111,6 @@ function civioffice_civicrm_config(&$config)
 {
     _civioffice_composer_autoload();
     _civioffice_civix_civicrm_config($config);
-
-    \Civi::dispatcher()->addSubscriber(new CRM_Civioffice_Tokens('civioffice'));
-
-    if (interface_exists('\Civi\Mailattachment\AttachmentType\AttachmentTypeInterface')) {
-        \Civi::dispatcher()->addSubscriber(new CRM_Civioffice_AttachmentProvider());
-    }
-
-    Civi::dispatcher()->addSubscriber(new CRM_Civioffice_Configuration());
 }
 
 /**

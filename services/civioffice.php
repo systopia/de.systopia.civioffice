@@ -49,6 +49,20 @@ $container->autowire(RenderWebAction::class)
   ->setPublic(TRUE)
   ->setShared(TRUE);
 
+$container->register(\CRM_Civioffice_Tokens::class, \CRM_Civioffice_Tokens::class)
+  ->setArgument('$entity', 'civioffice')
+  ->addTag('kernel.event_subscriber')
+  ->setLazy(TRUE);
+
+$container->register(\CRM_Civioffice_Configuration::class, \CRM_Civioffice_Configuration::class)
+  ->setFactory([\CRM_Civioffice_Configuration::class, 'getConfig'])
+  ->addTag('kernel.event_subscriber');
+
+if (interface_exists('\Civi\Mailattachment\AttachmentType\AttachmentTypeInterface')) {
+  $container->register(\CRM_Civioffice_AttachmentProvider::class, \CRM_Civioffice_AttachmentProvider::class)
+    ->addTag('kernel.event_subscriber');
+}
+
 $container->autowire(CiviOfficeSearchKitTaskSubscriber::class)
   ->addTag('kernel.event_subscriber');
 
