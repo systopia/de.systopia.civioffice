@@ -118,8 +118,8 @@ function civioffice_civicrm_config(&$config)
  */
 function civioffice_civicrm_permission(&$permissions) {
     $permissions['access CiviOffice'] = [
-        E::ts('Access CiviOffice'),
-        E::ts('Create documents using CiviOffice.'),
+        'label' => E::ts('Access CiviOffice'),
+        'description' => E::ts('Create documents using CiviOffice.'),
     ];
 }
 
