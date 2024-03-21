@@ -209,12 +209,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
      * {@inheritDoc}
      */
     public function validateSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form) {
-        $unoconv_binary_path = $form->_submitValues['unoconv_binary_path'];
         $unoconv_lock_file_path = $form->_submitValues['unoconv_lock_file_path'];
-
-        if (!file_exists($unoconv_binary_path)) {
-            $form->_errors['unoconv_binary_path'] = E::ts("File does not exist. Please provide a correct filename.");
-        }
 
         if (!empty($lockfile_to_check)) {
             if (!file_exists($unoconv_lock_file_path)) {
@@ -606,7 +601,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         $lock_file_path = $this->unoconv_lock_file_path;
         if ($lock_file_path) {
             $this->unoconv_lock_file = fopen($lock_file_path, "w+");
-            if (!flock($this->unoconv_lock_file, LOCK_EX)) {
+            if (!$this->unoconv_lock_file || !flock($this->unoconv_lock_file, LOCK_EX)) {
                 throw new Exception(E::ts("CiviOffice: Could not acquire unoconv lock."));
             }
         }
@@ -618,7 +613,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
     protected function unlock()
     {
         if ($this->unoconv_lock_file) {
-            if (!flock($this->unoconv_lock_file, LOCK_UN)) {
+            if (!$this->unoconv_lock_file || !flock($this->unoconv_lock_file, LOCK_UN)) {
                 Civi::log()->debug("CiviOffice: Could not release unoconv lock.");
             }
             fclose($this->unoconv_lock_file);
