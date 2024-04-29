@@ -13,124 +13,219 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use CRM_Civioffice_ExtensionUtil as E;
 use PhpOffice\PhpWord;
 
-class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor extends PhpWord\TemplateProcessor
-{
-    /**
-     * Replaces CiviCRM tokens with PhpWord macros (converts format from "{token}" to "${macro}").
-     *
-     * @return array
-     *   An array of CiviCRM tokens found in the document.
-     */
-    public function civiTokensToMacros(): array
-    {
-        $tokens = [];
-        foreach (
-            [
-                &$this->tempDocumentHeaders,
-                &$this->tempDocumentMainPart,
-                &$this->tempDocumentFooters,
-            ] as &$tempDocPart
-        ) {
-            // Regex code borrowed from \Civi\Token\TokenProcessor::visitTokens().
-            // Adapted to allow '&quot;' instead of '"'.
+class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
 
-            // The regex is a bit complicated, we so break it down into fragments.
-            // Consider the example '{foo.bar|whiz:"bang":"bang"}'. Each fragment matches the following:
-            $tokenRegex = '([\w]+)\.([\w:\.]+)'; /* MATCHES: 'foo.bar' */
-            $filterArgRegex = ':([\w": %\-_()\[\]\+/#@!,\.\?]|&quot;)*'; /* MATCHES: ':"bang":"bang"' */
-            // Key rule of filterArgRegex is to prohibit '{}'s because they may parse ambiguously. So you *might* relax
-            // it to: $filterArgRegex = ':[^{}\n]*'; /* MATCHES: ':"bang":"bang"' or ':&quot;bang&quot;' */
-            $filterNameRegex = "\w+"; /* MATCHES: 'whiz' */
-            $filterRegex = "\|($filterNameRegex(?:$filterArgRegex)?)"; /* MATCHES: '|whiz:"bang":"bang"' */
-            $fullRegex = "~\{$tokenRegex(?:$filterRegex)?\}~";
+  /**
+   * Replaces CiviCRM tokens with PhpWord macros (converts format from
+   * "{token}" to "${macro}").
+   *
+   * @return array<string, array{entity: string, field: string, filter: string | null}>
+   *   An array of CiviCRM tokens found in the document.
+   */
+  public function civiTokensToMacros(): array {
+    $tokens = [];
+    foreach (
+      [
+        &$this->tempDocumentHeaders,
+        &$this->tempDocumentMainPart,
+        &$this->tempDocumentFooters,
+      ] as &$tempDocPart
+    ) {
+      // Regex code borrowed from \Civi\Token\TokenProcessor::visitTokens().
+      // Adapted to allow '&quot;' instead of '"'.
 
-            $tempDocPart = preg_replace_callback(
-                $fullRegex,
-                /*
-                 * The match contains:
-                 * - $0: The entire token, possibly including filters, with surrounding "{" and "}"
-                 * - $1: The token context (first part  of the token)
-                 * - $2: The token name (second part of the token)
-                 * - $3: The filter, possibly including filter parameters
-                 *
-                 * We just prefix the token with a "$" as macro names can contain anything,
-                 * @see \PhpOffice\PhpWord\TemplateProcessor::getVariablesForPart()
-                 */
-                function($matches) use (&$tokens) {
-                    $token = str_replace('&quot;', '"', $matches[0]);
-                    $tokens[$token] = [
-                        'entity' => $matches[1],
-                        'field' => $matches[2],
-                        'filter' => $matches[3] ?? NULL,
-                    ];
-                    return '$' . $token;
-                },
-                $tempDocPart
-            );
-        }
+      // The regex is a bit complicated, we so break it down into fragments.
+      // Consider the example '{foo.bar|whiz:"bang":"bang"}'. Each fragment matches the following:
+      $tokenRegex = '([\w]+)\.([\w:\.]+)'; /* MATCHES: 'foo.bar' */
+      $filterArgRegex = ':([\w": %\-_()\[\]\+/#@!,\.\?]|&quot;)*'; /* MATCHES: ':"bang":"bang"' */
+      // Key rule of filterArgRegex is to prohibit '{}'s because they may parse ambiguously. So you *might* relax
+      // it to:
+      // MATCHES: ':"bang":"bang"' or ':&quot;bang&quot;'
+      // $filterArgRegex = ':[^{}\n]*';
 
-        return $tokens;
+      // MATCHES: 'whiz'
+      $filterNameRegex = '\w+';
+      $filterRegex = "\|($filterNameRegex(?:$filterArgRegex)?)"; /* MATCHES: '|whiz:"bang":"bang"' */
+      $fullRegex = "~\{$tokenRegex(?:$filterRegex)?\}~";
+
+      $tempDocPart = preg_replace_callback(
+        $fullRegex,
+        /*
+         * The match contains:
+         * - $0: The entire token, possibly including filters, with surrounding "{" and "}"
+         * - $1: The token context (first part  of the token)
+         * - $2: The token name (second part of the token)
+         * - $3: The filter, possibly including filter parameters
+         *
+         * We just prefix the token with a "$" as macro names can contain anything,
+         * @see \PhpOffice\PhpWord\TemplateProcessor::getVariablesForPart()
+         */
+        function($matches) use (&$tokens) {
+          $token = str_replace('&quot;', '"', $matches[0]);
+          $tokens[$token] = [
+            'entity' => $matches[1],
+            'field' => $matches[2],
+            'filter' => $matches[3] ?? NULL,
+          ];
+          return '$' . $token;
+        },
+        $tempDocPart
+      );
     }
 
-    public function replaceHtmlToken($macro_variable, $rendered_token_message) {
-        static $phpWord;
-        if (!isset($phpWord)) {
-            $phpWord = new PhpWord\PhpWord();
-        }
+    return $tokens;
+  }
 
-        $outputEscapingEnabled = PhpWord\Settings::isOutputEscapingEnabled();
-        PhpWord\Settings::setOutputEscapingEnabled(true);
-        try {
-            // Use a temporary Section element for adding the elements.
-            $section = $phpWord->addSection();
-            // Note: addHtml() does not accept styles, so added HTML elements do not get applied any existing
-            // styles.
-            PhpWord\Shared\Html::addHtml($section, $rendered_token_message);
-            $elements = $section->getElements();
-            if ([] === $elements) {
-                $this->setValue($macro_variable, '');
-            } else if (count($elements) === 1 && $elements[0] instanceof PhpWord\Element\Text) {
-                // ... either as plain text (if there is only a single Text element or nothing), ...
-                // Note: $rendered_token_message shouldn't be used directly because it may contain HTML entities.
-                $this->setValue($macro_variable, $elements[0]->getText());
-            } else {
-                // ... or as HTML: Render all elements and replace the paragraph containing the macro.
-                // Note: This will remove the entire paragraph element around the macro.
-                // TODO: Save and split surrounding contents and add them to the replaced block.
-                //       This would be a logical assumption, since HTML elements will always make for a new
-                //       paragraph, moving text before and after the macro into their own paragraphs.
-                //       See \PhpOffice\PhpWord\TemplateProcessor::setComplexValue().
-                //       Since Section is not in the required namespace for elements supported by this method, all
-                //       elements contained in the $section will have to be wrapped inside a
-                //       \PhpOffice\PhpWord\Writer\Word2007\Element\Container element, which in turn will have to be
-                //       passed to \PhpOffice\PhpWord\TemplateProcessor::setComplexValue().
-                $elements_data = '';
-                foreach ($elements as $element) {
-                    $elementName = substr(
-                        get_class($element),
-                        strrpos(get_class($element), '\\') + 1
-                    );
-                    $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
-
-                    $xmlWriter = new PhpWord\Shared\XMLWriter();
-                    /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
-                    $elementWriter = new $objectClass($xmlWriter, $element, false);
-                    $elementWriter->write();
-                    $elements_data .= $xmlWriter->getData();
-                }
-                $this->replaceXmlBlock($macro_variable, $elements_data, 'w:p');
-            }
-        } catch (Exception $exception) {
-            throw new Exception(
-                E::ts('Error loading/writing PhpWord document: %1', [1 => $exception->getMessage()]),
-                $exception->getCode(),
-                $exception
-            );
-        } finally {
-            PhpWord\Settings::setOutputEscapingEnabled($outputEscapingEnabled);
-        }
+  /**
+   * @param string $macroVariable
+   * @param string $renderedTokenMessage
+   *
+   * @return void
+   * @throws \CRM_Core_Exception
+   */
+  public function replaceHtmlToken(string $macroVariable, string $renderedTokenMessage): void {
+    static $phpWord;
+    if (!isset($phpWord)) {
+      $phpWord = new PhpWord\PhpWord();
     }
+
+    $outputEscapingEnabled = PhpWord\Settings::isOutputEscapingEnabled();
+    PhpWord\Settings::setOutputEscapingEnabled(TRUE);
+    try {
+      // Use a temporary Section element for adding the elements.
+      $section = $phpWord->addSection();
+      // Note: addHtml() does not accept styles, so added HTML elements do not get applied any existing
+      // styles.
+      PhpWord\Shared\Html::addHtml($section, $renderedTokenMessage);
+      $elements = $section->getElements();
+      // setValue() and setElementsValue() replace only the first occurrence of macro variables in the document, so loop
+      // until all have been replaced.
+      do {
+        if ([] === $elements) {
+          // Note: If the paragraph had the macro as its only content, it
+          // will not be removed (i.e. leave an empty paragraph).
+          $this->setValue($macroVariable, '');
+        }
+        elseif (count($elements) === 1 && $elements[0] instanceof PhpWord\Element\Text) {
+          // ... either as plain text (if there is only a single Text
+          // element, which can't have style properties), ...
+          // Note: $rendered_token_message shouldn't be used directly
+          // because it may contain HTML entities.
+          $this->setValue($macroVariable, $elements[0]->getText());
+        }
+        else {
+          // ... or as HTML: Render all elements and insert in the text
+          // run or paragraph containing the macro.
+          $this->setElementsValue($macroVariable, $elements);
+        }
+      } while (in_array($macroVariable, $this->getVariables(), TRUE));
+    }
+    catch (Exception $exception) {
+      throw new CRM_Core_Exception(
+        E::ts('Error loading/writing PhpWord document: %1', [1 => $exception->getMessage()]),
+        $exception->getCode(),
+        [],
+        $exception
+      );
+    }
+    finally {
+      PhpWord\Settings::setOutputEscapingEnabled($outputEscapingEnabled);
+    }
+  }
+
+  /**
+   * Replaces a search string (macro) with a set of rendered elements, splitting
+   * surrounding texts, text runs or paragraphs before and after the macro,
+   * depending on the types of elements to insert.
+   *
+   * @param string $search
+   * @param \PhpOffice\PhpWord\Element\AbstractElement[] $elements
+   *
+   * @return void
+   * @throws \PhpOffice\PhpWord\Exception\Exception
+   */
+  public function setElementsValue(string $search, array $elements): void {
+    $elementsData = '';
+    $hasParagraphs = FALSE;
+    foreach ($elements as $element) {
+      $elementName = substr(
+        get_class($element),
+        (int) strrpos(get_class($element), '\\') + 1
+      );
+      $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
+
+      // For inline elements, do not create a new paragraph.
+      $withParagraph = \PhpOffice\PhpWord\Writer\Word2007\Element\Text::class !== $objectClass;
+      $hasParagraphs = $hasParagraphs || $withParagraph;
+
+      $xmlWriter = new PhpWord\Shared\XMLWriter();
+      /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
+      $elementWriter = new $objectClass($xmlWriter, $element, !$withParagraph);
+      $elementWriter->write();
+      $elementsData .= $xmlWriter->getData();
+    }
+    $blockType = $hasParagraphs ? 'w:p' : 'w:r';
+    $where = $this->findContainingXmlBlockForMacro($search, $blockType);
+    if (is_array($where)) {
+      /** @phpstan-var array{start: int, end: int} $where */
+      $block = $this->getSlice($where['start'], $where['end']);
+      $parts = $hasParagraphs ? $this->splitParagraphIntoParagraphs($block) : $this->splitTextIntoTexts($block);
+      $this->replaceXmlBlock($search, $parts, $blockType);
+      $search = static::ensureMacroCompleted($search);
+      $this->replaceXmlBlock($search, $elementsData, $blockType);
+    }
+  }
+
+  /**
+   * Splits a w:p into a list of w:p where each ${macro} is in a separate w:p.
+   *
+   * @param string $paragraph
+   *
+   * @return string
+   * @throws \PhpOffice\PhpWord\Exception\Exception
+   */
+  public function splitParagraphIntoParagraphs(string $paragraph): string {
+    $matches = [];
+    if (1 === preg_match('/(<w:pPr.*<\/w:pPr>)/i', $paragraph, $matches)) {
+      $extractedStyle = $matches[0];
+    }
+    else {
+      $extractedStyle = '';
+    }
+    if (NULL === $paragraph = preg_replace('/>\s+</', '><', $paragraph)) {
+      throw new PhpWord\Exception\Exception('Error processing PhpWord document.');
+    }
+    $result = str_replace(
+      [
+        '${',
+        '}',
+      ],
+      [
+        '</w:t></w:r></w:p><w:p>' . $extractedStyle . '<w:r><w:t xml:space="preserve">${',
+        '}</w:t></w:r></w:p><w:p>' . $extractedStyle . '<w:r><w:t xml:space="preserve">',
+      ],
+      $paragraph
+    );
+
+    // Remove empty paragraphs that might have been created before/after the
+    // macro.
+    $result = str_replace(
+      [
+        '<w:p>' . $extractedStyle . '<w:r><w:t xml:space="preserve"></w:t></w:r></w:p>',
+        '<w:p><w:r><w:t xml:space="preserve"></w:t></w:r></w:p>',
+      ],
+      [
+        '',
+        '',
+      ],
+      $result
+    );
+    return $result;
+  }
+
 }
