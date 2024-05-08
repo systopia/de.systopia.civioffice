@@ -46,7 +46,7 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form
             }
             try {
                 $this->option_value = civicrm_api3(
-                    'Optionvalue',
+                    'OptionValue',
                     'getsingle',
                     [
                         'id' => $option_value_id,
