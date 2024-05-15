@@ -25,7 +25,9 @@ namespace Civi\Civioffice\DocumentRendererType\LocalUnoconv;
 final class TestablePhpWordTemplateProcessor extends \CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor {
 // phpcs:enable
 
-  // @phpstan-ignore-next-line Parent constructor is not called.
+  /**
+   * @phpstan-ignore-next-line Parent constructor is not called.
+   */
   public function __construct(string $mainPart) {
     $this->tempDocumentMainPart = $mainPart;
   }
