@@ -115,6 +115,62 @@ EOD;
     static::assertXmlStringEqualsXmlString($expectedMainPart, $templateProcessor->getMainPart());
   }
 
+  public function testReplaceSpanMultiple(): void {
+    $mainPart = <<<EOD
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t>Foo {place.holder}</w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
+EOD;
+
+    $templateProcessor = new TestablePhpWordTemplateProcessor($mainPart);
+    $templateProcessor->civiTokensToMacros();
+    $templateProcessor->replaceHtmlToken('place.holder', '<span>test</span><span> 123</span>');
+
+    $expectedMainPart = <<<EOD
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve">Foo </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve">test</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve"> 123</w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
+EOD;
+
+    static::assertXmlStringEqualsXmlString($expectedMainPart, $templateProcessor->getMainPart());
+  }
+
   /**
    * When a token is replaced with a paragraph, property tags (pPr, rRr) should
    * be copied into each paragraph/text run.
@@ -153,7 +209,7 @@ EOD;
         <w:rPr>
           <w:b w:val="true"/>
         </w:rPr>
-        <w:t>Foo </w:t>
+        <w:t xml:space="preserve">Foo </w:t>
       </w:r>
     </w:p>
     <w:p>
@@ -288,7 +344,7 @@ EOD;
         <w:rPr>
           <w:b w:val="true"/>
         </w:rPr>
-        <w:t>Foo </w:t>
+        <w:t xml:space="preserve">Foo </w:t>
       </w:r>
     </w:p>
     <w:p>
