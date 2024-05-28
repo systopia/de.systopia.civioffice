@@ -19,6 +19,7 @@ nav:
   - 'Developer Information':
     - 'Modify Token Context': developer-information/modify-token-context.md
     - 'Custom Document Stores': developer-information/custom-document-stores.md
+    - 'SearchKit Task for Custom Entities': developer-information/searchkit-task-custom-entities.md
 
 markdown_extensions:
   - attr_list
