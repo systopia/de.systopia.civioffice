@@ -36,3 +36,5 @@ automatic emails!
 
 **Please note:** There is no MailBatch integration for CiviCase yet, so you can
 only create pdfs for cases so far.
+
+This functionality is not available for SearchKit results.
