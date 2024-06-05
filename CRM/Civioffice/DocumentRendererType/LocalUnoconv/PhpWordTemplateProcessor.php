@@ -121,7 +121,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
         else {
           // ... or as HTML: Render all elements and insert in the text
           // run or paragraph containing the macro.
-          $this->setElementsValue($macroVariable, $elements);
+          $this->setElementsValue($macroVariable, $elements, TRUE);
         }
       } while (in_array($macroVariable, $this->getVariables(), TRUE));
     }
@@ -143,13 +143,15 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
    * surrounding texts, text runs or paragraphs before and after the macro,
    * depending on the types of elements to insert.
    *
-   * @param string $search
    * @param \PhpOffice\PhpWord\Element\AbstractElement[] $elements
+   * @param bool $inheritStyle
+   *   If TRUE and an element contains no style, it will be inherited from the
+   *   paragraph/text run the macro is inside.
    *
-   * @return void
    * @throws \PhpOffice\PhpWord\Exception\Exception
    */
-  public function setElementsValue(string $search, array $elements): void {
+  public function setElementsValue(string $search, array $elements, bool $inheritStyle = FALSE): void {
+    $search = static::ensureMacroCompleted($search);
     $elementsData = '';
     $hasParagraphs = FALSE;
     foreach ($elements as $element) {
@@ -174,9 +176,15 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
     if (is_array($where)) {
       /** @phpstan-var array{start: int, end: int} $where */
       $block = $this->getSlice($where['start'], $where['end']);
-      $parts = $hasParagraphs ? $this->splitParagraphIntoParagraphs($block) : $this->splitTextIntoTexts($block);
+      $paragraphStyle = '';
+      $textRunStyle = '';
+      $parts = $hasParagraphs
+        ? $this->splitParagraphIntoParagraphs($block, $paragraphStyle, $textRunStyle)
+        : $this->splitTextIntoTexts($block, $textRunStyle);
+      if ($inheritStyle) {
+        $elementsData = str_replace(['<w:pPr/>', '<w:rPr/>'], [$paragraphStyle, $textRunStyle], $elementsData);
+      }
       $this->replaceXmlBlock($search, $parts, $blockType);
-      $search = static::ensureMacroCompleted($search);
       $this->replaceXmlBlock($search, $elementsData, $blockType);
     }
   }
@@ -184,48 +192,97 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
   /**
    * Splits a w:p into a list of w:p where each ${macro} is in a separate w:p.
    *
-   * @param string $paragraph
+   * @param string $extractedParagraphStyle
+   *   Is set to the extracted paragraph style (w:pPr).
+   * @param string $extractedTextRunStyle
+   *   Is set to the extracted text run style (w:rPr).
    *
-   * @return string
    * @throws \PhpOffice\PhpWord\Exception\Exception
    */
-  public function splitParagraphIntoParagraphs(string $paragraph): string {
-    $matches = [];
-    if (1 === preg_match('/(<w:pPr.*<\/w:pPr>)/i', $paragraph, $matches)) {
-      $extractedStyle = $matches[0];
-    }
-    else {
-      $extractedStyle = '';
-    }
+  public function splitParagraphIntoParagraphs(
+    string $paragraph,
+    string &$extractedParagraphStyle = '',
+    string &$extractedTextRunStyle = ''
+  ): string {
     if (NULL === $paragraph = preg_replace('/>\s+</', '><', $paragraph)) {
       throw new PhpWord\Exception\Exception('Error processing PhpWord document.');
     }
+
+    $matches = [];
+    preg_match('#<w:pPr.*</w:pPr>#i', $paragraph, $matches);
+    $extractedParagraphStyle = $matches[0] ?? '';
+
+    preg_match('#<w:rPr.*</w:rPr>#i', $paragraph, $matches);
+    $extractedTextRunStyle = $matches[0] ?? '';
+
     $result = str_replace(
       [
+        '<w:t>',
         '${',
         '}',
       ],
       [
-        '</w:t></w:r></w:p><w:p>' . $extractedStyle . '<w:r><w:t xml:space="preserve">${',
-        '}</w:t></w:r></w:p><w:p>' . $extractedStyle . '<w:r><w:t xml:space="preserve">',
+        '<w:t xml:space="preserve">',
+        sprintf(
+          '</w:t></w:r></w:p><w:p>%s<w:r><w:t xml:space="preserve">%s${',
+          $extractedParagraphStyle,
+          $extractedTextRunStyle
+        ),
+        sprintf(
+          '}</w:t></w:r></w:p><w:p>%s<w:r>%s<w:t xml:space="preserve">',
+          $extractedParagraphStyle,
+          $extractedTextRunStyle
+        ),
       ],
       $paragraph
     );
 
     // Remove empty paragraphs that might have been created before/after the
     // macro.
-    $result = str_replace(
-      [
-        '<w:p>' . $extractedStyle . '<w:r><w:t xml:space="preserve"></w:t></w:r></w:p>',
-        '<w:p><w:r><w:t xml:space="preserve"></w:t></w:r></w:p>',
-      ],
-      [
-        '',
-        '',
-      ],
-      $result
+    $emptyParagraph = sprintf(
+      '<w:p>%s<w:r>%s<w:t xml:space="preserve"></w:t></w:r></w:p>',
+      $extractedParagraphStyle,
+      $extractedTextRunStyle
     );
-    return $result;
+
+    return str_replace($emptyParagraph, '', $result);
+  }
+
+  /**
+   * @inheritDoc
+   * Adds output parameter for extracted style.
+   *
+   * @param string $extractedStyle
+   *   Is set to the extracted text run style (w:rPr).
+   *
+   * @throws \PhpOffice\PhpWord\Exception\Exception
+   */
+  protected function splitTextIntoTexts($text, string &$extractedStyle = '') {
+    if (NULL === $unformattedText = preg_replace('/>\s+</', '><', $text)) {
+      throw new PhpWord\Exception\Exception('Error processing PhpWord document.');
+    }
+
+    $matches = [];
+    preg_match('/<w:rPr.*<\/w:rPr>/i', $unformattedText, $matches);
+    $extractedStyle = $matches[0] ?? '';
+
+    if (!$this->textNeedsSplitting($text)) {
+      return $text;
+    }
+
+    $result = str_replace(
+      ['<w:t>', '${', '}'],
+      [
+        '<w:t xml:space="preserve">',
+        '</w:t></w:r><w:r>' . $extractedStyle . '<w:t xml:space="preserve">${',
+        '}</w:t></w:r><w:r>' . $extractedStyle . '<w:t xml:space="preserve">',
+      ],
+      $unformattedText
+    );
+
+    $emptyTextRun = '<w:r>' . $extractedStyle . '<w:t xml:space="preserve"></w:t></w:r>';
+
+    return str_replace($emptyTextRun, '', $result);
   }
 
 }
