@@ -95,7 +95,7 @@ space. This is particularly important for larger processing runs.**
 
 It is also possible to create documents for entities in SearchKit results. The
 procedure is nearly identical to the one described above. From the search result
-select the entities you want to create documents for. Then chose the action
+select the entities you want to create documents for. Then choose the action
 **Create Documents (CiviOffice)** from the **Action** menu. It opens a dialog
 where you can select the document template to use and change other options, if
 necessary. Then click the **Create Documents** button. A new browser tab opens
@@ -108,9 +108,8 @@ ask to open a new tab what you need to allow.
 ## Creating documents for activities, cases, contributions, events, memberships, and participants
 
 CiviOffice also provides search actions in activity, case, contribution, events,
-membership, and participant search results. The processing options are the
-similar as in the contact search action, however the data available through
-tokens will be different. For example, you can use a token for the contribution
-amount when operating on contribution search results, or for the event title
-belonging to a registration when operating on participant search results,
-respectively.
+membership, and participant search results. The processing options are similar
+as in the contact search action, however the data available through tokens will
+be different. For example, you can use a token for the contribution amount when
+operating on contribution search results, or for the event title belonging to a
+registration when operating on participant search results, respectively.
