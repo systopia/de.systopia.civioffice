@@ -18,6 +18,15 @@ $loader->addPsr4('api\\', [__DIR__ . '/../../api', __DIR__ . '/api']);
 
 $loader->register();
 
+// Make CRM_Civioffice_ExtensionUtil available.
+require_once __DIR__ . '/../../civioffice.civix.php';
+
+if (!function_exists('ts')) {
+  // Ensure function ts() is available - it's declared in the same file as CRM_Core_I18n in CiviCRM < 5.74.
+  // In later versions the function is registered following the composer conventions.
+  \CRM_Core_I18n::singleton();
+}
+
 /**
  * Call the "cv" command.
  *

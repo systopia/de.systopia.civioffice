@@ -61,7 +61,19 @@ EOD;
         <w:rPr>
           <w:b w:val="true"/>
         </w:rPr>
-        <w:t>Foo test 123 bar</w:t>
+        <w:t xml:space="preserve">Foo </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve">test 123</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+       <w:t xml:space="preserve"> bar</w:t>
       </w:r>
     </w:p>
   </w:body>
@@ -105,7 +117,19 @@ EOD;
         <w:rPr>
           <w:b w:val="true"/>
         </w:rPr>
-        <w:t>Foo test 123 bar</w:t>
+        <w:t xml:space="preserve">Foo </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve">test 123</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve"> bar</w:t>
       </w:r>
     </w:p>
   </w:body>
@@ -354,6 +378,208 @@ EOD;
       <w:r>
         <w:rPr>
           <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve">test 123</w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
+EOD;
+
+    static::assertXmlStringEqualsXmlString($expectedMainPart, $templateProcessor->getMainPart());
+  }
+
+  public function testStrong(): void {
+    $mainPart = <<<EOD
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+          <w:color w:val="FF0000"/>
+        </w:rPr>
+        <w:t>Foo {place.holder} bar</w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
+EOD;
+
+    $templateProcessor = new TestablePhpWordTemplateProcessor($mainPart);
+    $templateProcessor->civiTokensToMacros();
+    $templateProcessor->replaceHtmlToken('place.holder', '<strong>bold</strong>');
+
+    $expectedMainPart = <<<EOD
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+          <w:color w:val="FF0000"/>
+        </w:rPr>
+        <w:t xml:space="preserve">Foo </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="1"/>
+          <w:bCs w:val="1"/>
+          <w:color w:val="FF0000"/>
+        </w:rPr>
+        <w:t xml:space="preserve">bold</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+          <w:color w:val="FF0000"/>
+        </w:rPr>
+        <w:t xml:space="preserve"> bar</w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
+EOD;
+
+    static::assertXmlStringEqualsXmlString($expectedMainPart, $templateProcessor->getMainPart());
+  }
+
+  /**
+   * Tests replace with a paragraph where the paragraph that contains the
+   * placeholder has a paragraph style that has a text run style.
+   */
+  public function testReplaceParagraphWithTextRunStyle(): void {
+    $mainPart = <<<EOD
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Liberation Sans" w:hAnsi="Liberation Sans"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t>Foo {place.holder}</w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
+EOD;
+
+    $templateProcessor = new TestablePhpWordTemplateProcessor($mainPart);
+    $templateProcessor->civiTokensToMacros();
+    $templateProcessor->replaceHtmlToken('place.holder', '<p>test 123</p>');
+
+    $expectedMainPart = <<<EOD
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Liberation Sans" w:hAnsi="Liberation Sans"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve">Foo </w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Liberation Sans" w:hAnsi="Liberation Sans"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve">test 123</w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
+EOD;
+
+    static::assertXmlStringEqualsXmlString($expectedMainPart, $templateProcessor->getMainPart());
+  }
+
+  /**
+   * Tests replace with a paragraph that has a text run style where the
+   * paragraph that contains the placeholder has a paragraph style that has a
+   * text run style.
+   */
+  public function testReplaceParagraphWithRunStyleAndStrong(): void {
+    $mainPart = <<<EOD
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Liberation Sans" w:hAnsi="Liberation Sans"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+          <w:color w:val="FF0000"/>
+        </w:rPr>
+        <w:t>Foo {place.holder}</w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
+EOD;
+
+    $templateProcessor = new TestablePhpWordTemplateProcessor($mainPart);
+    $templateProcessor->civiTokensToMacros();
+    $templateProcessor->replaceHtmlToken('place.holder', '<p><strong>test 123</strong></p>');
+
+    $expectedMainPart = <<<EOD
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Liberation Sans" w:hAnsi="Liberation Sans"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+          <w:color w:val="FF0000"/>
+        </w:rPr>
+        <w:t xml:space="preserve">Foo </w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Liberation Sans" w:hAnsi="Liberation Sans"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="1"/>
+          <w:bCs w:val="1"/>
+          <w:color w:val="FF0000"/>
         </w:rPr>
         <w:t xml:space="preserve">test 123</w:t>
       </w:r>

@@ -15,6 +15,7 @@
 
 declare(strict_types = 1);
 
+use Civi\Civioffice\PhpWord\StyleMerger;
 use CRM_Civioffice_ExtensionUtil as E;
 use PhpOffice\PhpWord;
 
@@ -111,13 +112,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
           // will not be removed (i.e. leave an empty paragraph).
           $this->setValue($macroVariable, '');
         }
-        elseif (count($elements) === 1 && $elements[0] instanceof PhpWord\Element\Text) {
-          // ... either as plain text (if there is only a single Text
-          // element, which can't have style properties), ...
-          // Note: $rendered_token_message shouldn't be used directly
-          // because it may contain HTML entities.
-          $this->setValue($macroVariable, $elements[0]->getText());
-        }
         else {
           // ... or as HTML: Render all elements and insert in the text
           // run or paragraph containing the macro.
@@ -145,14 +139,14 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
    *
    * @param \PhpOffice\PhpWord\Element\AbstractElement[] $elements
    * @param bool $inheritStyle
-   *   If TRUE and an element contains no style, it will be inherited from the
-   *   paragraph/text run the macro is inside.
+   *   If TRUE the style will be inherited from the paragraph/text run the macro
+   *   is inside. If the element already contains styles, they will be merged.
    *
    * @throws \PhpOffice\PhpWord\Exception\Exception
    */
   public function setElementsValue(string $search, array $elements, bool $inheritStyle = FALSE): void {
     $search = static::ensureMacroCompleted($search);
-    $elementsData = '';
+    $elementsDataList = [];
     $hasParagraphs = FALSE;
     foreach ($elements as $element) {
       $elementName = substr(
@@ -169,7 +163,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
       /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
       $elementWriter = new $objectClass($xmlWriter, $element, !$withParagraph);
       $elementWriter->write();
-      $elementsData .= $xmlWriter->getData();
+      $elementsDataList[] = preg_replace('/>\s+</', '><', $xmlWriter->getData());
     }
     $blockType = $hasParagraphs ? 'w:p' : 'w:r';
     $where = $this->findContainingXmlBlockForMacro($search, $blockType);
@@ -182,10 +176,17 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
         ? $this->splitParagraphIntoParagraphs($block, $paragraphStyle, $textRunStyle)
         : $this->splitTextIntoTexts($block, $textRunStyle);
       if ($inheritStyle) {
-        $elementsData = str_replace(['<w:pPr/>', '<w:rPr/>'], [$paragraphStyle, $textRunStyle], $elementsData);
+        $elementsDataList = preg_replace_callback_array([
+          '#<w:pPr/>#' => fn() => $paragraphStyle,
+          '#<w:pPr.*</w:pPr>#' => fn (array $matches) => StyleMerger::mergeStyles($matches[0], $paragraphStyle),
+          // <w:pPr> may contain <w:rPr> itself so we have to match for <w:rPr> inside of <w:r>
+          '#<w:r><w:rPr/>.*</w:r>#' => fn(array $matches) => str_replace('<w:rPr/>', $textRunStyle, $matches[0]),
+          '#<w:r>.*(<w:rPr.*</w:rPr>).*</w:r>#' => fn (array $matches) =>
+          preg_replace('#<w:rPr.*</w:rPr>#', StyleMerger::mergeStyles($matches[1], $textRunStyle), $matches[0]),
+        ], $elementsDataList);
       }
       $this->replaceXmlBlock($search, $parts, $blockType);
-      $this->replaceXmlBlock($search, $elementsData, $blockType);
+      $this->replaceXmlBlock($search, implode('', $elementsDataList), $blockType);
     }
   }
 
@@ -212,8 +213,9 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
     preg_match('#<w:pPr.*</w:pPr>#i', $paragraph, $matches);
     $extractedParagraphStyle = $matches[0] ?? '';
 
-    preg_match('#<w:rPr.*</w:rPr>#i', $paragraph, $matches);
-    $extractedTextRunStyle = $matches[0] ?? '';
+    // <w:pPr> may contain <w:rPr> itself so we have to match for <w:rPr> inside of <w:r>
+    preg_match('#<w:r>.*(<w:rPr.*</w:rPr>).*</w:r>#i', $paragraph, $matches);
+    $extractedTextRunStyle = $matches[1] ?? '';
 
     $result = str_replace(
       [
