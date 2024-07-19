@@ -4,10 +4,10 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "@php vendor/bin/simple-phpunit install"
+            "@php vendor/bin/simple-phpunit install --configuration ../../phpunit.xml.dist"
         ],
         "post-update-cmd": [
-            "@php vendor/bin/simple-phpunit install"
+            "@php vendor/bin/simple-phpunit install --configuration ../../phpunit.xml.dist"
         ]
     }
 }
