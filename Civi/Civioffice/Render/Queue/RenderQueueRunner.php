@@ -60,7 +60,7 @@ class RenderQueueRunner {
       $query['return_url'] = base64_encode(html_entity_decode($returnUrl));
     }
 
-    $downloadLink = \CRM_Utils_System::url('civicrm/civioffice/download', $query);
+    $downloadLink = \CRM_Utils_System::url('civicrm/civioffice/download', $query, FALSE, NULL, FALSE);
 
     return new \CRM_Queue_Runner(
       [
