@@ -45,7 +45,7 @@ class RenderQueueRunner {
     // @phpstan-ignore-next-line
     $_SESSION['queueRunners'][$runner->qrid] = serialize($runner);
 
-    return \CRM_Utils_System::url($runner->pathPrefix . '/runner', 'reset=1&qrid=' . urlencode((string) $runner->qrid));
+    return \CRM_Utils_System::url($runner->pathPrefix . '/runner', 'reset=1&qrid=' . urlencode((string) $runner->qrid), FALSE, NULL, FALSE);
   }
 
   private function createRunner(RenderQueue $queue, ?string $returnUrl): \CRM_Queue_Runner {
@@ -60,7 +60,7 @@ class RenderQueueRunner {
       $query['return_url'] = base64_encode(html_entity_decode($returnUrl));
     }
 
-    $downloadLink = \CRM_Utils_System::url('civicrm/civioffice/download', $query);
+    $downloadLink = \CRM_Utils_System::url('civicrm/civioffice/download', $query, FALSE, NULL, FALSE);
 
     return new \CRM_Queue_Runner(
       [
