@@ -68,7 +68,7 @@ implemented so far.
 ## Known issues
 
 - .docx files use an XML structure internally to describe formatting and other
-  properties of text elements. In some cases, this can lead to CiviCRM tokens
+  properties of text elements. In some cases, especially when using MS Word to prepare your template documents, this can lead to CiviCRM tokens
   being split up by XML tags, making them non-functional. CiviOffice tries to
   mitigate this problem by optimizing the XML structure. Currently this 'repair
   functionality' is enabled with the configuration option
@@ -81,3 +81,6 @@ implemented so far.
   portion of the token is in bold font)
 - disable spell checking in your documents, especially make sure you don't
   apply exceptions from spell checking to bits of your tokens
+- you are less likely to encounter these issues, if you
+  - prepare your template documents with LibreOffice instead of MS Word
+  - when copying tokens, make sure to strip your tokens of *any* formatting by copying them to text-only editor first, and then to your document  
