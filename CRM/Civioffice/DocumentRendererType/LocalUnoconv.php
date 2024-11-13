@@ -212,9 +212,10 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         $unoconv_binary_path = $form->_submitValues['unoconv_binary_path'];
         $unoconv_lock_file_path = $form->_submitValues['unoconv_lock_file_path'];
 
-        if (!file_exists($unoconv_binary_path)) {
-            $form->_errors['unoconv_binary_path'] = E::ts("File does not exist. Please provide a correct filename.");
-        }
+        // We can't check eg. /usr/bin/unoconv on a site with open_basedir restrictions in place so this check would always fail
+        //if (!file_exists($unoconv_binary_path)) {
+        //    $form->_errors['unoconv_binary_path'] = E::ts("File does not exist. Please provide a correct filename.");
+        //}
 
         if (!empty($lockfile_to_check)) {
             if (!file_exists($unoconv_lock_file_path)) {
