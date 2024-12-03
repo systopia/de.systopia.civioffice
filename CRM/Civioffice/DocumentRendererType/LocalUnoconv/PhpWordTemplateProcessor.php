@@ -104,20 +104,21 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
       // styles.
       PhpWord\Shared\Html::addHtml($section, $renderedTokenMessage);
       $elements = $section->getElements();
-      // setValue() and setElementsValue() replace only the first occurrence of macro variables in the document, so loop
-      // until all have been replaced.
-      do {
-        if ([] === $elements) {
-          // Note: If the paragraph had the macro as its only content, it
-          // will not be removed (i.e. leave an empty paragraph).
-          $this->setValue($macroVariable, '');
-        }
-        else {
+      if ([] === $elements) {
+        // Note: If the paragraph had the macro as its only content, it
+        // will not be removed (i.e. leave an empty paragraph).
+        $this->setValue($macroVariable, '');
+      }
+      else {
+        // setElementsValue() replace only the first occurrence of macro variables in the document, so loop
+        // until all have been replaced.
+        // @todo Replace not only macros in the main part, but also in headers and footers.
+        do {
           // ... or as HTML: Render all elements and insert in the text
           // run or paragraph containing the macro.
           $this->setElementsValue($macroVariable, $elements, TRUE);
-        }
-      } while (in_array($macroVariable, $this->getVariables(), TRUE));
+        } while (in_array($macroVariable, $this->getVariablesForPart($this->tempDocumentMainPart), TRUE));
+      }
     }
     catch (Exception $exception) {
       throw new CRM_Core_Exception(
