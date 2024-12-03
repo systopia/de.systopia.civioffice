@@ -37,8 +37,28 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
      */
     public function uninstall()
     {
-        // TODO: Remove civioffice_live_snippets option group.
-        // TODO: Remove settings created by this extension.
+        // Remove civioffice_live_snippets option group.
+        \Civi\Api4\OptionGroup::delete(false)
+            ->addWhere('name', '=', 'civioffice_live_snippets')
+            ->execute();
+        // TODO: Revert contact settings for each live snippet.
+//        Civi::contactSettings()->revert('civioffice.live_snippets.' . $name);
+
+        // Remove settings created by this extension.
+        Civi::settings()->revert(CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY);
+        Civi::settings()->revert(CRM_Civioffice_DocumentStore_Local::LOCAL_STATIC_PATH_SETTINGS_KEY);
+        Civi::settings()->revert(CRM_Civioffice_DocumentStore_Upload::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY);
+        Civi::settings()->revert(CRM_Civioffice_DocumentStore_Upload::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY);
+        // TODO: Revert contact settings.
+//        Civi::contactSettings()->revert(CRM_Civioffice_Form_DocumentFromSingleContact::UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT);
+//        Civi::contactSettings()->revert(CRM_Civioffice_Form_DocumentFromSingleContact::UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE);
+
+        // Revert renderer settings.
+        foreach (Civi::settings()->get('civioffice_renderers') as $renderer_uri => $renderer_name) {
+            Civi::settings()->revert('civioffice_renderer_' . $renderer_uri);
+        }
+        Civi::settings()->revert('civioffice_renderers');
+
         // TODO: Clean-up file cache (rendered files), using a cleanup interface.
     }
 
