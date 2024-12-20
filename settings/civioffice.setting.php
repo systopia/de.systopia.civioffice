@@ -13,22 +13,23 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use CRM_Civioffice_ExtensionUtil as E;
 
 return [
-    'civioffice_renderers' => [
-        'name' => 'civioffice_renderers',
-        'type' => 'String',
-        'serialize' => CRM_Core_DAO::SERIALIZE_JSON,
-        'is_domain' => 1,
-        'description' => E::ts('CiviOffice renderers.'),
-        'default' => [],
-        'title' => E::ts('CiviOffice Renderers'),
-        'help_text' => '',
-        'html_type' => 'select',
-        'html_attributes' => [
-            'class' => 'crm-select2',
-            'multiple' => 1,
-        ],
+  'civioffice_renderers' => [
+    'name' => 'civioffice_renderers',
+    'type' => 'Array',
+    'is_domain' => 1,
+    'description' => E::ts('CiviOffice renderers.'),
+    'default' => [],
+    'title' => E::ts('CiviOffice Renderers'),
+    'help_text' => '',
+    'html_type' => 'select',
+    'html_attributes' => [
+      'class' => 'crm-select2',
+      'multiple' => 1,
     ],
+  ],
 ];
