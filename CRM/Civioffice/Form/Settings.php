@@ -15,6 +15,8 @@
 
 declare(strict_types = 1);
 
+use Civi\Civioffice\DocumentEditorManager;
+use Civi\Civioffice\DocumentEditorTypeContainer;
 use Civi\Civioffice\DocumentRendererTypeContainer;
 use CRM_Civioffice_ExtensionUtil as E;
 
@@ -29,13 +31,13 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form {
     $office_components = [
       'document_stores'    => CRM_Civioffice_Configuration::getDocumentStores(FALSE),
       'document_renderers' => CRM_Civioffice_Configuration::getDocumentRenderers(FALSE),
-      'document_editors'   => CRM_Civioffice_Configuration::getEditors(FALSE),
+      'document_editors'   => DocumentEditorManager::getInstance()->getAllEditors(),
     ];
 
     $ui_components = [];
     foreach ($office_components as $element_type => $components) {
       foreach ($components as $instance) {
-        /** @var CRM_Civioffice_OfficeComponent $instance */
+        /** @var Civi\Civioffice\DocumentEditor|Civi\Civioffice\DocumentRenderer|CRM_Civioffice_DocumentStore $instance */
         $ui_components[$element_type][] = [
           'id'          => $instance->getURI(),
           'name'        => $instance->getName(),
@@ -48,6 +50,7 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form {
     }
 
     $this->assign('document_renderer_types', DocumentRendererTypeContainer::getInstance()->getTitles());
+    $this->assign('document_editor_types', DocumentEditorTypeContainer::getInstance()->getTitles());
 
     foreach (CRM_Civioffice_LiveSnippets::get() as $live_snippet) {
       $live_snippet['current_content'] = Civi::contactSettings()->get(
