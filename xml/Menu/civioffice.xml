@@ -57,4 +57,11 @@
     <title>Tokens</title>
     <access_arguments>access CiviOffice</access_arguments>
   </item>
+
+  <item>
+    <path>civicrm/civioffice/colabora/wopi/files</path>
+    <page_callback>Civi\Civioffice\Page\ColaboraWopiControllerPage</page_callback>
+    <title>Colabora WOPI</title>
+    <access_callback>1</access_callback>
+  </item>
 </menu>
