@@ -102,26 +102,26 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
         return true;
     }
 
-    public function upgrade_0008(): bool
-    {
-        // Check for instances of the "unoconv-local-phpword" renderer type.
-        foreach (Civi::settings()->get('civioffice_renderers') ?? [] as $renderer_uri => $renderer_name) {
-            $configuration = Civi::settings()->get('civioffice_renderer_' . $renderer_uri);
-            if ($configuration['type'] == 'unoconv-local-phpword') {
-                $this->ctx->log->info(
-                    'Migrate "unoconv-local-phpword" renderer instance ' . $renderer_name . ' to unified "unoconv-local" with PHPWord usage.'
-                );
-                // Convert to "unoconv-local" type with configuration option "phpword_tokens" set to TRUE.
-                $configuration['type'] = 'unoconv-local';
-                $configuration['phpword_tokens'] = true;
-                Civi::settings()->set('civioffice_renderer_' . $renderer_uri, $configuration);
-            }
-        }
-        return true;
+  public function upgrade_0008(): bool {
+    self::fixSettingsValueSerialization();
+    // Check for instances of the "unoconv-local-phpword" renderer type.
+    foreach (Civi::settings()->get('civioffice_renderers') ?? [] as $renderer_uri => $renderer_name) {
+      $configuration = Civi::settings()->get('civioffice_renderer_' . $renderer_uri);
+      if ($configuration['type'] == 'unoconv-local-phpword') {
+        $this->ctx->log->info(
+          'Migrate "unoconv-local-phpword" renderer instance ' . $renderer_name . ' to unified "unoconv-local" with PHPWord usage.'
+        );
+        // Convert to "unoconv-local" type with configuration option "phpword_tokens" set to TRUE.
+        $configuration['type'] = 'unoconv-local';
+        $configuration['phpword_tokens'] = TRUE;
+        Civi::settings()->set('civioffice_renderer_' . $renderer_uri, $configuration);
+      }
     }
+    return TRUE;
+  }
 
-  public function upgrade_0009(): bool
-  {
+  public function upgrade_0009(): bool {
+    self::fixSettingsValueSerialization();
     // Drop "temp_folder_path" from unoconv renderer settings.
     foreach (Civi::settings()->get('civioffice_renderers') ?? [] as $renderer_uri => $renderer_name) {
       $configuration = Civi::settings()->get('civioffice_renderer_' . $renderer_uri);
@@ -132,6 +132,32 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
       }
     }
 
-    return true;
+    return TRUE;
   }
+
+  public function upgrade_0010(): bool {
+    self::fixSettingsValueSerialization();
+    return TRUE;
+  }
+
+  /**
+   * Convert JSON-formatted setting "civioffice_renderers" to PHP-serialized format.
+   * The setting was wrongly defined as JSON-formatted in settings metadata while unerialization with a format other
+   * than PHP-serialized only works with the API. Civi::settings() always expects and generates PHP-serialized values.
+   */
+  private static function fixSettingsValueSerialization(): void {
+    $dao = \CRM_Core_DAO::executeQuery(
+      \CRM_Utils_SQL_Select::from('civicrm_setting')
+        ->select('value')
+        ->where('name="civioffice_renderers"')
+        ->toSQL()
+    );
+    while ($dao->fetch()) {
+      $legacyValue = \CRM_Core_DAO::unSerializeField($dao->value, \CRM_Core_DAO::SERIALIZE_JSON);
+      if (is_array($legacyValue)) {
+        Civi::settings()->set('civioffice_renderers', $legacyValue);
+      }
+    }
+  }
+
 }
