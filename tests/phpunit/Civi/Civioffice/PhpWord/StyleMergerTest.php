@@ -17,9 +17,8 @@
 
 declare(strict_types = 1);
 
-namespace phpunit\Civi\Civioffice\PhpWord;
+namespace Civi\Civioffice\PhpWord;
 
-use Civi\Civioffice\PhpWord\StyleMerger;
 use PHPUnit\Framework\TestCase;
 
 /**
