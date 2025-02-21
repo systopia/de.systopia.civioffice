@@ -16,6 +16,7 @@
 declare(strict_types = 1);
 
 use Civi\Civioffice\PhpWord\StyleMerger;
+use Civi\Civioffice\PhpWord\Util\TemplateUtil;
 use CRM_Civioffice_ExtensionUtil as E;
 use PhpOffice\PhpWord;
 
@@ -110,14 +111,9 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
         $this->setValue($macroVariable, '');
       }
       else {
-        // setElementsValue() replace only the first occurrence of macro variables in the document, so loop
-        // until all have been replaced.
-        // @todo Replace not only macros in the main part, but also in headers and footers.
-        do {
-          // ... or as HTML: Render all elements and insert in the text
-          // run or paragraph containing the macro.
-          $this->setElementsValue($macroVariable, $elements, TRUE);
-        } while (in_array($macroVariable, $this->getVariablesForPart($this->tempDocumentMainPart), TRUE));
+        // ... or as HTML: Render all elements and insert in the text
+        // run or paragraph containing the macro.
+        $this->setElementsValue($macroVariable, $elements, TRUE);
       }
     }
     catch (Exception $exception) {
@@ -146,7 +142,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
    * @throws \PhpOffice\PhpWord\Exception\Exception
    */
   public function setElementsValue(string $search, array $elements, bool $inheritStyle = FALSE): void {
-    $search = static::ensureMacroCompleted($search);
     $elementsDataList = [];
     $hasParagraphs = FALSE;
     foreach ($elements as $element) {
@@ -164,91 +159,91 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
       /** @var \PhpOffice\PhpWord\Writer\Word2007\Element\AbstractElement $elementWriter */
       $elementWriter = new $objectClass($xmlWriter, $element, !$withParagraph);
       $elementWriter->write();
+      /** @var list<string> $elementsDataList */
       $elementsDataList[] = preg_replace('/>\s+</', '><', $xmlWriter->getData());
     }
-    $blockType = $hasParagraphs ? 'w:p' : 'w:r';
-    $where = $this->findContainingXmlBlockForMacro($search, $blockType);
-    if (is_array($where)) {
-      /** @phpstan-var array{start: int, end: int} $where */
-      $block = $this->getSlice($where['start'], $where['end']);
-      $paragraphStyle = '';
-      $textRunStyle = '';
-      $parts = $hasParagraphs
-        ? $this->splitParagraphIntoParagraphs($block, $paragraphStyle, $textRunStyle)
-        : $this->splitTextIntoTexts($block, $textRunStyle);
-      if ($inheritStyle) {
-        $elementsDataList = preg_replace_callback_array([
-          '#<w:pPr/>#' => fn() => $paragraphStyle,
-          '#<w:pPr.*</w:pPr>#' => fn (array $matches) => StyleMerger::mergeStyles($matches[0], $paragraphStyle),
-          // <w:pPr> may contain <w:rPr> itself so we have to match for <w:rPr> inside of <w:r>
-          '#<w:r><w:rPr/>.*</w:r>#' => fn(array $matches) => str_replace('<w:rPr/>', $textRunStyle, $matches[0]),
-          '#<w:r>.*(<w:rPr.*</w:rPr>).*</w:r>#' => fn (array $matches) =>
-          preg_replace('#<w:rPr.*</w:rPr>#', StyleMerger::mergeStyles($matches[1], $textRunStyle), $matches[0]),
-        ], $elementsDataList);
-      }
-      $this->replaceXmlBlock($search, $parts, $blockType);
-      $this->replaceXmlBlock($search, implode('', $elementsDataList), $blockType);
-    }
+
+    $this->tempDocumentHeaders = array_map(
+      fn (string $partXML) => $this->setElementsValueForPart(
+        $search,
+        $elementsDataList,
+        $partXML,
+        $hasParagraphs,
+        $inheritStyle
+      ),
+      $this->tempDocumentHeaders
+    );
+    $this->tempDocumentMainPart = $this->setElementsValueForPart(
+      $search,
+      $elementsDataList,
+      $this->tempDocumentMainPart,
+      $hasParagraphs,
+      $inheritStyle
+    );
+    $this->tempDocumentFooters = array_map(
+      fn (string $partXML) => $this->setElementsValueForPart(
+        $search,
+        $elementsDataList,
+        $partXML,
+        $hasParagraphs,
+        $inheritStyle
+      ),
+      $this->tempDocumentFooters
+    );
   }
 
   /**
-   * Splits a w:p into a list of w:p where each ${macro} is in a separate w:p.
+   * Replaces a search string (macro) in a document part with a set of rendered
+   * elements, splitting surrounding texts, text runs or paragraphs before and
+   * after the macro, depending on the types of elements to insert.
    *
-   * @param string $extractedParagraphStyle
-   *   Is set to the extracted paragraph style (w:pPr).
-   * @param string $extractedTextRunStyle
-   *   Is set to the extracted text run style (w:rPr).
+   * @param string $search Macro to search for
+   * @param list<string> $replaceXml Rendered elements to replace the macro with
+   * @param string $partXml The XML for macro replacement
+   * @param bool $hasParagraphs TRUE if a replacement element has a paragraph
+   * @param bool $inheritStyle
+   *   If TRUE the style will be inherited from the paragraph/text run the macro
+   *   is inside. If the element already contains styles, they will be merged.
+   *
+   * @return string The part XML with every macro occurrence replaced.
    *
    * @throws \PhpOffice\PhpWord\Exception\Exception
    */
-  public function splitParagraphIntoParagraphs(
-    string $paragraph,
-    string &$extractedParagraphStyle = '',
-    string &$extractedTextRunStyle = ''
+  protected function setElementsValueForPart(
+    string $search,
+    array $replaceXml,
+    string $partXml,
+    bool $hasParagraphs,
+    bool $inheritStyle
   ): string {
-    if (NULL === $paragraph = preg_replace('/>\s+</', '><', $paragraph)) {
-      throw new PhpWord\Exception\Exception('Error processing PhpWord document.');
+    $search = static::ensureMacroCompleted($search);
+    $blockType = $hasParagraphs ? 'w:p' : 'w:r';
+    while ($where = TemplateUtil::findContainingXmlBlock($partXml, $search, $blockType)) {
+      $block = TemplateUtil::getSlice($partXml, $where['start'], $where['end']);
+      $paragraphStyle = '';
+      $textRunStyle = '';
+      $parts = $hasParagraphs ? TemplateUtil::splitParagraphIntoParagraphs($block, $paragraphStyle, $textRunStyle)
+        : $this->splitTextIntoTexts($block, $textRunStyle);
+      if ($inheritStyle) {
+        /** @var list<string> $replaceXml */
+        $replaceXml = preg_replace_callback_array([
+          '#<w:pPr/>#' => fn() => $paragraphStyle,
+          '#<w:pPr.*</w:pPr>#' => fn(array $matches) => StyleMerger::mergeStyles($matches[0], $paragraphStyle),
+          // <w:pPr> may contain <w:rPr> itself so we have to match for <w:rPr> inside of <w:r>
+          '#<w:r><w:rPr/>.*</w:r>#' => fn(array $matches) => str_replace('<w:rPr/>', $textRunStyle, $matches[0]),
+          '#<w:r>.*(<w:rPr.*</w:rPr>).*</w:r>#' => fn(array $matches) => preg_replace(
+            '#<w:rPr.*</w:rPr>#',
+            StyleMerger::mergeStyles($matches[1], $textRunStyle),
+            $matches[0]
+          ),
+        ], $replaceXml);
+      }
+
+      $partXml = TemplateUtil::replaceXmlBlock($partXml, $search, $parts, $blockType);
+      $partXml = TemplateUtil::replaceXmlBlock($partXml, $search, implode('', $replaceXml), $blockType);
     }
 
-    $matches = [];
-    preg_match('#<w:pPr.*</w:pPr>#i', $paragraph, $matches);
-    $extractedParagraphStyle = $matches[0] ?? '';
-
-    // <w:pPr> may contain <w:rPr> itself so we have to match for <w:rPr> inside of <w:r>
-    preg_match('#<w:r>.*(<w:rPr.*</w:rPr>).*</w:r>#i', $paragraph, $matches);
-    $extractedTextRunStyle = $matches[1] ?? '';
-
-    $result = str_replace(
-      [
-        '<w:t>',
-        '${',
-        '}',
-      ],
-      [
-        '<w:t xml:space="preserve">',
-        sprintf(
-          '</w:t></w:r></w:p><w:p>%s<w:r><w:t xml:space="preserve">%s${',
-          $extractedParagraphStyle,
-          $extractedTextRunStyle
-        ),
-        sprintf(
-          '}</w:t></w:r></w:p><w:p>%s<w:r>%s<w:t xml:space="preserve">',
-          $extractedParagraphStyle,
-          $extractedTextRunStyle
-        ),
-      ],
-      $paragraph
-    );
-
-    // Remove empty paragraphs that might have been created before/after the
-    // macro.
-    $emptyParagraph = sprintf(
-      '<w:p>%s<w:r>%s<w:t xml:space="preserve"></w:t></w:r></w:p>',
-      $extractedParagraphStyle,
-      $extractedTextRunStyle
-    );
-
-    return str_replace($emptyParagraph, '', $result);
+    return $partXml;
   }
 
   /**

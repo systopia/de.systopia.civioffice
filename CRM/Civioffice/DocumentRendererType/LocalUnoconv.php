@@ -13,8 +13,9 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+use Civi\Civioffice\PhpWord\PhpWordTokenReplacer;
+use Civi\Token\TokenRow;
 use CRM_Civioffice_ExtensionUtil as E;
-use PhpOffice\PhpWord;
 
 /**
  *
@@ -444,35 +445,13 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         }
     }
 
-    protected function replaceTokensPhpWord(CRM_Civioffice_Document $document, \Civi\Token\TokenRow $token_row)
+    protected function replaceTokensPhpWord(CRM_Civioffice_Document $document, TokenRow $token_row): void
     {
-        try {
-            $templateProcessor = new CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor(
-                $document->getAbsolutePath()
-            );
-        } catch (PhpWord\Exception\Exception $exception) {
-            throw new Exception("Unoconv: Docx (zip) file seems to be broken or path is wrong");
-        }
-
-        $used_tokens = $templateProcessor->civiTokensToMacros();
-
-        // Register all tokens as token messages and evaluate.
-        foreach ($used_tokens as $token => $token_params) {
-            $this->tokenProcessor->addMessage($token, $token, 'text/html');
-        }
-        $this->tokenProcessor->evaluate();
-
-        // Replace contained tokens.
-        $used_macro_variables = $templateProcessor->getVariables();
-        foreach ($used_macro_variables as $macro_variable) {
-            // Format each variable as a CiviCRM token and render it.
-            $rendered_token_message = $this->tokenProcessor->render('{' . $macro_variable . '}', $token_row);
-            $templateProcessor->replaceHtmlToken($macro_variable, $rendered_token_message);
-        }
-        $templateProcessor->saveAs($document->getAbsolutePath());
+        $tokenReplacer = new PhpWordTokenReplacer($this->tokenProcessor);
+        $tokenReplacer->replaceTokens($document->getAbsolutePath(), $document->getAbsolutePath(), $token_row);
     }
 
-    protected function replaceTokensRegex(CRM_Civioffice_Document $document, \Civi\Token\TokenRow $token_row)
+    protected function replaceTokensRegex(CRM_Civioffice_Document $document, TokenRow $token_row)
     {
         // Replace tokens manually.
         $zip = new ZipArchive();

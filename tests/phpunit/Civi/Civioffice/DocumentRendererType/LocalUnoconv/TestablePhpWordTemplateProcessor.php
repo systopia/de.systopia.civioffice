@@ -26,14 +26,33 @@ final class TestablePhpWordTemplateProcessor extends \CRM_Civioffice_DocumentRen
 // phpcs:enable
 
   /**
+   * @param list<string> $headers
+   * @param list<string> $footers
+   *
    * @phpstan-ignore-next-line Parent constructor is not called.
    */
-  public function __construct(string $mainPart) {
+  public function __construct(string $mainPart, array $headers = [], array $footers = []) {
     $this->tempDocumentMainPart = $mainPart;
+    $this->tempDocumentHeaders = $headers;
+    $this->tempDocumentFooters = $footers;
   }
 
   public function getMainPart(): string {
     return $this->tempDocumentMainPart;
+  }
+
+  /**
+   * @return list<string>
+   */
+  public function getHeaders(): array {
+    return $this->tempDocumentHeaders;
+  }
+
+  /**
+   * @return list<string>
+   */
+  public function getFooters(): array {
+    return $this->tempDocumentFooters;
   }
 
 }
