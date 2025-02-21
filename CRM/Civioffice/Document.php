@@ -81,6 +81,7 @@ abstract class CRM_Civioffice_Document
         return $this->name;
     }
 
+    public abstract function getAbsolutePath() : string;
 
     /**
      * Get the (binary) content of the file
