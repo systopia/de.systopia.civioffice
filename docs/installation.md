@@ -24,6 +24,10 @@ archive and move the directory into your extensions directory (e.g.,
 `.../civicrm/ext/`). You can find the exact location in your CiviCRM settings (
 Administer > System Settings > Directories).
 
+The extension has *Composer* dependencies. Official releases should include them
+but if you install the extension from the repository, you will need to manually
+run `composer install` or `composer update` within the extension directory.
+
 Next, open the extensions page in the CiviCRM settings (Administer/System
 Settings/Extensions). Find the extension CiviOffice in the *Extensions* tab and
 click on *Install*. The extension will be set up, including new navigation menu
