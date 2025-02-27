@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2024 SYSTOPIA GmbH
+ * Copyright (C) 2025 SYSTOPIA GmbH
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
@@ -17,13 +17,9 @@
 
 declare(strict_types = 1);
 
-namespace Civi\Civioffice\DocumentRendererType\LocalUnoconv;
+namespace Civi\Civioffice\PhpWord;
 
-/**
- * phpcs:disable Generic.Files.LineLength.TooLong
- */
-final class TestablePhpWordTemplateProcessor extends \CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor {
-// phpcs:enable
+final class TestablePhpWordTemplateProcessor extends PhpWordTemplateProcessor {
 
   /**
    * @param list<string> $headers

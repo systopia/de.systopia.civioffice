@@ -15,12 +15,13 @@
 
 declare(strict_types = 1);
 
-use Civi\Civioffice\PhpWord\StyleMerger;
+namespace Civi\Civioffice\PhpWord;
+
 use Civi\Civioffice\PhpWord\Util\TemplateUtil;
 use CRM_Civioffice_ExtensionUtil as E;
 use PhpOffice\PhpWord;
 
-class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
+class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
 
   /**
    * Replaces CiviCRM tokens with PhpWord macros (converts format from
@@ -116,8 +117,8 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor 
         $this->setElementsValue($macroVariable, $elements, TRUE);
       }
     }
-    catch (Exception $exception) {
-      throw new CRM_Core_Exception(
+    catch (\Exception $exception) {
+      throw new \CRM_Core_Exception(
         E::ts('Error loading/writing PhpWord document: %1', [1 => $exception->getMessage()]),
         $exception->getCode(),
         [],

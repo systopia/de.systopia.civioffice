@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2024 SYSTOPIA GmbH
+ * Copyright (C) 2025 SYSTOPIA GmbH
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
@@ -17,15 +17,14 @@
 
 declare(strict_types = 1);
 
-namespace CRM\Civioffice\DocumentRendererType\LocalUnoconv;
+namespace Civi\Civioffice\PhpWord;
 
-use Civi\Civioffice\DocumentRendererType\LocalUnoconv\TestablePhpWordTemplateProcessor;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor
+ * @covers \Civi\Civioffice\PhpWord\PhpWordTemplateProcessor
  */
-final class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessorTest extends TestCase {
+final class PhpWordTemplateProcessorTest extends TestCase {
 
   public function testReplaceSimple(): void {
     $mainPart = <<<EOD

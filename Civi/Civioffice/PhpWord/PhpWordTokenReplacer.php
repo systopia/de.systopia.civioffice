@@ -32,9 +32,7 @@ final class PhpWordTokenReplacer {
 
   public function replaceTokens(string $inputFile, string $outputFile, TokenRow $tokenRow): void {
     try {
-      $templateProcessor = new \CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor(
-        $inputFile
-      );
+      $templateProcessor = new PhpWordTemplateProcessor($inputFile);
     }
     // @phpstan-ignore catch.neverThrown
     catch (\PhpOffice\PhpWord\Exception\Exception $e) {
