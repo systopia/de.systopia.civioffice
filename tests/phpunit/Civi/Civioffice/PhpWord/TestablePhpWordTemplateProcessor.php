@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2024 SYSTOPIA GmbH
+ * Copyright (C) 2025 SYSTOPIA GmbH
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
@@ -17,23 +17,38 @@
 
 declare(strict_types = 1);
 
-namespace Civi\Civioffice\DocumentRendererType\LocalUnoconv;
+namespace Civi\Civioffice\PhpWord;
 
-/**
- * phpcs:disable Generic.Files.LineLength.TooLong
- */
-final class TestablePhpWordTemplateProcessor extends \CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor {
-// phpcs:enable
+final class TestablePhpWordTemplateProcessor extends PhpWordTemplateProcessor {
 
   /**
+   * @param list<string> $headers
+   * @param list<string> $footers
+   *
    * @phpstan-ignore-next-line Parent constructor is not called.
    */
-  public function __construct(string $mainPart) {
+  public function __construct(string $mainPart, array $headers = [], array $footers = []) {
     $this->tempDocumentMainPart = $mainPart;
+    $this->tempDocumentHeaders = $headers;
+    $this->tempDocumentFooters = $footers;
   }
 
   public function getMainPart(): string {
     return $this->tempDocumentMainPart;
+  }
+
+  /**
+   * @return list<string>
+   */
+  public function getHeaders(): array {
+    return $this->tempDocumentHeaders;
+  }
+
+  /**
+   * @return list<string>
+   */
+  public function getFooters(): array {
+    return $this->tempDocumentFooters;
   }
 
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2024 SYSTOPIA GmbH
+ * Copyright (C) 2025 SYSTOPIA GmbH
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
@@ -17,15 +17,14 @@
 
 declare(strict_types = 1);
 
-namespace CRM\Civioffice\DocumentRendererType\LocalUnoconv;
+namespace Civi\Civioffice\PhpWord;
 
-use Civi\Civioffice\DocumentRendererType\LocalUnoconv\TestablePhpWordTemplateProcessor;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessor
+ * @covers \Civi\Civioffice\PhpWord\PhpWordTemplateProcessor
  */
-final class CRM_Civioffice_DocumentRendererType_LocalUnoconv_PhpWordTemplateProcessorTest extends TestCase {
+final class PhpWordTemplateProcessorTest extends TestCase {
 
   public function testReplaceSimple(): void {
     $mainPart = <<<EOD
@@ -589,6 +588,118 @@ EOD;
 EOD;
 
     static::assertXmlStringEqualsXmlString($expectedMainPart, $templateProcessor->getMainPart());
+  }
+
+  public function testReplaceInHeader(): void {
+    $header = <<<EOD
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t>Foo {place.holder} bar</w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
+EOD;
+
+    $templateProcessor = new TestablePhpWordTemplateProcessor('', [$header]);
+    $templateProcessor->civiTokensToMacros();
+    $templateProcessor->replaceHtmlToken('place.holder', 'test 123');
+
+    $expectedHeader = <<<EOD
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve">Foo </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve">test 123</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+       <w:t xml:space="preserve"> bar</w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
+EOD;
+
+    static::assertXmlStringEqualsXmlString($expectedHeader, $templateProcessor->getHeaders()[0]);
+  }
+
+  public function testReplaceInFooter(): void {
+    $footer = <<<EOD
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t>Foo {place.holder} bar</w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
+EOD;
+
+    $templateProcessor = new TestablePhpWordTemplateProcessor('', [], [$footer]);
+    $templateProcessor->civiTokensToMacros();
+    $templateProcessor->replaceHtmlToken('place.holder', 'test 123');
+
+    $expectedFooter = <<<EOD
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Normal"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve">Foo </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+        <w:t xml:space="preserve">test 123</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="true"/>
+        </w:rPr>
+       <w:t xml:space="preserve"> bar</w:t>
+      </w:r>
+    </w:p>
+  </w:body>
+</w:document>
+EOD;
+
+    static::assertXmlStringEqualsXmlString($expectedFooter, $templateProcessor->getFooters()[0]);
   }
 
 }
