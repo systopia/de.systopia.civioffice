@@ -176,6 +176,7 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
 
         // Store default value for activity type in current contact's settings.
         try {
+            // TODO: Use a more distinct settings name such as "'"civioffice.create_activity_type.class.<class_name>".
             Civi::contactSettings()->set('civioffice_create_' . static::class . '_activity_type', $values['activity_type_id'] ?? '');
         } catch (CRM_Core_Exception $ex) {
             Civi::log()->warning("CiviOffice: Couldn't save defaults: " . $ex->getMessage());
