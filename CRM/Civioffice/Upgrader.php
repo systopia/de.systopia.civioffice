@@ -32,15 +32,50 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
         }
     }
 
-    /**
-     * Example: Run an external SQL script when the module is uninstalled.
-     */
-    public function uninstall()
-    {
-        // TODO: Remove civioffice_live_snippets option group.
-        // TODO: Remove settings created by this extension.
-        // TODO: Clean-up file cache (rendered files), using a cleanup interface.
+  public function uninstall() {
+    // Remove settings created by this extension.
+    Civi::settings()->revert(CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY);
+    Civi::settings()->revert(CRM_Civioffice_DocumentStore_Local::LOCAL_STATIC_PATH_SETTINGS_KEY);
+    Civi::settings()->revert(CRM_Civioffice_DocumentStore_Upload::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY);
+    Civi::settings()->revert(CRM_Civioffice_DocumentStore_Upload::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY);
+
+    // Revert contact settings for each live snippet.
+    $liveSnippetNames = \Civi\Api4\OptionValue::get(FALSE)
+      ->addSelect('name')
+      ->addWhere('option_group_id.name', '=', 'civioffice_live_snippets')
+      ->execute()
+      ->column('name');
+
+    // Revert/delete contact settings.
+    $contactSettingsLike = implode(
+      ' OR ',
+      [
+        CRM_Civioffice_Form_DocumentFromSingleContact::UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT,
+        CRM_Civioffice_Form_DocumentFromSingleContact::UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE,
+        'civioffice_create_%_activity_type',
+        'civioffice.create_%.activity_type_id',
+      ]
+      + array_map(fn($liveSnippetName) => "civioffice.live_snippets.{$liveSnippetName}", $liveSnippetNames)
+    );
+    // Civi::contactSettings()->revert() does not support reverting for all contacts.
+    CRM_Core_DAO::executeQuery(
+      <<<SQL
+        DELETE FROM `civicrm_setting` WHERE `name` LIKE '{$contactSettingsLike}';
+        SQL
+    );
+
+    // Remove "civioffice_live_snippets" option group.
+    \Civi\Api4\OptionGroup::delete(FALSE)
+      ->addWhere('name', '=', 'civioffice_live_snippets')
+      ->execute();
+
+    // Revert renderer settings.
+    foreach ((array) Civi::settings()->get('civioffice_renderers') as $renderer_uri => $renderer_name) {
+      Civi::settings()->revert('civioffice_renderer_' . $renderer_uri);
     }
+    Civi::settings()->revert('civioffice_renderers');
+    // TODO: Clean-up file cache (temporary rendered files), using a cleanup interface.
+  }
 
     /**
      * Support Live Snippets.
