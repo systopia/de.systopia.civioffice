@@ -215,7 +215,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
 
         // There used to be a file_exists() check here for validating that the unoconv binary exists in the given path.
         // We can't however check eg. /usr/bin/unoconv on a site with open_basedir restrictions in place as this check
-        // would always fail. There is a check running `unoconv --version` in the isReady() method() which implicitly
+        // would always fail. There is a check running `unoconv --version` in the isReady() method which implicitly
         // covers the validation of the unconv binary being accessible.
 
         if (!empty($lockfile_to_check)) {
