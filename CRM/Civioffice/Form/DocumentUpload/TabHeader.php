@@ -32,6 +32,9 @@ class CRM_Civioffice_Form_DocumentUpload_TabHeader {
       $tabs = self::process($form);
       $form->set('tabHeader', $tabs);
     }
+    if (method_exists(CRM_Core_Smarty::class, 'setRequiredTabTemplateKeys')) {
+      $tabs = \CRM_Core_Smarty::setRequiredTabTemplateKeys($tabs);
+    }
     $form->assign_by_ref('tabHeader', $tabs);
     CRM_Core_Resources::singleton()
       ->addScriptFile(
