@@ -148,7 +148,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form
         $render_result = civicrm_api3('CiviOffice', 'convert', [
             'document_uri' => $values['document_uri'],
             'entity_ids' => [$this->contact_id],
-            'entity_type' => 'contact',
+            'entity_type' => 'Contact',
             'renderer_uri' => $values['document_renderer_uri'],
             'target_mime_type' => $values['target_mime_type'],
             'live_snippets' => $live_snippet_values,

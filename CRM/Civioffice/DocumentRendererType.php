@@ -98,7 +98,7 @@ abstract class CRM_Civioffice_DocumentRendererType extends CRM_Civioffice_Office
      * @param CRM_Civioffice_DocumentStore_LocalTemp $temp_store
      * @param string $target_mime_type
      * @param string $entity_type
-     *   entity type, e.g. 'contact'
+     *   entity type, e.g. 'Contact'
      * @param array $live_snippets
      *   Values for Live Snippet tokens in the document.
      *

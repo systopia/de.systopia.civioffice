@@ -265,7 +265,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         array $entity_ids,
         CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
         string $target_mime_type,
-        string $entity_type = 'contact',
+        string $entity_type = 'Contact',
         array $live_snippets = []
     ): array {
         $this->liveSnippets = $live_snippets;
