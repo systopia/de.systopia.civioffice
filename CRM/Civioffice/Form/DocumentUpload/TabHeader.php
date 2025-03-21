@@ -35,7 +35,7 @@ class CRM_Civioffice_Form_DocumentUpload_TabHeader {
     if (method_exists(CRM_Core_Smarty::class, 'setRequiredTabTemplateKeys')) {
       $tabs = \CRM_Core_Smarty::setRequiredTabTemplateKeys($tabs);
     }
-    $form->assign_by_ref('tabHeader', $tabs);
+    $form->assign('tabHeader', $tabs);
     CRM_Core_Resources::singleton()
       ->addScriptFile(
         'civicrm',
@@ -44,10 +44,10 @@ class CRM_Civioffice_Form_DocumentUpload_TabHeader {
         'html-header'
       )
       ->addSetting([
-                     'tabSettings' => [
-                       'active' => self::getCurrentTab($tabs),
-                     ],
-                   ]);
+        'tabSettings' => [
+          'active' => self::getCurrentTab($tabs),
+        ],
+      ]);
     return $tabs;
   }
 
@@ -66,24 +66,24 @@ class CRM_Civioffice_Form_DocumentUpload_TabHeader {
       'icon' => FALSE,
     ];
 
-      $tabs = [
-          'private' => [
-                  'title' => E::ts('My Documents'),
-                  'link' => CRM_Utils_System::url(
-                      'civicrm/civioffice/document_upload',
-                      "common=0"
-                  ),
-                  'icon' => 'crm-i fa-user',
-              ] + $default,
-          'shared' => [
-                  'title' => E::ts('Shared Documents'),
-                  'link' => CRM_Utils_System::url(
-                      'civicrm/civioffice/document_upload',
-                      "common=1"
-                  ),
-                  'icon' => 'crm-i fa-users',
-              ] + $default,
-      ];
+    $tabs = [
+      'private' => [
+        'title' => E::ts('My Documents'),
+        'link' => CRM_Utils_System::url(
+          'civicrm/civioffice/document_upload',
+          'common=0'
+        ),
+        'icon' => 'crm-i fa-user',
+      ] + $default,
+      'shared' => [
+        'title' => E::ts('Shared Documents'),
+        'link' => CRM_Utils_System::url(
+          'civicrm/civioffice/document_upload',
+          'common=1'
+        ),
+        'icon' => 'crm-i fa-users',
+      ] + $default,
+    ];
 
     // Load requested tab.
     $current = CRM_Utils_Request::retrieve(
