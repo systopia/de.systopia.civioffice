@@ -105,7 +105,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         $live_snippet_elements = CRM_Civioffice_LiveSnippets::addFormElements(
             $form,
             $prefix . 'attachments--' . $attachment_id . '--',
-            $defaults['live_snippets']
+            $defaults['live_snippets'] ?? []
         );
 
         $form->add(
@@ -118,10 +118,10 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
 
         $form->setDefaults(
             [
-                $prefix . 'attachments--' . $attachment_id . '--document_renderer_uri' => $defaults['document_renderer_uri'],
-                $prefix . 'attachments--' . $attachment_id . '--document_uri' => $defaults['document_uri'],
-                $prefix . 'attachments--' . $attachment_id . '--target_mime_type' => $defaults['target_mime_type'],
-                $prefix . 'attachments--' . $attachment_id . '--name' => $defaults['name'],
+                $prefix . 'attachments--' . $attachment_id . '--document_renderer_uri' => $defaults['document_renderer_uri'] ?? NULL,
+                $prefix . 'attachments--' . $attachment_id . '--document_uri' => $defaults['document_uri'] ?? NULL,
+                $prefix . 'attachments--' . $attachment_id . '--target_mime_type' => $defaults['target_mime_type'] ?? NULL,
+                $prefix . 'attachments--' . $attachment_id . '--name' => $defaults['name'] ?? NULL,
             ]
         );
 
