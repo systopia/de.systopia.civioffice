@@ -148,8 +148,8 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
     {
         // todo: active
         return
-            (file_exists($this->base_folder) && is_dir($this->base_folder))
-            && (file_exists($this->temp_folder) && is_dir($this->temp_folder));
+            (isset($this->base_folder) && file_exists($this->base_folder) && is_dir($this->base_folder))
+            && (isset($this->temp_folder) && file_exists($this->temp_folder) && is_dir($this->temp_folder));
     }
 
     /**
