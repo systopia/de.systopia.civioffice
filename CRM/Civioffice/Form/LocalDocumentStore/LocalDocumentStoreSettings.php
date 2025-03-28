@@ -63,47 +63,55 @@ class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends 
         parent::buildQuickForm();
     }
 
-    /**
-     * Validate input data
-     * @return bool
-     */
-    public function validate(): bool
-    {
-        parent::validate();
+  /**
+   * Validate input data
+   *
+   * @return bool
+   */
+  public function validate(): bool {
+    parent::validate();
 
-        // verify that the folder is 1) there, 2) readable
-        if (!empty($this->_submitValues['local_folder'])) {
-            $local_folder = $this->_submitValues['local_folder'];
-            if (!file_exists($local_folder) && !mkdir($local_folder, 0777, true)) {
-              $this->_errors['local_folder'] = E::ts('Could not create directory');
-            } else if (!is_dir($local_folder)) {
-                $this->_errors['local_folder'] = E::ts("This is not a folder");
-            } else if (!is_readable($local_folder)) {
-                $this->_errors['local_folder'] = E::ts("This folder cannot be accessed");
-            }
+    // verify that the folder is 1) there, 2) readable
+    $local_folder = trim($this->_submitValues['local_folder']);
+    if ('' !== $local_folder) {
+      if (!file_exists($local_folder) && !mkdir($local_folder, 0777, TRUE)) {
+        $this->_errors['local_folder'] = E::ts('Could not create directory');
+      }
+      else {
+        if (!is_dir($local_folder)) {
+          $this->_errors['local_folder'] = E::ts('This is not a folder');
         }
-
-        if (!empty($this->_submitValues['local_temp_folder'])) {
-            $local_temp_folder = $this->_submitValues['local_temp_folder'];
-            if (!file_exists($local_temp_folder) && !mkdir($local_temp_folder, 0777, true)) {
-              $this->_errors['local_temp_folder'] = E::ts('Could not create directory');
-            } else if (!is_dir($local_temp_folder)) {
-                $this->_errors['local_temp_folder'] = E::ts("This is not a folder");
-            } else if (!is_readable($local_temp_folder)) {
-                $this->_errors['local_temp_folder'] = E::ts("This folder cannot be accessed");
-            }
+        elseif (!is_readable($local_folder)) {
+          $this->_errors['local_folder'] = E::ts('This folder cannot be accessed');
         }
-
-        return (0 == count($this->_errors));
+      }
     }
 
-    public function postProcess()
-    {
-        $values = $this->exportValues();
-
-        // store
-        Civi::settings()->set(CRM_Civioffice_DocumentStore_Local::LOCAL_STATIC_PATH_SETTINGS_KEY, $values['local_folder']);
-        Civi::settings()->set(CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY, $values['local_temp_folder']);
+    $local_temp_folder = trim($this->_submitValues['local_temp_folder']);
+    if ('' !== $local_temp_folder) {
+      if (!file_exists($local_temp_folder) && !mkdir($local_temp_folder, 0777, TRUE)) {
+        $this->_errors['local_temp_folder'] = E::ts('Could not create directory');
+      }
+      else {
+        if (!is_dir($local_temp_folder)) {
+          $this->_errors['local_temp_folder'] = E::ts('This is not a folder');
+        }
+        elseif (!is_readable($local_temp_folder)) {
+          $this->_errors['local_temp_folder'] = E::ts('This folder cannot be accessed');
+        }
+      }
     }
+
+    return 0 === count($this->_errors);
+  }
+
+  public function postProcess(): void {
+    $values = $this->exportValues();
+
+    // store
+    Civi::settings()
+      ->set(CRM_Civioffice_DocumentStore_Local::LOCAL_STATIC_PATH_SETTINGS_KEY, trim($values['local_folder']))
+      ->set(CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY, trim($values['local_temp_folder']));
+  }
 
 }

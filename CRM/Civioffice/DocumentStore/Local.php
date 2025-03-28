@@ -18,32 +18,52 @@ use CRM_Civioffice_ExtensionUtil as E;
 /**
  * Document store based on a local folder
  */
-class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore
-{
-    const LOCAL_STATIC_PATH_SETTINGS_KEY = 'civioffice_store_local_static_path';
-    const LOCAL_TEMP_PATH_SETTINGS_KEY = 'civioffice_store_local_temp_path';
+class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore {
 
-    /** @var string local folder this store has access to */
-    protected $base_folder;
+  public const LOCAL_STATIC_PATH_SETTINGS_KEY = 'civioffice_store_local_static_path';
 
-    /** @var string local folder this store has access to */
-    protected $temp_folder;
+  public const LOCAL_TEMP_PATH_SETTINGS_KEY = 'civioffice_store_local_temp_path';
 
-    /** @var boolean should this be readable */
-    protected $readonly;
+  /**
+   * Local folder this store has access to.
+   */
+  protected ?string $base_folder;
 
-    /** @var boolean should there be subfolders? */
-    protected $has_subfolders;
+  /**
+   * Local folder this store has access to.
+   */
+  protected ?string $temp_folder;
 
-    public function __construct($uri, $name, $readonly, $has_subfolders)
-    {
-        parent::__construct($uri, $name);
-        $this->base_folder = Civi::settings()->get(self::LOCAL_STATIC_PATH_SETTINGS_KEY);
-        $this->temp_folder = Civi::settings()->get(self::LOCAL_TEMP_PATH_SETTINGS_KEY);
-        $this->readonly = $readonly;
-        $this->has_subfolders = $has_subfolders;
-    }
+  /**
+   * Whether this should only be readable.
+   */
+  protected bool $readonly;
 
+  /**
+   * Whether there should be subfolders.
+   */
+  protected bool $has_subfolders;
+
+  /**
+   * @phpstan-param string $uri
+   * @phpstan-param string $name
+   */
+  public function __construct($uri, $name, bool $readonly, bool $has_subfolders) {
+    parent::__construct($uri, $name);
+
+    /** @phpstan-var string|null $baseFolder */
+    $baseFolder = Civi::settings()->get(self::LOCAL_STATIC_PATH_SETTINGS_KEY);
+    // TODO: trim() existing config value in an upgrade step and do not trim() here.
+    $this->base_folder = is_string($baseFolder) ? trim($baseFolder) : NULL;
+
+    /** @phpstan-var string|null $tempFolder */
+    $tempFolder = Civi::settings()->get(self::LOCAL_TEMP_PATH_SETTINGS_KEY);
+    // TODO: trim() existing config value in an upgrade step and do not trim() here.
+    $this->temp_folder = is_string($tempFolder) ? trim($tempFolder) : NULL;
+
+    $this->readonly = $readonly;
+    $this->has_subfolders = $has_subfolders;
+  }
 
     /**
      * Get a list of available documents
