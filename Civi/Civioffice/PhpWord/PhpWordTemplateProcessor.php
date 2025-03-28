@@ -153,7 +153,8 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
       $objectClass = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Element\\' . $elementName;
 
       // For inline elements, do not create a new paragraph.
-      $withParagraph = \PhpOffice\PhpWord\Writer\Word2007\Element\Text::class !== $objectClass;
+      $withParagraph = !is_a($objectClass, \PhpOffice\PhpWord\Writer\Word2007\Element\Text::class, TRUE)
+        || is_a($objectClass, \PhpOffice\PhpWord\Writer\Word2007\Element\TextRun::class, TRUE);
       $hasParagraphs = $hasParagraphs || $withParagraph;
 
       $xmlWriter = new PhpWord\Shared\XMLWriter();
