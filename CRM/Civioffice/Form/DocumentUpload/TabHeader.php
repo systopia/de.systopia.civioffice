@@ -54,10 +54,10 @@ class CRM_Civioffice_Form_DocumentUpload_TabHeader {
   /**
    * @param CRM_Civioffice_Form_DocumentUpload $form
    *
-   * @return array
+   * @return array<string, array<string, mixed>>
    * @throws Exception
    */
-  public static function process(&$form) {
+  public static function process(&$form): array {
     $default = [
       'link' => NULL,
       'valid' => TRUE,
@@ -65,25 +65,27 @@ class CRM_Civioffice_Form_DocumentUpload_TabHeader {
       'current' => FALSE,
       'icon' => FALSE,
     ];
-
-    $tabs = [
-      'private' => [
+    $tabs = [];
+    if ((new CRM_Civioffice_DocumentStore_Upload(FALSE))->isReady()) {
+      $tabs['private'] = [
         'title' => E::ts('My Documents'),
         'link' => CRM_Utils_System::url(
           'civicrm/civioffice/document_upload',
           'common=0'
         ),
         'icon' => 'crm-i fa-user',
-      ] + $default,
-      'shared' => [
+      ] + $default;
+    }
+    if ((new CRM_Civioffice_DocumentStore_Upload(TRUE))->isReady()) {
+      $tabs['shared'] = [
         'title' => E::ts('Shared Documents'),
         'link' => CRM_Utils_System::url(
-          'civicrm/civioffice/document_upload',
-          'common=1'
+        'civicrm/civioffice/document_upload',
+        'common=1'
         ),
         'icon' => 'crm-i fa-users',
-      ] + $default,
-    ];
+      ] + $default;
+    }
 
     // Load requested tab.
     $current = CRM_Utils_Request::retrieve(

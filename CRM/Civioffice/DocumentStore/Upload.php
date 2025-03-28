@@ -217,4 +217,17 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore
     public function isStoreURI($uri) {
         return (substr($uri, 0, 8) == 'upload::');
     }
+
+  public static function access(): bool {
+    $common = CRM_Utils_Request::retrieve('common', 'Boolean');
+    // Check permission.
+    return CRM_Core_Permission::check('access CiviOffice')
+      && (
+        // Check for current mode (current tab).
+        NULL !== $common && (new self($common))->isReady()
+        // Check without mode (i.e. the tab set).
+        || NULL === $common && ((new self(FALSE))->isReady() || (new self(TRUE))->isReady())
+      );
+  }
+
 }
