@@ -330,4 +330,15 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface
         Civi::log()->warning("CiviOffice: Couldn't determine web user's home folder.");
         return '~';
     }
+
+    public static function getGeneralSetting(string $key): ?string {
+        if ($key == 'home_folder') {
+            $value = Civi::settings()->get('civioffice_general_home_folder');
+            if (empty($value)) {
+                $value = self::getHomeFolder();
+            }
+            return $value;
+        }
+        return NULL;
+    }
 }

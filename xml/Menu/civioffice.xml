@@ -52,6 +52,12 @@
     <access_arguments>access CiviOffice</access_arguments>
   </item>
   <item>
+    <path>civicrm/admin/civioffice/settings/general</path>
+    <page_callback>CRM_Civioffice_Form_GeneralSettings_HomeFolderSetting</page_callback>
+    <title>General Settings</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civioffice/tokens</path>
     <page_callback>CRM_Civioffice_Page_Tokens</page_callback>
     <title>Tokens</title>

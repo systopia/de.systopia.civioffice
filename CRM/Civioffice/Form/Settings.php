@@ -53,6 +53,13 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
             $ui_components['live_snippets'][$live_snippet['id']] = $live_snippet;
         }
 
+        $ui_components['general_settings']['home_folder'] = [
+            "label" => E::ts('Home Folder'),
+            "description" => E::ts('Path to home folder of the user that runs this CiviCrm instance.'),
+            "value" => CRM_Civioffice_Configuration::getGeneralSetting('home_folder'),
+            "config_url" => 'settings/general',
+        ];
+
         $this->assign('ui_components', $ui_components);
 
         $this->addButtons(
@@ -72,7 +79,6 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
     public function postProcess()
     {
         $values = $this->exportValues();
-
 
         CRM_Core_Session::setStatus(
             E::ts("Settings Saved"),

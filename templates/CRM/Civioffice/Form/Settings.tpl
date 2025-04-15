@@ -201,6 +201,36 @@
          href="{crmURL p='civicrm/admin/civioffice/settings/livesnippet' q="reset=1&action=add"}">{ts}Add Live Snippet{/ts}</a>
     </div>
 
+    <div class="crm-block crm-content-block">
+
+      <h3>{ts}General Settings{/ts}</h3>
+
+      <div id="help">{ts}General Settings that affect functionality of CiviOffice.{/ts}</div>
+
+      <table class="row-highlight">
+        <thead>
+          <tr>
+            <th>{ts}Name{/ts}</th>
+            <th>{ts}Description{/ts}</th>
+            <th>{ts}Value{/ts}</th>
+            <th>{ts}Operations{/ts}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {foreach from=$ui_components.general_settings item="general_settings" key="settings_key"}
+          <tr>
+            <td>{$general_settings.label}</td>
+            <td>{$general_settings.description}</td>
+            <td>{$general_settings.value}</td>
+            <td>
+              <a class="button crm-popup" href="{$general_settings.config_url}?action=update">{ts}Configure{/ts}</a>
+              <a class="button crm-popup" href="{$general_settings.config_url}?action=delete">{ts}Reset{/ts}</a>
+            </td>
+          </tr>
+        {/foreach}
+      </tbody>
+    </table>
+
   </div>
 
 {literal}

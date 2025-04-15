@@ -18,6 +18,14 @@ declare(strict_types = 1);
 use CRM_Civioffice_ExtensionUtil as E;
 
 return [
+  'civioffice_general_home_folder' => [
+    'name' => 'civioffice_general_home_folder',
+    'type' => 'String',
+    'default' => NULL,
+    'description' => E::ts('Path to home folder of the user that runs this CiviCrm instance'),
+    'title' => E::ts('Home Folder.'),
+    'html_type' => 'text',
+  ],
   'civioffice_renderers' => [
     'name' => 'civioffice_renderers',
     'type' => 'Array',
