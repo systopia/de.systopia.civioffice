@@ -3,6 +3,7 @@ parameters:
 		#- api
 		- Civi
 		#- CRM
+		- CRM/Civioffice/Form/GeneralSettings
 		- tests
 		#- civioffice.php
 	excludePaths:
