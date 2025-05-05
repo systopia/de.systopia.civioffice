@@ -86,7 +86,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             }
 
             // get webserver user home path
-            $home_folder = CRM_Civioffice_Configuration::getHomeFolder() . DIRECTORY_SEPARATOR;
+            $home_folder = CRM_Civioffice_Configuration::getGeneralSetting('home_folder') . DIRECTORY_SEPARATOR;
 
             // check if ~/.cache folder exists, try to create if not
             if (!file_exists("{$home_folder}.cache")) {
@@ -620,7 +620,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
     {
         return [
             'unoconv_binary_path' => '/usr/bin/unoconv',
-            'unoconv_lock_file_path' => CRM_Civioffice_Configuration::getHomeFolder() . '/unoconv.lock',
+            'unoconv_lock_file_path' => CRM_Civioffice_Configuration::getGeneralSetting('home_folder') . '/unoconv.lock',
             'prepare_docx' => false,
             'phpword_tokens' => false,
         ];
