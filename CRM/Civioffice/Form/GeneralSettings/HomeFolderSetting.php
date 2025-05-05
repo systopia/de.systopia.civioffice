@@ -91,9 +91,10 @@ class CRM_Civioffice_Form_GeneralSettings_HomeFolderSetting extends CRM_Core_For
         $folder = $this->_submitValues['home_folder'];
         if (!is_dir($folder)) {
             $this->_errors['home_folder'] = E::ts("This is not a folder: [{$folder}]");
-        } else if (!is_readable($folder)) {
-            $this->_errors['home_folder'] = E::ts("This folder cannot be accessed. There might be insufficient permission.");
         }
+        // else if (!is_readable($folder)) {
+        //     $this->_errors['home_folder'] = E::ts("This folder cannot be accessed. There might be insufficient permission.");
+        // }
 
         return (0 === count($this->_errors));
     }
