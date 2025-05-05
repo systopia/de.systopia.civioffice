@@ -93,7 +93,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                 mkdir("{$home_folder}.cache");
             }
             if (!is_writable("{$home_folder}.cache")) {
-                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {$home_folder}/.cache");
+                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {$home_folder}.cache");
                 return false;
             }
 
@@ -102,7 +102,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                 mkdir("{$home_folder}.config");
             }
             if (!is_writable("{$home_folder}.config")) {
-                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {$home_folder}/.config");
+                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {$home_folder}.config");
                 return false;
             }
 
@@ -273,6 +273,9 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         $internal_processing_format = CRM_Civioffice_MimeType::DOCX; // todo later on this can be determined by checking the $document_with_placeholders later on to allow different transition formats like .odt/.odf
         $needs_conversion = $target_mime_type != $internal_processing_format;
 
+        // get webserver user home path
+        $home_folder = CRM_Civioffice_Configuration::getGeneralSetting('home_folder');
+        
         // "Convert" DOCX files to DOCX in order to "repair" stuff, e.g. tokens that might have got split in the OOXML
         // due to spell checking or formatting.
         if ($this->prepare_docx && $internal_processing_format == CRM_Civioffice_MimeType::DOCX) {
@@ -294,7 +297,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                 . '&& for f in *.docx; do mv -- "$f" "${f%.docx}.docxsource"; done'
             );
 
-            $convert_command = "cd $temp_store_folder_path && {$this->unoconv_binary_path} -v -f docx *.docxsource 2>&1";
+            $convert_command = "cd $temp_store_folder_path && HOME={$home_folder} {$this->unoconv_binary_path} -v -f docx *.docxsource 2>&1";
             [$exec_return_code, $exec_output] = $this->runCommand($convert_command);
             exec("cd $temp_store_folder_path && rm *.docxsource");
 
@@ -392,7 +395,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             return $tokenreplaced_documents;
         }
 
-        $convert_command = "cd $temp_store_folder_path && {$this->unoconv_binary_path} -v -f $file_ending_name *.docx 2>&1";
+        $convert_command = "cd $temp_store_folder_path && HOME={$home_folder} {$this->unoconv_binary_path} -v -f $file_ending_name *.docx 2>&1";
         [$exec_return_code, $exec_output] = $this->runCommand($convert_command);
 
         if ($exec_return_code != 0) {
