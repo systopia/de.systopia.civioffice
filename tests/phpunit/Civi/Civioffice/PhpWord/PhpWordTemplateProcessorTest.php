@@ -196,22 +196,22 @@ EOD;
 
   public function testReplaceLineBreak(): void {
     $mainPart = <<<EOD
-<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-  <w:body>
-    <w:p>
-      <w:pPr>
-        <w:pStyle w:val="Normal"/>
-      </w:pPr>
-      <w:r>
-        <w:rPr>
-          <w:b w:val="true"/>
-        </w:rPr>
-        <w:t>Foo {place.holder} bar</w:t>
-      </w:r>
-    </w:p>
-  </w:body>
-</w:document>
-EOD;
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="Normal"/>
+            </w:pPr>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:t>Foo {place.holder} bar</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+    EOD;
 
     $templateProcessor = new TestablePhpWordTemplateProcessor($mainPart);
     $templateProcessor->civiTokensToMacros();
