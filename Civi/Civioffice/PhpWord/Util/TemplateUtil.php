@@ -131,11 +131,11 @@ final class TemplateUtil {
     }
 
     $matches = [];
-    preg_match('#<w:pPr.*</w:pPr>#i', $paragraph, $matches);
+    preg_match('#<w:pPr(?:(?!<w:pPr).)*</w:pPr>#', $paragraph, $matches);
     $extractedParagraphStyle = $matches[0] ?? '';
 
-    // <w:pPr> may contain <w:rPr> itself so we have to match for <w:rPr> inside of <w:r>
-    preg_match('#<w:r>.*(<w:rPr.*</w:rPr>).*</w:r>#i', $paragraph, $matches);
+    // <w:pPr> may contain <w:rPr> itself so we have to match for <w:rPr> inside <w:r>
+    preg_match('#<w:r>(?:(?!<w:r>).)*(<w:rPr(?:(?!<w:rPr).)*</w:rPr>)(?:(?!<w:r>).)*</w:r>#', $paragraph, $matches);
     $extractedTextRunStyle = $matches[1] ?? '';
 
     $result = str_replace(

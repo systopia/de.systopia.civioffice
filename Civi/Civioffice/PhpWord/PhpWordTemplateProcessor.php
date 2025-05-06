@@ -230,10 +230,14 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
         /** @var list<string> $replaceXml */
         $replaceXml = preg_replace_callback_array([
           '#<w:pPr/>#' => fn() => $paragraphStyle,
-          '#<w:pPr.*</w:pPr>#' => fn(array $matches) => StyleMerger::mergeStyles($matches[0], $paragraphStyle),
-          // <w:pPr> may contain <w:rPr> itself so we have to match for <w:rPr> inside of <w:r>
-          '#<w:r><w:rPr/>.*</w:r>#' => fn(array $matches) => str_replace('<w:rPr/>', $textRunStyle, $matches[0]),
-          '#<w:r>.*(<w:rPr.*</w:rPr>).*</w:r>#' => fn(array $matches) => preg_replace(
+          '#<w:pPr(?:(?!<w:pPr).)*</w:pPr>#' => fn(array $matches) => StyleMerger::mergeStyles(
+            $matches[0], $paragraphStyle
+          ),
+          // <w:pPr> may contain <w:rPr> itself so we have to match for <w:rPr> inside <w:r>
+          '#<w:r><w:rPr/>(?:(?!<w:r>).)*</w:r>#' => fn(array $matches) => str_replace(
+            '<w:rPr/>', $textRunStyle, $matches[0]
+          ),
+          '#<w:r>(<w:rPr(?:(?!<w:rPr).)*</w:rPr>)(?:(?!<w:r>).)*</w:r>#' => fn(array $matches) => preg_replace(
             '#<w:rPr.*</w:rPr>#',
             StyleMerger::mergeStyles($matches[1], $textRunStyle),
             $matches[0]
@@ -257,13 +261,13 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
    *
    * @throws \PhpOffice\PhpWord\Exception\Exception
    */
-  protected function splitTextIntoTexts($text, string &$extractedStyle = '') {
+  protected function splitTextIntoTexts($text, string &$extractedStyle = ''): string {
     if (NULL === $unformattedText = preg_replace('/>\s+</', '><', $text)) {
       throw new PhpWord\Exception\Exception('Error processing PhpWord document.');
     }
 
     $matches = [];
-    preg_match('/<w:rPr.*<\/w:rPr>/i', $unformattedText, $matches);
+    preg_match('#<w:rPr(?:(?!<w:rPr).)*</w:rPr>#', $unformattedText, $matches);
     $extractedStyle = $matches[0] ?? '';
 
     if (!$this->textNeedsSplitting($text)) {
