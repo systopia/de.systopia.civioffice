@@ -39,7 +39,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
      * @var string $unoconv_lock_file_path
      *   Path of file used for the lock.
      */
-    protected $unoconv_lock_file_path;
+    protected ?string $unoconv_lock_file_path = null;
 
     /**
      * @var resource $unoconv_lock_file
@@ -121,7 +121,12 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                 return false;
             }
         } catch (Exception $ex) {
-            Civi::log()->debug("CiviOffice: Unoconv generic exception in isReady() check");
+            CRM_Core_Session::setStatus(
+              E::ts('An error occurred. See the CiviCRM log for details.'),
+              E::ts('CiviOffice Error'),
+              'error'
+            );
+            Civi::log()->warning('CiviOffice: Unoconv generic exception in isReady() check: ' . $ex->getMessage());
             return false;
         }
         return true;
@@ -581,13 +586,16 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
     /**
      * wait for the unoconv resource to become available
      */
-    protected function lock()
+    protected function lock(): void
     {
-        $lock_file_path = $this->unoconv_lock_file_path;
-        if ($lock_file_path) {
-            $this->unoconv_lock_file = fopen($lock_file_path, "w+");
+        if (NULL !== $this->unoconv_lock_file_path && '' !== $this->unoconv_lock_file_path) {
+            $this->unoconv_lock_file = fopen($this->unoconv_lock_file_path, 'w+');
+            if (FALSE === $this->unoconv_lock_file) {
+              throw new RuntimeException(E::ts('Could not open unoconv lock file.'));
+            }
+
             if (!flock($this->unoconv_lock_file, LOCK_EX)) {
-                throw new Exception(E::ts("CiviOffice: Could not acquire unoconv lock."));
+                throw new RuntimeException(E::ts('CiviOffice: Could not acquire unoconv lock.'));
             }
         }
     }

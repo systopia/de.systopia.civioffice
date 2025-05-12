@@ -6,7 +6,7 @@ msgstr ""
 msgid "Document Renderer"
 msgstr ""
 
-#: CRM/Civioffice/AttachmentProvider.php CRM/Civioffice/Form/DocumentFromSingleContact.php CRM/Civioffice/Form/Task/CreateDocumentsTrait.php
+#: CRM/Civioffice/AttachmentProvider.php CRM/Civioffice/Form/DocumentFromSingleContact.php CRM/Civioffice/Form/Task/CreateDocumentsTrait.php ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
 msgid "Document"
 msgstr ""
 
@@ -38,12 +38,16 @@ msgstr ""
 msgid "Local path is not writable: %1"
 msgstr ""
 
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv/PhpWordTemplateProcessor.php
-msgid "Error loading/writing PhpWord document: %1"
-msgstr ""
-
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php CRM/Civioffice/Upgrader.php
 msgid "Local Universal Office Converter (unoconv)"
+msgstr ""
+
+#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
+msgid "An error occurred. See the CiviCRM log for details."
+msgstr ""
+
+#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
+msgid "CiviOffice Error"
 msgstr ""
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
@@ -60,10 +64,6 @@ msgstr ""
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "Use PHPWord macros for token replacement"
-msgstr ""
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "File does not exist. Please provide a correct filename."
 msgstr ""
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
@@ -84,6 +84,10 @@ msgstr ""
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "This document renderer employs the <code>unoconv</code> script on your server to convert documents using LibreOffice."
+msgstr ""
+
+#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
+msgid "Could not open unoconv lock file."
 msgstr ""
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
@@ -122,7 +126,7 @@ msgstr ""
 msgid "- select -"
 msgstr ""
 
-#: CRM/Civioffice/Form/DocumentFromSingleContact.php CRM/Civioffice/Form/Task/CreateDocumentsTrait.php
+#: CRM/Civioffice/Form/DocumentFromSingleContact.php CRM/Civioffice/Form/Task/CreateDocumentsTrait.php ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
 msgid "Create Activity"
 msgstr ""
 
@@ -142,7 +146,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: CRM/Civioffice/Form/DocumentFromSingleContact.php
+#: CRM/Civioffice/Form/DocumentFromSingleContact.php ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
 msgid "Cancel"
 msgstr ""
 
@@ -162,7 +166,7 @@ msgstr ""
 msgid "Missing document renderer type."
 msgstr ""
 
-#: CRM/Civioffice/Form/DocumentRenderer/Settings.php CRM/Civioffice/Form/LiveSnippet.php
+#: CRM/Civioffice/Form/DocumentRenderer/Settings.php CRM/Civioffice/Form/LiveSnippet.php Civi/Civioffice/Api4/Action/ActivityType/GetFieldsAction.php Civi/Civioffice/Api4/Action/Document/GetFieldsAction.php Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php templates/CRM/Civioffice/Form/DocumentUpload.tpl templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Name"
 msgstr ""
 
@@ -170,7 +174,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: CRM/Civioffice/Form/DocumentRenderer/Settings.php CRM/Civioffice/Form/LiveSnippet.php
+#: CRM/Civioffice/Form/DocumentRenderer/Settings.php CRM/Civioffice/Form/LiveSnippet.php templates/CRM/Civioffice/Form/DocumentUpload.tpl templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Delete"
 msgstr ""
 
@@ -194,7 +198,7 @@ msgstr ""
 msgid "Upload Document"
 msgstr ""
 
-#: CRM/Civioffice/Form/DocumentUpload.php
+#: CRM/Civioffice/Form/DocumentUpload.php templates/CRM/Civioffice/Form/DocumentUpload.tpl
 msgid "Upload"
 msgstr ""
 
@@ -206,7 +210,7 @@ msgstr ""
 msgid "File type docx is expected."
 msgstr ""
 
-#: CRM/Civioffice/Form/DocumentUpload.php
+#: CRM/Civioffice/Form/DocumentUpload.php ang/civiofficeSearchTasks/civiofficeSearchTaskRender.ctrl.js
 msgid "Error"
 msgstr ""
 
@@ -222,7 +226,7 @@ msgstr ""
 msgid "CiviOffice - Download"
 msgstr ""
 
-#: CRM/Civioffice/Form/Download.php
+#: CRM/Civioffice/Form/Download.php templates/CRM/Civioffice/Form/DocumentUpload.tpl templates/CRM/Civioffice/Form/Download.tpl
 msgid "Download"
 msgstr ""
 
@@ -258,19 +262,19 @@ msgstr ""
 msgid "Invalid Live Snippet ID."
 msgstr ""
 
-#: CRM/Civioffice/Form/LiveSnippet.php
+#: CRM/Civioffice/Form/LiveSnippet.php templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Add Live Snippet"
 msgstr ""
 
-#: CRM/Civioffice/Form/LiveSnippet.php
+#: CRM/Civioffice/Form/LiveSnippet.php templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Edit Live Snippet"
 msgstr ""
 
-#: CRM/Civioffice/Form/LiveSnippet.php
+#: CRM/Civioffice/Form/LiveSnippet.php Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Description"
 msgstr ""
 
-#: CRM/Civioffice/Form/LiveSnippet.php
+#: CRM/Civioffice/Form/LiveSnippet.php templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Token"
 msgstr ""
 
@@ -326,14 +330,6 @@ msgstr ""
 msgid "Generate %1 Files"
 msgstr ""
 
-#: CRM/Civioffice/Form/Task/CreateDocumentsTrait.php
-msgid "Initialized"
-msgstr ""
-
-#: CRM/Civioffice/Form/Task/CreateDocumentsTrait.php
-msgid "Generating %1 files"
-msgstr ""
-
 #: CRM/Civioffice/Form/UploadDocumentStore/UploadDocumentStoreSettings.php
 msgid "Shared Document Upload Enabled"
 msgstr ""
@@ -344,6 +340,126 @@ msgstr ""
 
 #: CRM/Civioffice/Upgrader.php
 msgid "Local Universal Office Converter (unoconv) implementing PhpWord"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/ActivityType/GetFieldsAction.php
+msgid "ID"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/ActivityType/GetFieldsAction.php
+msgid "Label"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/ActivityType/GetFieldsAction.php
+msgid "Is Last Used"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/ActivityType/GetFieldsAction.php
+msgid "Indicates the last used activity type. (Entity type specific.)"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/Document/GetFieldsAction.php Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php
+msgid "URI"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/Document/GetFieldsAction.php
+msgid "MIME Type"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/Document/GetFieldsAction.php
+msgid "Path"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/Document/GetFieldsAction.php
+msgid "Document Store URI"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/LiveSnippet/GetFieldsAction.php
+msgid "Last Value"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php
+msgid "Supported MIME Types"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php
+msgid "Supported Output MIME Types"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php
+msgid "Supported Output File Types"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php
+msgid "Mapping of file type names to MIME types."
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php
+msgid "Renderer Type URI"
+msgstr ""
+
+#: Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php
+msgid "Is Active"
+msgstr ""
+
+#: Civi/Civioffice/EventSubscriber/AbstractCiviOfficeSearchKitTaskSubscriber.php civioffice.php
+msgid "Create Documents (CiviOffice)"
+msgstr ""
+
+#: Civi/Civioffice/PhpWord/PhpWordTemplateProcessor.php
+msgid "Error loading/writing PhpWord document: %1"
+msgstr ""
+
+#: Civi/Civioffice/Render/Queue/RenderQueue.php
+msgid "Initialized"
+msgstr ""
+
+#: Civi/Civioffice/Render/Queue/RenderQueueRunner.php
+msgid "Generating %1 files"
+msgstr ""
+
+#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.ctrl.js
+msgid "civioffice"
+msgstr ""
+
+#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.ctrl.js
+msgid "An error occurred while attempting to create documents with CiviOffice: %1"
+msgstr ""
+
+#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.ctrl.js
+msgid "An error occurred while attempting to create documents with CiviOffice."
+msgstr ""
+
+#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
+msgid "Renderer"
+msgstr ""
+
+#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
+msgid "Select"
+msgstr ""
+
+#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
+msgid "File Type"
+msgstr ""
+
+#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
+msgid "None"
+msgstr ""
+
+#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html api/v3/CiviOffice/Convert.php templates/CRM/Civioffice/Form/AttachmentProvider.tpl templates/CRM/Civioffice/Form/LiveSnippets.tpl templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Live Snippets"
+msgstr ""
+
+#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
+msgid "The result will be opened in a new browser tab. Your browser may ask to open a popup."
+msgstr ""
+
+#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
+msgid "Create Document"
+msgstr ""
+
+#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
+msgid "Create %1 Documents"
 msgstr ""
 
 #: api/v3/CiviOffice/Convert.php
@@ -387,10 +503,218 @@ msgid "Renderer converts given file to this MIME type, e.g. \"application/pdf\".
 msgstr ""
 
 #: api/v3/CiviOffice/Convert.php
-msgid "Live Snippets"
+msgid "Contents for tokens referring to configured Live Snippets."
 msgstr ""
 
-#: api/v3/CiviOffice/Convert.php
-msgid "Contents for tokens referring to configured Live Snippets."
+#: civioffice.php
+msgid "Create CiviOffice document"
+msgstr ""
+
+#: civioffice.php
+msgid "Access CiviOffice"
+msgstr ""
+
+#: civioffice.php
+msgid "Create documents using CiviOffice."
+msgstr ""
+
+#: civioffice.php
+msgid "CiviOffice Settings"
+msgstr ""
+
+#: civioffice.php
+msgid "CiviOffice"
+msgstr ""
+
+#: civioffice.php
+msgid "Upload Documents"
+msgstr ""
+
+#: civioffice.php
+msgid "Available Tokens"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentFromSingleContact.tpl templates/CRM/Civioffice/Form/Task/CreateDocumentsTrait.tpl
+msgid "Activity"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
+msgid "Please provide the path of your Unoconv binary."
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
+msgid "We strongly recommend creating a system-wide lock file on this server to synchronise access. (It may only run one unoconv process at the same time.) Such a file is created automatically at the location shown below. Please note: This path needs to be equal in every civicrm environment on this server. Otherwise, locking is only active for this very civicrm instance!"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
+msgid "Run the DOCX document through the converter prior to processing in order to optimise/repair possibly corrupted CiviCRM tokens in the document."
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
+msgid "Whether to replace tokens using a PHPWord template processor, so that HTML in Live Snippets can be converted to OOXML."
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl
+msgid "Are you sure you want to delete this Document Renderer?"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl templates/CRM/Civioffice/Form/LiveSnippet.tpl
+msgid "This action cannot be undone."
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+msgid "Available Documents"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+msgid "Size"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+msgid "Actions"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+msgid "Delete File"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+msgid "Download File"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+msgid "No documents available"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+msgid "Upload More"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Download.tpl
+msgid "Please click the download button only once. Clicking the button will trigger generating your zip file which may take a long time depending on the size and complexity of your documents.<br>Afterwards please always use the \"back to previous page\" button to finish this process"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/LiveSnippet.hlp
+msgid "A label for identifying the live snippet in user interfaces."
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/LiveSnippet.hlp
+msgid "A description for explaining how to use this Live Snippet."
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/LiveSnippet.hlp
+msgid "A name to use for the token name."
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/LiveSnippet.hlp
+msgid "Example:"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/LiveSnippet.tpl
+msgid "Are you sure you want to delete this Live Snippet?"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/LiveSnippet.tpl
+msgid "Note that when changing a Live Snippet's name, previously entered values for the snippet, which are stored per contact/user, will not be available anymore."
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.hlp
+msgid "The last value used is stored for each contact for later use."
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "CiviOffice Document Stores"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Document Stores are used to store files"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Ready to use"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Config"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Yes"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "No"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "configure"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "no configuration available"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "No document stores available"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "CiviOffice Document Renderers (Converters)"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Renders or converts documents"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Add %1 Document Renderer"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Configure"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "No document renderers available"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "CiviOffice Document Editors"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Editors can be used to edit CiviOffice documents."
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "No document editors available"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Live Snippets allow you to edit sections of your document during its generation using CiviOffice Live Snippet tokens."
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Current Default Content"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Operations"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Edit"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "No Live Snippets available"
+msgstr ""
+
+#: templates/CRM/Civioffice/Form/Task/CreateDocumentsTrait.hlp
+msgid "Specifies how many documents will be created in a single request. Increasing this number might save some time on capable systems. This option is usually not necessary to be changed. If you encounter failures due to documents taking too long to generate, consider decreasing this number."
+msgstr ""
+
+#: templates/CRM/Civioffice/Page/Tokens.tpl
+msgid "This page lists all tokens CiviOffice is potentially able to replace in documents, however, this depends on the context. E.g. contribution tokens are only available in a context of generating documents for particular contributions, whereas general tokens, such as for domain or date, are always available."
 msgstr ""
 
