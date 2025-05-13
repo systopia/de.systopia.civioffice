@@ -13,6 +13,7 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+use Civi\Civioffice\FilesystemUtil;
 use Civi\Civioffice\PhpWord\PhpWordTokenReplacer;
 use Civi\Token\TokenRow;
 use CRM_Civioffice_ExtensionUtil as E;
@@ -82,27 +83,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             if (empty($this->unoconv_binary_path)) {
                 // no unoconv binary or wrapper script provided
                 Civi::log()->debug("CiviOffice: Path to unoconv binary / wrapper script is missing");
-                return false;
-            }
-
-            // get webserver user home path
-            $home_folder = CRM_Civioffice_Configuration::getHomeFolder() . DIRECTORY_SEPARATOR;
-
-            // check if ~/.cache folder exists, try to create if not
-            if (!file_exists("{$home_folder}.cache")) {
-                mkdir("{$home_folder}.cache");
-            }
-            if (!is_writable("{$home_folder}.cache")) {
-                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.cache");
-                return false;
-            }
-
-            // check if ~/.config folder exists, try to create if not
-            if (!file_exists("{$home_folder}.config")) {
-                mkdir("{$home_folder}.config");
-            }
-            if (!is_writable("{$home_folder}.config")) {
-                Civi::log()->debug("CiviOffice: Unoconv folder needs to be writable: {home}/.config");
                 return false;
             }
 
@@ -569,7 +549,20 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
 
             // finally: execute
             putenv('PATH=' . implode(PATH_SEPARATOR, $paths));
-            exec($command, $exec_output, $exec_return_code);
+            /*
+             * unoconv creates the directories .cache and .config in the home
+             * directory. For this we use a temporary home directory.
+             */
+            $home = sys_get_temp_dir() . '/civioffice';
+            if (!mkdir($home, 0700, TRUE)) {
+                throw new \RuntimeException("Couldn't create temporary directory '$home'");
+            }
+            try {
+                exec("HOME=$home $command", $exec_output, $exec_return_code);
+            }
+            finally {
+                FilesystemUtil::removeRecursive($home);
+            }
 
             // exec code 255 seems to be o.k. as well...
             if ($exec_return_code == 255) {
