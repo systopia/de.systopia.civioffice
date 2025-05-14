@@ -553,7 +553,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
              * unoconv creates the directories .cache and .config in the home
              * directory. For this we use a temporary home directory.
              */
-            $home = sys_get_temp_dir() . '/civioffice';
+            $home = sys_get_temp_dir() . '/civioffice' . mt_rand(100000, mt_getrandmax());
             if (!mkdir($home, 0700, TRUE)) {
                 throw new \RuntimeException("Couldn't create temporary directory '$home'");
             }
