@@ -14,7 +14,9 @@
     "prefer-stable": true,
     "config": {
         "prepend-autoloader": false,
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+        }
     },
     "require": {
         "beberlei/assert": "^3"
@@ -51,5 +53,10 @@
             "@phpstan",
             "@phpunit"
         ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x"
+        }
     }
 }
