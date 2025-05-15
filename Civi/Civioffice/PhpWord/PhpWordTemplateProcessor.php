@@ -31,6 +31,10 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
    *   An array of CiviCRM tokens found in the document.
    */
   public function civiTokensToMacros(): array {
+    $this->tempDocumentHeaders = TemplateUtil::combineRuns($this->tempDocumentHeaders);
+    $this->tempDocumentMainPart = TemplateUtil::combineRuns($this->tempDocumentMainPart);
+    $this->tempDocumentFooters = TemplateUtil::combineRuns($this->tempDocumentFooters);
+
     $tokens = [];
     foreach (
       [
