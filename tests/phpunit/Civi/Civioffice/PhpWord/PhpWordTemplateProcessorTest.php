@@ -82,6 +82,67 @@ final class PhpWordTemplateProcessorTest extends TestCase {
     static::assertXmlStringEqualsXmlString($expectedMainPart, $templateProcessor->getMainPart());
   }
 
+  public function testReplaceWithSplitToken(): void {
+    // There's a run that splits the token, but doesn't have a visible impact.
+    // It only provides an rsidR. The token shall be detected nevertheless.
+    $mainPart = <<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="Normal"/>
+            </w:pPr>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:t>Foo {place</w:t>
+            </w:r>
+            <w:r w:rsidR="FEDCBA98">
+              <w:t>.holder} bar</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD;
+
+    $templateProcessor = new TestablePhpWordTemplateProcessor($mainPart);
+    $templateProcessor->civiTokensToMacros();
+    $templateProcessor->replaceHtmlToken('place.holder', 'test 123');
+
+    $expectedMainPart = <<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="Normal"/>
+            </w:pPr>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:t xml:space="preserve">Foo </w:t>
+            </w:r>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:t xml:space="preserve">test 123</w:t>
+            </w:r>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+             <w:t xml:space="preserve"> bar</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD;
+
+    static::assertXmlStringEqualsXmlString($expectedMainPart, $templateProcessor->getMainPart());
+  }
+
   public function testReplaceSpan(): void {
     $mainPart = <<<EOD
       <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">

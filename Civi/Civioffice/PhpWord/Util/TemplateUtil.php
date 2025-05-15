@@ -89,6 +89,23 @@ final class TemplateUtil {
   }
 
   /**
+   * Combines runs (element r) that have no visible impact, but only provide
+   * identifiers used to track the editing session (attributes rsidDel, rsidRPr,
+   * and rsidR).
+   * See: https://ooxml.info/docs/17/17.3/17.3.2/17.3.2.25/#attributes
+   *
+   * @template T of string|array<string>
+   *
+   * @param T $xml
+   *
+   * @return T
+   */
+  public static function combineRuns($xml) {
+    // @phpstan-ignore return.type
+    return preg_replace('#</w:t>[\s]*</w:r>[\s]*<w:r(?: w:(?:rsidDel|rsidRPr|rsidR)="[^"]+")*>[\s]*<w:t>#', '', $xml);
+  }
+
+  /**
    * Replace an XML block surrounding a string with a new block. Only the first
    * block containing the search string is replaced.
    *
