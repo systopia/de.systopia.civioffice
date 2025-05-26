@@ -59,10 +59,6 @@ msgid "Path to a lock file"
 msgstr ""
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Prepare DOCX documents"
-msgstr ""
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "Use PHPWord macros for token replacement"
 msgstr ""
 
@@ -544,10 +540,6 @@ msgstr ""
 
 #: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
 msgid "We strongly recommend creating a system-wide lock file on this server to synchronise access. (It may only run one unoconv process at the same time.) Such a file is created automatically at the location shown below. Please note: This path needs to be equal in every civicrm environment on this server. Otherwise, locking is only active for this very civicrm instance!"
-msgstr ""
-
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
-msgid "Run the DOCX document through the converter prior to processing in order to optimise/repair possibly corrupted CiviCRM tokens in the document."
 msgstr ""
 
 #: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
