@@ -86,10 +86,6 @@ msgid "Path to a lock file"
 msgstr "Pfad zu einer Sperrdatei"
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Prepare DOCX documents"
-msgstr "DOCX-Dokumente vorbereiten"
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "Use PHPWord macros for token replacement"
 msgstr "PHPWord-Makros für Token-Ersetzung verwenden"
 
@@ -659,14 +655,6 @@ msgstr ""
 "Ort erstellt. Bitte beachten: Der Pfad muss auf allen CiviCRM-Umgebungen auf "
 "diesem Server gleich sein. Anderenfalls ist das Sperren nur für diese "
 "CiviCRM-Instanz aktiv."
-
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
-msgid ""
-"Run the DOCX document through the converter prior to processing in order to "
-"optimise/repair possibly corrupted CiviCRM tokens in the document."
-msgstr ""
-"DOCX-Dokumente vor der Verarbeitung durch den Konverter laufen lassen, um "
-"sie zu optimieren und mögliche beschädigte CiviCRM-Token zu reparieren."
 
 #: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
 msgid ""

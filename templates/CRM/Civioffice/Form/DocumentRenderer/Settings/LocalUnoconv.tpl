@@ -29,13 +29,6 @@
   </div>
 
   <div class="crm-section">
-    <div class="help">{ts}Run the DOCX document through the converter prior to processing in order to optimise/repair possibly corrupted CiviCRM tokens in the document.{/ts}</div>
-    <div class="label">{$form.prepare_docx.label}</div>
-    <div class="content">{$form.prepare_docx.html}</div>
-    <div class="clear"></div>
-  </div>
-
-  <div class="crm-section">
     <div class="help">{ts}Whether to replace tokens using a PHPWord template processor, so that HTML in Live Snippets can be converted to OOXML.{/ts}</div>
     <div class="label">{$form.phpword_tokens.label}</div>
     <div class="content">{$form.phpword_tokens.html}</div>
