@@ -36,7 +36,7 @@ final class GetAction extends BasicGetAction {
         'name' => $renderer->getName(),
         'description' => $renderer->getDescription(),
         'uri' => $renderer->getURI(),
-        'supported_mime_types' => $renderer->getType()->getSupportedMimeTypes(),
+        'supported_mime_types' => $renderer->getType()->getSupportedInputMimeTypes(),
         'supported_output_mime_types' => $renderer->getType()->getSupportedOutputMimeTypes(),
         'supported_output_file_types' => $this->getSupportedOutputFileTypes($renderer),
         'renderer_type_uri' => $renderer->getType()->getURI(),

@@ -24,13 +24,12 @@ use Civi\Token\TokenRow;
 
 final class PhpWordTokenReplacer {
 
-  private TokenProcessor $tokenProcessor;
-
-  public function __construct(TokenProcessor $tokenProcessor) {
-    $this->tokenProcessor = $tokenProcessor;
-  }
-
-  public function replaceTokens(string $inputFile, string $outputFile, TokenRow $tokenRow): void {
+  public function replaceTokens(
+    string $inputFile,
+    string $outputFile,
+    TokenProcessor $tokenProcessor,
+    TokenRow $tokenRow
+  ): void {
     try {
       $templateProcessor = new PhpWordTemplateProcessor($inputFile);
     }
@@ -42,16 +41,16 @@ final class PhpWordTokenReplacer {
     $usedTokens = $templateProcessor->civiTokensToMacros();
 
     // Register all tokens as token messages and evaluate.
-    foreach ($usedTokens as $token => $token_params) {
-      $this->tokenProcessor->addMessage($token, $token, 'text/html');
+    foreach ($usedTokens as $token => $tokenParams) {
+      $tokenProcessor->addMessage($token, $token, 'text/html');
     }
-    $this->tokenProcessor->evaluate();
+    $tokenProcessor->evaluate();
 
     // Replace contained tokens.
     $usedMacroVariables = $templateProcessor->getVariables();
     foreach ($usedMacroVariables as $macroVariable) {
       // Format each variable as a CiviCRM token and render it.
-      $renderedTokenMessage = $this->tokenProcessor->render('{' . $macroVariable . '}', $tokenRow);
+      $renderedTokenMessage = $tokenProcessor->render('{' . $macroVariable . '}', $tokenRow);
       $templateProcessor->replaceHtmlToken($macroVariable, $renderedTokenMessage);
     }
     $templateProcessor->saveAs($outputFile);
