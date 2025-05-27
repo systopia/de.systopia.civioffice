@@ -30,8 +30,11 @@ use Civi\Civioffice\EventSubscriber\ContributionCiviOfficeTokenSubscriber;
 use Civi\Civioffice\EventSubscriber\EventCiviOfficeTokenSubscriber;
 use Civi\Civioffice\EventSubscriber\MembershipCiviOfficeTokenSubscriber;
 use Civi\Civioffice\EventSubscriber\ParticipantCiviOfficeTokenSubscriber;
+use Civi\Civioffice\PhpWord\PhpWordTokenReplacer;
 use Civi\Civioffice\Render\Queue\RenderQueueBuilderFactory;
 use Civi\Civioffice\Render\Queue\RenderQueueRunner;
+use Civi\Civioffice\Token\CiviOfficeTokenProcessor;
+use Civi\Civioffice\Token\CiviOfficeTokenProcessorInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 if (!$container->has(\CRM_Queue_Service::class)) {
@@ -48,6 +51,10 @@ $container->autowire(RenderQueueRunner::class)
 $container->autowire(RenderWebAction::class)
   ->setPublic(TRUE)
   ->setShared(TRUE);
+
+$container->autowire(PhpWordTokenReplacer::class);
+$container->autowire(CiviOfficeTokenProcessorInterface::class, CiviOfficeTokenProcessor::class)
+  ->setPublic(TRUE);
 
 $container->register(\CRM_Civioffice_Tokens::class, \CRM_Civioffice_Tokens::class)
   ->setArgument('$entity', 'civioffice')

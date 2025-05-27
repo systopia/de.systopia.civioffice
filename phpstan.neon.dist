@@ -1,6 +1,6 @@
 parameters:
 	paths:
-		#- api
+		- api
 		- Civi
 		#- CRM
 		- tests

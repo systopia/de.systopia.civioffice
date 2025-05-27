@@ -113,7 +113,6 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
                     'type' => 'unoconv-local',
                     'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
                     'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
-                    'phpword_tokens' => true,
                 ]
             ),
         ];
@@ -144,9 +143,7 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
         $this->ctx->log->info(
           'Migrate "unoconv-local-phpword" renderer instance ' . $renderer_name . ' to unified "unoconv-local" with PHPWord usage.'
         );
-        // Convert to "unoconv-local" type with configuration option "phpword_tokens" set to TRUE.
         $configuration['type'] = 'unoconv-local';
-        $configuration['phpword_tokens'] = TRUE;
         Civi::settings()->set('civioffice_renderer_' . $renderer_uri, $configuration);
       }
     }

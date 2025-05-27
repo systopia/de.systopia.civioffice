@@ -1,4 +1,6 @@
 <?php
+declare(strict_types = 1);
+
 /*-------------------------------------------------------+
 | SYSTOPIA CiviOffice Integration                        |
 | Copyright (C) 2020 SYSTOPIA                            |
@@ -14,586 +16,335 @@
 +-------------------------------------------------------*/
 
 use Civi\Civioffice\FilesystemUtil;
-use Civi\Civioffice\PhpWord\PhpWordTokenReplacer;
-use Civi\Token\TokenRow;
 use CRM_Civioffice_ExtensionUtil as E;
 
-/**
- *
- */
-class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_DocumentRendererType
-{
-    const MIN_UNOCONV_VERSION = '0.7'; // todo: determine
+class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_DocumentRendererType {
 
-    const UNOCONV_BINARY_PATH_SETTINGS_KEY = 'unoconv_binary_path';
-    const UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY = 'unoconv_lock_file_path';
-    const PHPWORD_TOKENS_SETTINGS_KEY = 'phpword_tokens';
+  public const UNOCONV_BINARY_PATH_SETTINGS_KEY = 'unoconv_binary_path';
 
-    private const TEMP_DIR_SETTINGS_KEY = 'temp_dir';
+  public const UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY = 'unoconv_lock_file_path';
 
-    /**
-     * @var string $unoconv_binary_path
-     *   The path to the unoconv binary.
-     */
-    protected $unoconv_binary_path;
+  private const TEMP_DIR_SETTINGS_KEY = 'temp_dir';
 
-    /**
-     * @var string $unoconv_lock_file_path
-     *   Path of file used for the lock.
-     */
-    protected ?string $unoconv_lock_file_path = null;
+  /**
+   * The path to the unoconv binary.
+   */
+  private ?string $unoconvBinaryPath;
 
-    /**
-     * @var resource $unoconv_lock_file
-     *   File resource handle used for the lock.
-     */
-    protected $unoconv_lock_file = null;
+  /**
+   * Path of file used for the lock.
+   */
+  private ?string $lockFilePath;
 
-    /**
-     * @var bool $phpword_tokens
-     *   Whether to replace tokens using a PHPWord template processor, so that HTML in Live Snippets can be converted to
-     *   OOXML.
-     */
-    protected $phpword_tokens;
+  /**
+   * @var resource|null
+   *   File resource handle used for the lock.
+   */
+  private $lockFileHandle = NULL;
 
-    protected string $temp_dir;
+  private string $tempDir;
 
-    public function __construct($uri = null, $name = null, array &$configuration = [])
-    {
-        $configuration['temp_dir'] ??= sys_get_temp_dir();
-        parent::__construct(
-            $uri ?? 'unoconv-local',
-            $name ?? E::ts('Local Universal Office Converter (unoconv)'),
-            $configuration
+  public function __construct(?string $uri = NULL, ?string $name = NULL, array $configuration = []) {
+    parent::__construct(
+      $uri ?? 'unoconv-local',
+      $name ?? E::ts('Local Universal Office Converter (unoconv)'),
+      $configuration
+    );
+    $this->unoconvBinaryPath = $configuration[self::UNOCONV_BINARY_PATH_SETTINGS_KEY] ?? NULL;
+    $this->lockFilePath = $configuration[self::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY] ?? NULL;
+    $this->tempDir = $configuration[self::TEMP_DIR_SETTINGS_KEY] ?? sys_get_temp_dir();
+  }
+
+  /**
+   * Is this renderer currently available?
+   * Tests if the binary is there and responding
+   *
+   * @return boolean
+   *   Whether this renderer is ready for use.
+   */
+  public function isReady(): bool {
+    try {
+      if (NULL === $this->unoconvBinaryPath || '' === $this->unoconvBinaryPath) {
+        // no unoconv binary or wrapper script provided
+        Civi::log()->debug('CiviOffice: Path to unoconv binary / wrapper script is missing');
+        return FALSE;
+      }
+
+      // run a probe command
+      $probe_command = "$this->unoconvBinaryPath --version 2>&1";
+      [$returnCode, $output] = $this->runCommand($probe_command);
+
+      if (0 !== $returnCode && 255 !== $returnCode) {
+        Civi::log()->debug("CiviOffice: Error code $returnCode received from unoconv. Output was: $output");
+        return FALSE;
+      }
+
+      $found = preg_grep('/^unoconv (\d+)\.(\d+)/i', $output);
+      if (empty($found)) {
+        Civi::log()->debug('CiviOffice: unoconv version number not found');
+        return FALSE;
+      }
+    }
+    catch (Exception $e) {
+      CRM_Core_Session::setStatus(
+        E::ts('An error occurred. See the CiviCRM log for details.'),
+        E::ts('CiviOffice Error'),
+        'error'
+      );
+      Civi::log()->warning('CiviOffice: Unoconv generic exception in isReady() check: ' . $e->getMessage());
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  public function getSupportedOutputMimeTypes(): array {
+    return [
+      CRM_Civioffice_MimeType::PDF,
+    ];
+  }
+
+  public function getSupportedInputMimeTypes(): array {
+    return [CRM_Civioffice_MimeType::DOCX];
+  }
+
+  public static function getSettingsFormTemplate(): string {
+    return 'CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl';
+  }
+
+  public function buildSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form): void {
+    $form->add(
+      'text',
+      'unoconv_binary_path',
+      E::ts('Path to the <code>unoconv</code> executable'),
+      ['class' => 'huge'],
+      TRUE
+    );
+
+    $form->add(
+      'text',
+      'unoconv_lock_file_path',
+      E::ts('Path to a lock file'),
+      ['class' => 'huge'],
+      FALSE
+    );
+
+    $form->add(
+      'text',
+      'temp_dir',
+      E::ts('Temporary directory'),
+      NULL,
+      TRUE
+    );
+  }
+
+  public function validateSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form): void {
+    $values = $form->exportValues();
+    $unoconvLockFilePath = $values['unoconv_lock_file_path'];
+
+    // There used to be a file_exists() check here for validating that the unoconv binary exists in the given path.
+    // We can't however check eg. /usr/bin/unoconv on a site with open_basedir restrictions in place as this check
+    // would always fail. There is a check running `unoconv --version` in the isReady() method which implicitly
+    // covers the validation of the unconv binary being accessible.
+
+    if (!empty($unoconvLockFilePath)) {
+      if (!file_exists($unoconvLockFilePath)) {
+        if (!touch($unoconvLockFilePath)) {
+          $form->_errors['unoconv_lock_file_path'] = E::ts('Cannot create lock file');
+        }
+      }
+      elseif (!is_file($unoconvLockFilePath)) {
+        $form->_errors['unoconv_lock_file_path'] = E::ts('This is not a file');
+      }
+      elseif (!is_writable($unoconvLockFilePath)) {
+        $form->_errors['unoconv_lock_file_path'] = E::ts(
+          'Lock file cannot be written. Please run: "chmod 777 %1"',
+          [1 => $unoconvLockFilePath]
         );
+      }
     }
 
-    /**
-     * Is this renderer currently available?
-     * Tests if the binary is there and responding
-     *
-     * @return boolean
-     *   Whether this renderer is ready for use.
-     */
-    public function isReady(): bool
-    {
-        try {
-            if (empty($this->unoconv_binary_path)) {
-                // no unoconv binary or wrapper script provided
-                Civi::log()->debug("CiviOffice: Path to unoconv binary / wrapper script is missing");
-                return false;
-            }
-
-            // run a probe command
-            $probe_command = "{$this->unoconv_binary_path} --version 2>&1";
-            [$result_code, $output] = $this->runCommand($probe_command);
-
-            if (!empty($result_code) && $result_code != 255) {
-                Civi::log()->debug("CiviOffice: Error code {$result_code} received from unoconv. Output was: " . json_encode($output));
-                return false;
-            }
-
-            $found = preg_grep('/^unoconv (\d+)\.(\d+)/i', $output);
-            if (empty($found)) {
-                Civi::log()->debug("CiviOffice: unoconv version number not found");
-                return false;
-            }
-        } catch (Exception $ex) {
-            CRM_Core_Session::setStatus(
-              E::ts('An error occurred. See the CiviCRM log for details.'),
-              E::ts('CiviOffice Error'),
-              'error'
-            );
-            Civi::log()->warning('CiviOffice: Unoconv generic exception in isReady() check: ' . $ex->getMessage());
-            return false;
+    /** @var string $tempDir */
+    $tempDir = $values['temp_dir'] ?? '';
+    if ('' !== $tempDir) {
+      if (file_exists($tempDir)) {
+        if (!is_dir($tempDir) || !is_writable($tempDir)) {
+          $form->setElementError('temp_dir', E::ts('This is not a writeable directory.'));
         }
-        return true;
+      }
+      elseif (!mkdir($tempDir, 0700, TRUE)) {
+        $form->setElementError('temp_dir', E::ts('Directory could not be created.'));
+      }
+    }
+  }
+
+  /**
+   * @throws \Exception
+   */
+  public function postProcessSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form): void {
+    $values = $form->exportValues();
+
+    $renderer = $form->getDocumentRenderer();
+    $renderer->setConfigItem(self::UNOCONV_BINARY_PATH_SETTINGS_KEY, $values['unoconv_binary_path']);
+    $renderer->setConfigItem(self::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY, $values['unoconv_lock_file_path']);
+    $renderer->setConfigItem(self::TEMP_DIR_SETTINGS_KEY, $values['temp_dir']);
+  }
+
+  /**
+   * @throws \Exception
+   */
+  public function render(string $inputFile, string $outputFile, string $mimeType): void {
+    $format = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mimeType);
+    $command = "$this->unoconvBinaryPath -v -f $format -o $outputFile $inputFile 2>&1";
+    [$returnCode, $output] = $this->runCommand($command);
+
+    if (0 !== $returnCode && 255 !== $returnCode) {
+      Civi::log()->error("CiviOffice: Exception: Return code 0 expected, but is $returnCode: $output");
+
+      if (file_exists($outputFile) && filesize($outputFile) === 0) {
+        Civi::log()->debug("CiviOffice: File is empty: $outputFile");
+      }
+
+      throw new RuntimeException("Unoconv: Return code 0 expected, but is $returnCode");
+    }
+  }
+
+  /**
+   * Get the URL to configure this component
+   *
+   * @return string
+   *   URL
+   */
+  public function getConfigPageURL(): string {
+    return CRM_Utils_System::url('civicrm/admin/civioffice/settings/localunoconv');
+  }
+
+  /**
+   * Get the (localised) component description
+   *
+   * @return string
+   *   name
+   */
+  public function getDescription(): string {
+    return E::ts(<<<'EOD'
+      This document renderer employs the <code>unoconv</code> script
+      on your server to convert documents using LibreOffice.
+      EOD
+    );
+  }
+
+  /**
+   * Run unoconv in the current configuration with the given command
+   *
+   * @param string $command
+   *   the command to run
+   * @param string|null $workDir
+   *   an optional working directory. before running the command, the directory will
+   *   be changed to the given directory.
+   *
+   * @return array{int, string}
+   *   [return code, output lines]
+   *
+   * @throws \RuntimeException
+   */
+  private function runCommand(string $command, ?string $workDir = NULL): array {
+    if (NULL === $this->unoconvBinaryPath) {
+      throw new RuntimeException('Path to unoconv binary not set');
     }
 
-    /**
-     * Get the output/generated MIME types for this document renderer
-     *
-     * @return array
-     *   list of MIME types
-     */
-    public function getSupportedOutputMimeTypes(): array
-    {
-        return [
-            CRM_Civioffice_MimeType::PDF,
-            CRM_Civioffice_MimeType::DOCX
-        ];
+    // make sure the unoconv path is in the environment
+    //  see https://stackoverflow.com/a/43083964
+    $ourPath = dirname($this->unoconvBinaryPath);
+    $paths = explode(PATH_SEPARATOR, getenv('PATH'));
+    if (!in_array($ourPath, $paths, TRUE)) {
+      $paths[] = $ourPath;
+      putenv('PATH=' . implode(PATH_SEPARATOR, $paths));
     }
 
-    /**
-     * Get a list of document MIME types supported by this component
-     *
-     * @return array
-     *   list of MIME types as strings
-     */
-    public function getSupportedMimeTypes(): array // FIXME: Input or output MIME types?
-    {
-        return [CRM_Civioffice_MimeType::DOCX];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function getSettingsFormTemplate() {
-        return 'CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function buildSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form)
-    {
-        $form->add(
-            'text',
-            'unoconv_binary_path',
-            E::ts("Path to the <code>unoconv</code> executable"),
-            ['class' => 'huge'],
-            true
-        );
-
-        $form->add(
-            'text',
-            'unoconv_lock_file_path',
-            E::ts("Path to a lock file"),
-            ['class' => 'huge'],
-            false
-        );
-
-        $form->add(
-          'text',
-          'temp_dir',
-          E::ts('Temporary directory'),
-          NULL,
-          TRUE
-        );
-
-        $form->add(
-            'checkbox',
-            'phpword_tokens',
-            E::ts('Use PHPWord macros for token replacement'),
-            null,
-            false
-        );
-
-        $form->setDefaults(
-            [
-                'unoconv_binary_path' => $this->unoconv_binary_path,
-                'unoconv_lock_file_path' => $this->unoconv_lock_file_path,
-                'temp_dir' => $this->temp_dir,
-                'phpword_tokens' => $this->phpword_tokens,
-            ]
-        );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function validateSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form) {
-        $values = $form->exportValues();
-        $unoconv_lock_file_path = $values['unoconv_lock_file_path'];
-
-        // There used to be a file_exists() check here for validating that the unoconv binary exists in the given path.
-        // We can't however check eg. /usr/bin/unoconv on a site with open_basedir restrictions in place as this check
-        // would always fail. There is a check running `unoconv --version` in the isReady() method which implicitly
-        // covers the validation of the unconv binary being accessible.
-
-        if (!empty($lockfile_to_check)) {
-            if (!file_exists($unoconv_lock_file_path)) {
-              if (!touch($unoconv_lock_file_path)) {
-                $form->_errors['unoconv_lock_file_path'] = E::ts('Cannot create lock file');
-              }
-            } else if (!is_file($unoconv_lock_file_path)) {
-              $form->_errors['unoconv_lock_file_path'] = E::ts('This is not a file');
-            } else if (!is_writable($unoconv_lock_file_path)) {
-                $form->_errors['unoconv_lock_file_path'] = E::ts(
-                    'Lock file cannot be written. Please run: "chmod 777 %1"', [1 => $unoconv_lock_file_path]);
-            }
+    // use the lock if this is set up
+    $this->lock();
+    try {
+      /*
+       * unoconv creates the directories .cache and .config in the home
+       * directory. For this we use a temporary home directory.
+       */
+      $homeDir = $this->tempDir . '/civioffice' . mt_rand(100000, mt_getrandmax());
+      if (!mkdir($homeDir, 0700, TRUE)) {
+        throw new \RuntimeException("Couldn't create temporary directory '$homeDir'");
+      }
+      try {
+        if (NULL !== $workDir && '' !== $workDir) {
+          exec("cd {$workDir}; HOME={$homeDir} {$command}", $execOutput, $execReturnCode);
         }
-
-        /** @var string $tempDir */
-        $tempDir = $values['temp_dir'] ?? '';
-        if ('' !== $tempDir) {
-          if (file_exists($tempDir)) {
-            if (!is_dir($tempDir) || !is_writable($tempDir)) {
-              $form->setElementError('temp_dir', E::ts('This is not a writeable directory.'));
-            }
-          }
-          elseif (!mkdir($tempDir, 0700, TRUE)) {
-            $form->setElementError('temp_dir', E::ts('Directory could not be created.'));
-          }
+        else {
+          exec("HOME={$homeDir} {$command}", $execOutput, $execReturnCode);
         }
+      }
+      finally {
+        FilesystemUtil::removeRecursive($homeDir);
+      }
+    }
+    catch (Exception $e) {
+      Civi::log()->debug('CiviOffice: Got execution exception: ' . $e->getMessage());
+
+      throw $e;
+    }
+    finally {
+      $this->unlock();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function postProcessSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form) {
-        $values = $form->exportValues();
+    return [$execReturnCode, implode("\n", $execOutput)];
+  }
 
-        $renderer = $form->getDocumentRenderer();
-        $renderer->setConfigItem(
-            CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_BINARY_PATH_SETTINGS_KEY,
-            $values['unoconv_binary_path']
-        );
-        $renderer->setConfigItem(
-            CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY,
-            $values['unoconv_lock_file_path']
-        );
-        $renderer->setConfigItem(
-          CRM_Civioffice_DocumentRendererType_LocalUnoconv::TEMP_DIR_SETTINGS_KEY,
-          $values['temp_dir']
-        );
-        $renderer->setConfigItem(
-            CRM_Civioffice_DocumentRendererType_LocalUnoconv::PHPWORD_TOKENS_SETTINGS_KEY,
-            $values['phpword_tokens']
-        );
+  /**
+   * wait for the unoconv resource to become available
+   *
+   * @throws \RuntimeException
+   */
+  private function lock(): void {
+    if (NULL !== $this->lockFilePath && '' !== $this->lockFilePath) {
+      $lockFileHandle = fopen($this->lockFilePath, 'w+');
+      if (FALSE === $lockFileHandle) {
+        throw new RuntimeException(E::ts('Could not open unoconv lock file.'));
+      }
+
+      if (!flock($lockFileHandle, LOCK_EX)) {
+        fclose($lockFileHandle);
+
+        throw new RuntimeException(E::ts('CiviOffice: Could not acquire unoconv lock.'));
+      }
+
+      $this->lockFileHandle = $lockFileHandle;
     }
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function render(
-        $document_with_placeholders,
-        array $entity_ids,
-        CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
-        string $target_mime_type,
-        string $entity_type = 'Contact',
-        array $live_snippets = []
-    ): array {
-        $this->liveSnippets = $live_snippets;
-        // for now DOCX is the only format being used for internal processing
-        $internal_processing_format = CRM_Civioffice_MimeType::DOCX; // todo later on this can be determined by checking the $document_with_placeholders later on to allow different transition formats like .odt/.odf
-        $needs_conversion = $target_mime_type != $internal_processing_format;
-
-        // only lock render process if renderer is needed
-        $lock = null;
-        if ($needs_conversion) {
-            // currently, this execution needs to be serialised (see https://github.com/systopia/de.systopia.civioffice/issues/6)
-            $lock = new CRM_Core_Lock('civicrm.office.civi_office_unoconv_local', 60, true);
-            if (!$lock->acquire()) {
-                throw new Exception(E::ts("Too many parallel conversions. Try using a smaller batch size."));
-            }
-        }
-
-        $tokenreplaced_documents = [];
-        $temp_store_folder_path = $temp_store->getBaseFolder();
-        $local_temp_store = new CRM_Civioffice_DocumentStore_LocalTemp($temp_store_folder_path);
-
-        $file_ending_name = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($target_mime_type);
-
-        /*
-         * Token replacement
-         *
-         * example tokens:
-         * Hello {contact.display_name} aka {contact.first_name}!
-         *
-         * TODO: Depending on the replacement method (PhpWord template processor or RegEx), detect all tokens used in
-         *       the document once and prepare all token rows, before actually replacing them by iterating through
-         *       entity IDs. This will save TokenProcessor evaluations per-entity, but requires loading the document
-         *       once more per rendering process, i. e. increases performance for batch processing, but makes rendering
-         *       a single document slower.
-         */
-        foreach ($entity_ids as $entity_id) {
-            $new_file_name = $this->createDocumentName($entity_id, 'docx');
-            $transitional_docx_document = $local_temp_store->getLocalCopyOfDocument(
-                $document_with_placeholders,
-                $new_file_name
-            );
-            $this->replaceTokensSingle($transitional_docx_document, $entity_type, (int) $entity_id);
-            $tokenreplaced_documents[] = $temp_store->addFile($this->createDocumentName($entity_id, $file_ending_name));
-        }
-
-        /*
-         * Step 4/4
-         * After batch size of xml (docx) files has been processed, we need to convert these files to pdf (using unoconv)
-         * - Convert batch size amount of docx files
-         * - Remove docx files
-         */
-
-        /*
-         * unoconv manpage: https://linux.die.net/man/1/unoconv
-         *
-         * Command:
-         * -f = format
-         *      example: pdf
-         * -o = output directory
-         *      example: ./output_folder_for_pdf_files
-         *
-         * might be interesting if file gets instantly added to a zip file instead of writing and reading it again
-         * --stdout = Print converted output file to stdout.
-         * unoconv -f pdf -o ./output_folder_for_pdf_files FOLDER/PATH/TO/FILENAME/*.docx
-         *      example: unoconv -f pdf --stdout FOLDER/PATH/TO/FILENAME.docx
-         *
-         * -v for verbose mode. Returns target file format and target filepath
-         */
-
-        if (!$needs_conversion) {
-            // We can return here and skip conversion as the transition format is equal to the output format
-            return $tokenreplaced_documents;
-        }
-
-        $convert_command = "{$this->unoconv_binary_path} -v -f {$file_ending_name} *.docx 2>&1";
-        [$exec_return_code, $exec_output] = $this->runCommand($convert_command, $temp_store_folder_path);
-
-        if ($exec_return_code != 0) {
-            // something's wrong - error handling:
-            $serialize_output = serialize($exec_output);
-            Civi::log()->debug("CiviOffice: Exception: Return code 0 expected but $exec_return_code given: $serialize_output");
-
-            $empty_files = '';
-            foreach (new DirectoryIterator($temp_store_folder_path) as $file) {
-                if ($file->isFile() && $file->getSize() == 0) {
-                    $empty_files .= $file->getFilename() . ', ';
-                }
-            }
-            Civi::log()->debug("CiviOffice: Files are empty: $empty_files");
-
-            throw new Exception("Unoconv: Return code 0 expected but $exec_return_code given");
-        }
-
-        // TODO: Check errors with $exec_return_code
-        // todo: better cleanup solution?
-        exec("cd $temp_store_folder_path && rm *.docx");
-
-        // release lock
-        if ($lock) {
-            $lock->release();
-        }
-
-        return $tokenreplaced_documents;
+  /**
+   * wait for the unoconv resource to become available
+   */
+  private function unlock(): void {
+    if (NULL !== $this->lockFileHandle) {
+      if (!flock($this->lockFileHandle, LOCK_UN)) {
+        Civi::log()->debug('CiviOffice: Could not release unoconv lock.');
+      }
+      fclose($this->lockFileHandle);
+      $this->lockFileHandle = NULL;
     }
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function replaceTokens(CRM_Civioffice_Document $document, string $entity_type, array $entity_ids): void
-    {
-        foreach ($entity_ids as $entity_id) {
-            $this->replaceTokensSingle($document, $entity_type, $entity_id);
-        }
-    }
+  public static function supportedConfiguration(): array {
+    return [
+      self::UNOCONV_BINARY_PATH_SETTINGS_KEY,
+      self::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY,
+      self::TEMP_DIR_SETTINGS_KEY,
+    ];
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function replaceTokensSingle(CRM_Civioffice_Document $document, string $entity_type, int $entity_id): void {
-        $token_row = $this->processTokenContext($entity_type, $entity_id);
+  public static function defaultConfiguration(): array {
+    return [
+      self::UNOCONV_BINARY_PATH_SETTINGS_KEY => '/usr/bin/unoconv',
+      self::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY => CRM_Civioffice_Configuration::getHomeFolder() . '/unoconv.lock',
+      self::TEMP_DIR_SETTINGS_KEY => sys_get_temp_dir(),
+    ];
+  }
 
-        if ($this->phpword_tokens) {
-            $this->replaceTokensPhpWord($document, $token_row);
-        } else {
-            $this->replaceTokensRegex($document, $token_row);
-        }
-    }
-
-    protected function replaceTokensPhpWord(CRM_Civioffice_Document $document, TokenRow $token_row): void
-    {
-        $tokenReplacer = new PhpWordTokenReplacer($this->tokenProcessor);
-        $tokenReplacer->replaceTokens($document->getAbsolutePath(), $document->getAbsolutePath(), $token_row);
-    }
-
-    protected function replaceTokensRegex(CRM_Civioffice_Document $document, TokenRow $token_row)
-    {
-        // Replace tokens manually.
-        $zip = new ZipArchive();
-
-        // open xml file (like .docx) as a zip file, as in fact it is one
-        $zip->open($document->getAbsolutePath());
-        $numberOfFiles = $zip->numFiles;
-        if (empty($numberOfFiles)) {
-            throw new Exception("Unoconv: Docx (zip) file seems to be broken or path is wrong");
-        }
-
-        // iterate through all docx components (files in zip)
-        for ($i = 0; $i < $numberOfFiles; $i++) {
-            // Step 1/4 unpack xml (.docx) file and handle it as a zip file as it is one
-            $fileContent = $zip->getFromIndex($i);
-            $fileName = $zip->getNameIndex($i);
-
-            // Step 2/4 replace tokens
-            /**
-             * TODO: Skip irrelevant parts, like binary files (images, etc.).
-             * @url https://github.com/systopia/de.systopia.civioffice/issues/13
-             *   As a first step, we filter for XML files only.
-             */
-            if (0 === substr_compare($fileName, '.xml', -strlen('.xml'))) {
-                $fileContent = $this->wrapTokensInStringWithXmlEscapeCdata($fileContent);
-                $this->tokenProcessor->addMessage('document', $fileContent, 'text/plain');
-                $this->tokenProcessor->evaluate();
-                $fileContent = $token_row->render('document');
-            }
-
-            // Step 3/4 repack it again as xml (docx)
-            $zip->addFromString($fileName, $fileContent);
-        }
-
-        $zip->close();
-    }
-
-    /**
-     * Takes a string with one or many {domain.context} style tokens and wraps a CDATA block around it to
-     * not break xml files by using illegal symbols like: ' () & , " <>
-     * Input example:  Welcome {contact.display_name} aka {contact.first_name}. Great to have you!
-     * Output example: Welcome <![CDATA[{contact.display_name}]]> aka <![CDATA[{contact.first_name}]]>. Great to have you!
-     * @param $string
-     *
-     * @return string
-     *   Returns the whole string with escaped tokens
-     */
-    protected function wrapTokensInStringWithXmlEscapeCdata($string): string
-    {
-        return preg_replace('/{([\w.]+)}/', '<![CDATA[$0]]>', $string);
-    }
-
-    /**
-     * Get the URL to configure this component
-     *
-     * @return string
-     *   URL
-     */
-    public function getConfigPageURL(): string
-    {
-        return CRM_Utils_System::url('civicrm/admin/civioffice/settings/localunoconv');
-    }
-
-    /**
-     * Get the (localised) component description
-     *
-     * @return string
-     *   name
-     */
-    public function getDescription(): string
-    {
-        return E::ts("This document renderer employs the <code>unoconv</code> script on your server to convert documents using LibreOffice.");
-    }
-
-
-    /**
-     * @param $entity_id
-     * @param string $file_ending_name
-     *
-     * @return string
-     */
-    protected function createDocumentName($entity_id, string $file_ending_name): string
-    {
-        return "Document-{$entity_id}.{$file_ending_name}";
-    }
-
-    /**
-     * Run unoconv in the current configuration with the given command
-     *
-     * @param string $command
-     *   the command to run
-     *
-     * @param string $workDir
-     *   an optional working directory. before running the command, the directory will
-     *   be changed to the given directory.
-     *
-     * @return array
-     *   [return code, output lines]
-     */
-    protected function runCommand(string $command, ?string $workDir = NULL): array
-    {
-        // use the lock if this is set up
-        $this->lock();
-
-        $execOutput = [];
-        $execReturnCode = NULL;
-
-        try {
-            // make sure the unoconv path is in the environment
-            //  see https://stackoverflow.com/a/43083964
-            $ourPath = dirname($this->unoconv_binary_path);
-            $paths = explode(PATH_SEPARATOR, getenv('PATH'));
-            if (!in_array($ourPath, $paths)) {
-                $paths[] = $ourPath;
-            }
-
-            // finally: execute
-            putenv('PATH=' . implode(PATH_SEPARATOR, $paths));
-            /*
-             * unoconv creates the directories .cache and .config in the home
-             * directory. For this we use a temporary home directory.
-             */
-            $homeDir = $this->temp_dir . '/civioffice' . mt_rand(100000, mt_getrandmax());
-            if (!mkdir($homeDir, 0700, TRUE)) {
-                throw new \RuntimeException("Couldn't create temporary directory '$homeDir'");
-            }
-            try {
-              if (NULL !== $workDir && '' !== $workDir) {
-                exec("cd {$workDir}; HOME={$homeDir} {$command}", $execOutput, $execReturnCode);
-              } else {
-                exec("HOME={$homeDir} {$command}", $execOutput, $execReturnCode);
-              }
-            }
-            finally {
-                FilesystemUtil::removeRecursive($homeDir);
-            }
-
-            // exec code 255 seems to be o.k. as well...
-            if ($execReturnCode == 255) {
-                $execReturnCode = 0;
-            }
-        } catch (Exception $ex) {
-            Civi::log()->debug("CiviOffice: Got execution exception: ". $ex->getMessage());
-        }
-        $this->unlock();
-
-        return [$execReturnCode, $execOutput];
-    }
-
-    /**
-     * wait for the unoconv resource to become available
-     */
-    protected function lock(): void
-    {
-        if (NULL !== $this->unoconv_lock_file_path && '' !== $this->unoconv_lock_file_path) {
-            $this->unoconv_lock_file = fopen($this->unoconv_lock_file_path, 'w+');
-            if (FALSE === $this->unoconv_lock_file) {
-              throw new RuntimeException(E::ts('Could not open unoconv lock file.'));
-            }
-
-            if (!flock($this->unoconv_lock_file, LOCK_EX)) {
-                throw new RuntimeException(E::ts('CiviOffice: Could not acquire unoconv lock.'));
-            }
-        }
-    }
-
-    /**
-     * wait for the unoconv resource to become available
-     */
-    protected function unlock(): void
-    {
-        if ($this->unoconv_lock_file) {
-            if (!flock($this->unoconv_lock_file, LOCK_UN)) {
-                Civi::log()->debug("CiviOffice: Could not release unoconv lock.");
-            }
-            fclose($this->unoconv_lock_file);
-            $this->unoconv_lock_file = null;
-        }
-    }
-
-    public static function supportedConfiguration(): array
-    {
-        return [
-            self::UNOCONV_BINARY_PATH_SETTINGS_KEY,
-            self::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY,
-            self::TEMP_DIR_SETTINGS_KEY,
-            self::PHPWORD_TOKENS_SETTINGS_KEY,
-        ];
-    }
-
-    public static function defaultConfiguration(): array
-    {
-        return [
-            'unoconv_binary_path' => '/usr/bin/unoconv',
-            'unoconv_lock_file_path' => CRM_Civioffice_Configuration::getHomeFolder() . '/unoconv.lock',
-            'temp_dir' => sys_get_temp_dir(),
-            'phpword_tokens' => false,
-        ];
-    }
 }
