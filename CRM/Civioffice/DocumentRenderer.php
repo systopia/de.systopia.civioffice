@@ -79,22 +79,8 @@ class CRM_Civioffice_DocumentRenderer extends CRM_Civioffice_OfficeComponent
         return $this->type->isReady();
     }
 
-    public function render(
-        $document_with_placeholders,
-        array $entity_ids,
-        CRM_Civioffice_DocumentStore_LocalTemp $temp_store,
-        string $target_mime_type,
-        string $entity_type = 'contact',
-        array $live_snippets = []
-    ) {
-        return $this->type->render(
-            $document_with_placeholders,
-            $entity_ids,
-            $temp_store,
-            $target_mime_type,
-            $entity_type,
-            $live_snippets
-        );
+    public function render(string $inputFile, string $outputFile, string $mimeType): void {
+        $this->type->render($inputFile, $outputFile, $mimeType);
     }
 
     /**
