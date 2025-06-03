@@ -22,6 +22,9 @@ declare(strict_types = 1);
 
 use Civi\Civioffice\Api4\Action\Civioffice\RenderWebAction;
 use Civi\Civioffice\DependencyInjection\Compiler\Api4ActionPropertyAutowireFixPass;
+use Civi\Civioffice\DependencyInjection\Compiler\DocumentRendererTypePass;
+use Civi\Civioffice\DocumentRendererType\LocalUnoconvRendererType;
+use Civi\Civioffice\DocumentRendererTypeInterface;
 use Civi\Civioffice\EventSubscriber\ActivityCiviOfficeTokenSubscriber;
 use Civi\Civioffice\EventSubscriber\CaseCiviOfficeTokenSubscriber;
 use Civi\Civioffice\EventSubscriber\CiviOfficeSearchKitTaskSubscriber;
@@ -35,13 +38,19 @@ use Civi\Civioffice\Render\Queue\RenderQueueBuilderFactory;
 use Civi\Civioffice\Render\Queue\RenderQueueRunner;
 use Civi\Civioffice\Token\CiviOfficeTokenProcessor;
 use Civi\Civioffice\Token\CiviOfficeTokenProcessorInterface;
+use Civi\Core\CiviEventDispatcherInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 if (!$container->has(\CRM_Queue_Service::class)) {
   $container->autowire(\CRM_Queue_Service::class, \CRM_Queue_Service::class);
 }
 
+if (!$container->has(CiviEventDispatcherInterface::class)) {
+  $container->setAlias(CiviEventDispatcherInterface::class, 'dispatcher.boot');
+}
+
 $container->addCompilerPass(new Api4ActionPropertyAutowireFixPass(), PassConfig::TYPE_BEFORE_REMOVING);
+$container->addCompilerPass(new DocumentRendererTypePass());
 
 $container->autowire(RenderQueueBuilderFactory::class)
   ->setPublic(TRUE);
@@ -51,6 +60,9 @@ $container->autowire(RenderQueueRunner::class)
 $container->autowire(RenderWebAction::class)
   ->setPublic(TRUE)
   ->setShared(TRUE);
+
+$container->autowire(LocalUnoconvRendererType::class)
+  ->addTag(DocumentRendererTypeInterface::class);
 
 $container->autowire(PhpWordTokenReplacer::class);
 $container->autowire(CiviOfficeTokenProcessorInterface::class, CiviOfficeTokenProcessor::class)
