@@ -85,8 +85,8 @@ final class GetFieldsAction extends BasicGetFieldsAction {
         'description' => E::ts('Mapping of file type names to MIME types.'),
       ],
       [
-        'name' => 'renderer_type_uri',
-        'title' => E::ts('Renderer Type URI'),
+        'name' => 'renderer_type',
+        'title' => E::ts('Renderer Type Name'),
         'type' => 'Field',
         'nullable' => FALSE,
         'data_type' => 'String',
