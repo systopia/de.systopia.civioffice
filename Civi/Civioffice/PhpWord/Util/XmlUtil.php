@@ -11,7 +11,72 @@ declare(strict_types = 1);
 
 namespace Civi\Civioffice\PhpWord\Util;
 
-final class TemplateUtil {
+final class XmlUtil {
+
+  /**
+   * Removes elements with the given tag type, but keeps their children.
+   *
+   * @template T of string|array<string>
+   *
+   * @phpstan-param T $xml
+   *
+   * @phpstan-return T
+   */
+  public static function blockElement(string|array $xml, string $tagType): string|array {
+    $regex = "#(?:\n\s*)?<$tagType(?: [^>]*)?>((?:(?!</$tagType>).)*)</$tagType>\n?#s";
+
+    $result = array_map(
+      function (string $xml) use ($regex) {
+        // Indent is corrected (if any).
+        preg_match('/\n([ \t]+)/', $xml, $matches);
+        $indent = $matches[1] ?? '';
+
+        return '' === $indent ? preg_replace($regex, '$1', $xml) : preg_replace_callback(
+          $regex,
+          fn (array $matches) => preg_replace("/\n$indent/", "\n", rtrim($matches[1])) . "\n",
+          $xml
+        );
+      },
+      (array) $xml
+    );
+
+    // @phpstan-ignore return.type
+    return is_string($xml) ? $result[0] : $result;
+  }
+
+  /**
+   * Removes elements with the given tag type including their children. For
+   * empty elements use dropEmptyElement().
+   *
+   * @template T of string|array<string>
+   *
+   * @phpstan-param T $xml
+   *
+   * @phpstan-return T
+   *
+   * @see dropEmptyElement()
+   */
+  public static function dropElement(string|array $xml, string $tagType): string|array {
+    // @phpstan-ignore return.type
+    return preg_replace("#(?:\n\s*)?<$tagType(?: [^>]*)?>(?:(?!</$tagType>).)*</$tagType>#s", '', $xml);
+  }
+
+  /**
+   * Removes empty elements with the given tag type. For elements with children
+   * use dropElement().
+   *
+   * @template T of string|array<string>
+   *
+   * @phpstan-param T $xml
+   *
+   * @phpstan-return T
+   *
+   * @see dropElement()
+   */
+  public static function dropEmptyElement(string|array $xml, string $tagType): string|array {
+    // @phpstan-ignore return.type
+    return preg_replace("#(?:\n\s*)?<$tagType(?: [^/>]*)?/>#", '', $xml);
+  }
 
   /**
    * Get a slice of a string.
@@ -34,7 +99,7 @@ final class TemplateUtil {
    *
    * @return false|array{start: int, end: int} FALSE if not found, otherwise array with start and end
    */
-  public static function findContainingXmlBlock(string $xml, string $search, string $blockType = 'w:p') {
+  public static function findContainingXmlBlock(string $xml, string $search, string $blockType = 'w:p'): bool|array {
     $pos = strpos($xml, $search);
     if (FALSE === $pos) {
       return FALSE;
@@ -89,20 +154,17 @@ final class TemplateUtil {
   }
 
   /**
-   * Combines runs (element r) that have no visible impact, but only provide
-   * identifiers used to track the editing session (attributes rsidDel, rsidRPr,
-   * and rsidR).
-   * See: https://ooxml.info/docs/17/17.3/17.3.2/17.3.2.25/#attributes
+   * Removes whitespace between tags.
    *
    * @template T of string|array<string>
    *
-   * @param T $xml
+   * @phpstan-param T $xml
    *
-   * @return T
+   * @phpstan-return T
    */
-  public static function combineRuns($xml) {
+  public static function flattenXml(string|array $xml): string|array {
     // @phpstan-ignore return.type
-    return preg_replace('#</w:t>[\s]*</w:r>[\s]*<w:r(?: w:(?:rsidDel|rsidRPr|rsidR)="[^"]+")*>[\s]*<w:t>#', '', $xml);
+    return preg_replace('/>\s+</', '><', $xml);
   }
 
   /**
@@ -126,66 +188,6 @@ final class TemplateUtil {
     }
 
     return $xml;
-  }
-
-  /**
-   * Splits a w:p into a list of w:p where each ${macro} is in a separate w:p.
-   *
-   * @param string $extractedParagraphStyle
-   *   Is set to the extracted paragraph style (w:pPr).
-   * @param string $extractedTextRunStyle
-   *   Is set to the extracted text run style (w:rPr).
-   *
-   * @throws \PhpOffice\PhpWord\Exception\Exception
-   */
-  public static function splitParagraphIntoParagraphs(
-    string $paragraph,
-    string &$extractedParagraphStyle = '',
-    string &$extractedTextRunStyle = ''
-  ): string {
-    if (NULL === $paragraph = preg_replace('/>\s+</', '><', $paragraph)) {
-      throw new \PhpOffice\PhpWord\Exception\Exception('Invalid paragraph.');
-    }
-
-    $matches = [];
-    preg_match('#<w:pPr(?:(?!<w:pPr).)*</w:pPr>#', $paragraph, $matches);
-    $extractedParagraphStyle = $matches[0] ?? '';
-
-    // <w:pPr> may contain <w:rPr> itself so we have to match for <w:rPr> inside <w:r>
-    preg_match('#<w:r>(?:(?!<w:r>).)*(<w:rPr(?:(?!<w:rPr).)*</w:rPr>)(?:(?!<w:r>).)*</w:r>#', $paragraph, $matches);
-    $extractedTextRunStyle = $matches[1] ?? '';
-
-    $result = str_replace(
-      [
-        '<w:t>',
-        '${',
-        '}',
-      ],
-      [
-        '<w:t xml:space="preserve">',
-        sprintf(
-          '</w:t></w:r></w:p><w:p>%s<w:r><w:t xml:space="preserve">%s${',
-          $extractedParagraphStyle,
-          $extractedTextRunStyle
-        ),
-        sprintf(
-          '}</w:t></w:r></w:p><w:p>%s<w:r>%s<w:t xml:space="preserve">',
-          $extractedParagraphStyle,
-          $extractedTextRunStyle
-        ),
-      ],
-      $paragraph
-    );
-
-    // Remove empty paragraphs that might have been created before/after the
-    // macro.
-    $emptyParagraph = sprintf(
-      '<w:p>%s<w:r>%s<w:t xml:space="preserve"></w:t></w:r></w:p>',
-      $extractedParagraphStyle,
-      $extractedTextRunStyle
-    );
-
-    return str_replace($emptyParagraph, '', $result);
   }
 
 }
