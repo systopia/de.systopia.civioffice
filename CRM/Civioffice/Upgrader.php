@@ -104,7 +104,6 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
                     'type' => 'unoconv-local',
                     'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
                     'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
-                    'prepare_docx' => false,
                 ]
             ),
             'unoconv-local-phpword' => new CRM_Civioffice_DocumentRenderer(
@@ -114,7 +113,6 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
                     'type' => 'unoconv-local',
                     'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
                     'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
-                    'prepare_docx' => false,
                     'phpword_tokens' => true,
                 ]
             ),

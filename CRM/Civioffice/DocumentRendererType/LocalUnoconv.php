@@ -27,7 +27,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
 
     const UNOCONV_BINARY_PATH_SETTINGS_KEY = 'unoconv_binary_path';
     const UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY = 'unoconv_lock_file_path';
-    const PREPARE_DOCX_SETTINGS_KEY = 'prepare_docx';
     const PHPWORD_TOKENS_SETTINGS_KEY = 'phpword_tokens';
 
     /**
@@ -47,12 +46,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
      *   File resource handle used for the lock.
      */
     protected $unoconv_lock_file = null;
-
-    /**
-     * @var bool $prepare_docx
-     *   Whether to "prepare" DOCX files, i.e. try to repair common formatting mistakes.
-     */
-    protected $prepare_docx;
 
     /**
      * @var bool $phpword_tokens
@@ -167,14 +160,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
 
         $form->add(
             'checkbox',
-            'prepare_docx',
-            E::ts('Prepare DOCX documents'),
-            null,
-            false
-        );
-
-        $form->add(
-            'checkbox',
             'phpword_tokens',
             E::ts('Use PHPWord macros for token replacement'),
             null,
@@ -185,7 +170,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             [
                 'unoconv_binary_path' => $this->unoconv_binary_path,
                 'unoconv_lock_file_path' => $this->unoconv_lock_file_path,
-                'prepare_docx' => $this->prepare_docx,
                 'phpword_tokens' => $this->phpword_tokens,
             ]
         );
@@ -233,10 +217,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             $values['unoconv_lock_file_path']
         );
         $renderer->setConfigItem(
-            CRM_Civioffice_DocumentRendererType_LocalUnoconv::PREPARE_DOCX_SETTINGS_KEY,
-            $values['prepare_docx']
-        );
-        $renderer->setConfigItem(
             CRM_Civioffice_DocumentRendererType_LocalUnoconv::PHPWORD_TOKENS_SETTINGS_KEY,
             $values['phpword_tokens']
         );
@@ -257,54 +237,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         // for now DOCX is the only format being used for internal processing
         $internal_processing_format = CRM_Civioffice_MimeType::DOCX; // todo later on this can be determined by checking the $document_with_placeholders later on to allow different transition formats like .odt/.odf
         $needs_conversion = $target_mime_type != $internal_processing_format;
-
-        // "Convert" DOCX files to DOCX in order to "repair" stuff, e.g. tokens that might have got split in the OOXML
-        // due to spell checking or formatting.
-        if ($this->prepare_docx && $internal_processing_format == CRM_Civioffice_MimeType::DOCX) {
-            $lock = new CRM_Core_Lock('civicrm.office.civi_office_unoconv_local', 60, true);
-            if (!$lock->acquire()) {
-                throw new Exception(E::ts("Too many parallel conversions. Try using a smaller batch size."));
-            }
-
-            $temp_store_folder_path = $temp_store->getBaseFolder();
-            $local_temp_store = new CRM_Civioffice_DocumentStore_LocalTemp($temp_store_folder_path);
-            $prepared_document = $local_temp_store->getLocalCopyOfDocument(
-                $document_with_placeholders,
-                $document_with_placeholders->getName()
-            );
-
-            // Rename source DOCX files to *.docxsource for avoiding unoconv storage errors.
-            exec(
-                "cd $temp_store_folder_path"
-                . '&& for f in *.docx; do mv -- "$f" "${f%.docx}.docxsource"; done'
-            );
-
-            $convert_command = "cd $temp_store_folder_path && {$this->unoconv_binary_path} -v -f docx *.docxsource 2>&1";
-            [$exec_return_code, $exec_output] = $this->runCommand($convert_command);
-            exec("cd $temp_store_folder_path && rm *.docxsource");
-
-            if ($exec_return_code != 0) {
-                // something's wrong - error handling:
-                $serialize_output = serialize($exec_output);
-                Civi::log()->debug(
-                    "CiviOffice: Exception: Return code 0 expected but $exec_return_code given: $serialize_output"
-                );
-
-                $empty_files = '';
-                foreach (new DirectoryIterator($temp_store_folder_path) as $file) {
-                    if ($file->isFile() && $file->getSize() == 0) {
-                        $empty_files .= $file->getFilename() . ', ';
-                    }
-                }
-                Civi::log()->debug("CiviOffice: Files are empty: $empty_files");
-
-                throw new Exception("Unoconv: Return code 0 expected but $exec_return_code given");
-            }
-
-            if ($lock) {
-                $lock->release();
-            }
-        }
 
         // only lock render process if renderer is needed
         $lock = null;
@@ -337,7 +269,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         foreach ($entity_ids as $entity_id) {
             $new_file_name = $this->createDocumentName($entity_id, 'docx');
             $transitional_docx_document = $local_temp_store->getLocalCopyOfDocument(
-                $prepared_document ?? $document_with_placeholders,
+                $document_with_placeholders,
                 $new_file_name
             );
             $this->replaceTokensSingle($transitional_docx_document, $entity_type, (int) $entity_id);
@@ -367,10 +299,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
          *
          * -v for verbose mode. Returns target file format and target filepath
          */
-
-        if (isset($prepared_document)) {
-            exec('rm "' . $prepared_document->getAbsolutePath() . '"');
-        }
 
         if (!$needs_conversion) {
             // We can return here and skip conversion as the transition format is equal to the output format
@@ -612,7 +540,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         return [
             self::UNOCONV_BINARY_PATH_SETTINGS_KEY,
             self::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY,
-            self::PREPARE_DOCX_SETTINGS_KEY,
             self::PHPWORD_TOKENS_SETTINGS_KEY,
         ];
     }
@@ -622,7 +549,6 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         return [
             'unoconv_binary_path' => '/usr/bin/unoconv',
             'unoconv_lock_file_path' => CRM_Civioffice_Configuration::getHomeFolder() . '/unoconv.lock',
-            'prepare_docx' => false,
             'phpword_tokens' => false,
         ];
     }
