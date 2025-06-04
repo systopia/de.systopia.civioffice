@@ -54,7 +54,6 @@ implemented so far.
 - APIs
 - (X)HTML to OOXML conversion to allow for simple formatting within tokens (also
   a workaround for missing Smarty syntax)
-- PHP 8 compatibility
 
 ## Intended future improvements
 
@@ -83,4 +82,4 @@ implemented so far.
   apply exceptions from spell checking to bits of your tokens
 - you are less likely to encounter these issues, if you
   - prepare your template documents with LibreOffice instead of MS Word
-  - when copying tokens, make sure to strip your tokens of *any* formatting by copying them to text-only editor first, and then to your document  
+  - when copying tokens, make sure to strip your tokens of *any* formatting by copying them to text-only editor first, and then to your document
