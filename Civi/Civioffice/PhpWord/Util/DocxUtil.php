@@ -113,7 +113,7 @@ final class DocxUtil {
   }
 
   /**
-   * Splits a w:p into a list of w:p where each macro}is in a separate w:p.
+   * Splits a w:p into a list of w:p where each macro is in a separate w:p.
    *
    * @param string $extractedParagraphStyle
    *   Is set to the extracted paragraph style (w:pPr).
