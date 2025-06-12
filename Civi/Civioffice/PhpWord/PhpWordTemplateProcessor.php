@@ -17,7 +17,8 @@ declare(strict_types = 1);
 
 namespace Civi\Civioffice\PhpWord;
 
-use Civi\Civioffice\PhpWord\Util\TemplateUtil;
+use Civi\Civioffice\PhpWord\Util\DocxUtil;
+use Civi\Civioffice\PhpWord\Util\XmlUtil;
 use CRM_Civioffice_ExtensionUtil as E;
 use PhpOffice\PhpWord;
 
@@ -31,9 +32,9 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
    *   An array of CiviCRM tokens found in the document.
    */
   public function civiTokensToMacros(): array {
-    $this->tempDocumentHeaders = TemplateUtil::combineRuns($this->tempDocumentHeaders);
-    $this->tempDocumentMainPart = TemplateUtil::combineRuns($this->tempDocumentMainPart);
-    $this->tempDocumentFooters = TemplateUtil::combineRuns($this->tempDocumentFooters);
+    $this->tempDocumentHeaders = DocxUtil::combineRuns(DocxUtil::dropAnnotations($this->tempDocumentHeaders));
+    $this->tempDocumentMainPart = DocxUtil::combineRuns(DocxUtil::dropAnnotations($this->tempDocumentMainPart));
+    $this->tempDocumentFooters = DocxUtil::combineRuns(DocxUtil::dropAnnotations($this->tempDocumentFooters));
 
     $tokens = [];
     foreach (
@@ -89,11 +90,8 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
   }
 
   /**
-   * @param string $macroVariable
-   * @param string $renderedTokenMessage
-   *
-   * @return void
    * @throws \CRM_Core_Exception
+   * @phpstan-ignore throws.unusedType
    */
   public function replaceHtmlToken(string $macroVariable, string $renderedTokenMessage): void {
     static $phpWord;
@@ -121,6 +119,7 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
         $this->setElementsValue($macroVariable, $elements, TRUE);
       }
     }
+    // @phpstan-ignore catch.neverThrown
     catch (\Exception $exception) {
       throw new \CRM_Core_Exception(
         E::ts('Error loading/writing PhpWord document: %1', [1 => $exception->getMessage()]),
@@ -143,8 +142,6 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
    * @param bool $inheritStyle
    *   If TRUE the style will be inherited from the paragraph/text run the macro
    *   is inside. If the element already contains styles, they will be merged.
-   *
-   * @throws \PhpOffice\PhpWord\Exception\Exception
    */
   public function setElementsValue(string $search, array $elements, bool $inheritStyle = FALSE): void {
     $elementsDataList = [];
@@ -212,8 +209,6 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
    *   is inside. If the element already contains styles, they will be merged.
    *
    * @return string The part XML with every macro occurrence replaced.
-   *
-   * @throws \PhpOffice\PhpWord\Exception\Exception
    */
   protected function setElementsValueForPart(
     string $search,
@@ -224,12 +219,17 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
   ): string {
     $search = static::ensureMacroCompleted($search);
     $blockType = $hasParagraphs ? 'w:p' : 'w:r';
-    while ($where = TemplateUtil::findContainingXmlBlock($partXml, $search, $blockType)) {
-      $block = TemplateUtil::getSlice($partXml, $where['start'], $where['end']);
+    while ($where = XmlUtil::findContainingXmlBlock($partXml, $search, $blockType)) {
+      $block = XmlUtil::getSlice($partXml, $where['start'], $where['end']);
       $paragraphStyle = '';
       $textRunStyle = '';
-      $parts = $hasParagraphs ? TemplateUtil::splitParagraphIntoParagraphs($block, $paragraphStyle, $textRunStyle)
-        : $this->splitTextIntoTexts($block, $textRunStyle);
+      $parts = $hasParagraphs ? DocxUtil::splitParagraphIntoParagraphs(
+        $block,
+        '${',
+        '}',
+        $paragraphStyle,
+        $textRunStyle
+      ) : $this->splitTextIntoTexts($block, $textRunStyle);
       if ($inheritStyle) {
         /** @var list<string> $replaceXml */
         $replaceXml = preg_replace_callback_array([
@@ -249,8 +249,8 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
         ], $replaceXml);
       }
 
-      $partXml = TemplateUtil::replaceXmlBlock($partXml, $search, $parts, $blockType);
-      $partXml = TemplateUtil::replaceXmlBlock($partXml, $search, implode('', $replaceXml), $blockType);
+      $partXml = XmlUtil::replaceXmlBlock($partXml, $search, $parts, $blockType);
+      $partXml = XmlUtil::replaceXmlBlock($partXml, $search, implode('', $replaceXml), $blockType);
     }
 
     return $partXml;
@@ -262,13 +262,9 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
    *
    * @param string $extractedStyle
    *   Is set to the extracted text run style (w:rPr).
-   *
-   * @throws \PhpOffice\PhpWord\Exception\Exception
    */
   protected function splitTextIntoTexts($text, string &$extractedStyle = ''): string {
-    if (NULL === $unformattedText = preg_replace('/>\s+</', '><', $text)) {
-      throw new PhpWord\Exception\Exception('Error processing PhpWord document.');
-    }
+    $unformattedText = XmlUtil::flattenXml($text);
 
     $matches = [];
     preg_match('#<w:rPr(?:(?!<w:rPr).)*</w:rPr>#', $unformattedText, $matches);
