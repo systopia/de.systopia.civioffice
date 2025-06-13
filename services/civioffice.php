@@ -64,6 +64,10 @@ $container->autowire(RenderWebAction::class)
 $container->autowire(LocalUnoconvRendererType::class)
   ->addTag(DocumentRendererTypeInterface::class);
 
+$container->autowire(\Civi\Civioffice\Collabora\CoolConvertClientFactory::class);
+$container->autowire(\Civi\Civioffice\DocumentRendererType\CollaboraOnlineRendererType::class)
+  ->addTag(DocumentRendererTypeInterface::class);
+
 $container->autowire(PhpWordTokenReplacer::class);
 $container->autowire(CiviOfficeTokenProcessorInterface::class, CiviOfficeTokenProcessor::class)
   ->setPublic(TRUE);
