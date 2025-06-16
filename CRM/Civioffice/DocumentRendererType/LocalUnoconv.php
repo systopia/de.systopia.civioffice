@@ -305,8 +305,8 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             return $tokenreplaced_documents;
         }
 
-        $convert_command = "cd $temp_store_folder_path && {$this->unoconv_binary_path} -v -f $file_ending_name *.docx 2>&1";
-        [$exec_return_code, $exec_output] = $this->runCommand($convert_command);
+        $convert_command = "{$this->unoconv_binary_path} -v -f {$file_ending_name} *.docx 2>&1";
+        [$exec_return_code, $exec_output] = $this->runCommand($convert_command, $temp_store_folder_path);
 
         if ($exec_return_code != 0) {
             // something's wrong - error handling:
@@ -458,21 +458,28 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
      * @param string $command
      *   the command to run
      *
+     * @param string $workDir
+     *   an optional working directory. before running the command, the directory will
+     *   be changed to the given directory.
+     *
      * @return array
      *   [return code, output lines]
      */
-    protected function runCommand($command)
+    protected function runCommand(string $command, ?string $workDir = NULL): array
     {
         // use the lock if this is set up
         $this->lock();
 
+        $execOutput = [];
+        $execReturnCode = NULL;
+        
         try {
             // make sure the unoconv path is in the environment
             //  see https://stackoverflow.com/a/43083964
-            $our_path = dirname($this->unoconv_binary_path);
+            $ourPath = dirname($this->unoconv_binary_path);
             $paths = explode(PATH_SEPARATOR, getenv('PATH'));
-            if (!in_array($our_path, $paths)) {
-                $paths[] = $our_path;
+            if (!in_array($ourPath, $paths)) {
+                $paths[] = $ourPath;
             }
 
             // finally: execute
@@ -481,27 +488,31 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
              * unoconv creates the directories .cache and .config in the home
              * directory. For this we use a temporary home directory.
              */
-            $home = sys_get_temp_dir() . '/civioffice' . mt_rand(100000, mt_getrandmax());
-            if (!mkdir($home, 0700, TRUE)) {
-                throw new \RuntimeException("Couldn't create temporary directory '$home'");
+            $homeDir = sys_get_temp_dir() . '/civioffice' . mt_rand(100000, mt_getrandmax());
+            if (!mkdir($homeDir, 0700, TRUE)) {
+                throw new \RuntimeException("Couldn't create temporary directory '$homeDir'");
             }
             try {
-                exec("HOME=$home $command", $exec_output, $exec_return_code);
+              if (NULL !== $workDir && '' !== $workDir) {
+                exec("cd {$workDir}; HOME={$homeDir} {$command}", $execOutput, $execReturnCode);
+              } else {
+                exec("HOME={$homeDir} {$command}", $execOutput, $execReturnCode);
+              }
             }
             finally {
-                FilesystemUtil::removeRecursive($home);
+                FilesystemUtil::removeRecursive($homeDir);
             }
 
             // exec code 255 seems to be o.k. as well...
-            if ($exec_return_code == 255) {
-                $exec_return_code = 0;
+            if ($execReturnCode == 255) {
+                $execReturnCode = 0;
             }
         } catch (Exception $ex) {
             Civi::log()->debug("CiviOffice: Got execution exception: ". $ex->getMessage());
         }
         $this->unlock();
 
-        return [$exec_return_code, $exec_output];
+        return [$execReturnCode, $execOutput];
     }
 
     /**
@@ -524,7 +535,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
     /**
      * wait for the unoconv resource to become available
      */
-    protected function unlock()
+    protected function unlock(): void
     {
         if ($this->unoconv_lock_file) {
             if (!flock($this->unoconv_lock_file, LOCK_UN)) {
