@@ -355,7 +355,7 @@ main() {
     local -r branch=$(git branch --show-current)
     if [ "$branch" = "main" ] || [ "$branch" = "master" ]; then
       [[ "$nextVersion" =~ ^([0-9]+\.[0-9]+)\.[0-9]+ ]]
-      local -r alias=${BASH_REMATCH[1]}.x
+      local -r alias=${BASH_REMATCH[1]}.x-dev
       run composer config "extra.branch-alias.dev-$branch" "$alias"
       run git add composer.json
     fi
