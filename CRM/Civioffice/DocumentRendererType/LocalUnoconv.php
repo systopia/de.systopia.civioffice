@@ -29,6 +29,8 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
     const UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY = 'unoconv_lock_file_path';
     const PHPWORD_TOKENS_SETTINGS_KEY = 'phpword_tokens';
 
+    private const TEMP_DIR_SETTINGS_KEY = 'temp_dir';
+
     /**
      * @var string $unoconv_binary_path
      *   The path to the unoconv binary.
@@ -54,8 +56,11 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
      */
     protected $phpword_tokens;
 
+    protected string $temp_dir;
+
     public function __construct($uri = null, $name = null, array &$configuration = [])
     {
+        $configuration['temp_dir'] ??= sys_get_temp_dir();
         parent::__construct(
             $uri ?? 'unoconv-local',
             $name ?? E::ts('Local Universal Office Converter (unoconv)'),
@@ -159,6 +164,14 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         );
 
         $form->add(
+          'text',
+          'temp_dir',
+          E::ts('Temporary directory'),
+          NULL,
+          TRUE
+        );
+
+        $form->add(
             'checkbox',
             'phpword_tokens',
             E::ts('Use PHPWord macros for token replacement'),
@@ -170,6 +183,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
             [
                 'unoconv_binary_path' => $this->unoconv_binary_path,
                 'unoconv_lock_file_path' => $this->unoconv_lock_file_path,
+                'temp_dir' => $this->temp_dir,
                 'phpword_tokens' => $this->phpword_tokens,
             ]
         );
@@ -179,8 +193,8 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
      * {@inheritDoc}
      */
     public function validateSettingsForm(CRM_Civioffice_Form_DocumentRenderer_Settings $form) {
-        $unoconv_binary_path = $form->_submitValues['unoconv_binary_path'];
-        $unoconv_lock_file_path = $form->_submitValues['unoconv_lock_file_path'];
+        $values = $form->exportValues();
+        $unoconv_lock_file_path = $values['unoconv_lock_file_path'];
 
         // There used to be a file_exists() check here for validating that the unoconv binary exists in the given path.
         // We can't however check eg. /usr/bin/unoconv on a site with open_basedir restrictions in place as this check
@@ -199,6 +213,19 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
                     'Lock file cannot be written. Please run: "chmod 777 %1"', [1 => $unoconv_lock_file_path]);
             }
         }
+
+        /** @var string $tempDir */
+        $tempDir = $values['temp_dir'] ?? '';
+        if ('' !== $tempDir) {
+          if (file_exists($tempDir)) {
+            if (!is_dir($tempDir) || !is_writable($tempDir)) {
+              $form->setElementError('temp_dir', E::ts('This is not a writeable directory.'));
+            }
+          }
+          elseif (!mkdir($tempDir, 0700, TRUE)) {
+            $form->setElementError('temp_dir', E::ts('Directory could not be created.'));
+          }
+        }
     }
 
     /**
@@ -215,6 +242,10 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         $renderer->setConfigItem(
             CRM_Civioffice_DocumentRendererType_LocalUnoconv::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY,
             $values['unoconv_lock_file_path']
+        );
+        $renderer->setConfigItem(
+          CRM_Civioffice_DocumentRendererType_LocalUnoconv::TEMP_DIR_SETTINGS_KEY,
+          $values['temp_dir']
         );
         $renderer->setConfigItem(
             CRM_Civioffice_DocumentRendererType_LocalUnoconv::PHPWORD_TOKENS_SETTINGS_KEY,
@@ -472,7 +503,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
 
         $execOutput = [];
         $execReturnCode = NULL;
-        
+
         try {
             // make sure the unoconv path is in the environment
             //  see https://stackoverflow.com/a/43083964
@@ -488,7 +519,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
              * unoconv creates the directories .cache and .config in the home
              * directory. For this we use a temporary home directory.
              */
-            $homeDir = sys_get_temp_dir() . '/civioffice' . mt_rand(100000, mt_getrandmax());
+            $homeDir = $this->temp_dir . '/civioffice' . mt_rand(100000, mt_getrandmax());
             if (!mkdir($homeDir, 0700, TRUE)) {
                 throw new \RuntimeException("Couldn't create temporary directory '$homeDir'");
             }
@@ -551,6 +582,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         return [
             self::UNOCONV_BINARY_PATH_SETTINGS_KEY,
             self::UNOCONV_LOCK_FILE_PATH_SETTINGS_KEY,
+            self::TEMP_DIR_SETTINGS_KEY,
             self::PHPWORD_TOKENS_SETTINGS_KEY,
         ];
     }
@@ -560,6 +592,7 @@ class CRM_Civioffice_DocumentRendererType_LocalUnoconv extends CRM_Civioffice_Do
         return [
             'unoconv_binary_path' => '/usr/bin/unoconv',
             'unoconv_lock_file_path' => CRM_Civioffice_Configuration::getHomeFolder() . '/unoconv.lock',
+            'temp_dir' => sys_get_temp_dir(),
             'phpword_tokens' => false,
         ];
     }

@@ -86,6 +86,10 @@ msgid "Path to a lock file"
 msgstr "Pfad zu einer Sperrdatei"
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
+msgid "Temporary directory"
+msgstr "Temporäres Verzeichnis"
+
+#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "Use PHPWord macros for token replacement"
 msgstr "PHPWord-Makros für Token-Ersetzung verwenden"
 
@@ -102,6 +106,14 @@ msgid "Lock file cannot be written. Please run: \"chmod 777 %1\""
 msgstr ""
 "Sperrdatei kann nicht geschrieben werden. Bitte führen Sie Folgendes aus: "
 "\"chmod 777 %1\""
+
+#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
+msgid "This is not a writeable directory."
+msgstr "Dies ist kein schreibbares Verzeichnis."
+
+#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
+msgid "Directory could not be created."
+msgstr "Verzeichnis konnte nicht erstellt werden."
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "Too many parallel conversions. Try using a smaller batch size."
@@ -655,6 +667,19 @@ msgstr ""
 "Ort erstellt. Bitte beachten: Der Pfad muss auf allen CiviCRM-Umgebungen auf "
 "diesem Server gleich sein. Anderenfalls ist das Sperren nur für diese "
 "CiviCRM-Instanz aktiv."
+
+#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
+msgid ""
+"This can be the system's temporary directory. However, if the webserver uses "
+"a\n"
+"        <a href=\"https://systemd.io/TEMPORARY_DIRECTORIES/\" "
+"target=\"_blank\">private temporary directory</a>\n"
+"        another directory has to be configured."
+msgstr ""
+"Dies kann das temporäre Verzeichnis des Systems sein. Wenn jedoch der "
+"Webserver ein <a href=\"https://systemd.io/TEMPORARY_DIRECTORIES/\" "
+"target=\"_blank\">privates temporäres Verzeichnis</a> verwendet, muss ein "
+"anderes Verzeichnis konfiguriert werden."
 
 #: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
 msgid ""

@@ -29,6 +29,17 @@
   </div>
 
   <div class="crm-section">
+    <div class="help">
+      {ts}This can be the system's temporary directory. However, if the webserver uses a
+        <a href="https://systemd.io/TEMPORARY_DIRECTORIES/" target="_blank">private temporary directory</a>
+        another directory has to be configured.{/ts}
+    </div>
+    <div class="label">{$form.temp_dir.label}</div>
+    <div class="content">{$form.temp_dir.html}</div>
+    <div class="clear"></div>
+  </div>
+
+  <div class="crm-section">
     <div class="help">{ts}Whether to replace tokens using a PHPWord template processor, so that HTML in Live Snippets can be converted to OOXML.{/ts}</div>
     <div class="label">{$form.phpword_tokens.label}</div>
     <div class="content">{$form.phpword_tokens.html}</div>
