@@ -113,7 +113,7 @@ msgstr "Dies ist kein schreibbares Verzeichnis."
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "Directory could not be created."
-msgstr ""
+msgstr "Verzeichnis konnte nicht erstellt werden."
 
 #: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
 msgid "Too many parallel conversions. Try using a smaller batch size."
