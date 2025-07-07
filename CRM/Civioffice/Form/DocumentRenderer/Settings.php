@@ -13,6 +13,9 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+use Civi\Civioffice\DocumentRenderer;
+use Civi\Civioffice\DocumentRendererTypeContainer;
+use Civi\Civioffice\DocumentRendererTypeInterface;
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
@@ -22,25 +25,9 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
 
-    protected CRM_Civioffice_DocumentRenderer $documentRenderer;
+    private DocumentRenderer $documentRenderer;
 
-    protected CRM_Civioffice_DocumentRendererType $documentRendererType;
-
-    /**
-     * @return \CRM_Civioffice_DocumentRenderer
-     */
-    public function getDocumentRenderer(): ?CRM_Civioffice_DocumentRenderer
-    {
-        return $this->documentRenderer ?? null;
-    }
-
-    /**
-     * @return \CRM_Civioffice_DocumentRendererType
-     */
-    public function getDocumentRendererType(): CRM_Civioffice_DocumentRendererType
-    {
-        return $this->documentRendererType;
-    }
+    private DocumentRendererTypeInterface $documentRendererType;
 
     public function preProcess()
     {
@@ -54,7 +41,7 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
             if (!$uri = CRM_Utils_Request::retrieve('id', 'Alphanumeric', $this)) {
                 throw new Exception(E::ts('Missing document renderer ID.'));
             }
-            $this->documentRenderer = CRM_Civioffice_DocumentRenderer::load($uri);
+            $this->documentRenderer = DocumentRenderer::load($uri);
             $this->documentRendererType = $this->documentRenderer->getType();
         }
 
@@ -63,7 +50,7 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
             if (!$type = CRM_Utils_Request::retrieve('type', 'Alphanumeric', $this)) {
                 throw new Exception(E::ts('Missing document renderer type.'));
             }
-            $this->documentRendererType = CRM_Civioffice_DocumentRendererType::create($type);
+            $this->documentRendererType = DocumentRendererTypeContainer::getInstance()->get($type);
         }
 
         // Make sure to redirect to the CiviOffice settings page.
@@ -89,12 +76,15 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
                 $this->setDefaults(
                     [
                         'name' => $this->documentRenderer->getName(),
-                    ]
+                    ] + $this->documentRenderer->getConfiguration()
                 );
+            }
+            else {
+              $this->setDefaults($this->documentRendererType->getDefaultConfiguration());
             }
 
             $this->documentRendererType->buildsettingsForm($this);
-            $this->assign('rendererTypeSettingsTemplate', $this->documentRendererType::getSettingsFormTemplate());
+            $this->assign('rendererTypeSettingsTemplate', $this->documentRendererType->getSettingsFormTemplate());
 
             $this->addButtons(
                 [
@@ -119,15 +109,6 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
         parent::buildQuickForm();
     }
 
-    public function setDefaults($defaultValues = null, $filter = null)
-    {
-        // TODO: This sets new (unset) settings in existing renderers' forms to their default value, which might change
-        //       settings when this is not intended.
-        $defaultValues = array_filter($defaultValues, function($value) { return !is_null($value); });
-        $defaultValues += $this->documentRendererType::defaultConfiguration();
-        return parent::setDefaults($defaultValues, $filter);
-    }
-
     /**
      * Validate input data
      * This method is executed before postProcess()
@@ -150,8 +131,8 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
           $values = $this->exportValues();
 
           if (!isset($this->documentRenderer)) {
-              $this->documentRenderer = new CRM_Civioffice_DocumentRenderer(
-                  $this->documentRendererType::getNextUri(),
+              $this->documentRenderer = new DocumentRenderer(
+                $this->documentRendererType->getURI() . '-' . count(CRM_Civioffice_Configuration::getDocumentRenderers()),
                   $values['name'],
                   [
                       'type' => $this->documentRendererType->getURI(),
@@ -162,8 +143,8 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
             $this->documentRenderer->setName($values['name']);
           }
 
-          $this->documentRendererType->postProcessSettingsForm($this);
-
+          $configuration = $this->documentRendererType->postProcessSettingsForm($this);
+          $this->documentRenderer->setConfiguration($configuration);
           $this->documentRenderer->save();
       }
       elseif ($this->_action & (CRM_Core_Action::DELETE)) {

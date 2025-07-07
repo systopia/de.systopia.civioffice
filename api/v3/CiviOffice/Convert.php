@@ -110,22 +110,33 @@ function civicrm_api3_civi_office_convert(array $params): array {
   $tokenProcessor = Civi::service(CiviOfficeTokenProcessorInterface::class);
 
   $inputFileExtension = pathinfo($inputDocument->getPath(), PATHINFO_EXTENSION);
+
+  if (method_exists($inputDocument, 'getAbsolutePath')) {
+    $inputFilePath = $inputDocument->getAbsolutePath();
+  }
+  else {
+    $inputFilePath = $tmpInputFilePath = $inputDocument->getLocalTempCopy();
+  }
+
   foreach ($entityIds as $entityId) {
     $tmpDocument = $tempStore->addFile(uniqid('convert') . '.' . $inputFileExtension);
     try {
       $tokenProcessor->replaceTokens(
-        $inputDocument->getPath(),
-        $tmpDocument->getPath(),
+        $inputFilePath,
+        $tmpDocument->getAbsolutePath(),
         $entityType,
         $entityId,
         $liveSnippets
       );
       $outputFileExtension = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($targetMimeType);
       $outputDocument = $tempStore->addFile("Document-$entityId.$outputFileExtension");
-      $renderer->render($tmpDocument->getPath(), $outputDocument->getPath(), $targetMimeType);
+      $renderer->render($tmpDocument->getAbsolutePath(), $outputDocument->getAbsolutePath(), $targetMimeType);
     }
     finally {
-      unlink($tmpDocument->getPath());
+      unlink($tmpDocument->getAbsolutePath());
+      if (isset($tmpInputFilePath)) {
+        unlink($tmpInputFilePath);
+      }
     }
   }
 

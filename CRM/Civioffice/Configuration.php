@@ -13,6 +13,7 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+use Civi\Civioffice\DocumentRenderer;
 use Civi\Core\Event\GenericHookEvent;
 use CRM_Civioffice_ExtensionUtil as E;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -124,7 +125,7 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface
      * @param boolean $only_show_active
      *   Whether to return only active objects.
      *
-     * @return list<CRM_Civioffice_DocumentRenderer>
+     * @phpstan-return list<DocumentRenderer>
      *   An array of document renderers.
      *
      * @throws \Exception
@@ -132,10 +133,9 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface
      */
     public static function getDocumentRenderers(bool $only_show_active = false): array
     {
-        /* @var \CRM_Civioffice_DocumentRenderer[] $renderers */
         $renderers = array_map(
             function ($uri) {
-                return CRM_Civioffice_DocumentRenderer::load($uri);
+                return DocumentRenderer::load($uri);
             },
             array_keys(Civi::settings()->get('civioffice_renderers')) ?? []
         );
@@ -147,24 +147,6 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface
         }
 
         return $renderers;
-    }
-
-    public static function getDocumentRendererTypes()
-    {
-        // TODO: Implement using an event.
-        $types = [];
-        foreach (
-            [
-                new CRM_Civioffice_DocumentRendererType_LocalUnoconv(),
-            ] as $type
-        ) {
-            /* @var \CRM_Civioffice_DocumentRendererType $type */
-            $types[$type->getURI()] = [
-                'label' => $type->getName(),
-                'class' => get_class($type),
-            ];
-        }
-        return $types;
     }
 
     /**
@@ -187,10 +169,8 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface
      *
      * @param string $document_renderer_uri
      *   document renderer URI
-     *
-     * @return CRM_Civioffice_DocumentRenderer|null
      */
-    public function getDocumentRenderer(string $document_renderer_uri)
+    public function getDocumentRenderer(string $document_renderer_uri): ?DocumentRenderer
     {
         $document_renderers = self::getDocumentRenderers(false);
         foreach ($document_renderers as $dr) {

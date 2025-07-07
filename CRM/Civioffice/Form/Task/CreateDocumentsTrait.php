@@ -53,7 +53,7 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait
         $output_mimetypes = null;
         $document_renderer_list = [];
         foreach ($config->getDocumentRenderers(true) as $dr) {
-            foreach ($dr->getType()->getSupportedOutputMimeTypes() as $mime_type) {
+            foreach ($dr->getSupportedOutputMimeTypes() as $mime_type) {
                 $output_mimetypes[$mime_type] = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
             }
             $document_renderer_list[$dr->getURI()] = $dr->getName();

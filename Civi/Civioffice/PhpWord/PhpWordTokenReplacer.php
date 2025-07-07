@@ -35,7 +35,7 @@ final class PhpWordTokenReplacer {
     }
     // @phpstan-ignore catch.neverThrown
     catch (\PhpOffice\PhpWord\Exception\Exception $e) {
-      throw new \RuntimeException('Unoconv: Docx (zip) file seems to be broken or path is wrong', $e->getCode(), $e);
+      throw new \RuntimeException('DOCX file seems to be broken or path is wrong', $e->getCode(), $e);
     }
 
     $usedTokens = $templateProcessor->civiTokensToMacros();

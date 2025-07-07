@@ -61,10 +61,10 @@
     <h3>{ts}CiviOffice Document Renderers (Converters){/ts}</h3>
     <div id="help">{ts}Renders or converts documents{/ts}</div>
 
-    {foreach from=$document_renderer_types item="document_renderer_type" key="document_renderer_type_id"}
-      {capture assign="addDocumentRendererUrl"}{crmURL p="civicrm/admin/civioffice/settings/renderer" q="action=add&type=$document_renderer_type_id"}{/capture}
+    {foreach from=$document_renderer_types item="label" key="id"}
+      {capture assign="addDocumentRendererUrl"}{crmURL p="civicrm/admin/civioffice/settings/renderer" q="action=add&type=$id"}{/capture}
       <a class="button crm-popup" href="{$addDocumentRendererUrl}">
-          {ts 1=$document_renderer_type.label}Add %1 Document Renderer{/ts}
+          {ts 1=$label}Add %1 Document Renderer{/ts}
       </a>
     {/foreach}
 
@@ -72,7 +72,7 @@
       <thead>
       <tr>
         <th>{ts}Name{/ts}</th>
-        <th>{ts}Description{/ts}</th>
+        <th>{ts}Type{/ts}</th>
         <th>{ts}Ready to use{/ts}</th>
         <th>{ts}Config{/ts}</th>
       </tr>

@@ -20,18 +20,21 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 abstract class CRM_Civioffice_OfficeComponent
 {
-    /** @var string component uri */
-    protected $uri;
+    /**
+     * Component ID (unique name).
+     */
+    protected string $uri;
 
-    /** @var string component name */
-    protected $name;
+    /**
+     * Localized component name (title).
+     */
+    protected string $name;
 
-    protected function __construct($uri, $name)
+    protected function __construct(string $uri, string $name)
     {
         $this->uri = $uri;
         $this->name = $name;
     }
-
 
     /**
      * Get the URL to configure this component
@@ -62,10 +65,7 @@ abstract class CRM_Civioffice_OfficeComponent
     abstract public function isReady() : bool;
 
     /**
-     * Get the generic component ID
-     *
-     * @return string
-     *   ID
+     * Get the component ID (unique name).
      */
     public function getURI(): string
     {
@@ -73,10 +73,7 @@ abstract class CRM_Civioffice_OfficeComponent
     }
 
     /**
-     * Get the (localised) component name
-     *
-     * @return string
-     *   name
+     * Get the localized component name (title).
      */
     public function getName(): string
     {
@@ -89,14 +86,11 @@ abstract class CRM_Civioffice_OfficeComponent
     }
 
     /**
-     * Get the (localised) component description
-     *
-     * @return string
-     *   name
+     * Get the localized component description.
      */
     public function getDescription(): string
     {
-        return '- empty -';
+        return E::ts('- empty -');
     }
 
 }
