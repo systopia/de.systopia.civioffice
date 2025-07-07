@@ -62,80 +62,6 @@ msgstr "Verwendete Live-Snippets:"
 msgid "Local path is not writable: %1"
 msgstr "Lokaler Pfad ist nicht beschreibbar: %1"
 
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-#: CRM/Civioffice/Upgrader.php
-msgid "Local Universal Office Converter (unoconv)"
-msgstr "Lokaler Universal Office Converter (unoconv)"
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "An error occurred. See the CiviCRM log for details."
-msgstr ""
-"Ein Fehler ist aufgetreten. Bitte prüfen Sie das CiviCRM-Log für weitere "
-"Informationen."
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "CiviOffice Error"
-msgstr "CiviOffice-Fehler"
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Path to the <code>unoconv</code> executable"
-msgstr "Pfad zur ausführbaren <code>unoconv</code> Datei"
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Path to a lock file"
-msgstr "Pfad zu einer Sperrdatei"
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Temporary directory"
-msgstr "Temporäres Verzeichnis"
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Use PHPWord macros for token replacement"
-msgstr "PHPWord-Makros für Token-Ersetzung verwenden"
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Cannot create lock file"
-msgstr "Sperrdatei kann nicht erstellt werden"
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "This is not a file"
-msgstr "Dies ist keine Datei"
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Lock file cannot be written. Please run: \"chmod 777 %1\""
-msgstr ""
-"Sperrdatei kann nicht geschrieben werden. Bitte führen Sie Folgendes aus: "
-"\"chmod 777 %1\""
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "This is not a writeable directory."
-msgstr "Dies ist kein schreibbares Verzeichnis."
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Directory could not be created."
-msgstr "Verzeichnis konnte nicht erstellt werden."
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Too many parallel conversions. Try using a smaller batch size."
-msgstr ""
-"Zu viele parallele Konvertierungen. Versuchen Sie eine kleinere Stapelgröße."
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid ""
-"This document renderer employs the <code>unoconv</code> script on your "
-"server to convert documents using LibreOffice."
-msgstr ""
-"Dieser Dokument-Renderer verwendet das <code>unoconv</code>-Skript auf Ihrem "
-"Server, um Dokumente mit LibrOffice zu konvertieren."
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "Could not open unoconv lock file."
-msgstr "Die Sperrdatei für unoconv konnte nicht geöffnet werden."
-
-#: CRM/Civioffice/DocumentRendererType/LocalUnoconv.php
-msgid "CiviOffice: Could not acquire unoconv lock."
-msgstr "CiviOffice: Konnte keine unoconv-Sperre erhalten."
-
 #: CRM/Civioffice/DocumentStore/Local.php
 msgid ""
 "A local folder is needed if documents are stored and managed on the server. "
@@ -430,6 +356,15 @@ msgstr "Hochladen geteilter Dokumente aktiviert"
 msgid "Private Document Upload Enabled"
 msgstr "Hochladen privater Dokumente aktiviert"
 
+#: CRM/Civioffice/OfficeComponent.php
+msgid "- empty -"
+msgstr "- leer -"
+
+#: CRM/Civioffice/Upgrader.php
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "Local Universal Office Converter (unoconv)"
+msgstr "Lokaler Universal Office Converter (unoconv)"
+
 #: CRM/Civioffice/Upgrader.php
 msgid "Local Universal Office Converter (unoconv) implementing PhpWord"
 msgstr "Lokaler Universal Office Converter (unoconv) mit PhpWord"
@@ -488,12 +423,70 @@ msgid "Mapping of file type names to MIME types."
 msgstr "Abbildung von Dateitypnamen auf Dateitypen."
 
 #: Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php
-msgid "Renderer Type URI"
-msgstr "Renderer-Typ-URI"
+msgid "Renderer Type"
+msgstr "Renderer-Typ"
 
 #: Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php
 msgid "Is Active"
 msgstr "Ist aktiv"
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "Path to the <code>unoconv</code> executable"
+msgstr "Pfad zur ausführbaren <code>unoconv</code> Datei"
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "Path to a lock file"
+msgstr "Pfad zu einer Sperrdatei"
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "Temporary directory"
+msgstr "Temporäres Verzeichnis"
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "Cannot create lock file"
+msgstr "Sperrdatei kann nicht erstellt werden"
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "This is not a file"
+msgstr "Dies ist keine Datei"
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "Lock file cannot be written. Please run: \"chmod 777 %1\""
+msgstr ""
+"Sperrdatei kann nicht geschrieben werden. Bitte führen Sie Folgendes aus: "
+"\"chmod 777 %1\""
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "This is not a writeable directory."
+msgstr "Dies ist kein schreibbares Verzeichnis."
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "Directory could not be created."
+msgstr "Verzeichnis konnte nicht erstellt werden."
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "unoconv couldn't be executed. The log file might contain more details."
+msgstr ""
+"unoconv konnte nicht ausgeführt werden. Die Logdatei hat möglicherweise "
+"weitere Informationen."
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "An error occurred. See the CiviCRM log for details."
+msgstr ""
+"Ein Fehler ist aufgetreten. Bitte prüfen Sie das CiviCRM-Log für weitere "
+"Informationen."
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "CiviOffice Error"
+msgstr "CiviOffice-Fehler"
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "Could not open unoconv lock file."
+msgstr "Die Sperrdatei für unoconv konnte nicht geöffnet werden."
+
+#: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
+msgid "CiviOffice: Could not acquire unoconv lock."
+msgstr "CiviOffice: Konnte keine unoconv-Sperre erhalten."
 
 #: Civi/Civioffice/EventSubscriber/AbstractCiviOfficeSearchKitTaskSubscriber.php
 #: civioffice.php
@@ -681,14 +674,6 @@ msgstr ""
 "target=\"_blank\">privates temporäres Verzeichnis</a> verwendet, muss ein "
 "anderes Verzeichnis konfiguriert werden."
 
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
-msgid ""
-"Whether to replace tokens using a PHPWord template processor, so that HTML "
-"in Live Snippets can be converted to OOXML."
-msgstr ""
-"Ob Token mit dem PHPWord-Vorlagen-Prozessor ersetzt werden, sodass HTML in "
-"Live-Snippets zu OOXML konvertiert werden kann."
-
 #: templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl
 msgid "Are you sure you want to delete this Document Renderer?"
 msgstr "Sind Sie sicher, dass Sie diesen Dokument-Renderer löschen möchten?"
@@ -824,6 +809,10 @@ msgstr "Rendert oder konvertiert Dokumente"
 #: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Add %1 Document Renderer"
 msgstr "%1 Dokument-Renderer hinzufügen"
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Type"
+msgstr "Typ"
 
 #: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Configure"
