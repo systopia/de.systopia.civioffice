@@ -36,7 +36,7 @@ Arguments:
   develStage  Development stage (dev, alpha, beta, stable).
     Default: Detected from version.
   nextVersion  Version after the release.
-    Default: version with "dev" as pre-release part.
+    Default: Increased version with "dev" as pre-release part.
 
 All values that are determined programmatically have to be confirmed.
 
@@ -49,8 +49,9 @@ Help:
   This script can be used when creating a new CiviCRM extension release. It will
   update the info.xml, add composer dependencies (if any), make a git commit and
   a git tag for the release. Then the info.xml is updated again using
-  nextVersion, composer dependencies are removed, and the changes are commited.
-  The changes have to be pushed manually.
+  nextVersion, composer dependencies are removed, branch alias in composer.json
+  gets updated if on main/master branch, and the changes are commited. The
+  changes have to be pushed manually.
 
   The script has to be executed in the directory of the extension to release.
 EOD
