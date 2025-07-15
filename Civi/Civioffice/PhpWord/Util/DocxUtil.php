@@ -31,6 +31,8 @@ final class DocxUtil {
    * Runs won't be combined if there are elements between the runs. Thus, you
    * might want to drop annotations before.
    *
+   * Runs without content (i.e. no t element) are ignored.
+   *
    * See: https://ooxml.info/docs/17/17.3/17.3.2/17.3.2.25/#attributes
    *
    * @template T of string|array<string>
@@ -42,20 +44,49 @@ final class DocxUtil {
    * @see dropAnnotations()
    */
   public static function combineRuns(string|array $xml): string|array {
+    if (is_array($xml)) {
+      return array_map(__METHOD__, $xml);
+    }
+
     $rRegex = '<w:r(?: w:(?:rsidDel|rsidRPr|rsidR)="[^"]+")*>';
     $regex =
       '#'
       . $rRegex . '(?<not_t>(?:(?!<w:t>).)*)<w:t>(?<t1>(?:(?!</w:t>).)*)</w:t>[\s]*</w:r>[\s]*'
       . $rRegex . '\k<not_t><w:t>(?<t2>(?:(?!</w:t>).)*)</w:t>#s';
 
-    $xmlNew = $xml;
-    do {
-      /** @phpstan-var T $xmlNew */
-      $xml = $xmlNew;
-      $xmlNew = preg_replace($regex, '<w:r>$1<w:t>$2$3</w:t>', $xml);
-    } while ($xml !== $xmlNew);
+    // Find run that contains text.
+    $run1 = XmlUtil::findContainingXmlBlock($xml, '<w:t>', 'w:r');
+    while (FALSE !== $run1) {
+      // Find second run that contains text.
+      $run2 = XmlUtil::findContainingXmlBlock($xml, '<w:t>', 'w:r', $run1['end']);
+      if ($run2 === FALSE) {
+        break;
+      }
 
-    return $xmlNew;
+      $betweenRunsSlice = XmlUtil::getSlice($xml, $run1['end'], $run2['start']);
+      if (preg_match('/^\s*$/', $betweenRunsSlice) !== 1) {
+        // There's not only whitespace between the two runs.
+        $run1 = $run2;
+        continue;
+      }
+
+      $runsSlice = XmlUtil::getSlice($xml, $run1['start'], $run2['end']);
+      $runsCombinedIfPossible = preg_replace($regex, '<w:r>$1<w:t>$2$3</w:t>', $runsSlice);
+      if (NULL === $runsCombinedIfPossible) {
+        throw new \RuntimeException(preg_last_error_msg());
+      }
+
+      if ($runsSlice === $runsCombinedIfPossible) {
+        $run1 = $run2;
+      }
+      else {
+        $xml = XmlUtil::getSlice($xml, 0, $run1['start']) . $runsCombinedIfPossible
+          . XmlUtil::getSlice($xml, $run2['end']);
+        $run1['end'] = $run1['start'] + strlen($runsCombinedIfPossible);
+      }
+    }
+
+    return $xml;
   }
 
   /**
