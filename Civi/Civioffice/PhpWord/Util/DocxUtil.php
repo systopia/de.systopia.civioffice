@@ -59,7 +59,7 @@ final class DocxUtil {
     while (FALSE !== $run1) {
       // Find second run that contains text.
       $run2 = XmlUtil::findContainingXmlBlock($xml, '<w:t>', 'w:r', $run1['end']);
-      if ($run2 === FALSE) {
+      if (FALSE === $run2) {
         break;
       }
 
