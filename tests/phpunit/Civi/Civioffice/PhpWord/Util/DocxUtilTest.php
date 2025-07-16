@@ -175,6 +175,33 @@ final class DocxUtilTest extends TestCase {
       $expectedWithStyle,
     ];
 
+    // With flattened XML.
+    yield [XmlUtil::flattenXml(<<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="Normal"/>
+            </w:pPr>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:t>Foo {place.</w:t>
+            </w:r>
+            <w:r w:rsidR="0123456F">
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:t>holder}</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD),
+      XmlUtil::flattenXml($expectedWithStyle),
+    ];
+
     // Run with different rPr element shall not be changed.
     $xml = <<<EOD
       <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
@@ -200,6 +227,65 @@ final class DocxUtilTest extends TestCase {
       </w:document>
       EOD;
     yield [$xml, $xml];
+
+    // Test with a r element that contains no t element.
+    $noTElement = <<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:r>
+              <w:rPr>
+                <w:b/>
+              </w:rPr>
+            </w:r>
+            <w:r>
+              <w:rPr>
+                <w:i/>
+              </w:rPr>
+            </w:r>
+          </w:p>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="Normal"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Foo {place.</w:t>
+            </w:r>
+            <w:r>
+              <w:t>holder}</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD;
+
+    $noTElementExpected = <<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:r>
+              <w:rPr>
+                <w:b/>
+              </w:rPr>
+            </w:r>
+            <w:r>
+              <w:rPr>
+                <w:i/>
+              </w:rPr>
+            </w:r>
+          </w:p>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="Normal"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Foo {place.holder}</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD;
+    yield [$noTElement, $noTElementExpected];
   }
 
 }

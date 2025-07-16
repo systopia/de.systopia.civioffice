@@ -99,8 +99,13 @@ final class XmlUtil {
    *
    * @return false|array{start: int, end: int} FALSE if not found, otherwise array with start and end
    */
-  public static function findContainingXmlBlock(string $xml, string $search, string $blockType = 'w:p'): bool|array {
-    $pos = strpos($xml, $search);
+  public static function findContainingXmlBlock(
+    string $xml,
+    string $search,
+    string $blockType = 'w:p',
+    int $offset = 0
+  ): bool|array {
+    $pos = strpos($xml, $search, $offset);
     if (FALSE === $pos) {
       return FALSE;
     }
