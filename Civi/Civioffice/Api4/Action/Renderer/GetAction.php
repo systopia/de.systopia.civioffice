@@ -20,6 +20,7 @@ declare(strict_types = 1);
 namespace Civi\Civioffice\Api4\Action\Renderer;
 
 use Civi\Api4\Generic\BasicGetAction;
+use Civi\Civioffice\DocumentRenderer;
 
 final class GetAction extends BasicGetAction {
 
@@ -32,26 +33,27 @@ final class GetAction extends BasicGetAction {
    */
   protected function getRecords(): array {
     return array_map(
-      fn (\CRM_Civioffice_DocumentRenderer $renderer) => [
+      fn (DocumentRenderer $renderer) => [
         'name' => $renderer->getName(),
         'description' => $renderer->getDescription(),
         'uri' => $renderer->getURI(),
-        'supported_mime_types' => $renderer->getType()->getSupportedMimeTypes(),
-        'supported_output_mime_types' => $renderer->getType()->getSupportedOutputMimeTypes(),
+        'supported_mime_types' => $renderer->getSupportedInputMimeTypes(),
+        'supported_output_mime_types' => $renderer->getSupportedOutputMimeTypes(),
         'supported_output_file_types' => $this->getSupportedOutputFileTypes($renderer),
-        'renderer_type_uri' => $renderer->getType()->getURI(),
+        'renderer_type' => $renderer->getTypeName(),
+        'renderer_type_uri' => $renderer->getTypeName(),
         'is_active' => $renderer->isReady(),
       ],
-      \CRM_Civioffice_Configuration::getDocumentRenderers()
+      array_values(\CRM_Civioffice_Configuration::getDocumentRenderers())
     );
   }
 
   /**
    * @phpstan-return array<string, string>
    */
-  private function getSupportedOutputFileTypes(\CRM_Civioffice_DocumentRenderer $renderer): array {
+  private function getSupportedOutputFileTypes(DocumentRenderer $renderer): array {
     $fileTypes = [];
-    foreach ($renderer->getType()->getSupportedOutputMimeTypes() as $mimeType) {
+    foreach ($renderer->getSupportedOutputMimeTypes() as $mimeType) {
       $fileTypes[\CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mimeType)] = $mimeType;
     }
 

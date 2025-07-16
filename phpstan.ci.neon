@@ -6,6 +6,7 @@ parameters:
 		- ci/vendor/civicrm/civicrm-core/api/
 		- ci/vendor/civicrm/civicrm-core/CRM/
 		- ci/vendor/civicrm/civicrm-core/ext/
+		- ci/vendor/civicrm/civicrm-packages/HTML/
 	bootstrapFiles:
 		- ci/vendor/autoload.php
 	# Because we test with different versions in CI we have unmatched errors
