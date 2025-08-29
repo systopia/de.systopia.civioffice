@@ -48,17 +48,24 @@ final class DocxUtil {
       return array_map(__METHOD__, $xml);
     }
 
-    $rRegex = '<w:r(?: w:(?:rsidDel|rsidRPr|rsidR)="[^"]+")*>';
+    $rRegex = '<w:r(?: w:(rsidDel|rsidRPr|rsidR)="[^"]+")*>';
+    $tRegex = '<w:t(?: xml:space="[^"]*")?>';
+    // Matches if first w:t and second w:t have the same characters between w:r and w:t.
+    // <not_t>: Characters between first w:r and first w:t.
+    // <t1_tag>: The first opening w:t tag.
+    // <t1_content>: Content of first w:t.
+    // <t2_tag>: The second opening w:t tag.
+    // <t2_content>: Content of second w:t.
+    // <remaining>: Characters after second w:t. (Normally only white space and closing w:r tag.)
     $regex =
-      '#'
-      . $rRegex . '(?<not_t>(?:(?!<w:t>).)*)<w:t>(?<t1>(?:(?!</w:t>).)*)</w:t>[\s]*</w:r>[\s]*'
-      . $rRegex . '\k<not_t><w:t>(?<t2>(?:(?!</w:t>).)*)</w:t>#s';
+      "#$rRegex(?<not_t>(?:(?!$tRegex).)*)(?<t1_tag>$tRegex)(?<t1_content>(?:(?!</w:t>).)*)</w:t>\s*</w:r>\s*"
+      . "$rRegex\k<not_t>(?<t2_tag>$tRegex)(?<t2_content>(?:(?!</w:t>).)*)</w:t>(?<remaining>.*)#s";
 
     // Find run that contains text.
-    $run1 = XmlUtil::findContainingXmlBlock($xml, '<w:t>', 'w:r');
+    $run1 = XmlUtil::findContainingXmlBlock($xml, "/$tRegex/", 'w:r');
     while (FALSE !== $run1) {
       // Find second run that contains text.
-      $run2 = XmlUtil::findContainingXmlBlock($xml, '<w:t>', 'w:r', $run1['end']);
+      $run2 = XmlUtil::findContainingXmlBlock($xml, "/$tRegex/", 'w:r', $run1['end']);
       if (FALSE === $run2) {
         break;
       }
@@ -71,19 +78,33 @@ final class DocxUtil {
       }
 
       $runsSlice = XmlUtil::getSlice($xml, $run1['start'], $run2['end']);
-      $runsCombinedIfPossible = preg_replace($regex, '<w:r>$1<w:t>$2$3</w:t>', $runsSlice);
-      if (NULL === $runsCombinedIfPossible) {
+
+      $match = preg_match($regex, $runsSlice, $matches);
+      if (FALSE === $match) {
         throw new \RuntimeException(preg_last_error_msg());
       }
 
-      if ($runsSlice === $runsCombinedIfPossible) {
+      if (0 === $match) {
         $run1 = $run2;
+        continue;
+      }
+
+      $t1Content = $matches['t1_content'];
+      $t2Content = $matches['t2_content'];
+
+      if ($matches['t1_tag'] === $matches['t2_tag']) {
+        $tTag = $matches['t1_tag'];
       }
       else {
-        $xml = XmlUtil::getSlice($xml, 0, $run1['start']) . $runsCombinedIfPossible
-          . XmlUtil::getSlice($xml, $run2['end']);
-        $run1['end'] = $run1['start'] + strlen($runsCombinedIfPossible);
+        $t1Content = self::toPreserveSpace($matches['t1_tag'], $t1Content);
+        $t2Content = self::toPreserveSpace($matches['t2_tag'], $t2Content);
+        $tTag = '<w:t xml:space="preserve">';
       }
+
+      $runsCombined = "<w:r>{$matches['not_t']}$tTag$t1Content$t2Content</w:t>{$matches['remaining']}";
+
+      $xml = XmlUtil::getSlice($xml, 0, $run1['start']) . $runsCombined . XmlUtil::getSlice($xml, $run2['end']);
+      $run1['end'] = $run1['start'] + strlen($runsCombined);
     }
 
     return $xml;
@@ -199,6 +220,22 @@ final class DocxUtil {
     );
 
     return str_replace($emptyParagraph, '', $result);
+  }
+
+  private static function toPreserveSpace(string $tTag, string $tContent): string {
+    if ('<w:t xml:space="replace">' === $tTag) {
+      // Replace all white space characters with spaces.
+      // @phpstan-ignore return.type
+      return preg_replace('/\s/', ' ', $tContent);
+    }
+
+    if ('<w:t xml:space="preserve">' !== $tTag) {
+      // Collapse white space.
+      // @phpstan-ignore return.type
+      return preg_replace('/\s+/', ' ', $tContent);
+    }
+
+    return $tContent;
   }
 
 }
