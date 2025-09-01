@@ -76,6 +76,44 @@ final class DocxUtilTest extends TestCase {
       EOD,
     ];
 
+    // Run with xml:space attribute shall be combined.
+    yield [<<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:r>
+              <w:t xml:space="replace">
+       Foo</w:t>
+            </w:r>
+            <w:r>
+              <w:t xml:space="preserve">  {place.</w:t>
+            </w:r>
+            <w:r>
+              <w:t>holder</w:t>
+            </w:r>
+            <w:r>
+              <w:t xml:space="collapse">}  </w:t>
+            </w:r>
+            <w:r>
+              <w:t>bar  </w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD,
+      <<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:r>
+              <w:t xml:space="preserve">  Foo  {place.holder} bar </w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD,
+    ];
+
     $expectedWithStyle = <<<EOD
       <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
         <w:body>

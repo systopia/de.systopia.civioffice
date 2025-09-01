@@ -95,6 +95,9 @@ final class XmlUtil {
    *
    * Note that only the first instance of the search string will be found
    *
+   * @param string $search
+   *   Treated as regular expression if it starts and ends with the same
+   *   delimiter.
    * @param string $blockType XML tag for block
    *
    * @return false|array{start: int, end: int} FALSE if not found, otherwise array with start and end
@@ -105,17 +108,19 @@ final class XmlUtil {
     string $blockType = 'w:p',
     int $offset = 0
   ): bool|array {
-    $pos = strpos($xml, $search, $offset);
-    if (FALSE === $pos) {
+    $pos = StringUtil::findPos($xml, $search, $offset);
+    if (NULL === $pos) {
       return FALSE;
     }
+
     $start = static::findXmlBlockStart($xml, $pos, $blockType);
     if (0 > $start) {
       return FALSE;
     }
+
     $end = static::findXmlBlockEnd($xml, $start, $blockType);
     // If not found or if resulting string does not contain the string we are searching for
-    if (0 > $end || strstr(static::getSlice($xml, $start, $end), $search) === FALSE) {
+    if (0 > $end || StringUtil::findPos(static::getSlice($xml, $start, $end), $search) === NULL) {
       return FALSE;
     }
 
