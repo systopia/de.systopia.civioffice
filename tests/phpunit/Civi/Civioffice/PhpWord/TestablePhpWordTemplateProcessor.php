@@ -41,6 +41,7 @@ final class TestablePhpWordTemplateProcessor extends PhpWordTemplateProcessor {
    * @return list<string>
    */
   public function getHeaders(): array {
+    // @phpstan-ignore return.type
     return $this->tempDocumentHeaders;
   }
 
@@ -48,6 +49,7 @@ final class TestablePhpWordTemplateProcessor extends PhpWordTemplateProcessor {
    * @return list<string>
    */
   public function getFooters(): array {
+    // @phpstan-ignore return.type
     return $this->tempDocumentFooters;
   }
 

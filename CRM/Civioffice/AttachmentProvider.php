@@ -52,7 +52,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         $output_mimetypes = null;
         $document_renderer_list = [];
         foreach ($config->getDocumentRenderers(true) as $dr) {
-            foreach ($dr->getType()->getSupportedOutputMimeTypes() as $mime_type) {
+            foreach ($dr->getSupportedOutputMimeTypes() as $mime_type) {
                 $output_mimetypes[$mime_type] = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
             }
             $document_renderer_list[$dr->getURI()] = $dr->getName();
@@ -73,7 +73,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
             foreach ($document_store->getDocuments() as $document) {  // todo: recursive
                 /** @var CRM_Civioffice_Document $document */
                 foreach ($config->getDocumentRenderers(true) as $dr) {
-                    foreach ($dr->getType()->getSupportedMimeTypes() as $mime_type) {
+                    foreach ($dr->getSupportedInputMimeTypes() as $mime_type) {
                         // TODO: Mimetype checks could be handled differently in the future: https://github.com/systopia/de.systopia.civioffice/issues/2
                         if (CRM_Civioffice_MimeType::hasSpecificFileNameExtension($document->getName(), $mime_type)) {
                             // only return if mimetype matches with supported mimetypes

@@ -13,6 +13,8 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+use Civi\Civioffice\DocumentRendererTypeContainer;
+use Civi\Civioffice\DocumentRendererTypeInterface;
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
@@ -46,7 +48,7 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form
             }
         }
 
-        $this->assign('document_renderer_types', CRM_Civioffice_Configuration::getDocumentRendererTypes());
+        $this->assign('document_renderer_types', DocumentRendererTypeContainer::getInstance()->getTitles());
 
         foreach (CRM_Civioffice_LiveSnippets::get() as $live_snippet) {
             $live_snippet['current_content'] = Civi::contactSettings()->get('civioffice.live_snippets.' . $live_snippet['name']);
