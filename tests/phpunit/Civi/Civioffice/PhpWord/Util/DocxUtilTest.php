@@ -76,6 +76,107 @@ final class DocxUtilTest extends TestCase {
       EOD,
     ];
 
+    // Run without rPr elements and additional content in first run shall be combined.
+    yield [<<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:r>
+              <w:tab/>
+              <w:t>Foo {place.</w:t>
+            </w:r>
+            <w:r>
+              <w:t>holder</w:t>
+            </w:r>
+            <w:r>
+              <w:t>}</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD,
+      <<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:r>
+              <w:tab/>
+              <w:t>Foo {place.holder}</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD,
+    ];
+
+    // Run with rPr elements and additional content in first run shall be combined.
+    yield [<<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:tab/>
+              <w:t>Foo {place.</w:t>
+            </w:r>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:t>holder</w:t>
+            </w:r>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:t>}</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD,
+      <<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:tab/>
+              <w:t>Foo {place.holder}</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD,
+    ];
+
+    // Run with additional content in follow-up runs shall not be combined.
+    $withAdditionalContentInAllRuns = <<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:r>
+              <w:tab/>
+              <w:t>Foo {place.</w:t>
+            </w:r>
+            <w:r>
+              <w:tab/>
+              <w:t>holder</w:t>
+            </w:r>
+            <w:r>
+              <w:tab/>
+              <w:t>}</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD;
+    yield [$withAdditionalContentInAllRuns, $withAdditionalContentInAllRuns];
+
     // Run with xml:space attribute shall be combined.
     yield [<<<EOD
       <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">

@@ -24,16 +24,18 @@ final class DocxUtil {
 
   /**
    * Combines runs (element r) that have no visible impact, i.e. have the same
-   * properties as the previous run (precisely: have identical content before
-   * t element), but only differ in identifiers used to track the editing session
-   * (attributes rsidDel, rsidRPr, and rsidR).
+   * properties as the previous run, but only differ in identifiers used to
+   * track the editing session (attributes rsidDel, rsidRPr, and rsidR).
    *
    * Runs won't be combined if there are elements between the runs. Thus, you
    * might want to drop annotations before.
    *
    * Runs without content (i.e. no t element) are ignored.
    *
-   * See: https://ooxml.info/docs/17/17.3/17.3.2/17.3.2.25/#attributes
+   * See:
+   * 17.3.2 Run https://ooxml.info/docs/17/17.3/17.3.2/
+   * 17.3.3 Run Content https://ooxml.info/docs/17/17.3/17.3.3/
+   * 17.3.2.25 r Attributes https://ooxml.info/docs/17/17.3/17.3.2/17.3.2.25/#attributes
    *
    * @template T of string|array<string>
    *
@@ -49,17 +51,22 @@ final class DocxUtil {
     }
 
     $rRegex = '<w:r(?: w:(rsidDel|rsidRPr|rsidR)="[^"]+")*>';
+    $rPrRegex = '<w:rPr>(?:(?!</w:rPr>).)*</w:rPr>';
     $tRegex = '<w:t(?: xml:space="[^"]*")?>';
-    // Matches if first w:t and second w:t have the same characters between w:r and w:t.
-    // <not_t>: Characters between first w:r and first w:t.
+    // Matches if two w:r with w:t have the same w:rPr (if any). The first w:r
+    // may have content before w:t the second one, must not have content before w:t.
+    // <whitespace>: Whitespace in first w:r before first element (used to preserve whitespace in the result).
+    // <rPr>: The w:rPr element (if any).
+    // <not_t>: Content in the first w:r before w:t (if any).
     // <t1_tag>: The first opening w:t tag.
     // <t1_content>: Content of first w:t.
     // <t2_tag>: The second opening w:t tag.
     // <t2_content>: Content of second w:t.
     // <remaining>: Characters after second w:t. (Normally only white space and closing w:r tag.)
     $regex =
-      "#$rRegex(?<not_t>(?:(?!$tRegex).)*)(?<t1_tag>$tRegex)(?<t1_content>(?:(?!</w:t>).)*)</w:t>\s*</w:r>\s*"
-      . "$rRegex\k<not_t>(?<t2_tag>$tRegex)(?<t2_content>(?:(?!</w:t>).)*)</w:t>(?<remaining>.*)#s";
+      "#$rRegex(?<whitespace>\s*)(?<rPr>(?:$rPrRegex)?)(?<not_t>(?:(?!$tRegex).)*)"
+      . "(?<t1_tag>$tRegex)(?<t1_content>(?:(?!</w:t>).)*)</w:t>\s*</w:r>\s*"
+      . "$rRegex\s*\k<rPr>\s*(?<t2_tag>$tRegex)(?<t2_content>(?:(?!</w:t>).)*)</w:t>(?<remaining>.*)#s";
 
     // Find run that contains text.
     $run1 = XmlUtil::findContainingXmlBlock($xml, "/$tRegex/", 'w:r');
@@ -101,7 +108,8 @@ final class DocxUtil {
         $tTag = '<w:t xml:space="preserve">';
       }
 
-      $runsCombined = "<w:r>{$matches['not_t']}$tTag$t1Content$t2Content</w:t>{$matches['remaining']}";
+      $runsCombined = "<w:r>{$matches['whitespace']}{$matches['rPr']}{$matches['not_t']}"
+      . "$tTag$t1Content$t2Content</w:t>{$matches['remaining']}";
 
       $xml = XmlUtil::getSlice($xml, 0, $run1['start']) . $runsCombined . XmlUtil::getSlice($xml, $run2['end']);
       $run1['end'] = $run1['start'] + strlen($runsCombined);
