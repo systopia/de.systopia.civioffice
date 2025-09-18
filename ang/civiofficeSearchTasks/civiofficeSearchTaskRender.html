@@ -69,11 +69,11 @@
     </p>
     <div class="buttons text-right">
       <button type="submit" class="btn btn-primary" ng-disabled="renderForm.$invalid || $ctrl.run">
-        <i class="crm-i fa-{{ $ctrl.run ? 'spin fa-spinner' : 'check' }}"></i>
+        <i class="crm-i fa-{{ $ctrl.run ? 'spin fa-spinner' : 'check' }}" role="img" aria-hidden="true"></i>
         {{:: model.ids.length === 1 ? ts('Create Document') : ts('Create %1 Documents', {1: model.ids.length}) }}
       </button>
       <button type="button" ng-click="$ctrl.cancel()" class="btn btn-danger" ng-hide="$ctrl.run">
-        <i class="crm-i fa-times"></i>
+        <i class="crm-i fa-times" role="img" aria-hidden="true"></i>
         {{:: ts('Cancel') }}
       </button>
     </div>
