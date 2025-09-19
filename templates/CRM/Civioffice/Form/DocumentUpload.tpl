@@ -38,8 +38,8 @@
                 <td>{$document.size}</td>
                 <td>{$document.upload_date}</td>
                 <td>
-                  <span><a href="{$document.delete_link}" class="action-item crm-hover-button view-contact no-popup" title="{ts}Delete File{/ts}">{ts}Delete{/ts}</a></span>
-                  <span><a href="{$document.download_link}" class="action-item crm-hover-button view-contact no-popup" title="{ts}Download File{/ts}">{ts}Download{/ts}</a></span>
+                  <span><a href="{$document.delete_link}" class="action-item crm-hover-button view-contact no-popup" title="{ts escape='htmlattribute'}Delete File{/ts}">{ts}Delete{/ts}</a></span>
+                  <span><a href="{$document.download_link}" class="action-item crm-hover-button view-contact no-popup" title="{ts escape='htmlattribute'}Download File{/ts}">{ts}Download{/ts}</a></span>
                 </td>
               </tr>
             {/foreach}
