@@ -180,10 +180,10 @@
               <td>
                 <a class="button crm-popup crm-small-popup"
                    href="{crmURL p='civicrm/admin/civioffice/settings/livesnippet' q="reset=1&id=`$live_snippet_id`&action=update"}"
-                   title="{ts}Edit Live Snippet{/ts}">{ts}Edit{/ts}</a>
+                   title="{ts escape='htmlattribute'}Edit Live Snippet{/ts}">{ts}Edit{/ts}</a>
                 <a class="button crm-popup crm-small-popup"
                    href="{crmURL p='civicrm/admin/civioffice/settings/livesnippet' q="reset=1&id=`$live_snippet_id`&action=delete"}"
-                   title="{ts}Edit Live Snippet{/ts}">{ts}Delete{/ts}</a>
+                   title="{ts escape='htmlattribute'}Edit Live Snippet{/ts}">{ts}Delete{/ts}</a>
               </td>
 
             </tr>
