@@ -32,7 +32,7 @@ class RenderQueueRunner {
    *
    * @see \CRM_Queue_Runner::runAllViaWeb()
    */
-  public function runViaWebRedirect(RenderQueue $queue, string $returnUrl = NULL): void {
+  public function runViaWebRedirect(RenderQueue $queue, ?string $returnUrl = NULL): void {
     $this->createRunner($queue, $returnUrl)->runAllViaWeb();
   }
 
@@ -40,7 +40,7 @@ class RenderQueueRunner {
    * Like runViaWebRedirect(), but returns the URL instead of sending an HTTP
    * redirect response.
    */
-  public function runViaWebUrl(RenderQueue $queue, string $returnUrl = NULL): string {
+  public function runViaWebUrl(RenderQueue $queue, ?string $returnUrl = NULL): string {
     $runner = $this->createRunner($queue, $returnUrl);
     // @phpstan-ignore-next-line
     $_SESSION['queueRunners'][$runner->qrid] = serialize($runner);

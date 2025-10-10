@@ -68,6 +68,7 @@ final class GetAction extends AbstractGetAction {
    * @phpstan-return list<string>
    */
   private function buildOptionValueSelect(): array {
+    /** @var list<string> $fieldNames */
     $fieldNames = CiviofficeLiveSnippet::getFields(FALSE)
       ->addSelect('name')
       ->execute()

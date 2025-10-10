@@ -124,7 +124,7 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface
      * @param boolean $only_show_active
      *   Whether to return only active objects.
      *
-     * @return \CRM_Civioffice_DocumentRenderer[]
+     * @return list<CRM_Civioffice_DocumentRenderer>
      *   An array of document renderers.
      *
      * @throws \Exception

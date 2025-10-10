@@ -141,6 +141,8 @@ final class XmlUtilTest extends TestCase {
       </w:document>
       EOD;
 
+    // Don't know why phpstan reports these errors.
+    // @phpstan-ignore staticMethod.impossibleType, argument.unresolvableType
     static::assertSame($expected, XmlUtil::dropEmptyElement($xml2, 'w:i'));
   }
 

@@ -150,8 +150,10 @@ function civioffice_civicrm_permission(array &$permissions): void {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_navigationMenu
  *
  * @phpstan-param array<string, array<string, mixed>> $menu
+ * @param-out array<string, array<string, mixed>> $menu
  */
 function civioffice_civicrm_navigationMenu(array &$menu): void {
+  // @phpstan-ignore paramOut.type
   _civioffice_civix_insert_navigation_menu($menu, 'Administer/Communications', [
     'label' => E::ts('CiviOffice Settings'),
     'name' => 'civioffice_settings',
@@ -161,6 +163,7 @@ function civioffice_civicrm_navigationMenu(array &$menu): void {
     'separator' => 0,
     'icon' => 'crm-i fa-file-text',
   ]);
+  // @phpstan-ignore paramOut.type
   _civioffice_civix_insert_navigation_menu($menu, '', [
     'label' => E::ts('CiviOffice'),
     'name' => 'civioffice',
@@ -169,6 +172,7 @@ function civioffice_civicrm_navigationMenu(array &$menu): void {
     'separator' => 0,
     'icon' => 'crm-i fa-file-text',
   ]);
+  // @phpstan-ignore paramOut.type
   _civioffice_civix_insert_navigation_menu($menu, 'civioffice', [
     'label' => E::ts('CiviOffice Settings'),
     'name' => 'civioffice_settings',
@@ -178,6 +182,7 @@ function civioffice_civicrm_navigationMenu(array &$menu): void {
     'separator' => 0,
     'icon' => 'crm-i fa-cogs',
   ]);
+  // @phpstan-ignore paramOut.type
   _civioffice_civix_insert_navigation_menu($menu, 'civioffice', [
     'label' => E::ts('Upload Documents'),
     'name' => 'civioffice_document_upload',
@@ -187,6 +192,7 @@ function civioffice_civicrm_navigationMenu(array &$menu): void {
     'separator' => 0,
     'icon' => 'crm-i fa-upload',
   ]);
+  // @phpstan-ignore paramOut.type
   _civioffice_civix_insert_navigation_menu($menu, 'civioffice', [
     'label' => E::ts('Available Tokens'),
     'name' => 'civioffice_tokens',

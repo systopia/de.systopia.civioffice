@@ -41,6 +41,7 @@ final class GetFieldsAction extends BasicGetFieldsAction {
       ->addWhere('name', 'IN', ['label', 'name', 'description'])
       ->addValue('option_group_id:name', 'civioffice_live_snippets');
 
+    /** @var list<array<string, array<string, scalar>|array<scalar>|scalar|null>> $fields */
     $fields = $action->execute()->getArrayCopy();
 
     $fields[] = [

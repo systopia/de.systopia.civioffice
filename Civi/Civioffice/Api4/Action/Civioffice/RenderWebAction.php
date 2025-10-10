@@ -132,6 +132,7 @@ class RenderWebAction extends AbstractAction {
    */
   public function _run(Result $result): void {
     if ($this->getCheckPermissions()) {
+      // @phpstan-ignore assign.propertyType
       $this->entityIds = civicrm_api4($this->getEntityType(), 'get', [
         'select' => ['id'],
         'where' => [['id', 'IN', $this->entityIds]],
