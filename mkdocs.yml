@@ -1,7 +1,8 @@
 site_name: CiviOffice
-repo_url: https://github.com/systopia/de.systopia.civioffice
 site_description: 'A guide for the CiviOffice.'
-site_author: 'systopia'
+site_author: SYSTOPIA
+repo_url: https://github.com/systopia/de.systopia.civioffice
+
 theme:
   name: material
 
@@ -27,7 +28,7 @@ markdown_extensions:
   - def_list
   - codehilite
   - toc:
-      permalink: True
+      permalink: true
   - pymdownx.superfences
   - pymdownx.inlinehilite
   - pymdownx.tilde

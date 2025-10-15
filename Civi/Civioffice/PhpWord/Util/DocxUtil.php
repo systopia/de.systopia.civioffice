@@ -47,6 +47,7 @@ final class DocxUtil {
    */
   public static function combineRuns(string|array $xml): string|array {
     if (is_array($xml)) {
+      // @phpstan-ignore return.type
       return array_map(__METHOD__, $xml);
     }
 
@@ -115,6 +116,7 @@ final class DocxUtil {
       $run1['end'] = $run1['start'] + strlen($runsCombined);
     }
 
+    // @phpstan-ignore return.type
     return $xml;
   }
 

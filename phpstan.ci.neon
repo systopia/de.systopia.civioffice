@@ -3,15 +3,17 @@ includes:
 
 parameters:
 	scanDirectories:
-		- ci/vendor/civicrm/civicrm-core/api/
-		- ci/vendor/civicrm/civicrm-core/CRM/
-		- ci/vendor/civicrm/civicrm-core/ext/
+		- vendor/civicrm/civicrm-core/api/
+		- vendor/civicrm/civicrm-core/CRM/
+		- vendor/civicrm/civicrm-core/ext/
 	bootstrapFiles:
-		- ci/vendor/autoload.php
-	# Because we test with different versions in CI we have unmatched errors
+		- vendor/autoload.php
+	# Because we test with different versions in CI we may have unmatched errors.
 	reportUnmatchedIgnoredErrors: false
 	ignoreErrors:
 		# Errors we get when using "prefer-lowest"
+
+		# Required with symfony/event-dispatcher <4.4.27
 		- '#::getSubscribedEvents\(\) return type has no value type specified in iterable type array.$#'
 		-
 			message: '#Dead catch - CRM_Core_Exception is never thrown in the try block.#'

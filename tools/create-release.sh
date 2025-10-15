@@ -28,7 +28,7 @@ readonly SCRIPT_NAME=$(basename "$0")
 
 usage() {
   cat <<EOD
-Usage: $SCRIPT_NAME [-h|--help] [--dry-run] [--no-composer] [version] [develStage] [nextVersion]
+Usage: $SCRIPT_NAME [-h|--help] [--dry-run] [--no-composer] [--no-pot-update] [version] [develStage] [nextVersion]
 
 Arguments:
   version  Version of the release (e.g. 1.2.3 or 1.2.3-alpha1)
@@ -42,6 +42,7 @@ All values that are determined programmatically have to be confirmed.
 
 Options:
   --no-composer  Do not add composer dependencies.
+  --no-pot-update  Do not update .pot file.
   --dry-run  Do nothing, just print what would be done.
   -h|--help  Show this help.
 
@@ -52,6 +53,11 @@ Help:
   nextVersion, composer dependencies are removed, branch alias in composer.json
   gets updated if on main/master branch, and the changes are commited. The
   changes have to be pushed manually.
+
+  Before this is done, the .pot file will be updated if existent. If it differs
+  from the currently commited one, no further changes will be made and you must
+  first update the translation and push the changes to the repository. This can
+  be disabled with the option --no-pot-update if necessary.
 
   The script has to be executed in the directory of the extension to release.
 EOD
@@ -243,9 +249,22 @@ validateMinPhpVersion() {
   fi
 }
 
+updatePot() {
+  local -r potFiles=(l10n/*.pot)
+  if [ ${#potFiles[@]} -ge 1 ] && [ -e "${potFiles[0]}" ] && [ -x tools/update-pot.sh ]; then
+    echo "Update .pot file"
+    tools/update-pot.sh
+    if ! git diff --no-patch --exit-code "${potFiles[*]}"; then
+      echo ".pot file has changed. Please update the translation and push changes to the repository." >&2
+      exit 1
+    fi
+  fi
+}
+
 main() {
   DRY_RUN=0
   local noComposer=0
+  local noPotUpdate=0
 
   while [ $# -gt 0 ]; do
     case $1 in
@@ -261,6 +280,11 @@ main() {
 
       --no-composer)
         noComposer=1
+        shift
+        ;;
+
+      --no-pot-update)
+        noPotUpdate=1
         shift
         ;;
 
@@ -324,6 +348,10 @@ main() {
   if [ $noComposer -eq 0 ]; then
     local -r minPhpVersion=$(getMinPhpVersion)
     validateMinPhpVersion "$minPhpVersion"
+  fi
+
+  if [ $noPotUpdate -eq 0 ]; then
+    updatePot
   fi
 
   local -r releaseDate=$(date +%Y-%m-%d)
