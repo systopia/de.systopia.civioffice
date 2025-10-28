@@ -186,14 +186,6 @@ msgstr "Speichern"
 msgid "Delete"
 msgstr "Löschen"
 
-#: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
-msgid "My Documents"
-msgstr "Meine Dokumente"
-
-#: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
-msgid "Shared Documents"
-msgstr "Geteilte Dokumente"
-
 #: CRM/Civioffice/Form/DocumentUpload.php
 msgid "File \"%1\" has been deleted."
 msgstr "Datei \"%1\" wurde gelöscht."
@@ -231,6 +223,14 @@ msgstr "Datei \"'%1\" wurde hochgeladen."
 #: CRM/Civioffice/Form/DocumentUpload.php
 msgid "Document Stored"
 msgstr "Dokument gespeichert"
+
+#: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
+msgid "My Documents"
+msgstr "Meine Dokumente"
+
+#: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
+msgid "Shared Documents"
+msgstr "Geteilte Dokumente"
 
 #: CRM/Civioffice/Form/Download.php
 msgid "CiviOffice - Download"
@@ -429,6 +429,14 @@ msgstr "Renderer-Typ"
 #: Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php
 msgid "Is Active"
 msgstr "Ist aktiv"
+
+#: Civi/Civioffice/DocumentRendererType/CollaboraOnlineRendererType.php
+msgid "URL to Collabora Online"
+msgstr "URL zu Collabora Online"
+
+#: Civi/Civioffice/DocumentRendererType/CollaboraOnlineRendererType.php
+msgid "Invalid value"
+msgstr "Ungültiger Wert"
 
 #: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
 msgid "Path to the <code>unoconv</code> executable"
@@ -637,10 +645,31 @@ msgstr "Dokumente hochladen"
 msgid "Available Tokens"
 msgstr "Verfügbare Token"
 
+#: settings/civioffice.setting.php
+msgid "CiviOffice renderers."
+msgstr "CiviOffice-Renderer."
+
+#: settings/civioffice.setting.php
+msgid "CiviOffice Renderers"
+msgstr "CiviOffice-Renderer"
+
 #: templates/CRM/Civioffice/Form/DocumentFromSingleContact.tpl
 #: templates/CRM/Civioffice/Form/Task/CreateDocumentsTrait.tpl
 msgid "Activity"
 msgstr "Aktivität"
+
+#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl
+msgid "Are you sure you want to delete this Document Renderer?"
+msgstr "Sind Sie sicher, dass Sie diesen Dokument-Renderer löschen möchten?"
+
+#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl
+#: templates/CRM/Civioffice/Form/LiveSnippet.tpl
+msgid "This action cannot be undone."
+msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
+
+#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/CollaboraOnline.tpl
+msgid "Please provide the URL to your Collabora Online system."
+msgstr "Bitte geben sie dir URL zu Ihrem Collabora Online System an."
 
 #: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
 msgid "Please provide the path of your Unoconv binary."
@@ -673,15 +702,6 @@ msgstr ""
 "Webserver ein <a href=\"https://systemd.io/TEMPORARY_DIRECTORIES/\" "
 "target=\"_blank\">privates temporäres Verzeichnis</a> verwendet, muss ein "
 "anderes Verzeichnis konfiguriert werden."
-
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl
-msgid "Are you sure you want to delete this Document Renderer?"
-msgstr "Sind Sie sicher, dass Sie diesen Dokument-Renderer löschen möchten?"
-
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl
-#: templates/CRM/Civioffice/Form/LiveSnippet.tpl
-msgid "This action cannot be undone."
-msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
 #: templates/CRM/Civioffice/Form/DocumentUpload.tpl
 msgid "Available Documents"

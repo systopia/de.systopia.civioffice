@@ -21,8 +21,10 @@ declare(strict_types = 1);
 /** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
 use Civi\Civioffice\Api4\Action\Civioffice\RenderWebAction;
+use Civi\Civioffice\Collabora\CoolConvertClientFactory;
 use Civi\Civioffice\DependencyInjection\Compiler\Api4ActionPropertyAutowireFixPass;
 use Civi\Civioffice\DependencyInjection\Compiler\DocumentRendererTypePass;
+use Civi\Civioffice\DocumentRendererType\CollaboraOnlineRendererType;
 use Civi\Civioffice\DocumentRendererType\LocalUnoconvRendererType;
 use Civi\Civioffice\DocumentRendererTypeInterface;
 use Civi\Civioffice\EventSubscriber\ActivityCiviOfficeTokenSubscriber;
@@ -62,6 +64,10 @@ $container->autowire(RenderWebAction::class)
   ->setShared(TRUE);
 
 $container->autowire(LocalUnoconvRendererType::class)
+  ->addTag(DocumentRendererTypeInterface::class);
+
+$container->autowire(CoolConvertClientFactory::class);
+$container->autowire(CollaboraOnlineRendererType::class)
   ->addTag(DocumentRendererTypeInterface::class);
 
 $container->autowire(PhpWordTokenReplacer::class);

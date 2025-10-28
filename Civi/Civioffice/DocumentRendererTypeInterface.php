@@ -76,6 +76,8 @@ interface DocumentRendererTypeInterface {
 
   /**
    * @phpstan-param array<string, mixed> $configuration
+   *
+   * @throws \CRM_Core_Exception
    */
   public function render(array $configuration, string $inputFile, string $outputFile, string $mimeType): void;
 
