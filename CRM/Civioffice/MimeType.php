@@ -28,7 +28,7 @@ abstract class CRM_Civioffice_MimeType
      *
      * @return string
      *   file ending like docx or pdf
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public static function mapMimeTypeToFileExtension($mime_type): string
     {
@@ -36,7 +36,7 @@ abstract class CRM_Civioffice_MimeType
         if (isset($mapping[$mime_type])) {
             return $mapping[$mime_type];
         } else {
-            throw new Exception(sprintf('Missing implementation for MIME type "%s"', $mime_type));
+            throw new InvalidArgumentException(sprintf('Missing implementation for MIME type "%s"', $mime_type));
         }
     }
 
