@@ -132,10 +132,10 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
 
           if (!isset($this->documentRenderer)) {
               $this->documentRenderer = new DocumentRenderer(
-                $this->documentRendererType->getURI() . '-' . count(CRM_Civioffice_Configuration::getDocumentRenderers()),
+                $this->documentRendererType::getName() . '-' . count(CRM_Civioffice_Configuration::getDocumentRenderers()),
                   $values['name'],
                   [
-                      'type' => $this->documentRendererType->getURI(),
+                      'type' => $this->documentRendererType::getName(),
                   ]
               );
           }
