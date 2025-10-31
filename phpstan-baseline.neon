@@ -1086,12 +1086,6 @@ parameters:
 			path: CRM/Civioffice/Tokens.php
 
 		-
-			message: '#^Parameter \#3 \$tokenValue of method Civi\\Token\\TokenRow\:\:tokens\(\) expects array\|Brick\\Money\\Money\|DateTime\|string\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: CRM/Civioffice/Tokens.php
-
-		-
 			message: '#^Access to an undefined property object\:\:\$value\.$#'
 			identifier: property.notFound
 			count: 1

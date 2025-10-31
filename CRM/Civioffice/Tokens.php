@@ -47,6 +47,7 @@ class CRM_Civioffice_Tokens extends AbstractTokenSubscriber {
       $row->format($processor_context['format'] ?? 'text/html');
     }
 
+    // @phpstan-ignore argument.type
     $row->tokens($entity, $field, $prefetch[$token_type][$token_name] ?? '');
   }
 
