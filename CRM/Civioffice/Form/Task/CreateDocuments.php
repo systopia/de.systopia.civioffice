@@ -13,19 +13,18 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
-use CRM_Civioffice_ExtensionUtil as E;
+declare(strict_types = 1);
 
 /**
  * Contact search task: Create CiviOffice documents for selected contacts.
  */
-class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task
-{
-    use CRM_Civioffice_Form_Task_CreateDocumentsTrait;
+class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task {
+  use CRM_Civioffice_Form_Task_CreateDocumentsTrait;
 
-    public function preProcess()
-    {
-        parent::preProcess();
-        $this->entityType = 'Contact';
-        $this->entityIds = $this->_contactIds;
-    }
+  public function preProcess() {
+    parent::preProcess();
+    $this->entityType = 'Contact';
+    $this->entityIds = $this->_contactIds;
+  }
+
 }

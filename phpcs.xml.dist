@@ -5,10 +5,11 @@
 
     <file>api</file>
     <file>Civi</file>
-    <!-- <file>CRM</file> -->
+    <file>CRM</file>
     <file>tests</file>
     <file>civioffice.php</file>
 
+    <exclude-pattern>/CRM/Civioffice/CustomData.php</exclude-pattern>
     <exclude-pattern>/CRM/Civioffice/DAO/.*\.php$</exclude-pattern>
 
     <arg name="extensions" value="php"/>

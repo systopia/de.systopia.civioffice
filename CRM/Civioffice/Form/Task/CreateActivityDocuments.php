@@ -13,19 +13,18 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
-use CRM_Civioffice_ExtensionUtil as E;
+declare(strict_types = 1);
 
 /**
  * Membership search task: Create CiviOffice documents for selected memberships.
  */
-class CRM_Civioffice_Form_Task_CreateActivityDocuments extends CRM_Activity_Form_Task
-{
-    use CRM_Civioffice_Form_Task_CreateDocumentsTrait;
+class CRM_Civioffice_Form_Task_CreateActivityDocuments extends CRM_Activity_Form_Task {
+  use CRM_Civioffice_Form_Task_CreateDocumentsTrait;
 
-    public function preProcess()
-    {
-        parent::preProcess();
-        $this->entityType = 'Activity';
-        $this->entityIds = $this->_activityHolderIds;
-    }
+  public function preProcess() {
+    parent::preProcess();
+    $this->entityType = 'Activity';
+    $this->entityIds = $this->_activityHolderIds;
+  }
+
 }

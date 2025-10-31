@@ -13,19 +13,18 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
-use CRM_Civioffice_ExtensionUtil as E;
+declare(strict_types = 1);
 
 /**
  * Contribution search task: Create CiviOffice documents for selected contributions.
  */
-class CRM_Civioffice_Form_Task_CreateContributionDocuments extends CRM_Contribute_Form_Task
-{
-    use CRM_Civioffice_Form_Task_CreateDocumentsTrait;
+class CRM_Civioffice_Form_Task_CreateContributionDocuments extends CRM_Contribute_Form_Task {
+  use CRM_Civioffice_Form_Task_CreateDocumentsTrait;
 
-    public function preProcess()
-    {
-        parent::preProcess();
-        $this->entityType = 'Contribution';
-        $this->entityIds = $this->_contributionIds;
-    }
+  public function preProcess() {
+    parent::preProcess();
+    $this->entityType = 'Contribution';
+    $this->entityIds = $this->_contributionIds;
+  }
+
 }

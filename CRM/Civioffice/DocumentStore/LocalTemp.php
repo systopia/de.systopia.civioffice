@@ -13,121 +13,117 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
  * Document store based on a local folder
  */
-class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStore_Local
-{
-    public function __construct($temp_folder_path = null)
-    {
-        // create tmp folder
-        if (empty($temp_folder_path)) {
-            // create temp folder with random postfix like: var/civioffice/temp/civioffice_202_6050ec8acc7a5
+class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStore_Local {
 
-            // fixme: remove last slash
-            // todo: use entry from settings
-            $user_selectable_path = Civi::settings()->get(self::LOCAL_TEMP_PATH_SETTINGS_KEY);
-            $current_user_id = CRM_Core_Session::singleton()->getLoggedInContactId();
+  public function __construct($temp_folder_path = NULL) {
+    // create tmp folder
+    if (empty($temp_folder_path)) {
+      // create temp folder with random postfix like: var/civioffice/temp/civioffice_202_6050ec8acc7a5
 
-            $temp_folder_path = $user_selectable_path . DIRECTORY_SEPARATOR . uniqid("civioffice_{$current_user_id}_");
-            if (file_exists($temp_folder_path)) {
-                unlink($temp_folder_path);
-                Civi::log()->debug("CiviOffice: Temp folder already exists. Deleting and trying to create a new one");
-            }
-            mkdir($temp_folder_path, 0777, true);
-        }
-        parent::__construct("tmp::{$temp_folder_path}", E::ts("Temporary Files"), false, false);
-        $this->base_folder = $temp_folder_path;
-        Civi::log()->debug("CiviOffice: Created local temp document store at: " . $this->base_folder);
+      // fixme: remove last slash
+      // todo: use entry from settings
+      $user_selectable_path = Civi::settings()->get(self::LOCAL_TEMP_PATH_SETTINGS_KEY);
+      $current_user_id = CRM_Core_Session::singleton()->getLoggedInContactId();
+
+      $temp_folder_path = $user_selectable_path . DIRECTORY_SEPARATOR . uniqid("civioffice_{$current_user_id}_");
+      if (file_exists($temp_folder_path)) {
+        unlink($temp_folder_path);
+        Civi::log()->debug('CiviOffice: Temp folder already exists. Deleting and trying to create a new one');
+      }
+      mkdir($temp_folder_path, 0777, TRUE);
     }
+    parent::__construct("tmp::{$temp_folder_path}", E::ts('Temporary Files'), FALSE, FALSE);
+    $this->base_folder = $temp_folder_path;
+    Civi::log()->debug('CiviOffice: Created local temp document store at: ' . $this->base_folder);
+  }
 
-    /**
-     * Create an new temporary file
-     *
-     * @param string $file_name
-     * @param null $content
-     *
-     * @return CRM_Civioffice_Document_LocalTempfile
-     *   new temp file
-     * @throws \Exception
-     */
-    public function addFile(
+  /**
+   * Create an new temporary file
+   *
+   * @param string $file_name
+   * @param null $content
+   *
+   * @return CRM_Civioffice_Document_LocalTempfile
+   *   new temp file
+   * @throws \Exception
+   */
+  public function addFile(
         string $file_name,
-        $content = null
+        $content = NULL
     ): CRM_Civioffice_Document_LocalTempfile {
-        $file_path_including_filename = $this->base_folder . DIRECTORY_SEPARATOR . $file_name;
-        return new CRM_Civioffice_Document_LocalTempfile(
-            $this,
-            $file_path_including_filename
-        );
+    $file_path_including_filename = $this->base_folder . DIRECTORY_SEPARATOR . $file_name;
+    return new CRM_Civioffice_Document_LocalTempfile(
+        $this,
+        $file_path_including_filename
+    );
+  }
+
+  /**
+   * Copy and rename to target filename. Uses .docx as file name ending
+   *
+   * @param \CRM_Civioffice_Document $source_document
+   * @param $new_file_name
+   *
+   * @return \CRM_Civioffice_Document_Local
+   * @throws \Exception
+   */
+  public function getLocalCopyOfDocument(CRM_Civioffice_Document $source_document, $new_file_name) {
+    /** @var CRM_Civioffice_Document_Local $final_document the placeholder document to be generated */
+    $final_document = $this->addFile($new_file_name);
+
+    // fill the new file with the document data
+    if ($source_document instanceof CRM_Civioffice_Document_Local) {
+      // if this is a local document, we can simply copy on the file system
+      $from_path = $source_document->getAbsolutePath();
+      $to_path   = $final_document->getAbsolutePath();
+      if (!copy($from_path, $to_path)) {
+        throw new Exception('Unoconv: getLocalCopyOfDocument(): Failed to copy file');
+      }
+    }
+    else {
+      // if this is NOT a local file, we just write the content
+      file_put_contents($final_document->getAbsolutePath(), $source_document->getContent());
     }
 
+    return $final_document;
+  }
 
-    /**
-     * Copy and rename to target filename. Uses .docx as file name ending
-     *
-     * @param \CRM_Civioffice_Document $source_document
-     * @param $new_file_name
-     *
-     * @return \CRM_Civioffice_Document_Local
-     * @throws \Exception
-     */
-    public function getLocalCopyOfDocument(CRM_Civioffice_Document $source_document, $new_file_name)
-    {
-        /** @var CRM_Civioffice_Document_Local $final_document the placeholder document to be generated */
-        $final_document = $this->addFile($new_file_name);
+  public function packAllFiles() {
+    // todo zip logic could be moved into here
+  }
 
-        // fill the new file with the document data
-        if ($source_document instanceof CRM_Civioffice_Document_Local) {
-            // if this is a local document, we can simply copy on the file system
-            $from_path = $source_document->getAbsolutePath();
-            $to_path   = $final_document->getAbsolutePath();
-            if (!copy($from_path, $to_path)) {
-                throw new Exception("Unoconv: getLocalCopyOfDocument(): Failed to copy file");
-            }
-        }
-        else {
-            // if this is NOT a local file, we just write the content
-            file_put_contents($final_document->getAbsolutePath(), $source_document->getContent());
-        }
-
-        // $to_path = basename($to_path); // FIXME: Does not work with subfolders?
-        return $final_document; //new CRM_Civioffice_Document_Local($this, CRM_Civioffice_MimeType::DOCX, $to_path, false);
+  /**
+   * Get a local document store by URI
+   *
+   * @return CRM_Civioffice_DocumentStore_LocalTemp|null
+   *   returns the local tmp store matching the uri, or null if it's not a local temp store URI
+   */
+  public static function getByURI($uri) {
+    if (substr($uri, 0, 5) == 'tmp::') {
+      $folder = substr($uri, 5);
+      if (file_exists($folder)) {
+        return new CRM_Civioffice_DocumentStore_LocalTemp($folder);
+      }
     }
+    return NULL;
+  }
 
-    public function packAllFiles()
-    {
-        // todo zip logic could be moved into here
-    }
+  /**
+   * Check if the given URI matches this store
+   *
+   * @param string $uri
+   *
+   * @return boolean
+   */
+  public function isStoreURI($uri) {
+    return (substr($uri, 0, 5) == 'tmp::');
+  }
 
-
-    /**
-     * Get a local document store by URI
-     *
-     * @return CRM_Civioffice_DocumentStore_LocalTemp|null
-     *     returns the local tmp store matching the uri, or null if it's not a local temp store URI
-     */
-    public static function getByURI($uri)
-    {
-        if (substr($uri, 0, 5) == 'tmp::') {
-            $folder = substr($uri, 5);
-            if (file_exists($folder)) {
-                return new CRM_Civioffice_DocumentStore_LocalTemp($folder);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Check if the given URI matches this store
-     *
-     * @param string $uri
-     *
-     * @return boolean
-     */
-    public function isStoreURI($uri) {
-        return (substr($uri, 0, 5) == 'tmp::');
-    }
 }
