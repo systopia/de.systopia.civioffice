@@ -21,8 +21,10 @@
     "require": {
         "php": "^8.1",
         "beberlei/assert": "^3",
-        "civicrm/civicrm-core": ">=5.76",
-        "civicrm/civicrm-packages": ">=5.76"
+        "civicrm/civicrm-core": ">=5.80",
+        "civicrm/civicrm-packages": ">=5.80",
+        "php-http/discovery": "^1.20",
+        "php-http/multipart-stream-builder": "^1.4.2"
     },
     "autoload": {
         "classmap": ["ComposerHelper.php"]
@@ -67,5 +69,8 @@
         "branch-alias": {
             "dev-master": "1.1.x-dev"
         }
+    },
+    "conflict": {
+        "psr/http-message": "<1.0.1"
     }
 }

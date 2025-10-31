@@ -2,12 +2,17 @@
 
 ## Preparations
 
-The following components must be installed on the server:
+Install CiviCRM 5.80 or later.
 
-- [unoconv](https://github.com/unoconv/)
-- [libreoffice](https://www.libreoffice.org/)
+Currently, there are two types of renderers supported:
 
-Note that CiviOffice requires at least CiviCRM 5.76.
+* [Collabora Online](https://www.collaboraonline.com/)
+* [unoconv](https://github.com/unoconv/)
+
+Depending on the renderer type you want to use you need either an instance of
+Collabora Online or an installation of unoconv on your server.
+
+Please note that unoconv is deprecated.
 
 ### Verifying successful unoconv installation
 
@@ -36,11 +41,9 @@ items.
 ## Basic configuration steps
 
 - Assign the permission "Access CiviOffice" to user roles as needed.
-- In the new CiviOffice navigation, go to CiviOffice
-  Settings to set up your document
-  stores, renderers and editors
-- The documents used in CiviOffice can be managed
-  via under "Upload Documents"
+- In the CiviOffice navigation, go to CiviOffice Settings to set up your
+  document stores, renderers and editors.
+- The documents used in CiviOffice can be managed under "Upload Documents".
 - Optional: Create an activity type such as "Created Document (CiviOffice)"
 
 ## Known issues
