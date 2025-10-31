@@ -100,10 +100,18 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form {
       );
     }
 
-    $this->addDefaultButtons(
-        $this->_action & CRM_Core_Action::DELETE ? E::ts('Delete') : E::ts('Save'),
-        'submit',
-        'cancel'
+    $this->addButtons(
+      [
+        [
+          'type' => 'submit',
+          'name' => $this->_action & CRM_Core_Action::DELETE ? E::ts('Delete') : E::ts('Save'),
+          'isDefault' => TRUE,
+        ],
+        [
+          'type' => 'cancel',
+          'name' => ts('Cancel'),
+        ],
+      ]
     );
   }
 
