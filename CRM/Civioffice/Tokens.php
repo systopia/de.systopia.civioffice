@@ -21,12 +21,12 @@ use Civi\Token\TokenRow;
 
 class CRM_Civioffice_Tokens extends AbstractTokenSubscriber {
 
-  public function __construct($entity, $tokenNames = []) {
+  public function __construct(string $entity, array $tokenNames = []) {
     $tokenNames += self::getTokens();
     parent::__construct($entity, $tokenNames);
   }
 
-  public static function getTokens() {
+  public static function getTokens(): array {
     return CRM_Civioffice_LiveSnippets::getTokens();
   }
 
@@ -38,7 +38,7 @@ class CRM_Civioffice_Tokens extends AbstractTokenSubscriber {
     return $token_values;
   }
 
-  public function evaluateToken(TokenRow $row, $entity, $field, $prefetch = NULL) {
+  public function evaluateToken(TokenRow $row, $entity, $field, $prefetch = NULL): void {
     [$token_type, $token_name] = explode('.', $field);
 
     // Set row format for Live Snippets to HTML (default) or an explicitly defined context format.

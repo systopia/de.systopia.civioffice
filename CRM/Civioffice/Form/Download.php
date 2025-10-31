@@ -24,18 +24,18 @@ use CRM_Civioffice_ExtensionUtil as E;
 class CRM_Civioffice_Form_Download extends CRM_Core_Form {
 
   /**
-   * @var string the tmp folder holding the files */
-  public $tmp_folder;
+   * @var string|null the tmp folder holding the files */
+  private ?string $tmp_folder;
 
   /**
    * @var string the URL to return to */
-  public $return_url;
+  private string $return_url;
 
   /**
-   * @var bool start download instantly */
-  public $instant_download;
-
-  public function buildQuickForm() {
+   * @throws \CRM_Core_Exception
+   */
+  public function buildQuickForm(): void {
+    /** @var string $tmp_folder_path_hash */
     $tmp_folder_path_hash = CRM_Utils_Request::retrieve('id', 'String', $this) ?? '';
     $this->tmp_folder = CiviofficeSession::getInstance()->getTempFolderPath($tmp_folder_path_hash);
     if (NULL === $this->tmp_folder) {
@@ -43,9 +43,9 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
     }
 
     $this->return_url = CRM_Utils_Request::retrieve('return_url', 'String', $this);
-    $this->instant_download = CRM_Utils_Request::retrieve('instant_download', 'Boolean', $this);
+    $instant_download = (bool) CRM_Utils_Request::retrieve('instant_download', 'Boolean', $this);
 
-    if ($this->instant_download) {
+    if ($instant_download) {
       $this->zipIfNeededAndDownload($this->tmp_folder, 'inline');
       $this->removeFilesAndFolder($this->tmp_folder);
       CRM_Utils_System::civiExit();
@@ -72,7 +72,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
     parent::buildQuickForm();
   }
 
-  public function postProcess() {
+  public function postProcess(): void {
     // this means somebody clicked download
     $vars = $this->exportValues();
     if (isset($vars['_qf_Download_submit'])) {
@@ -131,7 +131,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
           $runtime = microtime(TRUE) - $timestamp;
           Civi::log()->debug("CiviOffice: Zip command took {$runtime}s");
         }
-        catch (Exception $ex) {
+        catch (Exception $e) {
           $has_error = 1;
         }
 
@@ -139,7 +139,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
         if ($has_error || !file_exists($file_path_name)) {
           // this didn't work, use the
           $zip = new ZipArchive();
-          $zip->open($file_path_name, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
+          $zip->open($file_path_name, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
           // add all Document-X.* files
           foreach (scandir($folder_path) as $file) {
@@ -192,7 +192,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
       }
       else {
         // this file really should exist...
-        throw new Exception(E::ts("File couldn't be generated. Contact the author."));
+        throw new RuntimeException(E::ts("File couldn't be generated. Contact the author."));
       }
     }
     catch (Exception $ex) {

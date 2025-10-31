@@ -26,25 +26,25 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
   /**
    * Get a list of available documents
    *
-   * @param string $path
+   * @param string|null $path
    *   path, or null for root
    *
    * @return array
    *   list of CRM_Civioffice_Document objects
    */
-  abstract public function getDocuments($path = NULL) : array;
+  abstract public function getDocuments(?string $path = NULL): array;
 
   /**
    * Get a list of paths under the given paths,
    *   i.e. subdirectories
    *
-   * @param string $path
+   * @param string|null $path
    *   path, or null for root
    *
    * @return array
    *   list of strings representing paths
    */
-  abstract public function getPaths($path = NULL) : array;
+  abstract public function getPaths(?string $path = NULL): array;
 
   /**
    * Get a list of paths under the given paths,
@@ -60,11 +60,8 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
    *
    * @param string $uri
    *   document URI
-   *
-   * @return CRM_Civioffice_Document|null
-   *   list of CRM_Civioffice_Document objects
    */
-  abstract public function getDocumentByURI($uri);
+  abstract public function getDocumentByURI(string $uri): ?CRM_Civioffice_Document;
 
   /**
    * Retrieves a document's MIME type.
@@ -72,15 +69,16 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
    * @param \CRM_Civioffice_Document $document
    *   The document to determine the MIME type for.
    *
-   * @return string | false
+   * @return string
    *   The document's MIME type, or FALSE when it could not be determined.
    *
-   * @throws \Exception
-   *   When the document does not belong to the document store.
+   * @throws \InvalidArgumentException
+   *   When the document does not belong to the document store or the MIME type
+   *   couldn't be detected.
    */
-  public function getMimeType(CRM_Civioffice_Document $document) {
+  public function getMimeType(CRM_Civioffice_Document $document): string {
     if ($document->getDocumentStore()->getURI() !== $this->getURI()) {
-      throw new Exception('Document does not belong to DocumentStore, can not retrieve MIME type.');
+      throw new InvalidArgumentException('Document does not belong to DocumentStore, can not retrieve MIME type.');
     }
     // Fallback: Get a local temporary copy and retrieve MIME type using PHP.
     $mime_type_cache = Civi::cache()->get('civioffice_mime_type');
@@ -88,6 +86,10 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
     if (!$mime_type) {
       $local = $document->getLocalTempCopy();
       $mime_type = mime_content_type($local);
+      if (FALSE === $mime_type) {
+        throw new InvalidArgumentException('Unable to detect MIME type');
+      }
+
       $mime_type_cache[$document->getURI()] = $mime_type;
       Civi::cache()->set('civioffice_mime_type', $mime_type_cache);
     }
@@ -96,23 +98,19 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
 
   /**
    * Check if the given URI matches this store
-   *
-   * @param string $uri
-   *
-   * @return boolean
    */
-  abstract public function isStoreURI($uri);
+  abstract public function isStoreURI(string $uri): bool;
 
   /**
    * Generate a zipfile of all documents contained,
    *  and trigger download
    */
-  public function downloadZipped() {
+  public function downloadZipped(): void {
     // ZIP
     // todo: use buffer instead of tmp file
-    $tmp_file = tmpfile();
+    $tmp_file = tempnam(sys_get_temp_dir(), 'civioffice');
     $zip = new ZipArchive();
-    $zip->open($tmp_file, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
+    $zip->open($tmp_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
     // add all documents
     foreach ($this->getDocuments() as $document) {

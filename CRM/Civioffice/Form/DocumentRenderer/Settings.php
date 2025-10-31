@@ -31,17 +31,21 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
 
   private DocumentRendererTypeInterface $documentRendererType;
 
-  public function preProcess() {
+  /**
+   * @throws \CRM_Core_Exception
+   */
+  public function preProcess(): void {
     // Restrict supported actions.
     if (!($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD | CRM_Core_Action::DELETE))) {
-      throw new Exception(E::ts('Invalid action.'));
+      throw new RuntimeException(E::ts('Invalid action.'));
     }
 
     // Require ID for editing/deleting.
     if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::DELETE)) {
       if (!$uri = CRM_Utils_Request::retrieve('id', 'Alphanumeric', $this)) {
-        throw new Exception(E::ts('Missing document renderer ID.'));
+        throw new RuntimeException(E::ts('Missing document renderer ID.'));
       }
+      /** @var string $uri */
       $this->documentRenderer = DocumentRenderer::load($uri);
       $this->documentRendererType = $this->documentRenderer->getType();
     }
@@ -49,8 +53,9 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
     // Require type for adding.
     if ($this->_action & (CRM_Core_Action::ADD)) {
       if (!$type = CRM_Utils_Request::retrieve('type', 'Alphanumeric', $this)) {
-        throw new Exception(E::ts('Missing document renderer type.'));
+        throw new RuntimeException(E::ts('Missing document renderer type.'));
       }
+      /** @var string $type */
       $this->documentRendererType = DocumentRendererTypeContainer::getInstance()->get($type);
     }
 
@@ -63,7 +68,7 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
     );
   }
 
-  public function buildQuickForm() {
+  public function buildQuickForm(): void {
     if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD)) {
       $this->add(
         'text',
@@ -83,7 +88,7 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
         $this->setDefaults($this->documentRendererType->getDefaultConfiguration());
       }
 
-      $this->documentRendererType->buildsettingsForm($this);
+      $this->documentRendererType->buildSettingsForm($this);
       $this->assign('rendererTypeSettingsTemplate', $this->documentRendererType->getSettingsFormTemplate());
 
       $this->addButtons(
@@ -121,7 +126,10 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
     return (count($this->_errors) == 0);
   }
 
-  public function postProcess() {
+  /**
+   * @throws \InvalidArgumentException
+   */
+  public function postProcess(): void {
     // Create/update/delete option value.
     if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD)) {
       $values = $this->exportValues();

@@ -22,15 +22,13 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStore_Local {
 
-  public function __construct($temp_folder_path = NULL) {
+  public function __construct(?string $temp_folder_path = NULL) {
     // create tmp folder
     if (empty($temp_folder_path)) {
       // create temp folder with random postfix like: var/civioffice/temp/civioffice_202_6050ec8acc7a5
 
-      // fixme: remove last slash
-      // todo: use entry from settings
-      $user_selectable_path = Civi::settings()->get(self::LOCAL_TEMP_PATH_SETTINGS_KEY);
-      $current_user_id = CRM_Core_Session::singleton()->getLoggedInContactId();
+      $user_selectable_path = rtrim(Civi::settings()->get(self::LOCAL_TEMP_PATH_SETTINGS_KEY) ?? '', '\\/');
+      $current_user_id = CRM_Core_Session::singleton()->getLoggedInContactID();
 
       $temp_folder_path = $user_selectable_path . DIRECTORY_SEPARATOR . uniqid("civioffice_{$current_user_id}_");
       if (file_exists($temp_folder_path)) {
@@ -39,25 +37,20 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
       }
       mkdir($temp_folder_path, 0777, TRUE);
     }
-    parent::__construct("tmp::{$temp_folder_path}", E::ts('Temporary Files'), FALSE, FALSE);
+    parent::__construct("tmp::$temp_folder_path", E::ts('Temporary Files'), FALSE, FALSE);
     $this->base_folder = $temp_folder_path;
     Civi::log()->debug('CiviOffice: Created local temp document store at: ' . $this->base_folder);
   }
 
   /**
-   * Create an new temporary file
+   * Create a new temporary file
    *
    * @param string $file_name
-   * @param null $content
    *
    * @return CRM_Civioffice_Document_LocalTempfile
    *   new temp file
-   * @throws \Exception
    */
-  public function addFile(
-        string $file_name,
-        $content = NULL
-    ): CRM_Civioffice_Document_LocalTempfile {
+  public function addFile(string $file_name): CRM_Civioffice_Document_LocalTempfile {
     $file_path_including_filename = $this->base_folder . DIRECTORY_SEPARATOR . $file_name;
     return new CRM_Civioffice_Document_LocalTempfile(
         $this,
@@ -68,14 +61,12 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
   /**
    * Copy and rename to target filename. Uses .docx as file name ending
    *
-   * @param \CRM_Civioffice_Document $source_document
-   * @param $new_file_name
-   *
-   * @return \CRM_Civioffice_Document_Local
-   * @throws \Exception
+   * @throws \RuntimeException
    */
-  public function getLocalCopyOfDocument(CRM_Civioffice_Document $source_document, $new_file_name) {
-    /** @var CRM_Civioffice_Document_Local $final_document the placeholder document to be generated */
+  public function getLocalCopyOfDocument(
+    CRM_Civioffice_Document $source_document,
+    string $new_file_name
+  ): CRM_Civioffice_Document_LocalTempfile {
     $final_document = $this->addFile($new_file_name);
 
     // fill the new file with the document data
@@ -84,7 +75,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
       $from_path = $source_document->getAbsolutePath();
       $to_path   = $final_document->getAbsolutePath();
       if (!copy($from_path, $to_path)) {
-        throw new Exception('Unoconv: getLocalCopyOfDocument(): Failed to copy file');
+        throw new RuntimeException('Unoconv: getLocalCopyOfDocument(): Failed to copy file');
       }
     }
     else {
@@ -95,7 +86,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
     return $final_document;
   }
 
-  public function packAllFiles() {
+  public function packAllFiles(): void {
     // todo zip logic could be moved into here
   }
 
@@ -105,7 +96,7 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
    * @return CRM_Civioffice_DocumentStore_LocalTemp|null
    *   returns the local tmp store matching the uri, or null if it's not a local temp store URI
    */
-  public static function getByURI($uri) {
+  public static function getByURI(string $uri): ?CRM_Civioffice_DocumentStore_LocalTemp {
     if (substr($uri, 0, 5) == 'tmp::') {
       $folder = substr($uri, 5);
       if (file_exists($folder)) {
@@ -116,13 +107,9 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
   }
 
   /**
-   * Check if the given URI matches this store
-   *
-   * @param string $uri
-   *
-   * @return boolean
+   * @inheritDoc
    */
-  public function isStoreURI($uri) {
+  public function isStoreURI(string $uri): bool {
     return (substr($uri, 0, 5) == 'tmp::');
   }
 

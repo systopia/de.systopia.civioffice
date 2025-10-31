@@ -22,19 +22,13 @@ declare(strict_types = 1);
  */
 abstract class CRM_Civioffice_Document {
 // phpcs:enable
-  /**
-   * @var CRM_Civioffice_DocumentStore document store */
-  protected $document_store;
+  protected CRM_Civioffice_DocumentStore $document_store;
 
-  /**
-   * @var string uri */
-  protected $uri;
+  protected string $uri;
 
-  /**
-   * @var string name */
-  protected $name;
+  protected string $name;
 
-  protected function __construct($document_store, $uri, $name) {
+  protected function __construct(CRM_Civioffice_DocumentStore $document_store, string $uri, string $name) {
     $this->uri = $uri;
     $this->name = $name;
     $this->document_store = $document_store;
@@ -94,7 +88,7 @@ abstract class CRM_Civioffice_Document {
    * @param string $data
    *   binary file data
    */
-  abstract public function updateFileContent(string $data);
+  abstract public function updateFileContent(string $data): void;
 
   /**
    * get the file's (local) path
@@ -116,7 +110,7 @@ abstract class CRM_Civioffice_Document {
    * Helper function to offer the given document as a CiviCRM download,
    *  i.e. post the data as file disposition and exit
    */
-  public function download() {
+  public function download(): void {
     $data = $this->getContent();
     CRM_Utils_System::download(
         $this->getName(),
@@ -133,7 +127,7 @@ abstract class CRM_Civioffice_Document {
    *
    * @return string temporary file containing the file
    */
-  public function getLocalTempCopy() {
+  public function getLocalTempCopy(): string {
     $tmp_file_name = tempnam(sys_get_temp_dir(), '') . '_' . $this->getName();
     file_put_contents($tmp_file_name, $this->getContent());
     return $tmp_file_name;

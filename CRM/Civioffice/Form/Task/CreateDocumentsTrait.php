@@ -38,7 +38,7 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait {
   /**
    * {@inheritDoc}
    */
-  public function buildQuickForm() {
+  public function buildQuickForm(): void {
     $this->setTitle(E::ts('CiviOffice - Generate multiple Documents'));
 
     $config = CRM_Civioffice_Configuration::getConfig();
@@ -131,7 +131,7 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait {
   /**
    * {@inheritDoc}
    */
-  public function getTemplateFileName() {
+  public function getTemplateFileName(): string {
     // Instead of separate templates for each class using the trait, provide a generic template for the trait.
     $ext = CRM_Extension_System::singleton()->getMapper();
     if ($ext->isExtensionClass(__TRAIT__)) {
@@ -153,7 +153,7 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait {
   /**
    * {@inheritDoc}
    */
-  public function postProcess() {
+  public function postProcess(): void {
     $values = $this->exportValues();
 
     // Extract and store live snippet values.

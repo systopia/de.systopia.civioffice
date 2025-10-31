@@ -21,7 +21,7 @@ declare(strict_types = 1);
 class CRM_Civioffice_Form_Task_CreateDocuments extends CRM_Contact_Form_Task {
   use CRM_Civioffice_Form_Task_CreateDocumentsTrait;
 
-  public function preProcess() {
+  public function preProcess(): void {
     parent::preProcess();
     $this->entityType = 'Contact';
     $this->entityIds = $this->_contactIds;

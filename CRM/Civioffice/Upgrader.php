@@ -13,7 +13,7 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
   /**
    * Run installation tasks.
    */
-  public function install() {
+  public function install(): void {
     Civi::settings()->set(
         CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY,
         sys_get_temp_dir() . '/civioffice'
@@ -24,7 +24,7 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
     $customData->syncOptionGroup(E::path('resources/live_snippets_option_group.json'));
   }
 
-  public function uninstall() {
+  public function uninstall(): void {
     // Remove settings created by this extension.
     Civi::settings()->revert(CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY);
     Civi::settings()->revert(CRM_Civioffice_DocumentStore_Local::LOCAL_STATIC_PATH_SETTINGS_KEY);

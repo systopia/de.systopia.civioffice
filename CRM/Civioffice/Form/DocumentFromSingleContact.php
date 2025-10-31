@@ -25,23 +25,23 @@ use CRM_Civioffice_ExtensionUtil as E;
 class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
 
   /**
-   * @var integer
+   * @var int
    *   The ID of the contact to create a document for.
    */
-  public $contact_id = NULL;
+  public int $contact_id;
 
   public const UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE = 'civioffice_create_single_activity_type';
 
   public const UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT = 'civioffice_create_single_activity_attachment';
 
-  public function buildQuickForm() {
+  public function buildQuickForm(): void {
     $config = CRM_Civioffice_Configuration::getConfig();
     $defaults = [
       'activity_type_id' => Civi::contactSettings()->get(
-            self::UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE
+        self::UNOCONV_CREATE_SINGLE_ACTIVIY_TYPE
       ),
       'activity_attach_doc' => Civi::contactSettings()->get(
-            self::UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT
+        self::UNOCONV_CREATE_SINGLE_ACTIVIY_ATTACHMENT
       ),
     ];
     $this->setAttribute('data-no-ajax-submit', 'true');
@@ -136,7 +136,7 @@ class CRM_Civioffice_Form_DocumentFromSingleContact extends CRM_Core_Form {
   }
 
   // phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
-  public function postProcess() {
+  public function postProcess(): void {
   // phpcs:enable
     // TODO: Do not filter live snippet values.
     $values = $this->exportValues();

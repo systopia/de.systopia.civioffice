@@ -1,0 +1,1152 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Call to function in_array\(\) requires parameter \#3 to be set\.$#'
+			identifier: function.strict
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Cannot access offset ''error_message'' on array\|int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Cannot call method getDocuments\(\) on CRM_Civioffice_DocumentStore\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 4
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Do not throw the \\Exception base class\.$#'
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Civioffice_Configuration\:\:getDocumentRenderers\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 2
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Civioffice_Configuration\:\:getDocumentStores\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Loose comparison via "\!\=" is not allowed\.$#'
+			identifier: notEqual.notAllowed
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Method CRM_Civioffice_AttachmentProvider\:\:getAttachmentFormTemplate\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Method CRM_Civioffice_AttachmentProvider\:\:getAttachmentFormTemplate\(\) has parameter \$type with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Method CRM_Civioffice_AttachmentProvider\:\:getAttachmentTypes\(\) has parameter \$event with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Offset ''document_renderer_uri'' does not exist on array\{path\: string, name\: string, extra\?\: mixed\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Offset ''document_uri'' does not exist on array\{path\: string, name\: string, extra\?\: mixed\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Offset ''live_snippets'' does not exist on array\{path\: string, name\: string, extra\?\: mixed\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Offset ''target_mime_type'' does not exist on array\{path\: string, name\: string, extra\?\: mixed\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Parameter \#3 \$defaults of static method CRM_Civioffice_LiveSnippets\:\:addFormElements\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary\.$#'
+			identifier: ternary.shortNotAllowed
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Variable \$document in PHPDoc tag @var does not match any variable in the foreach loop\: \$dr$#'
+			identifier: varTag.differentVariable
+			count: 1
+			path: CRM/Civioffice/AttachmentProvider.php
+
+		-
+			message: '#^Cannot access offset ''values'' on array\|int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Cannot call method getName\(\) on CRM_Civioffice_DocumentStore\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 2
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Civioffice_Configuration\:\:getDocumentStores\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 2
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Method CRM_Civioffice_Configuration\:\:getActivityTypes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Method CRM_Civioffice_Configuration\:\:getDocumentRenderers\(\) should return list\<Civi\\Civioffice\\DocumentRenderer\> but returns array\<int\<0, max\>, Civi\\Civioffice\\DocumentRenderer\>\.$#'
+			identifier: return.type
+			count: 1
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Method CRM_Civioffice_Configuration\:\:getEditors\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Method CRM_Civioffice_Configuration\:\:getHomeFolder\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, CRM_Civioffice_DocumentStore_LocalTemp\|null given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, CRM_Civioffice_Document\|null given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_keys expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(int\|string\)\: mixed\)\|null, Closure\(string\)\: Civi\\Civioffice\\DocumentRenderer given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Configuration.php
+
+		-
+			message: '#^Cannot access offset ''values'' on array\|int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: CRM/Civioffice/ConversionJob.php
+
+		-
+			message: '#^Cannot call method getBaseFolder\(\) on CRM_Civioffice_DocumentStore\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: CRM/Civioffice/ConversionJob.php
+
+		-
+			message: '#^Cannot call method getName\(\) on CRM_Civioffice_Document\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: CRM/Civioffice/ConversionJob.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 2
+			path: CRM/Civioffice/ConversionJob.php
+
+		-
+			message: '#^Loose comparison via "\!\=" is not allowed\.$#'
+			identifier: notEqual.notAllowed
+			count: 2
+			path: CRM/Civioffice/ConversionJob.php
+
+		-
+			message: '#^Method CRM_Civioffice_ConversionJob\:\:__construct\(\) has parameter \$entity_IDs with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/ConversionJob.php
+
+		-
+			message: '#^Method CRM_Civioffice_ConversionJob\:\:__construct\(\) has parameter \$live_snippets with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/ConversionJob.php
+
+		-
+			message: '#^Property CRM_Civioffice_ConversionJob\:\:\$entity_IDs type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/ConversionJob.php
+
+		-
+			message: '#^Property CRM_Civioffice_ConversionJob\:\:\$live_snippets type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/ConversionJob.php
+
+		-
+			message: '#^Call to an undefined method CRM_Civioffice_DocumentStore\:\:getBaseFolder\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: CRM/Civioffice/Document/Local.php
+
+		-
+			message: '#^Cannot access offset string on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: CRM/Civioffice/DocumentStore.php
+
+		-
+			message: '#^Method CRM_Civioffice_DocumentStore\:\:getDocuments\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/DocumentStore.php
+
+		-
+			message: '#^Method CRM_Civioffice_DocumentStore\:\:getMimeType\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: CRM/Civioffice/DocumentStore.php
+
+		-
+			message: '#^Method CRM_Civioffice_DocumentStore\:\:getPaths\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/DocumentStore.php
+
+		-
+			message: '#^Only booleans are allowed in a negated boolean, mixed given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: CRM/Civioffice/DocumentStore.php
+
+		-
+			message: '#^Parameter \#3 \$buffer of static method CRM_Utils_System\:\:download\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/DocumentStore.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 2
+			path: CRM/Civioffice/DocumentStore/Local.php
+
+		-
+			message: '#^Method CRM_Civioffice_DocumentStore_Local\:\:getDocuments\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/DocumentStore/Local.php
+
+		-
+			message: '#^Method CRM_Civioffice_DocumentStore_Local\:\:getPaths\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/DocumentStore/Local.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, int\|false given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/DocumentStore/Local.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, string\|null given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/DocumentStore/Local.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 1
+			path: CRM/Civioffice/DocumentStore/LocalTemp.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Core_Session\:\:getLoggedInContactID\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: CRM/Civioffice/DocumentStore/LocalTemp.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 2
+			path: CRM/Civioffice/DocumentStore/LocalTemp.php
+
+		-
+			message: '#^Parameter \#1 \$string of function rtrim expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/DocumentStore/LocalTemp.php
+
+		-
+			message: '#^Binary operation "\." between mixed and ''civioffice_documents'' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: CRM/Civioffice/DocumentStore/Upload.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 2
+			path: CRM/Civioffice/DocumentStore/Upload.php
+
+		-
+			message: '#^Method CRM_Civioffice_DocumentStore_Upload\:\:getDocuments\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/DocumentStore/Upload.php
+
+		-
+			message: '#^Method CRM_Civioffice_DocumentStore_Upload\:\:getPaths\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/DocumentStore/Upload.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, int\|false given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/DocumentStore/Upload.php
+
+		-
+			message: '#^Parameter \#1 \$string of function substr expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/DocumentStore/Upload.php
+
+		-
+			message: '#^Method CRM_Civioffice_Editor\:\:canInlineEdit\(\) has parameter \$document with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Civioffice/Editor.php
+
+		-
+			message: '#^Method CRM_Civioffice_Editor\:\:getPaths\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Editor.php
+
+		-
+			message: '#^Cannot access offset ''id'' on array\|int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: CRM/Civioffice/Form/DocumentFromSingleContact.php
+
+		-
+			message: '#^Cannot access offset ''values'' on array\|int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: CRM/Civioffice/Form/DocumentFromSingleContact.php
+
+		-
+			message: '#^Cannot call method downloadZipped\(\) on CRM_Civioffice_DocumentStore\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: CRM/Civioffice/Form/DocumentFromSingleContact.php
+
+		-
+			message: '#^Cannot call method getDocuments\(\) on CRM_Civioffice_DocumentStore\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: CRM/Civioffice/Form/DocumentFromSingleContact.php
+
+		-
+			message: '#^Cannot call method getName\(\) on CRM_Civioffice_Document\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: CRM/Civioffice/Form/DocumentFromSingleContact.php
+
+		-
+			message: '#^Class CRM_Civioffice_Form_DocumentFromSingleContact has an uninitialized property \$contact_id\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
+			count: 1
+			path: CRM/Civioffice/Form/DocumentFromSingleContact.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 3
+			path: CRM/Civioffice/Form/DocumentFromSingleContact.php
+
+		-
+			message: '#^Do not throw the \\Exception base class\.$#'
+			count: 1
+			path: CRM/Civioffice/Form/DocumentFromSingleContact.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Civioffice_Configuration\:\:getDocumentRenderers\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: CRM/Civioffice/Form/DocumentFromSingleContact.php
+
+		-
+			message: '#^Property CRM_Civioffice_Form_DocumentFromSingleContact\:\:\$contact_id \(int\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: CRM/Civioffice/Form/DocumentFromSingleContact.php
+
+		-
+			message: '#^Class CRM_Civioffice_Form_DocumentRenderer_Settings has an uninitialized property \$documentRenderer\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
+			count: 1
+			path: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+
+		-
+			message: '#^Class CRM_Civioffice_Form_DocumentRenderer_Settings has an uninitialized property \$documentRendererType\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
+			count: 1
+			path: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 1
+			path: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+
+		-
+			message: '#^Only booleans are allowed in a negated boolean, int\<0, 11\> given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+
+		-
+			message: '#^Only booleans are allowed in a negated boolean, mixed given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 2
+			path: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+
+		-
+			message: '#^Only booleans are allowed in a ternary operator condition, int\<0, 8\> given\.$#'
+			identifier: ternary.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+
+		-
+			message: '#^Only booleans are allowed in an elseif condition, int\<0, 8\> given\.$#'
+			identifier: elseif.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, int\<0, 10\> given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, int\<0, 1\> given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, int\<0, 3\> given\.$#'
+			identifier: if.condNotBoolean
+			count: 3
+			path: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+
+		-
+			message: '#^Call to function base64_decode\(\) requires parameter \#2 to be set\.$#'
+			identifier: function.strict
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Cannot access offset ''upload_file'' on int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Class CRM_Civioffice_Form_DocumentUpload has an uninitialized property \$common\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 3
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^In method "CRM_Civioffice_Form_DocumentUpload\:\:buildQuickForm", you should not use the \$_REQUEST superglobal\. You should instead rely on your framework that provides you with a "request" object \(for instance a PSR\-7 RequestInterface or a Symfony Request\)\. More info\: http\://bit\.ly/nosuperglobals$#'
+			count: 4
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Method CRM_Civioffice_Form_DocumentUpload\:\:fileList\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Only booleans are allowed in a ternary operator condition, bool\|null given\.$#'
+			identifier: ternary.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, string given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, string\|null given\.$#'
+			identifier: if.condNotBoolean
+			count: 2
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Only numeric types are allowed in /, int\<0, max\>\|false given on the left side\.$#'
+			identifier: div.leftNonNumeric
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Parameter \#1 \$base64_file_name of method CRM_Civioffice_Form_DocumentUpload\:\:getFilePath\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Parameter \#2 \$mimeType of static method CRM_Utils_System\:\:download\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Parameter \#2 \$timestamp of function date expects int\|null, int\<0, max\>\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Parameter \#3 \$buffer of static method CRM_Utils_System\:\:download\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload.php
+
+		-
+			message: '#^Call to function method_exists\(\) with ''CRM_Core_Smarty'' and ''setRequiredTabTempl…'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
+
+		-
+			message: '#^Cannot access offset ''current'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
+
+		-
+			message: '#^In method "CRM_Civioffice_Form_DocumentUpload_TabHeader\:\:build", you should not use the \$_GET superglobal\. You should instead rely on your framework that provides you with a "request" object \(for instance a PSR\-7 RequestInterface or a Symfony Request\)\. More info\: http\://bit\.ly/nosuperglobals$#'
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
+
+		-
+			message: '#^Method CRM_Civioffice_Form_DocumentUpload_TabHeader\:\:build\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
+
+		-
+			message: '#^Method CRM_Civioffice_Form_DocumentUpload_TabHeader\:\:getCurrentTab\(\) has parameter \$tabs with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
+
+		-
+			message: '#^Only booleans are allowed in a negated boolean, array\|null given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
+
+		-
+			message: '#^Only booleans are allowed in a ternary operator condition, bool\|null given\.$#'
+			identifier: ternary.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$tabs has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
+
+		-
+			message: '#^Call to function base64_decode\(\) requires parameter \#2 to be set\.$#'
+			identifier: function.strict
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Class CRM_Civioffice_Form_Download has an uninitialized property \$return_url\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Class CRM_Civioffice_Form_Download has an uninitialized property \$tmp_folder\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Do not throw the \\Exception base class\.$#'
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^In method "CRM_Civioffice_Form_Download\:\:zipIfNeededAndDownload", caught "Exception" must be rethrown\. Either catch a more specific exception, add a "throw" clause in the "catch" block to propagate the exception or add a "// @ignoreException" comment\.$#'
+			count: 2
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Loose comparison via "\!\=" is not allowed\.$#'
+			identifier: notEqual.notAllowed
+			count: 2
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Only booleans are allowed in a negated boolean, int\|false given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, int given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, int\|false given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Only booleans are allowed in \|\|, int given on the left side\.$#'
+			identifier: booleanOr.leftNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Parameter \#1 \$folder_path of method CRM_Civioffice_Form_Download\:\:removeFilesAndFolder\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Parameter \#1 \$folder_path of method CRM_Civioffice_Form_Download\:\:zipIfNeededAndDownload\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function feof expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fread expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Parameter \#1 \$value of function count expects array\|Countable, list\<string\>\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Property CRM_Civioffice_Form_Download\:\:\$return_url \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: CRM/Civioffice/Form/Download.php
+
+		-
+			message: '#^Class CRM_Civioffice_Form_LiveSnippet has an uninitialized property \$option_group_id\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Class CRM_Civioffice_Form_LiveSnippet has an uninitialized property \$option_value\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Method CRM_Civioffice_Form_LiveSnippet\:\:setDefaultValues\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Only booleans are allowed in a negated boolean, int\<0, 11\> given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Only booleans are allowed in a negated boolean, int\|false given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Only booleans are allowed in a negated boolean, mixed given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Only booleans are allowed in a ternary operator condition, int\<0, 1\> given\.$#'
+			identifier: ternary.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Only booleans are allowed in a ternary operator condition, int\<0, 8\> given\.$#'
+			identifier: ternary.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, array\|int given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, int\<0, 10\> given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, int\<0, 11\> given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, int\<0, 2\> given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, int\<0, 3\> given\.$#'
+			identifier: if.condNotBoolean
+			count: 2
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Property CRM_Civioffice_Form_LiveSnippet\:\:\$option_value \(array\) does not accept array\|int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Property CRM_Civioffice_Form_LiveSnippet\:\:\$option_value type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Form/LiveSnippet.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Civioffice_Configuration\:\:getDocumentRenderers\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateActivityDocuments.php
+
+		-
+			message: '#^Parameter \#1 \$entityIds of method Civi\\Civioffice\\Render\\Queue\\RenderQueueBuilder\:\:setEntityIds\(\) expects list\<int\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateActivityDocuments.php
+
+		-
+			message: '#^Property CRM_Civioffice_Form_Task_CreateActivityDocuments\:\:\$entityIds type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateActivityDocuments.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Civioffice_Configuration\:\:getDocumentRenderers\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateCaseDocuments.php
+
+		-
+			message: '#^Parameter \#1 \$entityIds of method Civi\\Civioffice\\Render\\Queue\\RenderQueueBuilder\:\:setEntityIds\(\) expects list\<int\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateCaseDocuments.php
+
+		-
+			message: '#^Property CRM_Civioffice_Form_Task_CreateCaseDocuments\:\:\$entityIds type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateCaseDocuments.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Civioffice_Configuration\:\:getDocumentRenderers\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateContributionDocuments.php
+
+		-
+			message: '#^Parameter \#1 \$entityIds of method Civi\\Civioffice\\Render\\Queue\\RenderQueueBuilder\:\:setEntityIds\(\) expects list\<int\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateContributionDocuments.php
+
+		-
+			message: '#^Property CRM_Civioffice_Form_Task_CreateContributionDocuments\:\:\$entityIds type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateContributionDocuments.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Civioffice_Configuration\:\:getDocumentRenderers\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateDocuments.php
+
+		-
+			message: '#^Parameter \#1 \$entityIds of method Civi\\Civioffice\\Render\\Queue\\RenderQueueBuilder\:\:setEntityIds\(\) expects list\<int\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateDocuments.php
+
+		-
+			message: '#^Property CRM_Civioffice_Form_Task_CreateDocuments\:\:\$entityIds type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateDocuments.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Civioffice_Configuration\:\:getDocumentRenderers\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateMembershipDocuments.php
+
+		-
+			message: '#^Parameter \#1 \$entityIds of method Civi\\Civioffice\\Render\\Queue\\RenderQueueBuilder\:\:setEntityIds\(\) expects list\<int\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateMembershipDocuments.php
+
+		-
+			message: '#^Property CRM_Civioffice_Form_Task_CreateMembershipDocuments\:\:\$entityIds type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateMembershipDocuments.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Civioffice_Configuration\:\:getDocumentRenderers\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateParticipantDocuments.php
+
+		-
+			message: '#^Parameter \#1 \$entityIds of method Civi\\Civioffice\\Render\\Queue\\RenderQueueBuilder\:\:setEntityIds\(\) expects list\<int\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateParticipantDocuments.php
+
+		-
+			message: '#^Property CRM_Civioffice_Form_Task_CreateParticipantDocuments\:\:\$entityIds type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Form/Task/CreateParticipantDocuments.php
+
+		-
+			message: '#^Cannot access offset ''values'' on array\|int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^In method "CRM_Civioffice_LiveSnippets\:\:get", caught "Exception" must be rethrown\. Either catch a more specific exception, add a "throw" clause in the "catch" block to propagate the exception or add a "// @ignoreException" comment\.$#'
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Method CRM_Civioffice_LiveSnippets\:\:addFormElements\(\) has parameter \$defaults with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Method CRM_Civioffice_LiveSnippets\:\:addFormElements\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Method CRM_Civioffice_LiveSnippets\:\:get\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Method CRM_Civioffice_LiveSnippets\:\:getFormElementValues\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Method CRM_Civioffice_LiveSnippets\:\:getTokens\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Method CRM_Civioffice_LiveSnippets\:\:getValue\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Method CRM_Civioffice_LiveSnippets\:\:getValues\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Method CRM_Civioffice_LiveSnippets\:\:setValue\(\) has parameter \$value with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Method CRM_Civioffice_LiveSnippets\:\:storeValue\(\) has parameter \$value with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Only booleans are allowed in a ternary operator condition, string\|null given\.$#'
+			identifier: ternary.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, HTML_QuickForm_element given\.$#'
+			identifier: if.condNotBoolean
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Property CRM_Civioffice_LiveSnippets\:\:\$liveSnippetTokens type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Property CRM_Civioffice_LiveSnippets\:\:\$liveSnippetValues type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Property CRM_Civioffice_LiveSnippets\:\:\$liveSnippets type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/LiveSnippets.php
+
+		-
+			message: '#^Parameter \#1 \$dispatcher of class Civi\\Token\\TokenProcessor constructor expects Civi\\Core\\CiviEventDispatcher, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Page/Tokens.php
+
+		-
+			message: '#^Cannot access offset string on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: CRM/Civioffice/Tokens.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 1
+			path: CRM/Civioffice/Tokens.php
+
+		-
+			message: '#^Method CRM_Civioffice_Tokens\:\:__construct\(\) has parameter \$tokenNames with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Tokens.php
+
+		-
+			message: '#^Method CRM_Civioffice_Tokens\:\:getTokens\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Civioffice/Tokens.php
+
+		-
+			message: '#^Parameter \#3 \$tokenValue of method Civi\\Token\\TokenRow\:\:tokens\(\) expects array\|Brick\\Money\\Money\|DateTime\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Civioffice/Tokens.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: CRM/Civioffice/Upgrader.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 2
+			path: CRM/Civioffice/Upgrader.php
+
+		-
+			message: '#^Binary operation "\." between ''Drop "temp_folder…'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: CRM/Civioffice/Upgrader.php
+
+		-
+			message: '#^Binary operation "\." between ''Migrate "unoconv…'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: CRM/Civioffice/Upgrader.php
+
+		-
+			message: '#^Binary operation "\." between ''civioffice_renderer_'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 4
+			path: CRM/Civioffice/Upgrader.php
+
+		-
+			message: '#^Call to an undefined method object\:\:fetch\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: CRM/Civioffice/Upgrader.php
+
+		-
+			message: '#^Cannot access offset ''temp_folder_path'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: CRM/Civioffice/Upgrader.php
+
+		-
+			message: '#^Cannot access offset ''type'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: CRM/Civioffice/Upgrader.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 1
+			path: CRM/Civioffice/Upgrader.php
+
+		-
+			message: '#^Method CRM_Civioffice_Upgrader\:\:upgrade_0006\(\) has Exception in PHPDoc @throws tag but it''s not thrown\.$#'
+			identifier: throws.unusedType
+			count: 1
+			path: CRM/Civioffice/Upgrader.php

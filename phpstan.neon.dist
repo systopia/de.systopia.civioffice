@@ -1,19 +1,23 @@
+includes:
+	- phpstan-baseline.neon
+
 parameters:
 	paths:
 		- api
 		- Civi
-		#- CRM
+		- CRM
 		- tests
 		- civioffice.php
 	excludePaths:
 		analyse:
+			- CRM/Civioffice/CustomData.php
 			- CRM/Civioffice/DAO/*
 			- tests/phpunit/bootstrap.php
 	scanFiles:
 		- civioffice.civix.php
 		- tools/phpunit/vendor/bin/.phpunit/phpunit/src/Framework/TestCase.php
 	scanDirectories:
-		- CRM
+		- ../de.systopia.mailattachment/Civi
 		- tools/phpunit/vendor/bin/.phpunit/phpunit/src/Framework
 		- mixin
 	bootstrapFiles:
@@ -25,8 +29,10 @@ parameters:
 		- CRM_Core_Config
 		- CRM_Core_DAO
 	earlyTerminatingMethodCalls:
+		CRM_Utils_System:
+			- civiExit
 		CRM_Queue_Runner:
-		  - runAllViaWeb
+			- runAllViaWeb
 	checkTooWideReturnTypesInProtectedAndPublicMethods: true
 	checkUninitializedProperties: true
 	checkMissingCallableSignature: true

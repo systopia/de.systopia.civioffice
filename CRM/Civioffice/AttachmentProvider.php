@@ -25,13 +25,13 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
   /**
    * {@inheritDoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       'civi.mailattachment.attachmentTypes' => 'getAttachmentTypes',
     ];
   }
 
-  public static function getAttachmentTypes($event) {
+  public static function getAttachmentTypes($event): void {
     $event->attachment_types['civioffice_document'] = [
       'label' => E::ts('CiviOffice Document'),
       'controller' => self::class,

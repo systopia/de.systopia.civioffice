@@ -23,12 +23,12 @@ use CRM_Civioffice_ExtensionUtil as E;
 class CRM_Civioffice_Form_DocumentUpload_TabHeader {
 
   /**
-   * @param \CRM_Civioffice_Form_DocumentUpload $form
-   *
    * @return array
-   * @throws Exception
+   *
+   * @throws \CRM_Core_Exception
    */
-  public static function build(&$form) {
+  public static function build(CRM_Civioffice_Form_DocumentUpload $form): array {
+    /** @var array|null $tabs */
     $tabs = $form->get('tabHeader');
     if (!$tabs || empty($_GET['reset'])) {
       $tabs = self::process($form);
@@ -54,12 +54,11 @@ class CRM_Civioffice_Form_DocumentUpload_TabHeader {
   }
 
   /**
-   * @param CRM_Civioffice_Form_DocumentUpload $form
-   *
    * @return array<string, array<string, mixed>>
-   * @throws Exception
+   *
+   * @throws \CRM_Core_Exception
    */
-  public static function process(&$form): array {
+  public static function process(CRM_Civioffice_Form_DocumentUpload $form): array {
     $default = [
       'link' => NULL,
       'valid' => TRUE,
@@ -102,35 +101,33 @@ class CRM_Civioffice_Form_DocumentUpload_TabHeader {
   }
 
   /**
-   * @param \CRM_Civioffice_Form_DocumentUpload $form
+   * @throws \CRM_Core_Exception
    */
-  public static function reset(&$form) {
+  public static function reset(CRM_Civioffice_Form_DocumentUpload $form): void {
     $tabs = self::process($form);
     $form->set('tabHeader', $tabs);
   }
 
   /**
-   * @param $tabs
-   *
    * @return int|string
    */
-  public static function getCurrentTab($tabs) {
-    static $current = FALSE;
+  public static function getCurrentTab($tabs): int|string {
+    static $current;
 
-    if ($current) {
+    if (NULL !== $current) {
       return $current;
     }
 
     if (is_array($tabs)) {
       foreach ($tabs as $subPage => $pageVal) {
-        if (CRM_Utils_Array::value('current', $pageVal) === TRUE) {
+        if (($pageVal['current'] ?? NULL) === TRUE) {
           $current = $subPage;
           break;
         }
       }
     }
 
-    $current = $current ? $current : 'private';
+    $current = $current ?? 'private';
     return $current;
   }
 

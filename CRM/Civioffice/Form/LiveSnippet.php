@@ -18,19 +18,23 @@ declare(strict_types = 1);
 use CRM_Civioffice_ExtensionUtil as E;
 
 class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form {
-  protected $option_value;
 
-  protected $option_group_id;
+  protected array $option_value;
 
-  public function preProcess() {
+  protected int $option_group_id;
+
+  /**
+   * @throws \CRM_Core_Exception
+   */
+  public function preProcess(): void {
     parent::preProcess();
 
     // Restrict supported actions.
     if (!($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD | CRM_Core_Action::DELETE))) {
-      throw new Exception(E::ts('Invalid action.'));
+      throw new CRM_Core_Exception(E::ts('Invalid action.'));
     }
 
-    $this->option_group_id = civicrm_api3(
+    $this->option_group_id = (int) civicrm_api3(
         'OptionGroup',
         'getvalue',
         [
@@ -42,20 +46,20 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form {
     // Require ID for editing/deleting.
     if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::DELETE)) {
       if (!$option_value_id = CRM_Utils_Request::retrieve('id', 'Integer', $this)) {
-        throw new Exception(E::ts('Missing Live Snippet ID.'));
+        throw new CRM_Core_Exception(E::ts('Missing Live Snippet ID.'));
       }
       try {
         $this->option_value = civicrm_api3(
         'OptionValue',
         'getsingle',
-        [
-          'id' => $option_value_id,
-          'option_group_id' => $this->option_group_id,
-        ]
+          [
+            'id' => $option_value_id,
+            'option_group_id' => $this->option_group_id,
+          ]
         );
       }
-      catch (Exception $exception) {
-        throw new Exception(E::ts('Invalid Live Snippet ID.'));
+      catch (\CRM_Core_Exception $e) {
+        throw new CRM_Core_Exception(E::ts('Invalid Live Snippet ID.'), $e->getErrorCode(), [], $e);
       }
     }
 
@@ -68,7 +72,7 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form {
     );
   }
 
-  public function buildQuickForm() {
+  public function buildQuickForm(): void {
     if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD)) {
       $this->setTitle(
         $this->_action & CRM_Core_Action::ADD
@@ -103,15 +107,18 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form {
     );
   }
 
-  public function setDefaultValues() {
+  public function setDefaultValues(): array {
     return [
-      'name' => $this->option_value['name'],
-      'label' => $this->option_value['label'],
-      'description' => $this->option_value['description'],
+      'name' => $this->option_value['name'] ?? '',
+      'label' => $this->option_value['label'] ?? '',
+      'description' => $this->option_value['description'] ?? '',
     ];
   }
 
-  public function validate() {
+  /**
+   * @throws \CRM_Core_Exception
+   */
+  public function validate(): bool {
     if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD)) {
       $values = $this->exportValues();
 
@@ -144,7 +151,10 @@ class CRM_Civioffice_Form_LiveSnippet extends CRM_Core_Form {
     return parent::validate();
   }
 
-  public function postProcess() {
+  /**
+   * @throws \CRM_Core_Exception
+   */
+  public function postProcess(): void {
     // Create/update/delete option value.
     if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::ADD | CRM_Core_Action::DELETE)) {
       $values = $this->exportValues();

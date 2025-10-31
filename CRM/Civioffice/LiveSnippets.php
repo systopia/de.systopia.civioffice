@@ -16,92 +16,94 @@
 declare(strict_types = 1);
 
 class CRM_Civioffice_LiveSnippets {
-  public static $_liveSnippets;
 
-  public static $_liveSnippetValues;
+  private static array $liveSnippets;
 
-  public static $_liveSnippetTokens;
+  private static array $liveSnippetValues;
 
-  public static function get($index = NULL) {
-    if (!isset(self::$_liveSnippets)) {
+  private static array $liveSnippetTokens;
+
+  public static function get(string|null $index = NULL): array {
+    if (!isset(self::$liveSnippets)) {
       try {
         $option_group_id = civicrm_api3(
         'OptionGroup',
         'getvalue',
-        [
-          'name' => 'civioffice_live_snippets',
-          'return' => 'id',
-        ]
+          [
+            'name' => 'civioffice_live_snippets',
+            'return' => 'id',
+          ]
         );
-        self::$_liveSnippets = civicrm_api3(
+        self::$liveSnippets = civicrm_api3(
         'OptionValue',
         'get',
-        [
-          'option_group_id' => $option_group_id,
-        ]
+          [
+            'option_group_id' => $option_group_id,
+          ]
         )['values'];
+
+        foreach (self::$liveSnippets as &$lifeSnippet) {
+          // APIv3 doesn't return empty description.
+          $lifeSnippet['description'] ??= NULL;
+        }
       }
-      catch (Exception $exception) {
+      catch (Exception $e) {
         // The option group doesn't seem to exist. This can only be the case when a DB upgrade after updating
         // is pending, so do nothing here.
-        self::$_liveSnippets = [];
+        self::$liveSnippets = [];
       }
     }
     return $index
-      ? array_combine(array_column(self::$_liveSnippets, $index), self::$_liveSnippets)
-      : self::$_liveSnippets;
+      ? array_combine(array_column(self::$liveSnippets, $index), self::$liveSnippets)
+      : self::$liveSnippets;
   }
 
-  public static function getValues() {
-    if (!isset(self::$_liveSnippetValues)) {
-      self::$_liveSnippetValues = [];
+  public static function getValues(): array {
+    if (!isset(self::$liveSnippetValues)) {
+      self::$liveSnippetValues = [];
       foreach (self::get() as $live_snippet) {
-        self::$_liveSnippetValues[$live_snippet['name']] = Civi::contactSettings()->get(
+        self::$liveSnippetValues[$live_snippet['name']] = Civi::contactSettings()->get(
         'civioffice.live_snippets.' . $live_snippet['name']
         );
       }
     }
-    return self::$_liveSnippetValues;
+    return self::$liveSnippetValues;
   }
 
-  public static function getValue($name) {
+  public static function getValue(string $name) {
     self::getValues();
-    return self::$_liveSnippetValues[$name];
+    return self::$liveSnippetValues[$name];
   }
 
-  public static function setValue($name, $value, $store = FALSE) {
-    self::$_liveSnippetValues[$name] = $value;
+  public static function setValue(string $name, $value, bool $store = FALSE): void {
+    self::$liveSnippetValues[$name] = $value;
     if ($store) {
       self::storeValue($name, $value);
     }
   }
 
-  public static function storeValue($name, $value) {
+  public static function storeValue(string $name, $value): void {
     Civi::contactSettings()->set('civioffice.live_snippets.' . $name, $value);
   }
 
-  public static function storeValues() {
-    foreach (self::$_liveSnippetValues as $name => $value) {
+  public static function storeValues(): void {
+    foreach (self::$liveSnippetValues as $name => $value) {
       self::storeValue($name, $value);
     }
   }
 
   public static function getTokens(): array {
-    if (!isset(self::$_liveSnippetTokens)) {
-      self::$_liveSnippetTokens = [];
+    if (!isset(self::$liveSnippetTokens)) {
+      self::$liveSnippetTokens = [];
       foreach (self::get() as $live_snippet) {
-        self::$_liveSnippetTokens['live_snippets.' . $live_snippet['name']] = $live_snippet['label'];
+        self::$liveSnippetTokens['live_snippets.' . $live_snippet['name']] = $live_snippet['label'];
       }
     }
 
-    return self::$_liveSnippetTokens;
+    return self::$liveSnippetTokens;
   }
 
-  /**
-   * @param CRM_Core_Form $form
-   * @param $defaults
-   */
-  public static function addFormElements(&$form, $name_prefix = '', $defaults = []) {
+  public static function addFormElements(CRM_Core_Form $form, string $name_prefix = '', array $defaults = []): array {
     $live_snippet_elements = [];
     $live_snippet_descriptions = [];
     $live_snippet_values = CRM_Civioffice_LiveSnippets::getValues();
@@ -125,27 +127,25 @@ class CRM_Civioffice_LiveSnippets {
     return $element_names;
   }
 
-  /**
-   * @param CRM_Core_Form $form
-   * @param bool $store_defaults
-   *
-   * @return array
-   */
-  public static function getFormElementValues(&$form, $store_defaults = TRUE, $element_name_prefix = '') {
+  public static function getFormElementValues(
+    CRM_Core_Form $form,
+    bool $store_defaults = TRUE,
+    string $element_name_prefix = ''
+  ): array {
     $live_snippets = self::get();
     $live_snippet_values = [];
     foreach ($live_snippets as $live_snippet) {
       $element_name = $element_name_prefix . 'live_snippets_' . $live_snippet['name'];
-      if ($element = $form->getElement($element_name)) {
+      if ($form->getElement($element_name)) {
         // Fake an element name that is in CRM_Utils_API_HTMLInputCoder->skipFields for not encoding its content
         // as HTML-safe, since we're inside an XML CDATA section.
         $form->_elementIndex['content'] = $form->_elementIndex[$element_name];
         $value = $form->exportValue('content');
         // Filter CDATA ending sections ("]]>") for not breaking the XML document.
         self::setValue(
-        $live_snippet['name'],
-        $value,
-        $store_defaults
+          $live_snippet['name'],
+          $value,
+          $store_defaults
         );
         $value = str_replace(']]>', ']]]]><![CDATA[>', $value);
         $live_snippet_values[$live_snippet['name']] = $value;

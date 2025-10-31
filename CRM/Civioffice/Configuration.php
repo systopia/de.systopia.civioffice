@@ -22,15 +22,24 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * CiviOffice Configuration
+ *
+ * @phpstan-type documentListT array<string, array<string, \CRM_Civioffice_Document>>
+ *    Document store URI and document URI are the keys.
+ *
+ * @phpstan-type select2OptionsT list<array{
+ *    text: string,
+ *    children: list<array{id: string, text: string}>,
+ *  }>
+ *    To be used in a Select2 field.
  */
 class CRM_Civioffice_Configuration implements EventSubscriberInterface {
 
-  protected static $singleton = NULL;
+  private static self $singleton;
 
   /**
    * {@inheritDoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       'civi.civioffice.documentStores' => 'getDefaultDocumentStores',
     ];
@@ -40,19 +49,16 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface {
    * @return CRM_Civioffice_Configuration
    *   the current configuration
    */
-  public static function getConfig() {
-    if (self::$singleton === NULL) {
-      self::$singleton = new CRM_Civioffice_Configuration();
-    }
-    return self::$singleton;
+  public static function getConfig(): CRM_Civioffice_Configuration {
+    return self::$singleton ??= new CRM_Civioffice_Configuration();
   }
 
   /**
    * Get a list of eligible activity types
    *
-   * @return array
+   * @throws \CRM_Core_Exception
    */
-  public static function getActivityTypes() {
+  public static function getActivityTypes(): array {
     $types = ['' => E::ts('- none -')];
     $type_query = civicrm_api3('OptionValue', 'get', [
       'option_group_id' => 'activity_type',
@@ -101,10 +107,8 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface {
    * @param \Civi\Core\Event\GenericHookEvent $event
    *   The subscribed event. Document stores are in an implicit property "document_stores", which is an array of
    *   instances of CRM_Civioffice_DocumentStore.
-   *
-   * @return void
    */
-  public static function getDefaultDocumentStores($event) {
+  public static function getDefaultDocumentStores(GenericHookEvent $event): void {
     $event->document_stores[] = new CRM_Civioffice_DocumentStore_Local(
         'local_folder',
         'Local Folder',
@@ -124,15 +128,15 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface {
    * @phpstan-return list<DocumentRenderer>
    *   An array of document renderers.
    *
-   * @throws \Exception
+   * @throws \InvalidArgumentException
    *   When a renderer could not be loaded from configuration.
    */
   public static function getDocumentRenderers(bool $only_show_active = FALSE): array {
     $renderers = array_map(
-        function ($uri) {
-            return DocumentRenderer::load($uri);
+        function (string $uri) {
+          return DocumentRenderer::load($uri);
         },
-        array_keys(Civi::settings()->get('civioffice_renderers')) ?? []
+        array_keys(Civi::settings()->get('civioffice_renderers') ?? [])
     );
 
     if ($only_show_active) {
@@ -152,7 +156,7 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface {
    *
    * @return array
    */
-  public static function getEditors($active_only = TRUE) : array {
+  public static function getEditors(bool $active_only = TRUE) : array {
     // todo: get from config
     // todo: filter for $only_show_active
     return [];
@@ -176,15 +180,6 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface {
   }
 
   /**
-   * @phpstan-type documentListT array<string, array<string, \CRM_Civioffice_Document>>
-   *   Document store URI and document URI are the keys.
-   *
-   * @phpstan-type select2OptionsT list<array{
-   *   text: string,
-   *   children: list<array{id: string, text: string}>,
-   * }>
-   *   To be used in a Select2 field.
-   *
    * @phpstan-return documentListT|select2OptionsT
    */
   public function getDocuments(bool $select2 = FALSE): array {
@@ -208,7 +203,7 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface {
     }
 
     if ($select2) {
-      foreach ($document_list as $store => &$documents) {
+      foreach ($document_list as &$documents) {
         usort($documents, function($a, $b) {
           /** @var \CRM_Civioffice_Document $a */
           /** @var \CRM_Civioffice_Document $b */
@@ -246,7 +241,6 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface {
     $stores = self::getDocumentStores(FALSE);
     foreach ($stores as $store) {
       // see if this one has the file
-      /** @var  $store CRM_Civioffice_DocumentStore*/
       $document = $store->getDocumentByURI($document_uri);
       if ($document) {
         return $document;
@@ -273,7 +267,6 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface {
 
     // then: check other stores
     $other_stores = self::getDocumentStores(FALSE);
-    /** @var CRM_Civioffice_DocumentStore $store */
     foreach ($other_stores as $store) {
       if ($store->getURI() == $document_store_uri) {
         return $store;

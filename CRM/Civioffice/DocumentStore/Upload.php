@@ -31,14 +31,16 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore {
   protected $folder_name;
 
   /**
-   * @var string root folder for all upload document stores e.g. /common or /contact_ */
-  protected $base_folder;
+   * @var string root folder for all upload document stores e.g. /common or /contact_
+   */
+  protected string $base_folder;
 
   /**
-   * @var boolean is this a set of common/shared documents or the user's private ones */
-  protected $common;
+   * @var boolean is this a set of common/shared documents or the user's private ones
+   */
+  protected bool $common;
 
-  public function __construct($common) {
+  public function __construct(bool $common) {
     $this->common = $common;
 
     // get the upload folder
@@ -56,7 +58,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore {
       mkdir($this->folder_name);
     }
 
-    parent::__construct("upload::{$user_folder}", $common ? E::ts('Shared Uploads') : E::ts('My Uploads'));
+    parent::__construct("upload::$user_folder", $common ? E::ts('Shared Uploads') : E::ts('My Uploads'));
   }
 
   /**
@@ -65,7 +67,7 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore {
    * @return string
    *   folder name
    */
-  public function getFolder() {
+  public function getFolder(): string {
     return $this->folder_name;
   }
 
@@ -80,15 +82,9 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore {
   }
 
   /**
-   * Get a list of available documents
-   *
-   * @param string $path
-   *   path, or null for root
-   *
-   * @return array
-   *   list of CRM_Civioffice_Document objects
+   * @inheritDoc
    */
-  public function getDocuments($path = NULL) : array {
+  public function getDocuments(?string $path = NULL): array {
     $file_list = scandir($this->folder_name);
     $documents = [];
     foreach ($file_list as $file) {
@@ -104,16 +100,9 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore {
   }
 
   /**
-   * Get a list of paths under the given paths,
-   *   i.e. subdirectories
-   *
-   * @param string $path
-   *   path, or null for root
-   *
-   * @return array
-   *   list of strings representing paths
+   * @inheritDoc
    */
-  public function getPaths($path = NULL) : array {
+  public function getPaths(?string $path = NULL): array {
     return [];
   }
 
@@ -165,19 +154,13 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore {
   }
 
   /**
-   * Get a given document
-   *
-   * @param string $uri
-   *   document URI
-   *
-   * @return CRM_Civioffice_Document|null
-   *   list of CRM_Civioffice_Document objects
+   * @inheritDoc
    */
-  public function getDocumentByURI($uri) {
+  public function getDocumentByURI(string $uri): ?CRM_Civioffice_Document {
     // TODO:
     if (substr($uri, 0, 7) == 'local::') {
       // todo: disallow '..' for security
-      $file_name_with_ending = substr(strstr($uri, '/'), strlen('/'));
+      $file_name_with_ending = substr(strstr($uri, '/'), 1);
       $absolute_path_with_file_name = $this->folder_name . DIRECTORY_SEPARATOR . $file_name_with_ending;
 
       // better to use only one?
@@ -209,18 +192,21 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore {
   }
 
   /**
-   * Check if the given URI matches this store
-   *
-   * @param string $uri
-   *
-   * @return boolean
+   * @inheritDoc
    */
-  public function isStoreURI($uri) {
+  public function isStoreURI(string $uri): bool {
     return (substr($uri, 0, 8) == 'upload::');
   }
 
+  /**
+   * @throws \CRM_Core_Exception
+   */
   public static function access(): bool {
     $common = CRM_Utils_Request::retrieve('common', 'Boolean');
+    if (NULL !== $common) {
+      $common = (bool) $common;
+    }
+
     // Check permission.
     return CRM_Core_Permission::check('access CiviOffice')
       && (

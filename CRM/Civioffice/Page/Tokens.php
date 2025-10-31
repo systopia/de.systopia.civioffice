@@ -19,7 +19,7 @@ use Civi\Token\TokenProcessor;
 
 class CRM_Civioffice_Page_Tokens extends CRM_Core_Page {
 
-  public function run() {
+  public function run(): void {
     $tokenProcessor = new TokenProcessor(
         Civi::service('dispatcher'),
         [
@@ -41,7 +41,7 @@ class CRM_Civioffice_Page_Tokens extends CRM_Core_Page {
     );
     $this->assign('tokens', CRM_Utils_Token::formatTokensForDisplay($tokenProcessor->listTokens()));
 
-    return parent::run();
+    parent::run();
   }
 
 }

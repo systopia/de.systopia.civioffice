@@ -55,6 +55,8 @@ jobs:
         composer update --no-scripts --no-progress --prefer-dist --${{ matrix.prefer }} --optimize-autoloader --ignore-platform-reqs
         composer composer-phpunit -- update --no-progress --prefer-dist --optimize-autoloader
         composer composer-phpstan -- update --no-progress --prefer-dist --optimize-autoloader
+        cd ..
+        git clone https://github.com/systopia/de.systopia.mailattachment.git
 
     - name: Run PHPStan
       run: composer phpstan -- analyse -c phpstan.ci.neon

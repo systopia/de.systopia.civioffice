@@ -23,17 +23,20 @@ use CRM_Civioffice_ExtensionUtil as E;
  * @see https://docs.civicrm.org/dev/en/latest/framework/quickform/
  */
 class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form {
-  /**
-   * @var boolean  */
-  public $common;
+
+  public ?bool $common;
 
   /**
    * @var CRM_Civioffice_DocumentStore_Upload */
   protected $document_store;
 
-  public function preProcess() {
-    $this->common = CRM_Utils_Request::retrieve('common', 'Boolean', $this);
-    $this->assign('isTab', isset($this->common));
+  public function preProcess(): void {
+    $common = CRM_Utils_Request::retrieve('common', 'Boolean', $this);
+    if (NULL !== $common) {
+      $common = (bool) $common;
+    }
+    $this->common = $common;
+    $this->assign('isTab', NULL !== $this->common);
     $tabs = CRM_Civioffice_Form_DocumentUpload_TabHeader::build($this);
     $this->controller->_destination = CRM_Utils_System::url(
         'civicrm/civioffice/document_upload',
@@ -41,9 +44,9 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form {
     );
   }
 
-  public function buildQuickForm() {
+  public function buildQuickForm(): void {
     // Only build for individual tabs.
-    if (isset($this->common)) {
+    if (NULL !== $this->common) {
       $this->document_store = new CRM_Civioffice_DocumentStore_Upload($this->common);
 
       // execute a download if requested
@@ -98,12 +101,13 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form {
    * Get a list of all files including attributes
    *
    */
-  protected function fileList() {
+  protected function fileList(): array {
     $list = [];
     $documents = $this->document_store->getDocuments();
     foreach ($documents as $document) {
-      /** @var $document CRM_Civioffice_Document */
+      /** @var CRM_Civioffice_Document $document */
       $file_path = $this->document_store->getFolder() . DIRECTORY_SEPARATOR . $document->getName();
+      $common_arg = $this->common ? '1' : '0';
       $list[] = [
         'name'          => $document->getName(),
         'mime_type'     => $document->getMimeType(),
@@ -112,18 +116,18 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form {
         'icon'          => CRM_Utils_File::getIconFromMimeType($document->getMimeType()),
         'delete_link'   => CRM_Utils_System::url(
           'civicrm/civioffice/document_upload',
-          "common={$this->common}&delete=" . base64_encode($document->getName())
+          "common=$common_arg&delete=" . base64_encode($document->getName())
         ),
         'download_link' => CRM_Utils_System::url(
           'civicrm/civioffice/document_upload',
-          "common={$this->common}&download=" . base64_encode($document->getName())
+          "common=$common_arg&download=" . base64_encode($document->getName())
         ),
       ];
     }
     return $list;
   }
 
-  public function postProcess() {
+  public function postProcess(): void {
     $upload_file_infos = $this->_submitFiles['upload_file'];
     if (!empty($upload_file_infos['name'])) {
       $file_name = $upload_file_infos['name'];
@@ -162,12 +166,10 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form {
   /**
    * Extract a full path from the base64 encoded file name
    *
-   * @param string $base64_file_name
-   *
    * @return string|null
    *   full file path or null if file not exists (or illegal)
    */
-  protected function getFilePath($base64_file_name) {
+  protected function getFilePath(string $base64_file_name): ?string {
     $file_name = base64_decode($base64_file_name);
     if ($file_name) {
       // make sure nobody wants to do anything outside our folder

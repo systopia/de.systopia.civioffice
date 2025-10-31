@@ -46,11 +46,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore {
    */
   protected bool $has_subfolders;
 
-  /**
-   * @phpstan-param string $uri
-   * @phpstan-param string $name
-   */
-  public function __construct($uri, $name, bool $readonly, bool $has_subfolders) {
+  public function __construct(string $uri, string $name, bool $readonly, bool $has_subfolders) {
     parent::__construct($uri, $name);
 
     /** @phpstan-var string|null $baseFolder */
@@ -68,24 +64,19 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore {
   }
 
   /**
-   * Get a list of available documents
-   *
-   * @param string $path
-   *   path, or null for root
-   *
-   * @return array
-   *   list of CRM_Civioffice_Document objects
-   * @throws \Exception
+   * @inheritDoc
    */
-  public function getDocuments($path = NULL) : array {
+  public function getDocuments(?string $path = NULL): array {
     if ($this->has_subfolders) {
       $path = NULL;
     }
 
     // todo: sanitise path ../..
-    $full_path = $this->base_folder;
     if ($path) {
-      $full_path = $this->base_folder . DIRECTORY_SEPARATOR . $path;
+      $full_path = $this->getBaseFolder() . DIRECTORY_SEPARATOR . $path;
+    }
+    else {
+      $full_path = $this->getBaseFolder();
     }
 
     $file_list = scandir($full_path);
@@ -96,7 +87,7 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore {
         continue;
       }
 
-      $base_folder = substr($full_path . DIRECTORY_SEPARATOR . $file_name, strlen($this->base_folder) + 1);
+      $base_folder = substr($full_path . DIRECTORY_SEPARATOR . $file_name, strlen($this->getBaseFolder()) + 1);
       $documents[] = new CRM_Civioffice_Document_Local($this, $base_folder, $this->readonly);
     }
 
@@ -104,22 +95,17 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore {
   }
 
   /**
-   * Get a list of paths under the given paths,
-   *   i.e. subdirectories
-   *
-   * @param string $path
-   *   path, or null for root
-   *
-   * @return array
-   *   list of strings representing paths
+   * @inheritDoc
    */
-  public function getPaths($path = NULL) : array {
+  public function getPaths(?string $path = NULL): array {
     $paths = [];
 
     if ($this->has_subfolders) {
-      $full_path = $this->base_folder;
-      if ($path) {
-        $full_path = $this->base_folder . DIRECTORY_SEPARATOR . $path;
+      if (NULL !== $path) {
+        $full_path = $this->getBaseFolder() . DIRECTORY_SEPARATOR . $path;
+      }
+      else {
+        $full_path = $this->getBaseFolder();
       }
 
       $file_list = scandir($full_path);
@@ -170,23 +156,17 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore {
   }
 
   /**
-   * Get a given document
-   *
-   * @param string $uri
-   *   document URI
-   *
-   * @return CRM_Civioffice_Document|null
-   *   list of CRM_Civioffice_Document objects
+   * @inheritDoc
    */
-  public function getDocumentByURI($uri) {
+  public function getDocumentByURI(string $uri): ?CRM_Civioffice_Document {
     if (substr($uri, 0, 7) == 'local::') {
       // this is potentially one of ours:
       $file_name_with_ending = substr($uri, 7);
       // todo: disallow '..' for security
-      $absolute_path_with_file_name = $this->base_folder . DIRECTORY_SEPARATOR . $file_name_with_ending;
+      $absolute_path_with_file_name = $this->getBaseFolder() . DIRECTORY_SEPARATOR . $file_name_with_ending;
       if (file_exists($absolute_path_with_file_name)) {
         // todo: check for MIME type
-        $local_path = substr($absolute_path_with_file_name, strlen($this->base_folder) + 1);
+        $local_path = substr($absolute_path_with_file_name, strlen($this->getBaseFolder()) + 1);
         return new CRM_Civioffice_Document_Local($this, $local_path, $this->readonly);
       }
     }
@@ -199,7 +179,11 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore {
    * @return string
    *   local base folder
    */
-  public function getBaseFolder() : string {
+  public function getBaseFolder(): string {
+    if (NULL === $this->base_folder) {
+      throw new RuntimeException('Base folder is not set');
+    }
+
     return $this->base_folder;
   }
 
@@ -216,13 +200,9 @@ class CRM_Civioffice_DocumentStore_Local extends CRM_Civioffice_DocumentStore {
   }
 
   /**
-   * Check if the given URI matches this store
-   *
-   * @param string $uri
-   *
-   * @return boolean
+   * @inheritDoc
    */
-  public function isStoreURI($uri) {
+  public function isStoreURI(string $uri): bool {
     return (substr($uri, 0, 7) == 'local::');
   }
 

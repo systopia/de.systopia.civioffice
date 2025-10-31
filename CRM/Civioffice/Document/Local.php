@@ -20,14 +20,16 @@ declare(strict_types = 1);
  */
 class CRM_Civioffice_Document_Local extends CRM_Civioffice_Document {
   /**
-   * @var string local folder this store has access to */
-  protected $local_path;
+   * @var string local folder this store has access to
+   */
+  protected string $local_path;
 
   /**
-   * @var boolean should this be readable */
-  protected $readonly;
+   * @var bool should this be readable
+   */
+  protected bool $readonly;
 
-  public function __construct($document_store, $local_path, $readonly) {
+  public function __construct(CRM_Civioffice_DocumentStore $document_store, string $local_path, bool $readonly) {
     $uri = 'local::' . $local_path;
     parent::__construct($document_store, $uri, basename($local_path));
     $this->local_path = $local_path;
@@ -40,9 +42,13 @@ class CRM_Civioffice_Document_Local extends CRM_Civioffice_Document {
    * @return string
    *   binary file data
    */
-  public function getContent() : string {
-    // todo: exceptions
-    return file_get_contents($this->getAbsolutePath());
+  public function getContent(): string {
+    $content = file_get_contents($this->getAbsolutePath());
+    if (FALSE === $content) {
+      throw new RuntimeException('Unable to read file ' . $this->getAbsolutePath());
+    }
+
+    return $content;
   }
 
   /**
@@ -51,7 +57,7 @@ class CRM_Civioffice_Document_Local extends CRM_Civioffice_Document {
    * @param string $data
    *   binary file data
    */
-  public function updateFileContent(string $data) {
+  public function updateFileContent(string $data): void {
     if ($this->isEditable()) {
       // todo: exceptions
       file_put_contents($this->local_path, $data);

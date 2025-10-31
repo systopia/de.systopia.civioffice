@@ -22,12 +22,13 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_Document_LocalTempfile extends CRM_Civioffice_Document {
   /**
-   * @var string local folder this store has access to */
-  protected $local_path;
+   * @var string local folder this store has access to
+   */
+  protected string $local_path;
 
-  public function __construct($document_store, $local_path) {
+  public function __construct(CRM_Civioffice_DocumentStore $document_store, string $local_path) {
     if (!touch($local_path)) {
-      throw new Exception(E::ts('Local path is not writable: %1', [1 => $local_path]));
+      throw new RuntimeException(E::ts('Local path is not writable: %1', [1 => $local_path]));
     }
     $uri = 'localtmp::' . $local_path;
     parent::__construct($document_store, $uri, basename($local_path));
@@ -41,8 +42,12 @@ class CRM_Civioffice_Document_LocalTempfile extends CRM_Civioffice_Document {
    *   binary file data
    */
   public function getContent() : string {
-    // todo: exceptions
-    return file_get_contents($this->local_path);
+    $content = file_get_contents($this->getAbsolutePath());
+    if (FALSE === $content) {
+      throw new RuntimeException('Unable to read file ' . $this->getAbsolutePath());
+    }
+
+    return $content;
   }
 
   /**
@@ -51,7 +56,7 @@ class CRM_Civioffice_Document_LocalTempfile extends CRM_Civioffice_Document {
    * @param string $data
    *   binary file data
    */
-  public function updateFileContent(string $data) {
+  public function updateFileContent(string $data): void {
     // todo: exceptions
     file_put_contents($this->local_path, $data);
   }

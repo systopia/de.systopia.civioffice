@@ -21,7 +21,7 @@ declare(strict_types = 1);
 class CRM_Civioffice_Form_Task_CreateCaseDocuments extends CRM_Case_Form_Task {
   use CRM_Civioffice_Form_Task_CreateDocumentsTrait;
 
-  public function preProcess() {
+  public function preProcess(): void {
     parent::preProcess();
     $this->entityType = 'Case';
   }

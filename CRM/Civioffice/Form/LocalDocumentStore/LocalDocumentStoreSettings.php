@@ -24,7 +24,7 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends CRM_Core_Form {
 
-  public function buildQuickForm() {
+  public function buildQuickForm(): void {
     // add form elements
     $this->add(
         'text',

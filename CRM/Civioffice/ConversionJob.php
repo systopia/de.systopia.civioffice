@@ -15,6 +15,11 @@
 
 declare(strict_types = 1);
 
+use Civi\Api4\ActivityContact;
+use Civi\Api4\CaseContact;
+use Civi\Api4\Contribution;
+use Civi\Api4\Membership;
+use Civi\Api4\Participant;
 use CRM_Civioffice_ExtensionUtil as E;
 
 class CRM_Civioffice_ConversionJob {
@@ -22,60 +27,60 @@ class CRM_Civioffice_ConversionJob {
    * @var string
    *  URI which specifies the selected renderer being used
    */
-  protected $renderer_uri;
+  protected string $renderer_uri;
 
   /**
-   * @var $document_uri
+   * @var string
    *   The template uri which is used for generating a document
    */
-  protected $document_uri;
+  protected string $document_uri;
 
 
-  protected $temp_store;
+  protected CRM_Civioffice_DocumentStore_LocalTemp $temp_store;
 
   /**
    * @var array
    *   Array with entity IDs (like contact IDs)
    */
-  protected $entity_IDs;
+  protected array $entity_IDs;
 
   /**
    * @var string
    *   Type of entity (e.g. 'Contact')
    */
-  protected $entity_type;
+  protected string $entity_type;
 
   /**
    * @var string
    *   MIME type of target file (like application/pdf)
    */
-  protected $target_mime_type;
+  protected string $target_mime_type;
 
   /**
    * @var array
    *   Values for live snippet tokens in the document.
    */
-  protected $live_snippets;
+  protected array $live_snippets;
 
-  protected $activity_type_id;
+  protected ?int $activity_type_id;
 
   /**
    * @var string
    *   Title for runner state
    */
-  public $title;
+  public string $title;
 
   public function __construct(
-        $renderer_uri,
-        $document_uri,
-        $temp_folder_path,
-        $entity_IDs,
-        $entity_type,
-        $target_mime_type,
-        $title,
-        $live_snippets = [],
-        $activity_type_id = NULL
-    ) {
+    string $renderer_uri,
+    string $document_uri,
+    string $temp_folder_path,
+    array $entity_IDs,
+    string $entity_type,
+    string $target_mime_type,
+    string $title,
+    array $live_snippets = [],
+    ?int $activity_type_id = NULL
+  ) {
     $this->renderer_uri = $renderer_uri;
     $this->document_uri = $document_uri;
     $this->temp_store = new CRM_Civioffice_DocumentStore_LocalTemp($temp_folder_path);
@@ -88,6 +93,11 @@ class CRM_Civioffice_ConversionJob {
   }
 
   // phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
+
+  /**
+   * @throws \CRM_Core_Exception
+   * @throws \Civi\API\Exception\UnauthorizedException
+   */
   public function run(): bool {
   // phpcs:enable
     // run the API
@@ -107,7 +117,7 @@ class CRM_Civioffice_ConversionJob {
     $destination_folder = $this->temp_store->getBaseFolder();
 
     // copy files from source to target and overwrite existing files on retry
-    $copy_successful = shell_exec("cp -rf $source_folder/* $destination_folder");
+    shell_exec("cp -rf $source_folder/* $destination_folder");
 
     if (!$this->temp_store->isReadOnly()) {
       $this->removeFilesAndFolder($source_folder);
@@ -125,7 +135,7 @@ class CRM_Civioffice_ConversionJob {
             break;
 
           case 'Contribution':
-            $contact_id = \Civi\Api4\Contribution::get()
+            $contact_id = Contribution::get()
               ->addSelect('contact_id')
               ->addWhere('id', '=', $entity_id)
               ->execute()
@@ -133,7 +143,7 @@ class CRM_Civioffice_ConversionJob {
             break;
 
           case 'Participant':
-            $contact_id = \Civi\Api4\Participant::get()
+            $contact_id = Participant::get()
               ->addSelect('contact_id')
               ->addWhere('id', '=', $entity_id)
               ->execute()
@@ -141,7 +151,7 @@ class CRM_Civioffice_ConversionJob {
             break;
 
           case 'Membership':
-            $contact_id = \Civi\Api4\Membership::get()
+            $contact_id = Membership::get()
               ->addSelect('contact_id')
               ->addWhere('id', '=', $entity_id)
               ->execute()
@@ -149,7 +159,7 @@ class CRM_Civioffice_ConversionJob {
             break;
 
           case 'Activity':
-            $contact_id = \Civi\Api4\ActivityContact::get()
+            $contact_id = ActivityContact::get()
               ->addSelect('contact_id')
               ->addWhere('activity_id', '=', $entity_id)
               ->addWhere('record_type_id:name', '=', 'Activity Source')
@@ -159,7 +169,7 @@ class CRM_Civioffice_ConversionJob {
             break;
 
           case 'Case':
-            $contact_id = \Civi\Api4\CaseContact::get()
+            $contact_id = CaseContact::get()
               ->addSelect('contact_id')
               ->addWhere('case_id', '=', $entity_id)
               ->execute()

@@ -23,7 +23,7 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_Form_Settings extends CRM_Core_Form {
 
-  public function buildQuickForm() {
+  public function buildQuickForm(): void {
     self::setTitle(E::ts('CiviOffice - Configuration'));
 
     $office_components = [
@@ -35,7 +35,7 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form {
     $ui_components = [];
     foreach ($office_components as $element_type => $components) {
       foreach ($components as $instance) {
-        /** @var $instance CRM_Civioffice_OfficeComponent */
+        /** @var CRM_Civioffice_OfficeComponent $instance */
         $ui_components[$element_type][] = [
           'id'          => $instance->getURI(),
           'name'        => $instance->getName(),
@@ -71,9 +71,7 @@ class CRM_Civioffice_Form_Settings extends CRM_Core_Form {
     parent::buildQuickForm();
   }
 
-  public function postProcess() {
-    $values = $this->exportValues();
-
+  public function postProcess(): void {
     CRM_Core_Session::setStatus(
         E::ts('Settings Saved'),
         E::ts('The CiviOffice configuration has been updated.'),
