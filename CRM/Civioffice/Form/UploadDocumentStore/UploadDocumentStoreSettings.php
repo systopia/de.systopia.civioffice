@@ -13,6 +13,8 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
@@ -20,54 +22,56 @@ use CRM_Civioffice_ExtensionUtil as E;
  *
  * @see https://docs.civicrm.org/dev/en/latest/framework/quickform/
  */
-class CRM_Civioffice_Form_UploadDocumentStore_UploadDocumentStoreSettings extends CRM_Core_Form
-{
-    public function buildQuickForm()
-    {
-        // add form elements
-        $this->add(
-            'checkbox',
-            CRM_Civioffice_DocumentStore_Upload::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY,
-            E::ts("Shared Document Upload Enabled")
-        );
+class CRM_Civioffice_Form_UploadDocumentStore_UploadDocumentStoreSettings extends CRM_Core_Form {
 
-        $this->add(
-            'checkbox',
-            CRM_Civioffice_DocumentStore_Upload::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY,
-            E::ts("Private Document Upload Enabled")
-        );
+  public function buildQuickForm() {
+    // add form elements
+    $this->add(
+        'checkbox',
+        CRM_Civioffice_DocumentStore_Upload::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY,
+        E::ts('Shared Document Upload Enabled')
+    );
 
-        $this->setDefaults(
+    $this->add(
+        'checkbox',
+        CRM_Civioffice_DocumentStore_Upload::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY,
+        E::ts('Private Document Upload Enabled')
+    );
+
+    $this->setDefaults(
+        [
+          CRM_Civioffice_DocumentStore_Upload::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY =>
+          Civi::settings()->get(CRM_Civioffice_DocumentStore_Upload::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY),
+          CRM_Civioffice_DocumentStore_Upload::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY =>
+          Civi::settings()->get(CRM_Civioffice_DocumentStore_Upload::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY),
+        ]
+    );
+
+    $this->addButtons(
+        [
             [
-                CRM_Civioffice_DocumentStore_Upload::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY =>
-                    Civi::settings()->get(CRM_Civioffice_DocumentStore_Upload::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY),
-                CRM_Civioffice_DocumentStore_Upload::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY =>
-                    Civi::settings()->get(CRM_Civioffice_DocumentStore_Upload::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY),
-            ]
-        );
+              'type' => 'submit',
+              'name' => E::ts('Save'),
+              'isDefault' => TRUE,
+            ],
+        ]
+    );
 
-        $this->addButtons(
-            [
-                [
-                    'type' => 'submit',
-                    'name' => E::ts('Save'),
-                    'isDefault' => true,
-                ],
-            ]
-        );
+    parent::buildQuickForm();
+  }
 
-        parent::buildQuickForm();
-    }
+  public function postProcess() {
+    $values = $this->exportValues();
 
-    public function postProcess()
-    {
-        $values = $this->exportValues();
-
-        // store
-        Civi::settings()->set(CRM_Civioffice_DocumentStore_Upload::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY,
-            CRM_Utils_Array::value(CRM_Civioffice_DocumentStore_Upload::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY, $values, false));
-        Civi::settings()->set(CRM_Civioffice_DocumentStore_Upload::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY,
-            CRM_Utils_Array::value(CRM_Civioffice_DocumentStore_Upload::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY, $values, false));
-    }
+    // store
+    Civi::settings()->set(
+      CRM_Civioffice_DocumentStore_Upload::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY,
+      $values[CRM_Civioffice_DocumentStore_Upload::UPLOAD_PUBLIC_ENABLED_SETTINGS_KEY] ?? FALSE
+    );
+    Civi::settings()->set(
+      CRM_Civioffice_DocumentStore_Upload::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY,
+      $values[CRM_Civioffice_DocumentStore_Upload::UPLOAD_PRIVATE_ENABLED_SETTINGS_KEY] ?? FALSE
+    );
+  }
 
 }

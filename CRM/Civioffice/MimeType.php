@@ -1,6 +1,4 @@
 <?php
-declare(strict_types = 1);
-
 /**
  * -------------------------------------------------------+
  * | SYSTOPIA CiviOffice Integration                        |
@@ -16,6 +14,9 @@ declare(strict_types = 1);
  * | written permission from the original author(s).        |
  * +-------------------------------------------------------
  */
+
+declare(strict_types = 1);
+
 final class CRM_Civioffice_MimeType {
 
   public const ODT = 'application/vnd.oasis.opendocument.text';

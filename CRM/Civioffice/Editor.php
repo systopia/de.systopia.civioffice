@@ -13,47 +13,51 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
-use CRM_Civioffice_ExtensionUtil as E;
+declare(strict_types = 1);
 
 /**
  * CiviOffice abstract Document Store
+ *
+ * phpcs:disable Generic.NamingConventions.AbstractClassNamePrefix.Missing
  */
-abstract class CRM_Civioffice_Editor extends CRM_Civioffice_OfficeComponent
-{
-    /**
-     * Get URL of the editor
-     *
-     * @return string
-     *   url path of the editor
-     */
-    public abstract function getURL() : string;
+abstract class CRM_Civioffice_Editor extends CRM_Civioffice_OfficeComponent {
+// phpcs:enable
 
-    /**
-     * Get a list of paths under the given paths,
-     *   i.e. subdirectories
-     *
-     * @param string $path
-     *   path, or null for root
-     *
-     * @return array
-     *   list of strings representing paths
-     */
-    public abstract function getPaths($path = null) : array;
+  /**
+   * Get URL of the editor
+   *
+   * @return string
+   *   url path of the editor
+   */
+  abstract public function getURL() : string;
 
-    /**
-     * Is this document able to be inline edited?
-     *
-     * @param $document
-     *
-     * @return boolean
-     *   is this document store read only
-     */
-    public abstract function canInlineEdit($document) : bool;
+  /**
+   * Get a list of paths under the given paths,
+   *   i.e. subdirectories
+   *
+   * @param string $path
+   *   path, or null for root
+   *
+   * @return array
+   *   list of strings representing paths
+   */
+  abstract public function getPaths($path = NULL) : array;
 
-    /**
-     * Is this editor able to be included in other sites e.g. as an inline frame?
-     *
-     * @return boolean
-     */
-    public abstract function ableToBeIncludedAsInlineFrame() : bool;
+  /**
+   * Is this document able to be inline edited?
+   *
+   * @param $document
+   *
+   * @return boolean
+   *   is this document store read only
+   */
+  abstract public function canInlineEdit($document) : bool;
+
+  /**
+   * Is this editor able to be included in other sites e.g. as an inline frame?
+   *
+   * @return boolean
+   */
+  abstract public function ableToBeIncludedAsInlineFrame() : bool;
+
 }

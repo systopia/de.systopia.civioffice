@@ -13,6 +13,8 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
@@ -20,48 +22,49 @@ use CRM_Civioffice_ExtensionUtil as E;
  *
  * @see https://docs.civicrm.org/dev/en/latest/framework/quickform/
  */
-class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends CRM_Core_Form
-{
-    public function buildQuickForm()
-    {
-        // add form elements
-        $this->add(
-            'text',
-            'local_folder',
-            E::ts("Local Folder (full path)"),
-            ['class' => 'huge'],
-            true
-        );
+class CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings extends CRM_Core_Form {
 
-        $this->add(
-            'text',
-            'local_temp_folder',
-            E::ts("Local Temporary Folder (full path)"),
-            ['class' => 'huge'],
-            true
-        );
+  public function buildQuickForm() {
+    // add form elements
+    $this->add(
+        'text',
+        'local_folder',
+        E::ts('Local Folder (full path)'),
+        ['class' => 'huge'],
+        TRUE
+    );
 
-        $this->setDefaults(
+    $this->add(
+        'text',
+        'local_temp_folder',
+        E::ts('Local Temporary Folder (full path)'),
+        ['class' => 'huge'],
+        TRUE
+    );
+
+    $this->setDefaults(
+        [
+          'local_folder' => Civi::settings()->get(CRM_Civioffice_DocumentStore_Local::LOCAL_STATIC_PATH_SETTINGS_KEY),
+          'local_temp_folder' => Civi::settings()->get(
+            CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY
+          ),
+        ]
+    );
+    $this->assign('local_folder_suggestion', Civi::paths()->getPath('[civicrm.files]/civioffice'));
+    $this->assign('local_temp_folder_suggestion', sys_get_temp_dir() . '/civioffice');
+
+    $this->addButtons(
+        [
             [
-                'local_folder' => Civi::settings()->get(CRM_Civioffice_DocumentStore_Local::LOCAL_STATIC_PATH_SETTINGS_KEY),
-                'local_temp_folder' => Civi::settings()->get(CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY),
-            ]
-        );
-        $this->assign('local_folder_suggestion', Civi::paths()->getPath('[civicrm.files]/civioffice'));
-        $this->assign('local_temp_folder_suggestion', sys_get_temp_dir() . '/civioffice');
+              'type' => 'submit',
+              'name' => E::ts('Save'),
+              'isDefault' => TRUE,
+            ],
+        ]
+    );
 
-        $this->addButtons(
-            [
-                [
-                    'type' => 'submit',
-                    'name' => E::ts('Save'),
-                    'isDefault' => true,
-                ],
-            ]
-        );
-
-        parent::buildQuickForm();
-    }
+    parent::buildQuickForm();
+  }
 
   /**
    * Validate input data

@@ -13,80 +13,77 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
  * Document store based on a local folder
  */
-class CRM_Civioffice_Document_LocalTempfile extends CRM_Civioffice_Document
-{
-    /** @var string local folder this store has access to */
-    protected $local_path;
+class CRM_Civioffice_Document_LocalTempfile extends CRM_Civioffice_Document {
+  /**
+   * @var string local folder this store has access to */
+  protected $local_path;
 
-    public function __construct($document_store, $local_path)
-    {
-        if (!touch($local_path)) {
-            throw new Exception(E::ts('Local path is not writable: %1', [1 => $local_path]));
-        }
-        $uri = 'localtmp::' . $local_path;
-        parent::__construct($document_store, $uri, basename($local_path));
-        $this->local_path = $local_path;
+  public function __construct($document_store, $local_path) {
+    if (!touch($local_path)) {
+      throw new Exception(E::ts('Local path is not writable: %1', [1 => $local_path]));
     }
+    $uri = 'localtmp::' . $local_path;
+    parent::__construct($document_store, $uri, basename($local_path));
+    $this->local_path = $local_path;
+  }
 
-    /**
-     * Get the (binary) content of the file
-     *
-     * @return string
-     *   binary file data
-     */
-    public function getContent() : string
-    {
-        // todo: exceptions
-        return file_get_contents($this->local_path);
-    }
+  /**
+   * Get the (binary) content of the file
+   *
+   * @return string
+   *   binary file data
+   */
+  public function getContent() : string {
+    // todo: exceptions
+    return file_get_contents($this->local_path);
+  }
 
-    /**
-     * Set the (binary) content of the file
-     *
-     * @param string $data
-     *   binary file data
-     */
-    public function updateFileContent(string $data)
-    {
-        // todo: exceptions
-        file_put_contents($this->local_path, $data);
-    }
+  /**
+   * Set the (binary) content of the file
+   *
+   * @param string $data
+   *   binary file data
+   */
+  public function updateFileContent(string $data) {
+    // todo: exceptions
+    file_put_contents($this->local_path, $data);
+  }
 
-    /**
-     * get the file's (local) path
-     *
-     * @return string
-     *   path
-     */
-    public function getPath() : string
-    {
-        return $this->local_path;
-    }
+  /**
+   * get the file's (local) path
+   *
+   * @return string
+   *   path
+   */
+  public function getPath() : string {
+    return $this->local_path;
+  }
 
-    /**
-     * get the file's absolute path
-     *
-     * @return string
-     *   path
-     */
-    public function getAbsolutePath() : string
-    {
-        return $this->local_path;
-    }
+  /**
+   * get the file's absolute path
+   *
+   * @return string
+   *   path
+   */
+  public function getAbsolutePath() : string {
+    return $this->local_path;
+  }
 
-    /**
-     * Can this file be edited?
-     *
-     * @return bool
-     *   is this file editable
-     */
-    public function isEditable() : bool
-    {
-        return true;
-    }
+  /**
+   * Can this file be edited?
+   *
+   * @return bool
+   *   is this file editable
+   */
+  public function isEditable() : bool {
+    return TRUE;
+  }
+
 }

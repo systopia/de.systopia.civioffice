@@ -13,42 +13,41 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
-use CRM_Civioffice_ExtensionUtil as E;
+declare(strict_types = 1);
+
 use Civi\Token\AbstractTokenSubscriber;
-use Civi\Token\TokenRow;
 use Civi\Token\Event\TokenValueEvent;
+use Civi\Token\TokenRow;
 
-class CRM_Civioffice_Tokens extends AbstractTokenSubscriber
-{
-    public function __construct($entity, $tokenNames = [])
-    {
-        $tokenNames += self::getTokens();
-        parent::__construct($entity, $tokenNames);
+class CRM_Civioffice_Tokens extends AbstractTokenSubscriber {
+
+  public function __construct($entity, $tokenNames = []) {
+    $tokenNames += self::getTokens();
+    parent::__construct($entity, $tokenNames);
+  }
+
+  public static function getTokens() {
+    return CRM_Civioffice_LiveSnippets::getTokens();
+  }
+
+  public function prefetch(TokenValueEvent $e) {
+    $token_values = [
+      'live_snippets' => $e->getTokenProcessor()->getContextValues('civioffice.live_snippets')[0] ?? [],
+    ];
+
+    return $token_values;
+  }
+
+  public function evaluateToken(TokenRow $row, $entity, $field, $prefetch = NULL) {
+    [$token_type, $token_name] = explode('.', $field);
+
+    // Set row format for Live Snippets to HTML (default) or an explicitly defined context format.
+    $processor_context = $row->tokenProcessor->context['civioffice'] ?? [];
+    if ($token_type == 'live_snippets') {
+      $row->format($processor_context['format'] ?? 'text/html');
     }
 
-    public static function getTokens() {
-        return CRM_Civioffice_LiveSnippets::getTokens();
-    }
+    $row->tokens($entity, $field, $prefetch[$token_type][$token_name] ?? '');
+  }
 
-    public function prefetch(TokenValueEvent $e)
-    {
-        $token_values = [
-            'live_snippets' => $e->getTokenProcessor()->getContextValues('civioffice.live_snippets')[0] ?? [],
-        ];
-
-        return $token_values;
-    }
-
-    public function evaluateToken(TokenRow $row, $entity, $field, $prefetch = null)
-    {
-        [$token_type, $token_name] = explode('.', $field);
-
-        // Set row format for Live Snippets to HTML (default) or an explicitly defined context format.
-        $processor_context = $row->tokenProcessor->context['civioffice'] ?? [];
-        if ($token_type == 'live_snippets') {
-            $row->format($processor_context['format'] ?? 'text/html');
-        }
-
-        $row->tokens($entity, $field, $prefetch[$token_type][$token_name] ?? '');
-    }
 }

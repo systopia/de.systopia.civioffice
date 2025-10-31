@@ -13,75 +13,73 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use Civi\Civioffice\DocumentRendererTypeContainer;
-use Civi\Civioffice\DocumentRendererTypeInterface;
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
  * CiviOffice Settings
  */
-class CRM_Civioffice_Form_Settings extends CRM_Core_Form
-{
+class CRM_Civioffice_Form_Settings extends CRM_Core_Form {
 
-    public function buildQuickForm()
-    {
-        self::setTitle(E::ts("CiviOffice - Configuration"));
+  public function buildQuickForm() {
+    self::setTitle(E::ts('CiviOffice - Configuration'));
 
-        $office_components = [
-            'document_stores'    => CRM_Civioffice_Configuration::getDocumentStores(false),
-            'document_renderers' => CRM_Civioffice_Configuration::getDocumentRenderers(false),
-            'document_editors'   => CRM_Civioffice_Configuration::getEditors(false),
+    $office_components = [
+      'document_stores'    => CRM_Civioffice_Configuration::getDocumentStores(FALSE),
+      'document_renderers' => CRM_Civioffice_Configuration::getDocumentRenderers(FALSE),
+      'document_editors'   => CRM_Civioffice_Configuration::getEditors(FALSE),
+    ];
+
+    $ui_components = [];
+    foreach ($office_components as $element_type => $components) {
+      foreach ($components as $instance) {
+        /** @var $instance CRM_Civioffice_OfficeComponent */
+        $ui_components[$element_type][] = [
+          'id'          => $instance->getURI(),
+          'name'        => $instance->getName(),
+          'description' => $instance->getDescription(),
+          'config_url'  => $instance->getConfigPageURL(),
+          'delete_url'  => $instance->getDeleteURL(),
+          'is_ready'    => $instance->isReady(),
         ];
+      }
+    }
 
-        $ui_components = [];
-        foreach ($office_components as $element_type => $components) {
-            foreach ($components as $instance) {
-                /** @var $instance CRM_Civioffice_OfficeComponent */
-                $ui_components[$element_type][] = [
-                    'id'          => $instance->getURI(),
-                    'name'        => $instance->getName(),
-                    'description' => $instance->getDescription(),
-                    'config_url'  => $instance->getConfigPageURL(),
-                    'delete_url'  => $instance->getDeleteURL(),
-                    'is_ready'    => $instance->isReady()
-                ];
-            }
-        }
+    $this->assign('document_renderer_types', DocumentRendererTypeContainer::getInstance()->getTitles());
 
-        $this->assign('document_renderer_types', DocumentRendererTypeContainer::getInstance()->getTitles());
+    foreach (CRM_Civioffice_LiveSnippets::get() as $live_snippet) {
+      $live_snippet['current_content'] = Civi::contactSettings()->get(
+        'civioffice.live_snippets.' . $live_snippet['name']
+      );
+      $ui_components['live_snippets'][$live_snippet['id']] = $live_snippet;
+    }
 
-        foreach (CRM_Civioffice_LiveSnippets::get() as $live_snippet) {
-            $live_snippet['current_content'] = Civi::contactSettings()->get('civioffice.live_snippets.' . $live_snippet['name']);
-            $ui_components['live_snippets'][$live_snippet['id']] = $live_snippet;
-        }
+    $this->assign('ui_components', $ui_components);
 
-        $this->assign('ui_components', $ui_components);
-
-        $this->addButtons(
+    $this->addButtons(
+        [
             [
-                [
-                    'type' => 'submit',
-                    'name' => E::ts('Save'),
-                    'isDefault' => true,
-                ],
-            ]
-        );
+              'type' => 'submit',
+              'name' => E::ts('Save'),
+              'isDefault' => TRUE,
+            ],
+        ]
+    );
 
-        parent::buildQuickForm();
-    }
+    parent::buildQuickForm();
+  }
 
+  public function postProcess() {
+    $values = $this->exportValues();
 
-    public function postProcess()
-    {
-        $values = $this->exportValues();
-
-
-        CRM_Core_Session::setStatus(
-            E::ts("Settings Saved"),
-            E::ts("The CiviOffice configuration has been updated."),
-            'info'
-        );
-        parent::postProcess();
-    }
+    CRM_Core_Session::setStatus(
+        E::ts('Settings Saved'),
+        E::ts('The CiviOffice configuration has been updated.'),
+        'info'
+    );
+    parent::postProcess();
+  }
 
 }

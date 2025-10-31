@@ -13,6 +13,8 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use Civi\Civioffice\CiviofficeSession;
 use CRM_Civioffice_ExtensionUtil as E;
 
@@ -21,186 +23,197 @@ use CRM_Civioffice_ExtensionUtil as E;
  */
 class CRM_Civioffice_Form_Download extends CRM_Core_Form {
 
-    /** @var string the tmp folder holding the files */
-    public $tmp_folder;
+  /**
+   * @var string the tmp folder holding the files */
+  public $tmp_folder;
 
-    /** @var string the URL to return to */
-    public $return_url;
+  /**
+   * @var string the URL to return to */
+  public $return_url;
 
-    /** @var bool start download instantly */
-    public $instant_download;
+  /**
+   * @var bool start download instantly */
+  public $instant_download;
 
-    public function buildQuickForm()
-    {
-        $tmp_folder_path_hash = CRM_Utils_Request::retrieve('id', 'String', $this) ?? '';
-        $this->tmp_folder = CiviofficeSession::getInstance()->getTempFolderPath($tmp_folder_path_hash);
-        if (null === $this->tmp_folder) {
-            \CRM_Utils_System::civiExit(404);
-        }
+  public function buildQuickForm() {
+    $tmp_folder_path_hash = CRM_Utils_Request::retrieve('id', 'String', $this) ?? '';
+    $this->tmp_folder = CiviofficeSession::getInstance()->getTempFolderPath($tmp_folder_path_hash);
+    if (NULL === $this->tmp_folder) {
+      \CRM_Utils_System::civiExit(404);
+    }
 
-        $this->return_url = CRM_Utils_Request::retrieve('return_url', 'String', $this);
-        $this->instant_download = CRM_Utils_Request::retrieve('instant_download', 'Boolean', $this);
+    $this->return_url = CRM_Utils_Request::retrieve('return_url', 'String', $this);
+    $this->instant_download = CRM_Utils_Request::retrieve('instant_download', 'Boolean', $this);
 
-        if ($this->instant_download) {
-            $this->zipIfNeededAndDownload($this->tmp_folder, 'inline');
-            $this->removeFilesAndFolder($this->tmp_folder);
-            CRM_Utils_System::civiExit();
-        }
+    if ($this->instant_download) {
+      $this->zipIfNeededAndDownload($this->tmp_folder, 'inline');
+      $this->removeFilesAndFolder($this->tmp_folder);
+      CRM_Utils_System::civiExit();
+    }
 
-        $this->setTitle(E::ts("CiviOffice - Download"));
-        $this->addButtons(
+    $this->setTitle(E::ts('CiviOffice - Download'));
+    $this->addButtons(
+        [
             [
-                [
-                    'type' => 'submit',
-                    'name' => E::ts('Download'),
-                    'icon' => 'fa-download',
-                    'isDefault' => true,
-                ],
-                [
-                    'type' => 'done',
-                    'name' => E::ts('Back to previous page'),
-                    'isDefault' => false,
-                ],
-            ]
-        );
-        Civi::log()->debug("CiviOffice: Zip page loaded");
+              'type' => 'submit',
+              'name' => E::ts('Download'),
+              'icon' => 'fa-download',
+              'isDefault' => TRUE,
+            ],
+            [
+              'type' => 'done',
+              'name' => E::ts('Back to previous page'),
+              'isDefault' => FALSE,
+            ],
+        ]
+    );
+    Civi::log()->debug('CiviOffice: Zip page loaded');
 
-        parent::buildQuickForm();
+    parent::buildQuickForm();
+  }
+
+  public function postProcess() {
+    // this means somebody clicked download
+    $vars = $this->exportValues();
+    if (isset($vars['_qf_Download_submit'])) {
+      $this->zipIfNeededAndDownload($this->tmp_folder);
+    }
+    elseif (isset($vars['_qf_Download_done'])) {
+      $this->removeFilesAndFolder($this->tmp_folder);
+      // go back
+      CRM_Utils_System::redirect(base64_decode($this->return_url));
     }
 
-    public function postProcess()
-    {
-        // this means somebody clicked download
-        $vars = $this->exportValues();
-        if (isset($vars['_qf_Download_submit'])) {
-            $this->zipIfNeededAndDownload($this->tmp_folder);
-        } else if (isset($vars['_qf_Download_done'])) {
-            $this->removeFilesAndFolder($this->tmp_folder);
-            // go back
-            CRM_Utils_System::redirect(base64_decode($this->return_url));
-        }
+    parent::postProcess();
+  }
 
-        parent::postProcess();
+  /**
+   * @return void
+   * @throws \Exception
+   *
+   * phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
+   */
+  public function zipIfNeededAndDownload(string $folder_path, string $content_disposition = 'attachment'): void {
+  // phpcs:enable
+    // TODO: verify folder
+    if (!preg_match('#civioffice_\w+$#', $folder_path)) {
+      throw new Exception('Illegal path!');
     }
 
-    /**
-     * @return void
-     * @throws \Exception
-     */
-    public function zipIfNeededAndDownload(string $folder_path, string $content_disposition = 'attachment'): void
-    {
-        // TODO: verify folder
-        if (!preg_match('#civioffice_\w+$#', $folder_path)) {
-            throw new Exception("Illegal path!");
-        }
+    // download files
+    try {
+      $glob = glob($folder_path . '/' . '*');
+      $number_of_files = count($glob);
 
-        // download files
+      if ($number_of_files == 1) {
+        // do not zip if single file
+        $files = scandir($folder_path);
+        $file_name = $files[2];
+        $file_path_name = $folder_path . DIRECTORY_SEPARATOR . $file_name;
+        $mime_type = mime_content_type($file_path_name);
+
+      }
+      else {
+        // create ZIP file
+        $file_path_name = $folder_path . DIRECTORY_SEPARATOR . 'all.zip';
+
+        // first: try with command line tool to avoid memory issues
+        $has_error = 0;
         try {
-            $glob = glob($folder_path . '/' . '*');
-            $number_of_files = count($glob);
-
-            if($number_of_files == 1) {
-                // do not zip if single file
-                $files = scandir($folder_path);
-                $file_name = $files[2];
-                $file_path_name = $folder_path . DIRECTORY_SEPARATOR . $file_name;
-                $mime_type = mime_content_type($file_path_name);
-
-            } else {
-                // create ZIP file
-                $file_path_name = $folder_path . DIRECTORY_SEPARATOR . 'all.zip';
-
-                // first: try with command line tool to avoid memory issues
-                $has_error = 0;
-                try {
-                    $output = null;
-                    // todo save name identifier at a central place
-                    $pattern = "Document-*.*"; // todo: Check if wildcard use is okay here
-                    $command = "cd {$folder_path} && zip all.zip {$pattern}";
-                    Civi::log()->debug("CiviOffice: Executing '{$command}' to zip generated files...");
-                    $timestamp = microtime(true);
-                    exec($command, $output, $has_error);
-                    $runtime = microtime(true) - $timestamp;
-                    Civi::log()->debug("CiviOffice: Zip command took {$runtime}s");
-                } catch (Exception $ex) {
-                    $has_error = 1;
-                }
-
-                // if this didn't work, use PHP (memory intensive)
-                if ($has_error || !file_exists($file_path_name)) {
-                    // this didn't work, use the
-                    $zip = new ZipArchive();
-                    $zip->open($file_path_name, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
-
-                    // add all Document-X.* files
-                    foreach (scandir($folder_path) as $file) {
-                        // todo save name identifier at a central place
-                        $pattern = E::ts("Document-%1.*", [1 => '[0-9]+']); // todo: Check if wildcard use is okay here
-                        if (preg_match("/{$pattern}/", $file)) {
-                            $zip->addFile($folder_path . DIRECTORY_SEPARATOR . $file, $file);
-                        }
-                    }
-                    $zip->close();
-                }
-                $mime_type = CRM_Civioffice_MimeType::ZIP;
-                $file_name = E::ts('CiviOffice Documents.zip');
-            }
-
-            // trigger download
-            if (file_exists($file_path_name)) {
-                // set file metadata
-                header("Content-Type: $mime_type");
-                header(sprintf('Content-Disposition: %s; filename=%s', $content_disposition, $file_name));
-                header('Content-Length: ' . filesize($file_path_name));
-
-                // dump file contents in stream and exit
-                // caution: big files need to be treated carefully, to not cause out of memory errors
-                // based on: https://zinoui.com/blog/download-large-files-with-php
-
-                // first: disable output buffering
-                if (ob_get_level()) {
-                    ob_end_clean();
-                }
-
-                // then read the file chunk by chunk and write to output (echo)
-                $chunkSize = 16 * 1024 * 1024; // 16 MB chunks
-                $handle = fopen($file_path_name, 'rb');
-                while (!feof($handle)) {
-                    $buffer = fread($handle, $chunkSize);
-                    echo $buffer;
-                    ob_flush();
-                    flush();
-                }
-                fclose($handle);
-
-                // delete file
-                unlink($file_path_name);
-
-                // we're done
-                // CRM_Utils_System::civiExit(); // fixme: needed?
-            } else {
-                // this file really should exist...
-                throw new Exception(E::ts("File couldn't be generated. Contact the author."));
-            }
-        } catch (Exception $ex) {
-            CRM_Core_Session::setStatus(
-                E::ts("Error downloading files: %1", [1 => $ex->getMessage()]),
-                E::ts("Download Error"),
-                'error'
-            );
+          $output = NULL;
+          // todo save name identifier at a central place
+          // todo: Check if wildcard use is okay here
+          $pattern = 'Document-*.*';
+          $command = "cd {$folder_path} && zip all.zip {$pattern}";
+          Civi::log()->debug("CiviOffice: Executing '{$command}' to zip generated files...");
+          $timestamp = microtime(TRUE);
+          exec($command, $output, $has_error);
+          $runtime = microtime(TRUE) - $timestamp;
+          Civi::log()->debug("CiviOffice: Zip command took {$runtime}s");
         }
-    }
-
-    private function removeFilesAndFolder(string $folder_path): void
-    {
-        CiviofficeSession::getInstance()->removeTempFolderPath($folder_path);
-
-        // delete tmp folder
-        foreach (scandir($folder_path) as $file) {
-            if ($file != '.' && $file != '..') {
-                unlink($folder_path . DIRECTORY_SEPARATOR . $file);
-            }
+        catch (Exception $ex) {
+          $has_error = 1;
         }
-        rmdir($folder_path);
+
+        // if this didn't work, use PHP (memory intensive)
+        if ($has_error || !file_exists($file_path_name)) {
+          // this didn't work, use the
+          $zip = new ZipArchive();
+          $zip->open($file_path_name, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
+
+          // add all Document-X.* files
+          foreach (scandir($folder_path) as $file) {
+            // todo save name identifier at a central place
+            // todo: Check if wildcard use is okay here
+            $pattern = E::ts('Document-%1.*', [1 => '[0-9]+']);
+            if (preg_match("/{$pattern}/", $file)) {
+              $zip->addFile($folder_path . DIRECTORY_SEPARATOR . $file, $file);
+            }
+          }
+          $zip->close();
+        }
+        $mime_type = CRM_Civioffice_MimeType::ZIP;
+        $file_name = E::ts('CiviOffice Documents.zip');
+      }
+
+      // trigger download
+      if (file_exists($file_path_name)) {
+        // set file metadata
+        header("Content-Type: $mime_type");
+        header(sprintf('Content-Disposition: %s; filename=%s', $content_disposition, $file_name));
+        header('Content-Length: ' . filesize($file_path_name));
+
+        // dump file contents in stream and exit
+        // caution: big files need to be treated carefully, to not cause out of memory errors
+        // based on: https://zinoui.com/blog/download-large-files-with-php
+
+        // first: disable output buffering
+        if (ob_get_level()) {
+          ob_end_clean();
+        }
+
+        // then read the file chunk by chunk and write to output (echo)
+        // 16 MB chunks
+        $chunkSize = 16 * 1024 * 1024;
+        $handle = fopen($file_path_name, 'rb');
+        while (!feof($handle)) {
+          $buffer = fread($handle, $chunkSize);
+          echo $buffer;
+          ob_flush();
+          flush();
+        }
+        fclose($handle);
+
+        // delete file
+        unlink($file_path_name);
+
+        // we're done
+        // CRM_Utils_System::civiExit(); // fixme: needed?
+      }
+      else {
+        // this file really should exist...
+        throw new Exception(E::ts("File couldn't be generated. Contact the author."));
+      }
     }
+    catch (Exception $ex) {
+      CRM_Core_Session::setStatus(
+        E::ts('Error downloading files: %1', [1 => $ex->getMessage()]),
+        E::ts('Download Error'),
+        'error'
+        );
+    }
+  }
+
+  private function removeFilesAndFolder(string $folder_path): void {
+    CiviofficeSession::getInstance()->removeTempFolderPath($folder_path);
+
+    // delete tmp folder
+    foreach (scandir($folder_path) as $file) {
+      if ($file != '.' && $file != '..') {
+        unlink($folder_path . DIRECTORY_SEPARATOR . $file);
+      }
+    }
+    rmdir($folder_path);
+  }
+
 }

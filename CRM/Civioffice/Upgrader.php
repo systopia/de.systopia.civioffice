@@ -1,27 +1,28 @@
 <?php
 
+declare(strict_types = 1);
+
 use Civi\Civioffice\DocumentRenderer;
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
  * Collection of upgrade steps.
  */
-class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
-{
-    /**
-     * Run installation tasks.
-     */
-    public function install()
-    {
-        Civi::settings()->set(
-            CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY,
-            sys_get_temp_dir() . '/civioffice'
-        );
+class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
 
-        // Create/synchronise the Live Snippets option group.
-        $customData = new CRM_Civioffice_CustomData(E::LONG_NAME);
-        $customData->syncOptionGroup(E::path('resources/live_snippets_option_group.json'));
-    }
+  /**
+   * Run installation tasks.
+   */
+  public function install() {
+    Civi::settings()->set(
+        CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY,
+        sys_get_temp_dir() . '/civioffice'
+    );
+
+    // Create/synchronise the Live Snippets option group.
+    $customData = new CRM_Civioffice_CustomData(E::LONG_NAME);
+    $customData->syncOptionGroup(E::path('resources/live_snippets_option_group.json'));
+  }
 
   public function uninstall() {
     // Remove settings created by this extension.
@@ -68,62 +69,60 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
     // TODO: Clean-up file cache (temporary rendered files), using a cleanup interface.
   }
 
-    /**
-     * Support Live Snippets.
-     *
-     * @return TRUE on success
-     * @throws Exception
-     */
-    public function upgrade_0006(): bool
-    {
-        // Create/synchronise the Live Snippets option group.
-        $this->ctx->log->info('Create/synchronise Live Snippets option group.');
-        $customData = new CRM_Civioffice_CustomData(E::LONG_NAME);
-        $customData->syncOptionGroup(E::path('resources/live_snippets_option_group.json'));
-        return true;
+  /**
+   * Support Live Snippets.
+   *
+   * @return TRUE on success
+   * @throws Exception
+   */
+  public function upgrade_0006(): bool {
+    // Create/synchronise the Live Snippets option group.
+    $this->ctx->log->info('Create/synchronise Live Snippets option group.');
+    $customData = new CRM_Civioffice_CustomData(E::LONG_NAME);
+    $customData->syncOptionGroup(E::path('resources/live_snippets_option_group.json'));
+    return TRUE;
+  }
+
+  public function upgrade_0007(): bool {
+    // Create default renderer instances (one for each RendererType with the same URI) and save them with current
+    // settings.
+    $renderers = [
+      'unoconv-local' => new DocumentRenderer(
+            'unoconv-local',
+            E::ts('Local Universal Office Converter (unoconv)'),
+            [
+              'type' => 'unoconv-local',
+              'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
+              'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
+            ]
+      ),
+      'unoconv-local-phpword' => new DocumentRenderer(
+            'unoconv-local-phpword',
+            E::ts('Local Universal Office Converter (unoconv) implementing PhpWord'),
+            [
+              'type' => 'unoconv-local',
+              'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
+              'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
+            ]
+      ),
+    ];
+    foreach ($renderers as $renderer) {
+      $renderer->save();
     }
 
-    public function upgrade_0007(): bool
-    {
-        // Create default renderer instances (one for each RendererType with the same URI) and save them with current
-        // settings.
-        $renderers = [
-            'unoconv-local' => new DocumentRenderer(
-                'unoconv-local',
-                E::ts('Local Universal Office Converter (unoconv)'),
-                [
-                    'type' => 'unoconv-local',
-                    'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
-                    'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
-                ]
-            ),
-            'unoconv-local-phpword' => new DocumentRenderer(
-                'unoconv-local-phpword',
-                E::ts('Local Universal Office Converter (unoconv) implementing PhpWord'),
-                [
-                    'type' => 'unoconv-local',
-                    'unoconv_binary_path' => Civi::settings()->get('civioffice_unoconv_binary_path'),
-                    'unoconv_lock_file_path' => Civi::settings()->get('civioffice_unoconv_lock_file'),
-                ]
-            ),
-        ];
-        foreach ($renderers as $renderer) {
-            $renderer->save();
-        }
+    // Copy temporary directory configuration from renderer to store, as this configuration option moved there.
+    Civi::settings()->set(
+        CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY,
+        Civi::settings()->get('civioffice_temp_folder_path')
+    );
 
-        // Copy temporary directory configuration from renderer to store, as this configuration option moved there.
-        Civi::settings()->set(
-            CRM_Civioffice_DocumentStore_Local::LOCAL_TEMP_PATH_SETTINGS_KEY,
-            Civi::settings()->get('civioffice_temp_folder_path')
-        );
+    // Remove (revert) legacy settings.
+    Civi::settings()->revert('civioffice_unoconv_binary_path');
+    Civi::settings()->revert('civioffice_unoconv_lock_file');
+    Civi::settings()->revert('civioffice_temp_folder_path');
 
-        // Remove (revert) legacy settings.
-        Civi::settings()->revert('civioffice_unoconv_binary_path');
-        Civi::settings()->revert('civioffice_unoconv_lock_file');
-        Civi::settings()->revert('civioffice_temp_folder_path');
-
-        return true;
-    }
+    return TRUE;
+  }
 
   public function upgrade_0008(): bool {
     self::fixSettingsValueSerialization();
@@ -132,7 +131,8 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base
       $configuration = Civi::settings()->get('civioffice_renderer_' . $renderer_uri);
       if ($configuration['type'] == 'unoconv-local-phpword') {
         $this->ctx->log->info(
-          'Migrate "unoconv-local-phpword" renderer instance ' . $renderer_name . ' to unified "unoconv-local" with PHPWord usage.'
+          'Migrate "unoconv-local-phpword" renderer instance '
+          . $renderer_name . ' to unified "unoconv-local" with PHPWord usage.'
         );
         $configuration['type'] = 'unoconv-local';
         Civi::settings()->set('civioffice_renderer_' . $renderer_uri, $configuration);
