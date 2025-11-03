@@ -90,7 +90,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: CRM/Civioffice/Form/DocumentFromSingleContact.php ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
+#: CRM/Civioffice/Form/DocumentFromSingleContact.php CRM/Civioffice/Form/DocumentRenderer/Settings.php CRM/Civioffice/Form/LiveSnippet.php ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
 msgid "Cancel"
 msgstr ""
 
@@ -114,12 +114,12 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: CRM/Civioffice/Form/DocumentRenderer/Settings.php CRM/Civioffice/Form/LiveSnippet.php CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.php CRM/Civioffice/Form/Settings.php CRM/Civioffice/Form/UploadDocumentStore/UploadDocumentStoreSettings.php
-msgid "Save"
-msgstr ""
-
 #: CRM/Civioffice/Form/DocumentRenderer/Settings.php CRM/Civioffice/Form/LiveSnippet.php templates/CRM/Civioffice/Form/DocumentUpload.tpl templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Delete"
+msgstr ""
+
+#: CRM/Civioffice/Form/DocumentRenderer/Settings.php CRM/Civioffice/Form/LiveSnippet.php CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.php CRM/Civioffice/Form/Settings.php CRM/Civioffice/Form/UploadDocumentStore/UploadDocumentStoreSettings.php
+msgid "Save"
 msgstr ""
 
 #: CRM/Civioffice/Form/DocumentUpload.php

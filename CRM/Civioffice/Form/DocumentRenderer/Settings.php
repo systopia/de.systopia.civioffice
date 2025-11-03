@@ -90,22 +90,20 @@ class CRM_Civioffice_Form_DocumentRenderer_Settings extends CRM_Core_Form {
 
       $this->documentRendererType->buildSettingsForm($this);
       $this->assign('rendererTypeSettingsTemplate', $this->documentRendererType->getSettingsFormTemplate());
-
-      $this->addButtons(
-        [
-            [
-              'type' => 'submit',
-              'name' => E::ts('Save'),
-              'isDefault' => TRUE,
-            ],
-        ]
-      );
     }
 
-    $this->addDefaultButtons(
-        $this->_action & CRM_Core_Action::DELETE ? E::ts('Delete') : E::ts('Save'),
-        'submit',
-        'cancel'
+    $this->addButtons(
+      [
+        [
+          'type' => 'submit',
+          'name' => $this->_action & CRM_Core_Action::DELETE ? E::ts('Delete') : E::ts('Save'),
+          'isDefault' => TRUE,
+        ],
+        [
+          'type' => 'cancel',
+          'name' => ts('Cancel'),
+        ],
+      ]
     );
 
     parent::buildQuickForm();
