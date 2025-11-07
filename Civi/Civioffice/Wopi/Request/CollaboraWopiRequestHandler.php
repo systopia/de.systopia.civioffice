@@ -26,6 +26,9 @@ use Civi\Civioffice\Wopi\Util\CiviUrlGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
+/**
+ * @see https://sdk.collaboraonline.com/
+ */
 final class CollaboraWopiRequestHandler extends AbstractWopiRequestHandler {
 
   private CiviUrlGenerator $civiUrlGenerator;
@@ -65,9 +68,9 @@ final class CollaboraWopiRequestHandler extends AbstractWopiRequestHandler {
   }
 
   /**
-   * @throws \CRM_Core_Exception
+   * @inheritDoc
    */
-  public function putFile(int $fileId, int $contactId, string $content, Request $request): array {
+  protected function doPutFile(int $fileId, int $contactId, string $content, Request $request): array {
     if ($request->headers->get('X-COOL-WOPI-IsModifiedByUser') === 'false') {
       return ['LastModifiedTime' => $this->getLastModifiedTime($fileId)];
     }

@@ -18,34 +18,15 @@
 
 declare(strict_types = 1);
 
-namespace Civi\Civioffice;
+namespace Civi\Civioffice\Wopi\Controller;
 
-/**
- * @phpstan-type fileT array{
- *   id: int,
- *   file_type_id: int|null,
- *   mime_type: non-empty-string,
- *   uri: non-empty-string,
- *   description: string|null,
- *   upload_date: string,
- *   created_id: int|null,
- *   full_path: non-empty-string,
- * }
- */
-interface FileManagerInterface {
+use Civi\Civioffice\Wopi\Request\CollaboraWopiRequestHandler;
+use Civi\Civioffice\Wopi\Validation\WopiRequestValidator;
 
-  /**
-   * @phpstan-return fileT|null
-   *
-   * @throws \CRM_Core_Exception
-   */
-  public function get(int $id): ?array;
+final class CollaboraWopiFileController extends WopiFileController {
 
-  /**
-   * The content has to be of the current file's MIME type.
-   *
-   * @throws \CRM_Core_Exception
-   */
-  public function writeContent(int $fileId, string $content): void;
+  public function __construct(CollaboraWopiRequestHandler $requestHandler, WopiRequestValidator $requestValidator) {
+    parent::__construct($requestHandler, $requestValidator);
+  }
 
 }

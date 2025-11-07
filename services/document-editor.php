@@ -28,8 +28,10 @@ use Civi\Civioffice\DocumentEditorTypeInterface;
 use Civi\Civioffice\EventSubscriber\CiviOfficeFilePageSubscriber;
 use Civi\Civioffice\FileManager;
 use Civi\Civioffice\FileManagerInterface;
-use Civi\Civioffice\Wopi\Controller\CollaboraWopiController;
+use Civi\Civioffice\Wopi\Controller\CollaboraWopiFileController;
+use Civi\Civioffice\Wopi\Discovery\WopDiscoveryServiceCacheDecorator;
 use Civi\Civioffice\Wopi\Discovery\WopiDiscoveryService;
+use Civi\Civioffice\Wopi\Discovery\WopiDiscoveryServiceInterface;
 use Civi\Civioffice\Wopi\Request\CollaboraWopiRequestHandler;
 use Civi\Civioffice\Wopi\UserInfoService;
 use Civi\Civioffice\Wopi\Util\CiviUrlGenerator;
@@ -51,14 +53,17 @@ $container->autowire(CiviOfficeFilePageSubscriber::class)
 $container->autowire(CollaboraOnlineEditorType::class)
   ->addTag(DocumentEditorTypeInterface::class);
 
-$container->autowire(CollaboraWopiController::class)
+$container->autowire(CollaboraWopiFileController::class)
   ->setPublic(TRUE);
 
 $container->autowire(WopiAccessTokenService::class)
   ->setArgument('$cryptoJwt', new Reference('crypto.jwt'));
 
-$container->autowire(WopiDiscoveryService::class)
-  ->addArgument(new Reference('cache.long'));
+$container->autowire(WopiDiscoveryServiceInterface::class, WopiDiscoveryService::class);
+
+$container->autowire(WopDiscoveryServiceCacheDecorator::class)
+  ->setArgument('$cache', new Reference('cache.long'))
+  ->setDecoratedService(WopiDiscoveryServiceInterface::class);
 
 $container->autowire(WopiRequestValidator::class);
 

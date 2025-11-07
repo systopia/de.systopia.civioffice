@@ -20,18 +20,22 @@ declare(strict_types = 1);
 
 namespace Civi\Civioffice\Wopi\Validation;
 
-use Civi\Civioffice\Wopi\Discovery\WopiDiscoveryService;
+use Civi\Civioffice\Wopi\Discovery\WopiDiscoveryServiceInterface;
 use Civi\Civioffice\Wopi\UserInfoService;
 use Civi\Civioffice\Wopi\WopiAccessTokenService;
+use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 final class WopiRequestValidator {
 
   private WopiAccessTokenService $accessTokenService;
 
-  private WopiDiscoveryService $discoveryService;
+  private WopiDiscoveryServiceInterface $discoveryService;
 
   private WopiProofValidator $proofValidator;
 
@@ -39,7 +43,7 @@ final class WopiRequestValidator {
 
   public function __construct(
     WopiAccessTokenService $accessTokenService,
-    WopiDiscoveryService $discoveryService,
+    WopiDiscoveryServiceInterface $discoveryService,
     WopiProofValidator $proofValidator,
     UserInfoService $userInfoService
   ) {
@@ -50,8 +54,10 @@ final class WopiRequestValidator {
   }
 
   /**
-   * @return array{int, int, string}
-   *   File ID, contact ID, and discovery identifier.
+   * @return array{int, int, int}
+   *   File ID, contact ID, and editor ID.
+   *
+   * @throws \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface
    */
   public function decodeAndValidateAccessToken(Request $request, string $wopiFileId): array {
     $accessToken = $request->query->get('access_token');
@@ -60,39 +66,45 @@ final class WopiRequestValidator {
     }
 
     try {
-      [$fileId, $contactId, $discoveryIdentifier] = $this->accessTokenService->decodeToken($accessToken);
+      [$fileId, $contactId, $editorId] = $this->accessTokenService->decodeToken($accessToken);
     }
     catch (\InvalidArgumentException $e) {
-      throw new AccessDeniedHttpException('Access token is invalid', $e);
+      throw new HttpException(Response::HTTP_UNAUTHORIZED, 'Access token is invalid', $e);
     }
 
     if ((string) $fileId !== $wopiFileId) {
-      throw new AccessDeniedHttpException('Access token is invalid');
+      throw new HttpException(Response::HTTP_UNAUTHORIZED, 'Access token is invalid');
     }
 
     $this->assertValidContactId($contactId);
-    $this->assertWopiProof($request, $discoveryIdentifier);
+    $this->assertWopiProof($request, $editorId);
 
-    return [$fileId, $contactId, $discoveryIdentifier];
+    return [$fileId, $contactId, $editorId];
   }
 
   private function assertValidContactId(int $contactId): void {
     if (!$this->userInfoService->isValidContactId($contactId)) {
       // May only happen if user gets deleted.
-      throw new AccessDeniedHttpException('Invalid contact ID');
+      throw new NotFoundHttpException('Invalid contact ID');
     }
   }
 
-  private function assertWopiProof(Request $request, string $discoveryIdentifier): void {
+  private function assertWopiProof(Request $request, int $editorId): void {
     $proofValidatorInput = ProofValidatorInput::fromRequest($request);
-    $discoveryResponse = $this->discoveryService->getDiscovery($discoveryIdentifier);
+    try {
+      $discoveryResponse = $this->discoveryService->getDiscoveryByEditorId($editorId);
+    }
+    catch (ClientExceptionInterface $e) {
+      throw new ServiceUnavailableHttpException(300, 'Cannot reach WOPI discovery service', $e);
+    }
+
     if ($discoveryResponse->hasProofKeys()) {
       if (NULL === $proofValidatorInput || !$this->proofValidator->isValid(
           $proofValidatorInput,
           $discoveryResponse->getProofKeyRsa(),
           $discoveryResponse->getOldProofKeyRsa()
         )) {
-        throw new AccessDeniedHttpException('WOPI proof is invalid');
+        throw new HttpException(Response::HTTP_UNAUTHORIZED, 'WOPI proof is invalid');
       }
     }
   }

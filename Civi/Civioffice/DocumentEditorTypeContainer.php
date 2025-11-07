@@ -26,7 +26,7 @@ final class DocumentEditorTypeContainer {
   private ContainerInterface $container;
 
   /**
-   * @phpstan-var array<string, string>
+   * @var array<string, string>
    */
   private array $titles;
 
@@ -39,7 +39,7 @@ final class DocumentEditorTypeContainer {
   }
 
   /**
-   * @phpstan-param array<string, string> $titles
+   * @param array<string, string> $titles
    *   Mapping of editor type names to titles.
    * @param \Psr\Container\ContainerInterface $container
    *   Contains services implementing
@@ -51,7 +51,7 @@ final class DocumentEditorTypeContainer {
   }
 
   /**
-   * @phpstan-return array<string, string>
+   * @return array<string, string>
    *   Mapping of editor type name to title.
    */
   public function getTitles(): array {

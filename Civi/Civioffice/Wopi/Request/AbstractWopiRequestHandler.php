@@ -24,7 +24,9 @@ use Civi\Civioffice\FileManagerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
  * @phpstan-import-type fileT from FileManagerInterface
@@ -44,6 +46,34 @@ abstract class AbstractWopiRequestHandler implements WopiRequestHandlerInterface
   public function getFile(int $fileId, int $contactId, Request $request): Response {
     return new BinaryFileResponse($this->getFileEntity($fileId)['full_path']);
   }
+
+  public function putFile(int $fileId, int $contactId, string $content, Request $request): array {
+    $fileInfo = $this->checkFileInfo($fileId, $contactId, $request);
+    if (!$fileInfo['UserCanWrite']) {
+      throw new NotFoundHttpException('File is read only');
+    }
+
+    try {
+      return $this->doPutFile($fileId, $contactId, $content, $request);
+    }
+    catch (\Exception $e) {
+      if ($e instanceof HttpExceptionInterface) {
+        throw $e;
+      }
+
+      throw new ServiceUnavailableHttpException(300, $e->getMessage(), $e);
+    }
+  }
+
+  /**
+   * Only called if "UserCanWrite" in the return value of checkFileInfo() is
+   * TRUE.
+   *
+   * @return array<string, mixed>
+   *
+   * @throws \Exception
+   */
+  abstract protected function doPutFile(int $fileId, int $contactId, string $content, Request $request): array;
 
   /**
    * @throws \CRM_Core_Exception

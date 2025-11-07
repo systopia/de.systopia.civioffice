@@ -48,7 +48,6 @@ final class DocumentEditorTypePass implements CompilerPassInterface {
       ->addArgument($titles)
       ->addArgument(ServiceLocatorTagPass::register($container, $services))
       ->setPublic(TRUE);
-
   }
 
   /**

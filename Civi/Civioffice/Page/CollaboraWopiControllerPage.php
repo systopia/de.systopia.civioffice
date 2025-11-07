@@ -20,7 +20,7 @@ declare(strict_types = 1);
 namespace Civi\Civioffice\Page;
 
 use Civi\Civioffice\Controller\PageControllerInterface;
-use Civi\Civioffice\Wopi\Controller\CollaboraWopiController;
+use Civi\Civioffice\Wopi\Controller\CollaboraWopiFileController;
 
 /**
  * @codeCoverageIgnore
@@ -29,7 +29,7 @@ final class CollaboraWopiControllerPage extends AbstractControllerPage {
 
   protected function getController(): PageControllerInterface {
     // @phpstan-ignore return.type
-    return \Civi::service(CollaboraWopiController::class);
+    return \Civi::service(CollaboraWopiFileController::class);
   }
 
 }

@@ -34,18 +34,18 @@ final class WopiAccessTokenService {
     $this->userInfoService = $userInfoService;
   }
 
-  public function generateToken(int $fileId, string $discoveryIdentifier, int $expirationTime): string {
+  public function generateToken(int $fileId, int $editorId, int $expirationTime): string {
     return $this->cryptoJwt->encode([
       'exp' => $expirationTime,
       'sub' => $this->userInfoService->getContactId(),
       'fid' => $fileId,
-      'dsc' => $discoveryIdentifier,
+      'eid' => $editorId,
     ]);
   }
 
   /**
-   * @return array{int, int, string}
-   *   File ID, contact ID, and discovery identifier.
+   * @return array{int, int, int}
+   *   File ID, contact ID, and editor ID.
    *
    * @throws \InvalidArgumentException
    */
@@ -57,11 +57,11 @@ final class WopiAccessTokenService {
       throw new \InvalidArgumentException('Invalid token: ' . $e->getMessage(), $e->getCode(), $e);
     }
 
-    if (!is_int($claims['sub'] ?? NULL) || !is_int($claims['fid'] ?? NULL) || !is_string($claims['dsc'] ?? NULL)) {
+    if (!is_int($claims['sub'] ?? NULL) || !is_int($claims['fid'] ?? NULL) || !is_int($claims['eid'] ?? NULL)) {
       throw new \InvalidArgumentException('Invalid token');
     }
 
-    return [$claims['fid'], $claims['sub'], $claims['dsc']];
+    return [$claims['fid'], $claims['sub'], $claims['eid']];
   }
 
 }
