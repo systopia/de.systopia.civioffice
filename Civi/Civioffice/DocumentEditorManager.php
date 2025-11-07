@@ -22,6 +22,8 @@ namespace Civi\Civioffice;
 
 final class DocumentEditorManager {
 
+  private bool $inFileExtensionDeduplicate = FALSE;
+
   private DocumentEditorTypeContainer $typeContainer;
 
   /**
@@ -47,32 +49,37 @@ final class DocumentEditorManager {
       $this->getEditorNames();
     }
 
-    unset($this->editorNames[$editor->getURI()]);
+    unset($this->editorNames[$editor->getId()]);
     \Civi::settings()->set('civioffice_editors', $this->editorNames);
-    \Civi::settings()->revert('civioffice_editor_' . $editor->getURI());
+    \Civi::settings()->revert('civioffice_editor_' . $editor->getId());
   }
 
   /**
-   * @return array<int, DocumentEditor>
-   *   The key is the order of the editor. The array is sorted by the key.
+   * @return list<DocumentEditor>
+   *   Editors without configured file extensions are at the end.
    */
   public function getAllEditors(): array {
     $editors = [];
+    $editorsWithoutExtensions = [];
     foreach ($this->getEditorIds() as $id) {
       $editor = $this->getEditor($id);
-      $editors[$editor->getOrder()] = $editor;
+      if ([] === $editor->getFileExtensions()) {
+        $editorsWithoutExtensions[] = $editor;
+      }
+      else {
+        $editors[] = $editor;
+      }
     }
-    ksort($editors);
 
-    return $editors;
+    return [...$editors, ...$editorsWithoutExtensions];
   }
 
   /**
-   * @return array<int, DocumentEditor>
-   *   The key is the order of the editor. The array is sorted by the key.
+   * @return list<DocumentEditor>
+   *   Editors without configured file extensions are at the end.
    */
   public function getAllActiveEditors(): array {
-    return array_filter($this->getAllEditors(), fn ($editor) => $editor->isActive());
+    return array_values(array_filter($this->getAllEditors(), fn ($editor) => $editor->isActive()));
   }
 
   public function getEditor(int $id): DocumentEditor {
@@ -80,7 +87,6 @@ final class DocumentEditorManager {
     /** @phpstan-var array{
      *   active: bool,
      *   fileExtensions: list<string>,
-     *   order: int,
      *   type: string,
      *   typeConfig: array<string, mixed>,
      * }|null $configuration */
@@ -95,34 +101,30 @@ final class DocumentEditorManager {
   }
 
   public function saveEditor(DocumentEditor $editor): void {
-    // @todo Handle change of order.
     $this->persistEditor(
-      (int) $editor->getURI(),
+      $editor->getId(),
       $editor->getName(),
       $editor->isActive(),
       $editor->getFileExtensions(),
-      $editor->getOrder(),
       $editor->getTypeName(),
       $editor->getTypeConfig()
     );
   }
 
   /**
-   * @param list<string> $extensions
+   * @param list<string> $fileExtensions
    * @param array<string, mixed> $typeConfig
    */
   public function saveNewEditor(
     string $name,
     bool $active,
-    array $extensions,
+    array $fileExtensions,
     DocumentEditorTypeInterface $type,
     array $typeConfig
   ): void {
-    $editorCount = count($this->getEditorNames());
-    $id = $editorCount;
-    $order = $editorCount;
-
-    $this->persistEditor($id, $name, $active, $extensions, $order, $type::getName(), $typeConfig);
+    $editorIds = $this->getEditorIds();
+    $id = (array_pop($editorIds) ?? 0) + 1;
+    $this->persistEditor($id, $name, $active, $fileExtensions, $type::getName(), $typeConfig);
   }
 
   /**
@@ -137,9 +139,14 @@ final class DocumentEditorManager {
    *   Mapping of editor ID to editor name.
    */
   private function getEditorNames(): array {
-    /** @var array<int, string>|null $editorNames */
-    $editorNames = \Civi::settings()->get('civioffice_editors');
-    return $this->editorNames ??= is_array($editorNames) ? $editorNames : [];
+    if (NULL === $this->editorNames) {
+      /** @var array<int, string>|null $editorNames */
+      $editorNames = \Civi::settings()->get('civioffice_editors');
+
+      $this->editorNames = is_array($editorNames) ? $editorNames : [];
+    }
+
+    return $this->editorNames;
   }
 
   /**
@@ -151,18 +158,12 @@ final class DocumentEditorManager {
     string $name,
     bool $active,
     array $fileExtensions,
-    int $order,
     string $typeName,
     array $typeConfig
   ): void {
-    if (NULL === $this->editorNames) {
-      $this->getEditorNames();
-    }
-
     $configuration = [
       'active' => $active,
       'fileExtensions' => $fileExtensions,
-      'order' => $order,
       'type' => $typeName,
       'typeConfig' => $typeConfig,
     ];
@@ -170,6 +171,28 @@ final class DocumentEditorManager {
     \Civi::settings()->set('civioffice_editor_' . $id, $configuration);
     $this->editorNames[$id] = $name;
     \Civi::settings()->set('civioffice_editors', $this->editorNames);
+
+    if ($this->inFileExtensionDeduplicate || [] === $fileExtensions) {
+      return;
+    }
+
+    try {
+      $this->inFileExtensionDeduplicate = TRUE;
+      foreach ($this->getAllEditors() as $editor) {
+        if ($id === $editor->getId()) {
+          continue;
+        }
+
+        $otherFileExtensions = array_diff($editor->getFileExtensions(), $fileExtensions);
+        if ($editor->getFileExtensions() !== $otherFileExtensions) {
+          $editor->setFileExtensions(array_values($otherFileExtensions));
+          $this->saveEditor($editor);
+        }
+      }
+    }
+    finally {
+      $this->inFileExtensionDeduplicate = FALSE;
+    }
   }
 
 }

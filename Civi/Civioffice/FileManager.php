@@ -46,6 +46,9 @@ final class FileManager implements FileManagerInterface {
     $file = File::get(FALSE)
       ->addWhere('id', '=', $id)
       ->addWhere('uri', 'IS NOT NULL')
+      ->addWhere('uri', '!=', '')
+      ->addWhere('mime_type', 'IS NOT NULL')
+      ->addWhere('mime_type', '!=', '')
       ->execute()
       ->first();
     if (NULL !== $file) {
@@ -66,7 +69,26 @@ final class FileManager implements FileManagerInterface {
     }
 
     $uploadDate = $file['upload_date'] = date('Y-m-d H:i:s');
-    file_put_contents($file['full_path'], $content);
+    if (\CRM_Core_Transaction::isActive()) {
+      $tmpFilename = tempnam(sys_get_temp_dir(), 'civioffice');
+      if (FALSE === file_put_contents($tmpFilename, $content)) {
+        throw new \RuntimeException("Failed to write to $tmpFilename");
+      }
+      \CRM_Core_Transaction::addCallback(
+        \CRM_Core_Transaction::PHASE_POST_COMMIT,
+        fn() => rename($tmpFilename, $file['full_path']),
+      );
+      \CRM_Core_Transaction::addCallback(
+        \CRM_Core_Transaction::PHASE_POST_ROLLBACK,
+        fn() => @unlink($tmpFilename),
+      );
+    }
+    else {
+      if (FALSE === file_put_contents($file['full_path'], $content)) {
+        throw new \RuntimeException("Failed to write to {$file['full_path']}");
+      }
+    }
+
     File::update(FALSE)
       ->addValue('upload_date', $uploadDate)
       ->addWhere('id', '=', $fileId)

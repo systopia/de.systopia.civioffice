@@ -23,14 +23,23 @@ namespace Civi\Civioffice\Wopi\Controller;
 use Civi\Civioffice\Controller\PageControllerInterface;
 use Civi\Civioffice\Wopi\Request\WopiRequestHandlerInterface;
 use Civi\Civioffice\Wopi\Validation\WopiRequestValidator;
+use Civi\Civioffice\Wopi\WopiHeaders;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
-class WopiController implements PageControllerInterface {
+/**
+ * The following operations are implemented:
+ * - CheckFileInfo
+ * - GetFile
+ * - PutFile
+ *
+ * @see https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/rest/endpoints#files-endpoint
+ */
+class WopiFileController implements PageControllerInterface {
 
   private WopiRequestHandlerInterface $requestHandler;
 
@@ -46,27 +55,33 @@ class WopiController implements PageControllerInterface {
    */
   public function handle(Request $request): Response {
     $this->assertHttpMethod($request);
-    [$wopiFileId, $hasContentsPath] = $this->parseRequestPath($request);
+    [$wopiFileId, $subPath] = $this->parseRequestPath($request);
     [$fileId, $contactId] = $this->requestValidator->decodeAndValidateAccessToken($request, $wopiFileId);
 
-    if (!$hasContentsPath) {
-      if ('POST' === $request->getMethod()) {
-        throw new BadRequestHttpException('PutRelativeFile operation is not allowed');
+    if ('/contents' === $subPath) {
+      if ($request->isMethod('POST')) {
+        return new JsonResponse($this->requestHandler->putFile($fileId, $contactId, $request->getContent(), $request));
       }
 
+      return $this->requestHandler->getFile($fileId, $contactId, $request);
+    }
+
+    if (NULL === $subPath && $request->isMethod('GET')) {
       return new JsonResponse($this->requestHandler->checkFileInfo($fileId, $contactId, $request));
     }
 
-    if ($request->isMethod('POST')) {
-      $fileInfo = $this->requestHandler->checkFileInfo($fileId, $contactId, $request);
-      if (!$fileInfo['UserCanWrite']) {
-        throw new AccessDeniedHttpException('File is read only');
-      }
-
-      return new JsonResponse($this->requestHandler->putFile($fileId, $contactId, $request->getContent(), $request));
+    if ($request->headers->has(WopiHeaders::HEADER_OVERRIDE)) {
+      throw new HttpException(
+        Response::HTTP_NOT_IMPLEMENTED,
+        $request->headers->get(WopiHeaders::HEADER_OVERRIDE) . ' is not supported'
+      );
     }
 
-    return $this->requestHandler->getFile($fileId, $contactId, $request);
+    if (NULL !== $subPath) {
+      throw new HttpException(Response::HTTP_NOT_IMPLEMENTED, "File endpoint $subPath is not supported");
+    }
+
+    throw new HttpException(Response::HTTP_NOT_IMPLEMENTED, 'PutRelativeFile is not supported');
   }
 
   private function assertHttpMethod(Request $request): void {
@@ -77,21 +92,22 @@ class WopiController implements PageControllerInterface {
   }
 
   /**
-   * @return array{string, bool}
-   *   WOPI file ID and flag if path contains "/contents".
+   * @return array{string, string|null}
+   *   WOPI file ID, and sub path (e.g. "/contents") or NULL.
    */
   private function parseRequestPath(Request $request): array {
     $matches = [];
     preg_match(
-      '~/wopi/files/(?<fileId>[[:alnum:]]+)(?<contents>/contents)?($|\?)~',
+      '~/wopi/files/(?<fileId>[[:alnum:]]+)(?<subPath>/[^?]*)?($|\?)~',
       $request->getRequestUri(),
-      $matches
+      $matches,
+      PREG_UNMATCHED_AS_NULL
     );
     if (!isset($matches['fileId'])) {
       throw new BadRequestHttpException('File ID is missing');
     }
 
-    return [$matches['fileId'], ($matches['contents'] ?? '') !== ''];
+    return [$matches['fileId'], $matches['subPath'] ?? NULL];
   }
 
 }

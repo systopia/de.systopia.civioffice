@@ -162,4 +162,8 @@ final class WopiDiscoveryResponseTest extends TestCase {
     static::assertTrue($this->response->hasProofKeys());
   }
 
+  public function testToString(): void {
+    static::assertSame(file_get_contents(__DIR__ . '/discovery-with-test-proof-keys.xml'), $this->response->toString());
+  }
+
 }

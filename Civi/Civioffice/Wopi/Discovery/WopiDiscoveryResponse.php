@@ -36,11 +36,14 @@ final class WopiDiscoveryResponse {
 
   private \SimpleXMLElement $discovery;
 
+  private string $xml;
+
   /**
    * @throws \InvalidArgumentException
    */
   public function __construct(string $discoveryXml) {
     try {
+      $this->xml = $discoveryXml;
       $this->discovery = new \SimpleXMLElement($discoveryXml);
     }
     catch (\Exception $e) {
@@ -173,6 +176,10 @@ final class WopiDiscoveryResponse {
 
   public function getOldProofKeyRsa(): WopiProofKey {
     return new WopiProofKey($this->getOldProofModulus(), $this->getOldProofExponent());
+  }
+
+  public function toString(): string {
+    return $this->xml;
   }
 
   /**

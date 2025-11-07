@@ -25,6 +25,9 @@ use Civi\Civioffice\Wopi\WopiProofKey;
 use phpseclib\Crypt\RSA;
 use phpseclib\Math\BigInteger;
 
+/**
+ * @see https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/online/scenarios/proofkeys
+ */
 final class WopiProofValidator {
 
   /**
@@ -55,9 +58,6 @@ final class WopiProofValidator {
       || $oldRsa->verify($expectedProof, $proof);
   }
 
-  /**
-   * @see https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/online/scenarios/proofkeys
-   */
   private function getExpectedProof(ProofValidatorInput $proofValidatorInput): string {
     $accessToken = $proofValidatorInput->accessToken;
     $url = strtoupper($proofValidatorInput->url);

@@ -52,7 +52,6 @@ final class CiviOfficeFilePageSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * @throws \Civi\API\Exception\UnauthorizedException
    * @throws \CRM_Core_Exception
    */
   public function onPageRun(GenericHookEvent $event): void {
@@ -80,11 +79,6 @@ final class CiviOfficeFilePageSubscriber implements EventSubscriberInterface {
 
     $file = $this->fileManager->get($fileId);
     if (NULL === $file) {
-      return;
-    }
-
-    $mimeType = $file['mime_type'] ?? '';
-    if ('' === $mimeType) {
       return;
     }
 

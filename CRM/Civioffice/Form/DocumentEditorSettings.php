@@ -130,7 +130,7 @@ final class CRM_Civioffice_Form_DocumentEditorSettings extends \CRM_Core_Form {
    */
   public function validate(): bool {
     if ($this->isAction(\CRM_Core_Action::UPDATE, \CRM_Core_Action::ADD)) {
-      $this->documentEditorType->validateSettingsForm($this);
+      $this->documentEditorType->validateSettingsForm($this, (bool) $this->getSubmitValue('active'));
     }
 
     return parent::validate();

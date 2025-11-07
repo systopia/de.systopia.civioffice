@@ -20,18 +20,20 @@ declare(strict_types = 1);
 
 namespace Civi\Civioffice\DocumentEditorType;
 
-use Civi\Civioffice\DocumentEditorTypeInterface;
-use Civi\Civioffice\Wopi\Discovery\WopiDiscoveryService;
+use Civi\Civioffice\Wopi\Discovery\WopiDiscoveryServiceInterface;
 use Civi\Civioffice\Wopi\Util\CiviUrlGenerator;
 use Civi\Civioffice\Wopi\WopiAccessTokenService;
+use Civi\Civioffice\Wopi\WopiDocumentEditorTypeInterface;
 use CRM_Civioffice_ExtensionUtil as E;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @phpstan-import-type fileT from \Civi\Civioffice\FileManagerInterface
+ *
+ * @see https://sdk.collaboraonline.com/
  */
-final class CollaboraOnlineEditorType implements DocumentEditorTypeInterface {
+final class CollaboraOnlineEditorType implements WopiDocumentEditorTypeInterface {
 
   private const TOKEN_VALIDITY_TIME = 24 * 60 * 60;
 
@@ -39,7 +41,7 @@ final class CollaboraOnlineEditorType implements DocumentEditorTypeInterface {
 
   private CiviUrlGenerator $civiUrlGenerator;
 
-  private WopiDiscoveryService $discoveryService;
+  private WopiDiscoveryServiceInterface $discoveryService;
 
   public static function getName(): string {
     return 'cool';
@@ -52,7 +54,7 @@ final class CollaboraOnlineEditorType implements DocumentEditorTypeInterface {
   public function __construct(
     WopiAccessTokenService $accessTokenService,
     CiviUrlGenerator $civiUrlGenerator,
-    WopiDiscoveryService $discoveryService
+    WopiDiscoveryServiceInterface $discoveryService
   ) {
     $this->accessTokenService = $accessTokenService;
     $this->civiUrlGenerator = $civiUrlGenerator;
@@ -79,7 +81,7 @@ final class CollaboraOnlineEditorType implements DocumentEditorTypeInterface {
     return 'Civi/Civioffice/Form/DocumentEditor/CollaboraOnline.tpl';
   }
 
-  public function validateSettingsForm(\CRM_Civioffice_Form_DocumentEditorSettings $form): void {
+  public function validateSettingsForm(\CRM_Civioffice_Form_DocumentEditorSettings $form, bool $active): void {
     /** @var string $coolUrl */
     $coolUrl = $form->getSubmitValue('cool_url') ?? '';
     if (filter_var($coolUrl, FILTER_VALIDATE_URL) === FALSE
@@ -89,17 +91,20 @@ final class CollaboraOnlineEditorType implements DocumentEditorTypeInterface {
     }
 
     try {
-      $this->discoveryService->getDiscoveryByUrl($coolUrl);
+      // Only load WOPI discovery if marked as active to allow disabling if COOL server is unreachable.
+      if ($active) {
+        $this->discoveryService->getDiscoveryByUrl($this->getWopiDiscoveryUrl(['cool_url' => $coolUrl]));
+      }
     }
     catch (\InvalidArgumentException | ClientExceptionInterface $e) {
       $form->setElementError('cool_url', E::ts('Could not reach Collabora Online: %1', [1 => $e->getMessage()]));
     }
 
     $wopiSrcHostname = $form->getSubmitValue('wopi_src_hostname') ?? '';
-    if ('' !== $wopiSrcHostname) {
-      if (filter_var($wopiSrcHostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === FALSE) {
-        $form->setElementError('wopi_src_hostname', E::ts('Invalid value'));
-      }
+    if ('' !== $wopiSrcHostname
+      && filter_var($wopiSrcHostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === FALSE
+    ) {
+      $form->setElementError('wopi_src_hostname', E::ts('Invalid value'));
     }
   }
 
@@ -125,19 +130,27 @@ final class CollaboraOnlineEditorType implements DocumentEditorTypeInterface {
   /**
    * @inheritDoc
    */
-  public function isFileSupported(array $configuration, array $file): bool {
+  public function getWopiDiscoveryUrl(array $configuration): string {
     assert(is_string($configuration['cool_url']));
 
-    return NULL !== $this->getWopiAppUrl($configuration, $file);
+    return rtrim($configuration['cool_url'], '/') . '/hosting/discovery';
   }
 
   /**
    * @inheritDoc
    */
-  public function handleFile(array $configuration, array $file): Response {
-    assert(is_string($configuration['cool_url']));
-    $wopiAppUrl = $this->getWopiAppUrl($configuration, $file);
-    assert(is_string($wopiAppUrl));
+  public function isFileSupported(array $configuration, array $file, int $editorId): bool {
+    return NULL !== $this->getWopiAppUrl($file, $editorId);
+  }
+
+  /**
+   * @inheritDoc
+   *
+   * @throws \Psr\Http\Client\ClientExceptionInterface
+   */
+  public function handleFile(array $configuration, array $file, int $editorId): Response {
+    $wopiAppUrl = $this->getWopiAppUrl($file, $editorId);
+    assert(NULL !== $wopiAppUrl);
 
     $fileBaseName = basename($file['uri']);
     $wopiSrc = $this->civiUrlGenerator->generateAbsoluteUrl('civicrm/civioffice/collabora/wopi/files/' . $file['id']);
@@ -152,9 +165,10 @@ final class CollaboraOnlineEditorType implements DocumentEditorTypeInterface {
     $accessTokenTtl = \CRM_Utils_Time::time() + self::TOKEN_VALIDITY_TIME;
     $accessToken = $this->accessTokenService->generateToken(
       $file['id'],
-      $this->discoveryService->getDiscoveryIdentifier($configuration['cool_url']),
+      $editorId,
       $accessTokenTtl
     );
+    $accessTokenTtlMs = $accessTokenTtl * 1000;
 
     $html = <<<HTML
 <html>
@@ -170,7 +184,7 @@ final class CollaboraOnlineEditorType implements DocumentEditorTypeInterface {
 <div style="display: none">
   <form id="coolform" name="coolform" target="coolframe" action="$wopiUrl" method="post">
     <input name="access_token" value="$accessToken" type="hidden">
-    <input name="access_token_ttl" value="$accessTokenTtl" type="hidden">
+    <input name="access_token_ttl" value="$accessTokenTtlMs" type="hidden">
   </form>
 </div>
 
@@ -188,13 +202,13 @@ HTML;
   }
 
   /**
-   * @param array{cool_url: string} $configuration
    * @phpstan-param fileT $file
+   *
+   * @throws \Psr\Http\Client\ClientExceptionInterface
    */
-  private function getWopiAppUrl(array $configuration, array $file): ?string {
-    $discoveryResponse = $this->discoveryService->getDiscoveryByUrl($configuration['cool_url']);
+  private function getWopiAppUrl(array $file, int $editorId): ?string {
+    $discoveryResponse = $this->discoveryService->getDiscoveryByEditorId($editorId);
 
-    assert(is_string($file['mime_type']));
     return $discoveryResponse->getActionUrlByMimeType($file['mime_type'], 'edit')
       ?? $discoveryResponse->getActionUrlByMimeType($file['mime_type'], 'view');
   }

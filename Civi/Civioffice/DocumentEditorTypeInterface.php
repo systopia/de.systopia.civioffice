@@ -34,7 +34,11 @@ interface DocumentEditorTypeInterface {
 
   public function getSettingsFormTemplate(): string;
 
-  public function validateSettingsForm(\CRM_Civioffice_Form_DocumentEditorSettings $form): void;
+  /**
+   * @param bool $active
+   *   Indicates if the editor is marked as active.
+   */
+  public function validateSettingsForm(\CRM_Civioffice_Form_DocumentEditorSettings $form, bool $active): void;
 
   /**
    * @phpstan-return array<string, mixed> The configuration.
@@ -50,9 +54,8 @@ interface DocumentEditorTypeInterface {
    * @param array<string, mixed> $configuration
    *
    * @phpstan-param fileT $file
-   *   Key 'mime_type' has a non-empty string.
    */
-  public function isFileSupported(array $configuration, array $file): bool;
+  public function isFileSupported(array $configuration, array $file, int $editorId): bool;
 
   /**
    * Only called if isFileSupported() returned TRUE.
@@ -60,8 +63,7 @@ interface DocumentEditorTypeInterface {
    * @param array<string, mixed> $configuration
    *
    * @phpstan-param fileT $file
-   *   Key 'mime_type' has a non-empty string.
    */
-  public function handleFile(array $configuration, array $file): Response;
+  public function handleFile(array $configuration, array $file, int $editorId): Response;
 
 }

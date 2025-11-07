@@ -18,15 +18,15 @@
 
 declare(strict_types = 1);
 
-namespace Civi\Civioffice\Wopi\Controller;
+namespace Civi\Civioffice\Wopi;
 
-use Civi\Civioffice\Wopi\Request\CollaboraWopiRequestHandler;
-use Civi\Civioffice\Wopi\Validation\WopiRequestValidator;
+use Civi\Civioffice\DocumentEditorTypeInterface;
 
-final class CollaboraWopiController extends WopiController {
+interface WopiDocumentEditorTypeInterface extends DocumentEditorTypeInterface {
 
-  public function __construct(CollaboraWopiRequestHandler $requestHandler, WopiRequestValidator $requestValidator) {
-    parent::__construct($requestHandler, $requestValidator);
-  }
+  /**
+   * @param array<string, mixed> $configuration
+   */
+  public function getWopiDiscoveryUrl(array $configuration): string;
 
 }

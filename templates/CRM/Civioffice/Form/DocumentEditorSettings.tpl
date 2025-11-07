@@ -26,7 +26,7 @@
         <div class="label">{$form.file_extensions.label}</div>
         <div class="content">{$form.file_extensions.html}</div>
         <div class="clear"></div>
-        <div class="help">{ts}Space separated list of file extensions to handle. If empty all files supported by the editor type are handled.{/ts}</div>
+        <div class="help">{ts}Space separated list of file extensions to handle. If empty, all files supported by the editor type are handled. If an extension is already set in another editor, it will be removed from it. An editor without file extensions will be used only if there's no editor with a matching extension.{/ts}</div>
       </div>
         {include file=$editorTypeSettingsTemplate}
     {/if}

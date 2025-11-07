@@ -31,8 +31,10 @@ abstract class AbstractControllerPage extends \CRM_Core_Page {
 
   public function run(): void {
     $request = Request::createFromGlobals();
+    $transaction = \CRM_Core_Transaction::create();
     try {
       $response = $this->handle($request);
+      $transaction->commit();
     }
     catch (HttpExceptionInterface $e) {
       \Civi::log()->info(
@@ -47,8 +49,15 @@ abstract class AbstractControllerPage extends \CRM_Core_Page {
         ],
       );
 
+      $transaction->rollback()->commit();
+
       $message = $e->getMessage() !== '' ? $e->getMessage() : (Response::$statusTexts[$e->getStatusCode()] ?? '');
       $response = new Response($message, $e->getStatusCode(), $e->getHeaders());
+    }
+    catch (\Throwable $e) {
+      $transaction->rollback()->commit();
+
+      throw $e;
     }
 
     $response->send();

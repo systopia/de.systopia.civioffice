@@ -18,34 +18,20 @@
 
 declare(strict_types = 1);
 
-namespace Civi\Civioffice;
+namespace Civi\Civioffice\Wopi\Discovery;
 
-/**
- * @phpstan-type fileT array{
- *   id: int,
- *   file_type_id: int|null,
- *   mime_type: non-empty-string,
- *   uri: non-empty-string,
- *   description: string|null,
- *   upload_date: string,
- *   created_id: int|null,
- *   full_path: non-empty-string,
- * }
- */
-interface FileManagerInterface {
+interface WopiDiscoveryServiceInterface {
 
   /**
-   * @phpstan-return fileT|null
-   *
-   * @throws \CRM_Core_Exception
+   * @throws \InvalidArgumentException
+   * @throws \Psr\Http\Client\ClientExceptionInterface
    */
-  public function get(int $id): ?array;
+  public function getDiscoveryByEditorId(int $editorId): WopiDiscoveryResponse;
 
   /**
-   * The content has to be of the current file's MIME type.
-   *
-   * @throws \CRM_Core_Exception
+   * @throws \RuntimeException
+   * @throws \Psr\Http\Client\ClientExceptionInterface
    */
-  public function writeContent(int $fileId, string $content): void;
+  public function getDiscoveryByUrl(string $discoveryUrl): WopiDiscoveryResponse;
 
 }
