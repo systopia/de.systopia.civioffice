@@ -25,7 +25,8 @@
         "civicrm/civicrm-core": ">=5.80",
         "civicrm/civicrm-packages": ">=5.80",
         "php-http/discovery": "^1.20",
-        "php-http/multipart-stream-builder": "^1.4.2"
+        "php-http/multipart-stream-builder": "^1.4.2",
+        "symfony/http-foundation": " ^5.4 || ^6 || ^7"
     },
     "autoload": {
         "classmap": ["ComposerHelper.php"]
