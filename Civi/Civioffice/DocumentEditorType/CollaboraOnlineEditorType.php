@@ -43,6 +43,8 @@ final class CollaboraOnlineEditorType implements WopiDocumentEditorTypeInterface
 
   private WopiDiscoveryServiceInterface $discoveryService;
 
+  private \CRM_Core_Smarty $smarty;
+
   public static function getName(): string {
     return 'cool';
   }
@@ -54,11 +56,13 @@ final class CollaboraOnlineEditorType implements WopiDocumentEditorTypeInterface
   public function __construct(
     WopiAccessTokenService $accessTokenService,
     CiviUrlGenerator $civiUrlGenerator,
-    WopiDiscoveryServiceInterface $discoveryService
+    WopiDiscoveryServiceInterface $discoveryService,
+    ?\CRM_Core_Smarty $smarty = NULL
   ) {
     $this->accessTokenService = $accessTokenService;
     $this->civiUrlGenerator = $civiUrlGenerator;
     $this->discoveryService = $discoveryService;
+    $this->smarty = $smarty ?? \CRM_Core_Smarty::singleton();
   }
 
   public function buildSettingsForm(\CRM_Civioffice_Form_DocumentEditorSettings $form): void {
@@ -78,7 +82,7 @@ final class CollaboraOnlineEditorType implements WopiDocumentEditorTypeInterface
   }
 
   public function getSettingsFormTemplate(): string {
-    return 'Civi/Civioffice/Form/DocumentEditor/CollaboraOnline.tpl';
+    return 'Civi/Civioffice/DocumentEditor/CollaboraOnlineSettings.tpl';
   }
 
   public function validateSettingsForm(\CRM_Civioffice_Form_DocumentEditorSettings $form, bool $active): void {
@@ -170,35 +174,15 @@ final class CollaboraOnlineEditorType implements WopiDocumentEditorTypeInterface
     );
     $accessTokenTtlMs = $accessTokenTtl * 1000;
 
-    $html = <<<HTML
-<html>
-<head>
-<title>$fileBaseName - CiviCRM</title>
-</head>
-<body style="margin: 0; overflow: hidden">
+    $tpl = $this->smarty->createTemplate('Civi/Civioffice/DocumentEditor/CollaboraOnlineEditor.tpl');
+    $tpl->assign([
+      'fileBaseName' => $fileBaseName,
+      'wopiUrl' => $wopiUrl,
+      'accessToken' => $accessToken,
+      'accessTokenTtl' => $accessTokenTtlMs,
+    ]);
 
-<iframe id="coolframe" name="coolframe" title="Collabora Online"
-  allowfullscreen allow="clipboard-read *; clipboard-write *"
-  style="width:100%; height:100%; position:absolute; border: none;"></iframe>
-
-<div style="display: none">
-  <form id="coolform" name="coolform" target="coolframe" action="$wopiUrl" method="post">
-    <input name="access_token" value="$accessToken" type="hidden">
-    <input name="access_token_ttl" value="$accessTokenTtlMs" type="hidden">
-  </form>
-</div>
-
-<script>
-  const frame = document.getElementById("coolframe");
-  const form = document.getElementById("coolform");
-  frame.focus();
-  form.submit();
-</script>
-</body>
-</html>
-HTML;
-
-    return new Response($html);
+    return new Response($tpl->fetch());
   }
 
   /**
