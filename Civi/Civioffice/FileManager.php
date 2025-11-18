@@ -52,7 +52,10 @@ final class FileManager implements FileManagerInterface {
       ->execute()
       ->first();
     if (NULL !== $file) {
-      $file['full_path'] = $this->config->customFileUploadDir . '/' . $file['uri'];
+      /** @var string $customFileUploadDir */
+      // Since CiviCRM 6.1 this property is type hinted, so this can be reduced to a single line sometime in the future.
+      $customFileUploadDir = $this->config->customFileUploadDir;
+      $file['full_path'] = $customFileUploadDir . '/' . $file['uri'];
       /** @phpstan-var fileT $file */
       if (!is_file($file['full_path']) || !is_readable($file['full_path'])) {
         $file = NULL;

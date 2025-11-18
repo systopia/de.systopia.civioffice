@@ -60,7 +60,10 @@ class WopiFileController implements PageControllerInterface {
 
     if ('/contents' === $subPath) {
       if ($request->isMethod('POST')) {
-        return new JsonResponse($this->requestHandler->putFile($fileId, $contactId, $request->getContent(), $request));
+        /** @var string $content */
+        $content = $request->getContent();
+
+        return new JsonResponse($this->requestHandler->putFile($fileId, $contactId, $content, $request));
       }
 
       return $this->requestHandler->getFile($fileId, $contactId, $request);
