@@ -61,7 +61,7 @@ final class WopiRequestValidator {
    */
   public function decodeAndValidateAccessToken(Request $request, string $wopiFileId): array {
     $accessToken = $request->query->get('access_token');
-    if (!is_string($accessToken) || $accessToken === '') {
+    if (!is_string($accessToken) || '' === $accessToken) {
       throw new BadRequestHttpException('Access token is missing');
     }
 

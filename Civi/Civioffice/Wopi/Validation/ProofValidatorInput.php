@@ -51,7 +51,7 @@ final class ProofValidatorInput {
       return NULL;
     }
 
-    return new static($accessToken, $timestamp, $url, $proof, $oldProof);
+    return new self($accessToken, $timestamp, $url, $proof, $oldProof);
   }
 
 }
