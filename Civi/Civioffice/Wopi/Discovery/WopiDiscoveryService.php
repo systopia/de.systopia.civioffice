@@ -58,7 +58,7 @@ final class WopiDiscoveryService implements WopiDiscoveryServiceInterface {
   private function getDiscoveryUrl(int $editorId): string {
     $editor = $this->documentEditorManager->getEditor($editorId);
     if (!$editor->getType() instanceof WopiDocumentEditorTypeInterface) {
-      throw new \InvalidArgumentException("Document editor with ID $editorId is no WOPI document editor");
+      throw new \InvalidArgumentException("Document editor with ID $editorId is not a WOPI document editor");
     }
 
     return $editor->getType()->getWopiDiscoveryUrl($editor->getTypeConfig());
