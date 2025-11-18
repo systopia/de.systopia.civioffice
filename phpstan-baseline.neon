@@ -1138,9 +1138,3 @@ parameters:
 			identifier: equal.notAllowed
 			count: 1
 			path: CRM/Civioffice/Upgrader.php
-
-		-
-			message: '#^Method CRM_Civioffice_Upgrader\:\:upgrade_0006\(\) has Exception in PHPDoc @throws tag but it''s not thrown\.$#'
-			identifier: throws.unusedType
-			count: 1
-			path: CRM/Civioffice/Upgrader.php
