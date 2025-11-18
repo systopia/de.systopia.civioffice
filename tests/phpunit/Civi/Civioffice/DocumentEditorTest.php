@@ -37,12 +37,13 @@ final class DocumentEditorTest extends TestCase {
     parent::setUp();
     $this->typeMock = $this->createMock(DocumentEditorTypeInterface::class);
     $this->documentEditor = new DocumentEditor(
-      123,
-      'test',
       [
-        'active' => TRUE,
-        'fileExtensions' => ['.abc', '.def'],
-        'typeConfig' => ['foo' => 'bar'],
+        'id' => 123,
+        'name' => 'test',
+        'is_active' => TRUE,
+        'file_extensions' => ['.abc', '.def'],
+        'type' => 'test',
+        'type_config' => ['foo' => 'bar'],
       ],
       $this->typeMock
     );

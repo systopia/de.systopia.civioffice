@@ -43,22 +43,19 @@ final class DocumentEditor extends \CRM_Civioffice_OfficeComponent {
 
   /**
    * @phpstan-param array{
-   *   active: bool,
-   *   fileExtensions: list<string>,
-   *   typeConfig: array<string, mixed>,
+   *   id: int,
+   *   name: string,
+   *   is_active: bool,
+   *   file_extensions: list<string>,
+   *   type_config: array<string, mixed>,
    * } $configuration
    */
-  public function __construct(
-    int $id,
-    string $name,
-    array $configuration,
-    DocumentEditorTypeInterface $type,
-  ) {
-    parent::__construct((string) $id, $name);
-    $this->active = $configuration['active'];
-    $this->fileExtensions = $configuration['fileExtensions'];
+  public function __construct(array $configuration, DocumentEditorTypeInterface $type) {
+    parent::__construct((string) $configuration['id'], $configuration['name']);
+    $this->active = $configuration['is_active'];
+    $this->fileExtensions = $configuration['file_extensions'];
     $this->type = $type;
-    $this->typeConfig = $configuration['typeConfig'] + $this->type->getDefaultConfiguration();
+    $this->typeConfig = $configuration['type_config'] + $this->type->getDefaultConfiguration();
   }
 
   public function isActive(): bool {

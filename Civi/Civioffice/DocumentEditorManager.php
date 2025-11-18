@@ -20,17 +20,19 @@ declare(strict_types = 1);
 
 namespace Civi\Civioffice;
 
+use Civi\Api4\CiviofficeDocumentEditor;
+
+/**
+ * @phpstan-type whereT list<array{string, string|list<mixed>, 2?: mixed}>
+ *   "list<mixed>" is actually a condition of a composite condition so we have
+ *   a recursion that cannot be expressed in a phpstan type. The third entry is
+ *   not given for composite conditions.
+ */
 final class DocumentEditorManager {
 
   private bool $inFileExtensionDeduplicate = FALSE;
 
   private DocumentEditorTypeContainer $typeContainer;
-
-  /**
-   * @var array<int, string>|null
-   *   Mapping of editor ID to editor name.
-   */
-  private ?array $editorNames = NULL;
 
   /**
    * This method should only be used, if service injection isn't possible.
@@ -44,60 +46,43 @@ final class DocumentEditorManager {
     $this->typeContainer = $typeContainer;
   }
 
+  /**
+   * @throws \CRM_Core_Exception
+   */
   public function deleteEditor(DocumentEditor $editor): void {
-    if (NULL === $this->editorNames) {
-      $this->getEditorNames();
-    }
-
-    unset($this->editorNames[$editor->getId()]);
-    \Civi::settings()->set('civioffice_editors', $this->editorNames);
-    \Civi::settings()->revert('civioffice_editor_' . $editor->getId());
+    CiviofficeDocumentEditor::delete(FALSE)
+      ->addWhere('id', '=', $editor->getId())
+      ->execute();
   }
 
   /**
    * @return list<DocumentEditor>
    *   Editors without configured file extensions are at the end.
+   *
+   * @throws \CRM_Core_Exception
    */
   public function getAllEditors(): array {
-    $editors = [];
-    $editorsWithoutExtensions = [];
-    foreach ($this->getEditorIds() as $id) {
-      $editor = $this->getEditor($id);
-      if ([] === $editor->getFileExtensions()) {
-        $editorsWithoutExtensions[] = $editor;
-      }
-      else {
-        $editors[] = $editor;
-      }
-    }
-
-    return [...$editors, ...$editorsWithoutExtensions];
+    return $this->getEditors();
   }
 
   /**
    * @return list<DocumentEditor>
    *   Editors without configured file extensions are at the end.
+   *
+   * @throws \CRM_Core_Exception
    */
   public function getAllActiveEditors(): array {
-    return array_values(array_filter($this->getAllEditors(), fn ($editor) => $editor->isActive()));
+    return $this->getEditors([['is_active', '=', TRUE]]);
   }
 
   public function getEditor(int $id): DocumentEditor {
-    $name = $this->getEditorNames()[$id] ?? NULL;
-    /** @phpstan-var array{
-     *   active: bool,
-     *   fileExtensions: list<string>,
-     *   type: string,
-     *   typeConfig: array<string, mixed>,
-     * }|null $configuration */
-    $configuration = \Civi::settings()->get('civioffice_editor_' . $id);
-    if (NULL === $name || NULL === $configuration) {
+    $editor = $this->getEditors([['id', '=', $id]])[0] ?? NULL;
+
+    if (NULL === $editor) {
       throw new \InvalidArgumentException(sprintf('Could not load editor configuration with ID %d', $id));
     }
 
-    $type = $this->typeContainer->get($configuration['type']);
-
-    return new DocumentEditor($id, $name, $configuration, $type);
+    return $editor;
   }
 
   public function saveEditor(DocumentEditor $editor): void {
@@ -114,6 +99,8 @@ final class DocumentEditorManager {
   /**
    * @param list<string> $fileExtensions
    * @param array<string, mixed> $typeConfig
+   *
+   * @throws \CRM_Core_Exception
    */
   public function saveNewEditor(
     string $name,
@@ -122,39 +109,52 @@ final class DocumentEditorManager {
     DocumentEditorTypeInterface $type,
     array $typeConfig
   ): void {
-    $editorIds = $this->getEditorIds();
-    $id = (array_pop($editorIds) ?? 0) + 1;
-    $this->persistEditor($id, $name, $active, $fileExtensions, $type::getName(), $typeConfig);
+    $this->persistEditor(NULL, $name, $active, $fileExtensions, $type::getName(), $typeConfig);
   }
 
   /**
-   * @return list<int>
+   * @phpstan-param whereT $where
+   *
+   * @return list<DocumentEditor>
+   *   Editors without configured file extensions are at the end.
+   *
+   * @throws \CRM_Core_Exception
    */
-  private function getEditorIds(): array {
-    return array_keys($this->getEditorNames());
-  }
+  private function getEditors(array $where = []): array {
+    $editors = [];
+    $editorsWithoutExtensions = [];
 
-  /**
-   * @return array<int, string>
-   *   Mapping of editor ID to editor name.
-   */
-  private function getEditorNames(): array {
-    if (NULL === $this->editorNames) {
-      /** @var array<int, string>|null $editorNames */
-      $editorNames = \Civi::settings()->get('civioffice_editors');
-
-      $this->editorNames = is_array($editorNames) ? $editorNames : [];
+    $configurations = CiviofficeDocumentEditor::get(FALSE)->setWhere($where)->execute();
+    /** @phpstan-var array{
+     *   id: int,
+     *   name: string,
+     *   is_active: bool,
+     *   file_extensions: list<string>,
+     *   type: string,
+     *   type_config: array<string, mixed>,
+     * } $configuration */
+    foreach ($configurations as $configuration) {
+      $type = $this->typeContainer->get($configuration['type']);
+      $editor = new DocumentEditor($configuration, $type);
+      if ([] === $editor->getFileExtensions()) {
+        $editorsWithoutExtensions[] = $editor;
+      }
+      else {
+        $editors[] = $editor;
+      }
     }
 
-    return $this->editorNames;
+    return [...$editors, ...$editorsWithoutExtensions];
   }
 
   /**
    * @param list<string> $fileExtensions
    * @param array<string, mixed> $typeConfig
+   *
+   * @throws \CRM_Core_Exception
    */
   private function persistEditor(
-    int $id,
+    ?int $id,
     string $name,
     bool $active,
     array $fileExtensions,
@@ -162,15 +162,25 @@ final class DocumentEditorManager {
     array $typeConfig
   ): void {
     $configuration = [
-      'active' => $active,
-      'fileExtensions' => $fileExtensions,
+      'name' => $name,
+      'is_active' => $active,
+      'file_extensions' => $fileExtensions,
       'type' => $typeName,
-      'typeConfig' => $typeConfig,
+      'type_config' => $typeConfig,
     ];
 
-    \Civi::settings()->set('civioffice_editor_' . $id, $configuration);
-    $this->editorNames[$id] = $name;
-    \Civi::settings()->set('civioffice_editors', $this->editorNames);
+    if (NULL === $id) {
+      $id = CiviofficeDocumentEditor::create(FALSE)
+        ->setValues($configuration)
+        ->execute()
+        ->single()['id'];
+    }
+    else {
+      CiviofficeDocumentEditor::update(FALSE)
+        ->addWhere('id', '=', $id)
+        ->setValues($configuration)
+        ->execute();
+    }
 
     if ($this->inFileExtensionDeduplicate || [] === $fileExtensions) {
       return;
@@ -178,11 +188,7 @@ final class DocumentEditorManager {
 
     try {
       $this->inFileExtensionDeduplicate = TRUE;
-      foreach ($this->getAllEditors() as $editor) {
-        if ($id === $editor->getId()) {
-          continue;
-        }
-
+      foreach ($this->getEditors([['id', '!=', $id]]) as $editor) {
         $otherFileExtensions = array_diff($editor->getFileExtensions(), $fileExtensions);
         if ($editor->getFileExtensions() !== $otherFileExtensions) {
           $editor->setFileExtensions(array_values($otherFileExtensions));

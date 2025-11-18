@@ -82,7 +82,7 @@ final class CRM_Civioffice_Form_DocumentEditorSettings extends \CRM_Core_Form {
       $this->add(
         'checkbox',
         'active',
-        E::ts('Is Active?'),
+        E::ts('Enabled'),
       );
       $this->add(
         'text',

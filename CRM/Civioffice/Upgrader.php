@@ -161,6 +161,12 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
     return TRUE;
   }
 
+  public function upgrade_0011(): bool {
+    $this->executeSqlFile('sql/upgrade/0011.sql');
+
+    return TRUE;
+  }
+
   /**
    * Convert JSON-formatted setting "civioffice_renderers" to PHP-serialized format.
    * The setting was wrongly defined as JSON-formatted in settings metadata while unerialization with a format other
