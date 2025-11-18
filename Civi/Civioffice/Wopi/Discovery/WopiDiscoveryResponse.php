@@ -214,8 +214,7 @@ final class WopiDiscoveryResponse {
    * @phpstan-return actionT
    */
   private function toActionArray(\SimpleXMLElement $appElement, \SimpleXMLElement $actionElement): array {
-    $actionAttributes = $actionElement->attributes();
-    $actionAttributes = (array) reset($actionAttributes);
+    $actionAttributes = current((array) $actionElement->attributes());
     $actionAttributes['default'] = 'true' === ($actionAttributes['default'] ?? NULL);
 
     // @phpstan-ignore return.type
