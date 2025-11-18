@@ -63,7 +63,7 @@ final class DocumentEditorTypeContainer {
    */
   public function get(string $name): DocumentEditorTypeInterface {
     if (!$this->has($name)) {
-      throw new \InvalidArgumentException("A editor type with name $name does not exist.");
+      throw new \InvalidArgumentException("An editor type with name $name does not exist.");
     }
 
     // @phpstan-ignore return.type
