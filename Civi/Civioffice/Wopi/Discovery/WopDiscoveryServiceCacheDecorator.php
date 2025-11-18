@@ -24,6 +24,8 @@ use Psr\SimpleCache\CacheInterface;
 
 final class WopDiscoveryServiceCacheDecorator implements WopiDiscoveryServiceInterface {
 
+  private const CACHE_TTL = 24 * 60 * 60;
+
   private CacheInterface $cache;
 
   private WopiDiscoveryServiceInterface $wopiDiscoveryService;
@@ -41,7 +43,7 @@ final class WopDiscoveryServiceCacheDecorator implements WopiDiscoveryServiceInt
     $discoveryXml = $this->cache->get($discoveryCacheKey);
     if (!is_string($discoveryXml)) {
       $response = $this->wopiDiscoveryService->getDiscoveryByEditorId($editorId);
-      $this->cache->set($discoveryCacheKey, $response->toString(), 24 * 60 * 60);
+      $this->cache->set($discoveryCacheKey, $response->toString(), self::CACHE_TTL);
     }
     else {
       $response = new WopiDiscoveryResponse($discoveryXml);
