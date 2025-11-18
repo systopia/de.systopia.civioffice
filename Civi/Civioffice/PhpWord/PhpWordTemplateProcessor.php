@@ -91,7 +91,6 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
 
   /**
    * @throws \CRM_Core_Exception
-   * @phpstan-ignore throws.unusedType
    */
   public function replaceHtmlToken(string $macroVariable, string $renderedTokenMessage): void {
     static $phpWord;
