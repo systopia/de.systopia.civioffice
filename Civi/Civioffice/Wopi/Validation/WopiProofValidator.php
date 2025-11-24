@@ -26,6 +26,8 @@ use phpseclib\Crypt\RSA;
 use phpseclib\Math\BigInteger;
 
 /**
+ * Validates a WOPI proof as described in the specification.
+ *
  * @see https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/online/scenarios/proofkeys
  */
 final class WopiProofValidator {
