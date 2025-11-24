@@ -112,7 +112,8 @@ final class WopiProofValidator {
   }
 
   /**
-   * Verify WOPI timestamp and make sure that it was sent within the last 20 minutes.
+   * Verify WOPI timestamp and make sure that it was sent within the last 20
+   * minutes as demanded in the specification.
    */
   private function verifyTimestamp(ProofValidatorInput $proofValidatorInput): bool {
     $timestamp = $proofValidatorInput->timestamp;
