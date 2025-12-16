@@ -161,6 +161,12 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
     return TRUE;
   }
 
+  public function upgrade_0011(): bool {
+    E::schema()->createEntityTable('schema/CiviofficeDocumentEditor.entityType.php');
+
+    return TRUE;
+  }
+
   /**
    * Convert JSON-formatted setting "civioffice_renderers" to PHP-serialized format.
    * The setting was wrongly defined as JSON-formatted in settings metadata while unerialization with a format other
