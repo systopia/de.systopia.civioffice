@@ -162,6 +162,7 @@ final class DocumentEditorManager {
     array $typeConfig
   ): void {
     $configuration = [
+      'id' => $id,
       'name' => $name,
       'is_active' => $active,
       'file_extensions' => $fileExtensions,
@@ -169,18 +170,11 @@ final class DocumentEditorManager {
       'type_config' => $typeConfig,
     ];
 
-    if (NULL === $id) {
-      $id = CiviofficeDocumentEditor::create(FALSE)
-        ->setValues($configuration)
-        ->execute()
-        ->single()['id'];
-    }
-    else {
-      CiviofficeDocumentEditor::update(FALSE)
-        ->addWhere('id', '=', $id)
-        ->setValues($configuration)
-        ->execute();
-    }
+    $id = CiviofficeDocumentEditor::save(FALSE)
+      ->addRecord($configuration)
+      ->setMatch(['id'])
+      ->execute()
+      ->single()['id'];
 
     if ($this->inFileExtensionDeduplicate || [] === $fileExtensions) {
       return;
