@@ -162,7 +162,7 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
   }
 
   public function upgrade_0011(): bool {
-    $this->executeSqlFile('sql/upgrade/0011.sql');
+    E::schema()->createEntityTable('schema/CiviofficeDocumentEditor.entityType.php');
 
     return TRUE;
   }
