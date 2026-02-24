@@ -152,7 +152,7 @@ class RenderWebAction extends AbstractAction {
 
     /*
      * @todo: Instead of redirecting to the web-based queue-runner there should
-     * be made an API call for each job and finally a redirect to an URL
+     * be made an API call for each job and finally a redirect to a URL
      * providing the generated file as "inline" (content disposition).
      */
     $result['redirect'] = $this->queueRunner->runViaWebUrl($queue);
