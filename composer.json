@@ -16,6 +16,9 @@
         "prepend-autoloader": false,
         "sort-packages": true,
         "platform": {
+        },
+        "allow-plugins": {
+            "php-http/discovery": false
         }
     },
     "require": {
