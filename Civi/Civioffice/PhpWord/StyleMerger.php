@@ -78,8 +78,12 @@ final class StyleMerger {
     }
 
     $doc = new \DOMDocument();
+    // A pPr element might contain something like "<w:sectPr><w:footerReference w:type='default' r:id='rId1'/>".
+    // Thus, the r namespace is required.
     $doc->loadXML(
-      '<root xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' . $style . '</root>'
+      '<root
+xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' . $style . '</root>'
     );
 
     // @phpstan-ignore-next-line
