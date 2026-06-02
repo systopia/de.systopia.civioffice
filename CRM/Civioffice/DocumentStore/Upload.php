@@ -43,11 +43,6 @@ class CRM_Civioffice_DocumentStore_Upload extends CRM_Civioffice_DocumentStore {
   public function __construct(bool $common) {
     $this->common = $common;
 
-    // Persistent storage for uploaded document templates.
-    // Must NOT live under $config->uploadDir: the core "Clean-up Temporary
-    // Data and Files" scheduled job (active by default since CiviCRM 6.13,
-    // civicrm/civicrm-core#34924) calls CRM_Utils_File::cleanDir($uploadDir)
-    // recursively and would wipe every template.
     $config = CRM_Core_Config::singleton();
     $this->base_folder = $config->customFileUploadDir . 'civioffice_documents';
     if (!file_exists($this->base_folder)) {
