@@ -176,22 +176,24 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
     );
 
     $config = CRM_Core_Config::singleton();
+    // @phpstan-ignore argument.type
     $legacy = rtrim($config->uploadDir, DIRECTORY_SEPARATOR)
-            . DIRECTORY_SEPARATOR . 'civioffice_documents';
+      . DIRECTORY_SEPARATOR . 'civioffice_documents';
     $target = rtrim($config->customFileUploadDir, DIRECTORY_SEPARATOR)
-            . DIRECTORY_SEPARATOR . 'civioffice_documents';
+      . DIRECTORY_SEPARATOR . 'civioffice_documents';
 
     if (!is_dir($legacy)) {
       return TRUE;
     }
     CRM_Utils_File::createDir($target);
-
-    foreach (scandir($legacy) ?: [] as $entry) {
+    $entries = scandir($legacy);
+    $entries = is_array($entries) ? $entries : [];
+    foreach ($entries as $entry) {
       if ($entry === '.' || $entry === '..') {
         continue;
       }
       $from = $legacy . DIRECTORY_SEPARATOR . $entry;
-      $to   = $target . DIRECTORY_SEPARATOR . $entry;
+      $to = $target . DIRECTORY_SEPARATOR . $entry;
       if (is_dir($from) && !file_exists($to)) {
         rename($from, $to);
       }
