@@ -82,8 +82,11 @@ function _civicrm_api3_civi_office_convert_spec(array &$spec): void {
 function civicrm_api3_civi_office_convert(array $params): array {
   /** @var string $documentUri */
   $documentUri = $params['document_uri'];
-  /** @phpstan-var list<int> $entityIds */
-  $entityIds = $params['entity_ids'];
+  /** @phpstan-var list<int|numeric-string> $rawEntityIds */
+  $rawEntityIds = $params['entity_ids'];
+  // Consumers (e.g. de.systopia.mailattachment implementations) may pass entity
+  // IDs as strings; the token processor requires int.
+  $entityIds = array_map(fn ($entityId) => (int) $entityId, $rawEntityIds);
   /** @var string $entityType */
   $entityType = $params['entity_type'];
   /** @var string $rendererUri */
