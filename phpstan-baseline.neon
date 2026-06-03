@@ -1116,6 +1116,12 @@ parameters:
 			path: CRM/Civioffice/Upgrader.php
 
 		-
+			message: '#^Binary operation "\." between mixed and ''civioffice_documents'' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: CRM/Civioffice/Upgrader.php
+
+		-
 			message: '#^Call to an undefined method object\:\:fetch\(\)\.$#'
 			identifier: method.notFound
 			count: 1

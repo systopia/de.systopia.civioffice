@@ -19,8 +19,3 @@ parameters:
 		-
 			message: '#Dead catch - CRM_Core_Exception is never thrown in the try block.#'
 			path: */Civi/Civioffice/EventSubscriber/ParticipantCiviOfficeTokenSubscriber.php
-
-		# Required with CiviCRM Core <6.1.0
-		-
-			message: '#^Parameter \#1 \$string of function rtrim expects string, mixed given\.$#'
-			path: CRM/Civioffice/Upgrader.php
