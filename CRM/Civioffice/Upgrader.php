@@ -176,11 +176,11 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
     );
 
     $config = CRM_Core_Config::singleton();
-    // @phpstan-ignore argument.type
-    $legacy = rtrim($config->uploadDir, DIRECTORY_SEPARATOR)
-      . DIRECTORY_SEPARATOR . 'civioffice_documents';
-    $target = rtrim($config->customFileUploadDir, DIRECTORY_SEPARATOR)
-      . DIRECTORY_SEPARATOR . 'civioffice_documents';
+    // $config->uploadDir / $config->customFileUploadDir are guaranteed to end
+    // with a directory separator, so concatenate directly as in
+    // CRM_Civioffice_DocumentStore_Upload.
+    $legacy = $config->uploadDir . 'civioffice_documents';
+    $target = $config->customFileUploadDir . 'civioffice_documents';
 
     if (!is_dir($legacy)) {
       return TRUE;
