@@ -10,6 +10,7 @@ parameters:
 		- civioffice.php
 	excludePaths:
 		analyse:
+			- CRM/Civioffice/CustomData.php
 			- CRM/Civioffice/DAO/*
 			- tests/phpunit/bootstrap.php
 	scanFiles:

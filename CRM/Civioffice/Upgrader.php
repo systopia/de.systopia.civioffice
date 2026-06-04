@@ -162,6 +162,45 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
   }
 
   /**
+   * Move uploaded document templates from $config->uploadDir to
+   * $config->customFileUploadDir. The core "Clean-up Temporary Data and Files"
+   * scheduled job (civicrm/civicrm-core#34924, active by default since
+   * CiviCRM 6.13) recursively wipes uploadDir and would otherwise destroy all
+   * existing templates.
+   */
+  public function upgrade_0011(): bool {
+    $this->ctx->log->info(
+      'CiviOffice: moving upload templates from $config->uploadDir to '
+      . '$config->customFileUploadDir to avoid data loss from the core '
+      . 'cleanup job (active by default since CiviCRM 6.13).'
+    );
+
+    $config = CRM_Core_Config::singleton();
+    $legacy = $config->uploadDir . 'civioffice_documents';
+    $target = $config->customFileUploadDir . 'civioffice_documents';
+
+    if (!is_dir($legacy)) {
+      return TRUE;
+    }
+    CRM_Utils_File::createDir($target);
+    $entries = scandir($legacy);
+    $entries = is_array($entries) ? $entries : [];
+    foreach ($entries as $entry) {
+      if ($entry === '.' || $entry === '..') {
+        continue;
+      }
+      $from = $legacy . DIRECTORY_SEPARATOR . $entry;
+      $to = $target . DIRECTORY_SEPARATOR . $entry;
+      if (is_dir($from) && !file_exists($to)) {
+        rename($from, $to);
+      }
+    }
+    @rmdir($legacy);
+
+    return TRUE;
+  }
+
+  /**
    * Convert JSON-formatted setting "civioffice_renderers" to PHP-serialized format.
    * The setting was wrongly defined as JSON-formatted in settings metadata while unerialization with a format other
    * than PHP-serialized only works with the API. Civi::settings() always expects and generates PHP-serialized values.
