@@ -69,28 +69,25 @@ function _civicrm_api3_civi_office_convert_spec(array &$spec): void {
 }
 
 /**
- * CiviOffice.convert: Converter
- *
- * @phpstan-param array<string, mixed> $params
- *   API call parameters
+ * @phpstan-param array{
+ *   document_uri: string,
+ *   entity_ids: list<int|numeric-string>,
+ *   entity_type: string,
+ *   renderer_uri: string,
+ *   target_mime_type: string,
+ *   live_snippets: array<string, string>
+ * } $params
  *
  * @phpstan-return array<string, mixed>
- *   API3 response
  *
  * @throws \CRM_Core_Exception
  */
 function civicrm_api3_civi_office_convert(array $params): array {
-  /** @var string $documentUri */
   $documentUri = $params['document_uri'];
-  /** @phpstan-var list<int> $entityIds */
-  $entityIds = $params['entity_ids'];
-  /** @var string $entityType */
+  $entityIds = array_map(fn ($entityId) => (int) $entityId, $params['entity_ids']);
   $entityType = $params['entity_type'];
-  /** @var string $rendererUri */
   $rendererUri = $params['renderer_uri'];
-  /** @var string $targetMimeType */
   $targetMimeType = $params['target_mime_type'];
-  /** @phpstan-var array<string, string> $liveSnippets */
   $liveSnippets = $params['live_snippets'];
 
   $configuration = CRM_Civioffice_Configuration::getConfig();
