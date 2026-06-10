@@ -42,7 +42,7 @@ class CRM_Civioffice_Form_Download extends CRM_Core_Form {
       \CRM_Utils_System::civiExit(404);
     }
 
-    $this->return_url = CRM_Utils_Request::retrieve('return_url', 'String', $this);
+    $this->return_url = CRM_Utils_Request::retrieve('return_url', 'String', $this) ?? '';
     $instant_download = (bool) CRM_Utils_Request::retrieve('instant_download', 'Boolean', $this);
 
     if ($instant_download) {
