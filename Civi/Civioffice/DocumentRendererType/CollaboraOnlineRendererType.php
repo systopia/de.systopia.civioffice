@@ -93,6 +93,8 @@ final class CollaboraOnlineRendererType implements DocumentRendererTypeInterface
     return [
       \CRM_Civioffice_MimeType::PDF,
       \CRM_Civioffice_MimeType::PNG,
+      \CRM_Civioffice_MimeType::DOCX,
+      \CRM_Civioffice_MimeType::ODT,
     ];
   }
 
