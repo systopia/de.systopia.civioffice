@@ -172,7 +172,11 @@ final class LocalUnoconvRendererType implements DocumentRendererTypeInterface {
   }
 
   public function getSupportedOutputMimeTypes(array $configuration): array {
-    return [\CRM_Civioffice_MimeType::PDF];
+    return [
+      \CRM_Civioffice_MimeType::PDF,
+      \CRM_Civioffice_MimeType::DOCX,
+      \CRM_Civioffice_MimeType::ODT,
+    ];
   }
 
   public function getSupportedInputMimeTypes(array $configuration): array {
