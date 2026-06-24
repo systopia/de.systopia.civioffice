@@ -57,8 +57,9 @@ class CRM_Civioffice_Document_LocalTempfile extends CRM_Civioffice_Document {
    *   binary file data
    */
   public function updateFileContent(string $data): void {
-    // todo: exceptions
-    file_put_contents($this->local_path, $data);
+    if (FALSE === file_put_contents($this->local_path, $data)) {
+      throw new RuntimeException("Failed to write to $this->local_path");
+    }
   }
 
   /**

@@ -149,20 +149,6 @@ class CRM_Civioffice_Configuration implements EventSubscriberInterface {
   }
 
   /**
-   * Get the list of active document stores
-   *
-   * @param boolean $active_only
-   *   return only active objects
-   *
-   * @return array
-   */
-  public static function getEditors(bool $active_only = TRUE) : array {
-    // todo: get from config
-    // todo: filter for $only_show_active
-    return [];
-  }
-
-  /**
    * Find/get the document renderer with the given URI
    *
    * @param string $document_renderer_uri

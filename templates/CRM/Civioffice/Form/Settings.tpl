@@ -17,7 +17,7 @@
   <div class="crm-block crm-content-block">
 
     <h3>{ts}CiviOffice Document Stores{/ts}</h3>
-    <div id="help">{ts}Document Stores are used to store files{/ts}</div>
+    <div class="help">{ts}Document Stores are used to store files{/ts}</div>
 
     <table class="row-highlight">
       <thead>
@@ -59,7 +59,7 @@
   <div class="crm-block crm-content-block">
 
     <h3>{ts}CiviOffice Document Renderers (Converters){/ts}</h3>
-    <div id="help">{ts}Renders or converts documents{/ts}</div>
+    <div class="help">{ts}Renders or converts documents{/ts}</div>
 
     {foreach from=$document_renderer_types item="label" key="id"}
       {capture assign="addDocumentRendererUrl"}{crmURL p="civicrm/admin/civioffice/settings/renderer" q="action=add&type=$id"}{/capture}
@@ -74,23 +74,18 @@
         <th>{ts}Name{/ts}</th>
         <th>{ts}Type{/ts}</th>
         <th>{ts}Ready to use{/ts}</th>
-        <th>{ts}Config{/ts}</th>
+        <th>{ts}Operations{/ts}</th>
       </tr>
       </thead>
       <tbody>
       {if !empty($ui_components.document_renderers)}
           {foreach from=$ui_components.document_renderers item=component}
             <tr>
-
               <td>{$component.name}</td>
               <td>{$component.description}</td>
               <td>{if $component.is_ready}{ts}Yes{/ts}{else}{ts}No{/ts}{/if}</td>
               <td>
-                  {if $component.config_url}
-                    <a class="button crm-popup" href="{$component.config_url}">{ts}Configure{/ts}</a>
-                  {else}
-                      {ts}no configuration available{/ts}
-                  {/if}
+                <a class="button crm-popup" href="{$component.config_url}">{ts}Configure{/ts}</a>
                 <a class="button crm-popup" href="{$component.delete_url}">{ts}Delete{/ts}</a>
               </td>
 
@@ -109,50 +104,52 @@
   <div class="crm-block crm-content-block">
 
     <h3>{ts}CiviOffice Document Editors{/ts}</h3>
-    <div id="help">{ts}Editors can be used to edit CiviOffice documents.{/ts}</div>
+    <div class="help">{ts}Document editors can be used to view and edit documents.{/ts}</div>
+
+    {foreach from=$document_editor_types item="label" key="id"}
+      {capture assign="addDocumentEditorUrl"}{crmURL p="civicrm/admin/civioffice/settings/editor" q="action=add&type=$id"}{/capture}
+      <a class="button crm-popup" href="{$addDocumentEditorUrl}">
+        {ts 1=$label}Add %1 Document Editor{/ts}
+      </a>
+    {/foreach}
 
     <table class="row-highlight">
       <thead>
-      <tr>
-        <th>{ts}Name{/ts}</th>
-        <th>{ts}Description{/ts}</th>
-        <th>{ts}Ready to use{/ts}</th>
-        <th>{ts}Config{/ts}</th>
-      </tr>
+        <tr>
+          <th>{ts}Name{/ts}</th>
+          <th>{ts}Type{/ts}</th>
+          <th>{ts}Active{/ts}</th>
+          <th>{ts}Operations{/ts}</th>
+        </tr>
       </thead>
       <tbody>
       {if !empty($ui_components.document_editors)}
           {foreach from=$ui_components.document_editors item=component}
             <tr>
-
               <td>{$component.name}</td>
               <td>{$component.description}</td>
               <td>{if $component.is_ready}{ts}Yes{/ts}{else}{ts}No{/ts}{/if}</td>
               <td>
-                  {if $component.config_url}
-                    <a class="button crm-popup small-popup" href="{$component.config_url}">{ts}configure{/ts}</a>
-                  {else}
-                      {ts}no configuration available{/ts}
-                  {/if}
+                <a class="button crm-popup" href="{$component.config_url}">{ts}Configure{/ts}</a>
+                <a class="button crm-popup" href="{$component.delete_url}">{ts}Delete{/ts}</a>
               </td>
 
             </tr>
           {/foreach}
       {else}
         <tr>
-          <td colspan="4">{ts}No document editors available{/ts}</td>
+          <td colspan="4">{ts}No document editors available.{/ts}</td>
         </tr>
       {/if}
       </tbody>
     </table>
-
   </div>
 
   <div class="crm-block crm-content-block">
 
     <h3>{ts}Live Snippets{/ts}</h3>
 
-    <div id="help">{ts}Live Snippets allow you to edit sections of your document during its generation using CiviOffice Live Snippet tokens.{/ts}</div>
+    <div class="help">{ts}Live Snippets allow you to edit sections of your document during its generation using CiviOffice Live Snippet tokens.{/ts}</div>
 
     <table class="row-highlight">
       <thead>

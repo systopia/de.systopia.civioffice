@@ -161,6 +161,12 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
     return TRUE;
   }
 
+  public function upgrade_0011(): bool {
+    E::schema()->createEntityTable('schema/CiviofficeDocumentEditor.entityType.php');
+
+    return TRUE;
+  }
+
   /**
    * Move uploaded document templates from $config->uploadDir to
    * $config->customFileUploadDir. The core "Clean-up Temporary Data and Files"
