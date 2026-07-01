@@ -528,7 +528,7 @@ parameters:
 
 		-
 			message: '#^In method "CRM_Civioffice_Form_DocumentUpload\:\:buildQuickForm", you should not use the \$_REQUEST superglobal\. You should instead rely on your framework that provides you with a "request" object \(for instance a PSR\-7 RequestInterface or a Symfony Request\)\. More info\: http\://bit\.ly/nosuperglobals$#'
-			count: 4
+			count: 2
 			path: CRM/Civioffice/Form/DocumentUpload.php
 
 		-
