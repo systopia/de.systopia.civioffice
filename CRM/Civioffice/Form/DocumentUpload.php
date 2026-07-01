@@ -38,9 +38,12 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form {
     $this->common = $common;
     $this->assign('isTab', NULL !== $this->common);
     $tabs = CRM_Civioffice_Form_DocumentUpload_TabHeader::build($this);
+    $current_tab = CRM_Civioffice_Form_DocumentUpload_TabHeader::getCurrentTab($tabs);
+    $this->assign('selectedChild', $current_tab);
+    $this->assign('common', (string) (int) $this->common);
     $this->controller->_destination = CRM_Utils_System::url(
         'civicrm/civioffice/document_upload',
-        'reset=1&selectedChild=' . \CRM_Civioffice_Form_DocumentUpload_TabHeader::getCurrentTab($tabs)
+        'reset=1&selectedChild=' . $current_tab
     );
   }
 
@@ -58,9 +61,10 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form {
         }
       }
 
-      // execute a delete if requested
-      if (!empty($_REQUEST['delete'])) {
-        $file = $this->getFilePath($_REQUEST['delete']);
+      // execute a delete if requested (POST only, guarded by the form's qfKey)
+      $delete = CRM_Utils_Request::retrieve('delete', 'String', NULL, FALSE, NULL, 'POST');
+      if (!empty($delete) && is_string($delete)) {
+        $file = $this->getFilePath($delete);
         if ($file) {
           unlink($file);
           CRM_Core_Session::setStatus(
@@ -114,10 +118,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form {
         'size'          => E::ts('%1 MB', [1 => number_format(filesize($file_path) / 1024.0 / 1024.0, 2)]),
         'upload_date'   => date('Y-m-d H:i:s', filectime($file_path)),
         'icon'          => CRM_Utils_File::getIconFromMimeType($document->getMimeType()),
-        'delete_link'   => CRM_Utils_System::url(
-          'civicrm/civioffice/document_upload',
-          "common=$common_arg&delete=" . base64_encode($document->getName())
-        ),
+        'delete_value'  => base64_encode($document->getName()),
         'download_link' => CRM_Utils_System::url(
           'civicrm/civioffice/document_upload',
           "common=$common_arg&download=" . base64_encode($document->getName())
