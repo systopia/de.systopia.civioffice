@@ -111,9 +111,9 @@ class RenderWebAction extends AbstractAction {
 
   public function setEntityType(string $entityType): self {
     Assertion::regex(
-    	$entityType, 
-    	'/^[a-zA-Z0-9_]+$/', 
-    	'entityType must only contain alpha-numeric characters or underscores.'
+      $entityType,
+      '/^[a-zA-Z0-9_]+$/',
+      'entityType must only contain alpha-numeric characters or underscores.'
     );
     $this->entityType = $entityType;
 
