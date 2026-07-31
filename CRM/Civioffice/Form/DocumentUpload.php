@@ -62,7 +62,7 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form {
       }
 
       // execute a delete if requested (POST only, guarded by the form's qfKey)
-      $delete = CRM_Utils_Request::retrieve('delete', 'String', NULL, FALSE, NULL, 'POST');
+      $delete = CRM_Utils_Request::retrieve('delete', 'String', method: 'POST');
       if (!empty($delete) && is_string($delete)) {
         $file = $this->getFilePath($delete);
         if ($file) {
