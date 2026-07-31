@@ -38,7 +38,7 @@
                 <td>{$document.size}</td>
                 <td>{$document.upload_date}</td>
                 <td>
-                  <span><a href="{$document.delete_link}" class="action-item crm-hover-button view-contact no-popup" title="{ts escape='htmlattribute'}Delete File{/ts}">{ts}Delete{/ts}</a></span>
+                  <span><button type="submit" name="delete" value="{$document.delete_value|escape}" formmethod="post" formaction="{crmURL p='civicrm/civioffice/document_upload' q="common=`$common`&selectedChild=`$selectedChild`"}" class="action-item crm-hover-button" title="{ts escape='htmlattribute'}Delete File{/ts}" onclick="return confirm('{ts escape='js'}Are you sure you want to delete this document?{/ts} {ts escape='js'}This action cannot be undone.{/ts}');">{ts}Delete{/ts}</button></span>
                   <span><a href="{$document.download_link}" class="action-item crm-hover-button view-contact no-popup" title="{ts escape='htmlattribute'}Download File{/ts}">{ts}Download{/ts}</a></span>
                 </td>
               </tr>

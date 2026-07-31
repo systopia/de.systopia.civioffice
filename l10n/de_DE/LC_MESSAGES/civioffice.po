@@ -906,3 +906,7 @@ msgstr ""
 "werden können. Die Verfügbarkeit hängt vom Kontext ab. Bspw. sind Zuwendungs-"
 "Token nur verfügbar, wenn Dokumente für Zuwendungen generiert werden. "
 "Allgemeine Token, wie die Domäne oder das Datum, sind immer verfügbar."
+
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+msgid "Are you sure you want to delete this document?"
+msgstr "Sind Sie sicher, dass Sie dieses Dokument löschen möchten?"

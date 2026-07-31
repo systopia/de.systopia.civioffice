@@ -742,3 +742,7 @@ msgstr ""
 msgid "This page lists all tokens CiviOffice is potentially able to replace in documents, however, this depends on the context. E.g. contribution tokens are only available in a context of generating documents for particular contributions, whereas general tokens, such as for domain or date, are always available."
 msgstr ""
 
+
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+msgid "Are you sure you want to delete this document?"
+msgstr ""
