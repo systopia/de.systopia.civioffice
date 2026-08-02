@@ -15,6 +15,7 @@
 
 declare(strict_types = 1);
 
+use Civi\Civioffice\FilesystemUtil;
 use CRM_Civioffice_ExtensionUtil as E;
 
 /**
@@ -32,14 +33,20 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
 
       $temp_folder_path = $user_selectable_path . DIRECTORY_SEPARATOR . uniqid("civioffice_{$current_user_id}_");
       if (file_exists($temp_folder_path)) {
-        unlink($temp_folder_path);
         Civi::log()->debug('CiviOffice: Temp folder already exists. Deleting and trying to create a new one');
+        FilesystemUtil::removeRecursive($temp_folder_path);
       }
       mkdir($temp_folder_path, 0777, TRUE);
     }
     parent::__construct("tmp::$temp_folder_path", E::ts('Temporary Files'), FALSE, FALSE);
     $this->base_folder = $temp_folder_path;
     Civi::log()->debug('CiviOffice: Created local temp document store at: ' . $this->base_folder);
+
+    register_shutdown_function(function () {
+      if (FilesystemUtil::isDirEmpty($this->getBaseFolder())) {
+        rmdir($this->getBaseFolder());
+      }
+    });
   }
 
   /**

@@ -16,6 +16,12 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/admin/civioffice/settings/editor</path>
+    <page_callback>CRM_Civioffice_Form_DocumentEditorSettings</page_callback>
+    <title>Document Editor Settings</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/admin/civioffice/settings/localdocumentstore</path>
     <page_callback>CRM_Civioffice_Form_LocalDocumentStore_LocalDocumentStoreSettings</page_callback>
     <title>LocalDocumentStore Settings</title>
@@ -56,5 +62,12 @@
     <page_callback>CRM_Civioffice_Page_Tokens</page_callback>
     <title>Tokens</title>
     <access_arguments>access CiviOffice</access_arguments>
+  </item>
+
+  <item>
+    <path>civicrm/civioffice/collabora/wopi/files</path>
+    <page_callback>Civi\Civioffice\Page\CollaboraWopiControllerPage</page_callback>
+    <title>Collabora WOPI</title>
+    <access_callback>1</access_callback>
   </item>
 </menu>
