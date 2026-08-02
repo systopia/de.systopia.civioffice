@@ -105,11 +105,17 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         ['class' => 'crm-select2']
     );
 
+    // Provider-specific defaults are stored under "extra" (mailattachment
+    // attachment shape); fall back to legacy top-level keys for configurations
+    // saved before that change.
+    $default_extra = $defaults['extra'] ?? NULL;
+    $dv = is_array($default_extra) ? $default_extra : $defaults;
+
     // Add Live Snippets.
     $live_snippet_elements = CRM_Civioffice_LiveSnippets::addFormElements(
         $form,
         $prefix . 'attachments--' . $attachment_id . '--',
-        $defaults['live_snippets'] ?? []
+        $dv['live_snippets'] ?? []
     );
 
     $form->add(
@@ -123,9 +129,9 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
     $form->setDefaults(
         [
           $prefix . 'attachments--' . $attachment_id . '--document_renderer_uri'
-          => $defaults['document_renderer_uri'] ?? NULL,
-          $prefix . 'attachments--' . $attachment_id . '--document_uri' => $defaults['document_uri'] ?? NULL,
-          $prefix . 'attachments--' . $attachment_id . '--target_mime_type' => $defaults['target_mime_type'] ?? NULL,
+          => $dv['document_renderer_uri'] ?? NULL,
+          $prefix . 'attachments--' . $attachment_id . '--document_uri' => $dv['document_uri'] ?? NULL,
+          $prefix . 'attachments--' . $attachment_id . '--target_mime_type' => $dv['target_mime_type'] ?? NULL,
           $prefix . 'attachments--' . $attachment_id . '--name' => $defaults['name'] ?? NULL,
         ]
     );
@@ -155,28 +161,39 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         $prefix . 'attachments--' . $attachment_id . '--'
     );
     return [
-      'document_renderer_uri' => $values[$prefix . 'attachments--' . $attachment_id . '--document_renderer_uri'],
-      'document_uri' => $values[$prefix . 'attachments--' . $attachment_id . '--document_uri'],
-      'target_mime_type' => $values[$prefix . 'attachments--' . $attachment_id . '--target_mime_type'],
       'name' => $values[$prefix . 'attachments--' . $attachment_id . '--name'],
-      'live_snippets' => $live_snippet_values,
+      // Provider-specific values go into "extra" per the mailattachment
+      // attachment shape (array{path, name, template_id, extra?}).
+      'extra' => [
+        'document_renderer_uri' => $values[$prefix . 'attachments--' . $attachment_id . '--document_renderer_uri'],
+        'document_uri' => $values[$prefix . 'attachments--' . $attachment_id . '--document_uri'],
+        'target_mime_type' => $values[$prefix . 'attachments--' . $attachment_id . '--target_mime_type'],
+        'live_snippets' => $live_snippet_values,
+      ],
     ];
   }
 
   /**
    * {@inheritDoc}
+   *
+   * @phpstan-param array<string, mixed> $attachment_values
    */
   public static function buildAttachment($context, $attachment_values) {
+    // Provider-specific values live under "extra" (mailattachment attachment
+    // shape); fall back to the legacy top-level keys for configurations saved
+    // before that change.
+    $extra = $attachment_values['extra'] ?? NULL;
+    $values = is_array($extra) ? $extra : $attachment_values;
     $civioffice_result = civicrm_api3(
         'CiviOffice',
         'convert',
         [
-          'document_uri' => $attachment_values['document_uri'],
+          'document_uri' => $values['document_uri'],
           'entity_ids' => [$context['entity_id']],
           'entity_type' => $context['entity_type'],
-          'renderer_uri' => $attachment_values['document_renderer_uri'],
-          'target_mime_type' => $attachment_values['target_mime_type'],
-          'live_snippets' => $attachment_values['live_snippets'],
+          'renderer_uri' => $values['document_renderer_uri'],
+          'target_mime_type' => $values['target_mime_type'],
+          'live_snippets' => $values['live_snippets'],
         ]
     );
     if (!empty($civioffice_result['is_error']) || empty($civioffice_result['values'][0])) {
@@ -184,25 +201,26 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
     }
     $result_store_uri = $civioffice_result['values'][0];
     $result_store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
+    $name = is_string($attachment_values['name'] ?? NULL) ? $attachment_values['name'] : '';
     foreach ($result_store->getDocuments() as $document) {
       $attachment_file = $document->getLocalTempCopy();
       $mime_type = Attachments::getMimeType($attachment_file);
       $file_extension = CRM_Civioffice_MimeType::mapMimeTypeToFileExtension($mime_type);
 
       if (
-        !empty($attachment_values['name'])
-        && !empty($name_parts = explode('.', $attachment_values['name']))
+        !empty($name)
+        && !empty($name_parts = explode('.', $name))
         && end($name_parts) != $file_extension
       ) {
-        $attachment_values['name'] .= '.' . $file_extension;
+        $name .= '.' . $file_extension;
       }
       else {
-        $attachment_values['name'] = $document->getName();
+        $name = $document->getName();
       }
       $attachment = [
         'fullPath' => $attachment_file,
         'mime_type' => $mime_type,
-        'cleanName' => $attachment_values['name'] ?: $document->getName(),
+        'cleanName' => $name ?: $document->getName(),
       ];
     }
     return $attachment ?? NULL;

@@ -66,30 +66,6 @@ parameters:
 			path: CRM/Civioffice/AttachmentProvider.php
 
 		-
-			message: '#^Offset ''document_renderer_uri'' does not exist on array\{path\: string, name\: string, extra\?\: mixed\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: CRM/Civioffice/AttachmentProvider.php
-
-		-
-			message: '#^Offset ''document_uri'' does not exist on array\{path\: string, name\: string, extra\?\: mixed\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: CRM/Civioffice/AttachmentProvider.php
-
-		-
-			message: '#^Offset ''live_snippets'' does not exist on array\{path\: string, name\: string, extra\?\: mixed\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: CRM/Civioffice/AttachmentProvider.php
-
-		-
-			message: '#^Offset ''target_mime_type'' does not exist on array\{path\: string, name\: string, extra\?\: mixed\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: CRM/Civioffice/AttachmentProvider.php
-
-		-
 			message: '#^Parameter \#3 \$defaults of static method CRM_Civioffice_LiveSnippets\:\:addFormElements\(\) expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
