@@ -1,3 +1,3 @@
-(function(angular, $, _) {
+(function(angular, $) {
   angular.module('civiofficeSearchTasks', CRM.angRequires('civiofficeSearchTasks'));
-})(angular, CRM.$, CRM._);
+})(angular, CRM.$);
