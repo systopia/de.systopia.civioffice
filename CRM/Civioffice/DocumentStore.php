@@ -90,6 +90,14 @@ abstract class CRM_Civioffice_DocumentStore extends CRM_Civioffice_OfficeCompone
         throw new InvalidArgumentException('Unable to detect MIME type');
       }
 
+      // MIME type of .docx file might not be correctly detected #116.
+      if (
+        in_array($mime_type, ['application/zip', 'application/octet-stream'], TRUE)
+        && CRM_Civioffice_MimeType::hasSpecificFileNameExtension($document->getName(), CRM_Civioffice_MimeType::DOCX)
+      ) {
+        $mime_type = CRM_Civioffice_MimeType::DOCX;
+      }
+
       $mime_type_cache[$document->getURI()] = $mime_type;
       Civi::cache()->set('civioffice_mime_type', $mime_type_cache);
     }
