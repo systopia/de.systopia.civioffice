@@ -45,10 +45,11 @@ final class ActivityCiviOfficeTokenSubscriber extends AbstractCoreEntityCiviOffi
       $activity = Activity::get(FALSE)
         ->addSelect('case_id')
         ->addWhere('id', '=', $event->entity_id)
-        ->addWhere('case_id', 'IS NOT EMPTY')
         ->execute()
         ->single();
-      $event->context['caseId'] = $activity['case_id'];
+      if (NULL !== $activity['case_id']) {
+        $event->context['caseId'] = $activity['case_id'];
+      }
     }
   }
 
