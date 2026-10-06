@@ -95,6 +95,7 @@ final class XmlUtilTest extends TestCase {
   }
 
   public function testDropSimpleElement(): void {
+    /** @var string $expected */
     $expected = <<<EOD
       <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
         <w:body>
@@ -141,8 +142,6 @@ final class XmlUtilTest extends TestCase {
       </w:document>
       EOD;
 
-    // Don't know why phpstan reports these errors.
-    // @phpstan-ignore staticMethod.impossibleType, argument.unresolvableType
     static::assertSame($expected, XmlUtil::dropEmptyElement($xml2, 'w:i'));
   }
 

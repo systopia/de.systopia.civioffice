@@ -165,6 +165,15 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
 
   /**
    * {@inheritDoc}
+   *
+   * @phpstan-param array{
+   *   document_uri: string,
+   *   document_renderer_uri: string,
+   *   target_mime_type: string,
+   *   live_snippets: array<string, string>
+   * } $attachment_values
+   *
+   * @phpstan-ignore method.childParameterType
    */
   public static function buildAttachment($context, $attachment_values) {
     $civioffice_result = civicrm_api3(
@@ -180,7 +189,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
         ]
     );
     if (!empty($civioffice_result['is_error']) || empty($civioffice_result['values'][0])) {
-      throw new Exception($civioffice_result['error_message']);
+      throw new \RuntimeException($civioffice_result['error_message']);
     }
     $result_store_uri = $civioffice_result['values'][0];
     $result_store = CRM_Civioffice_Configuration::getDocumentStore($result_store_uri);
@@ -192,7 +201,7 @@ class CRM_Civioffice_AttachmentProvider implements EventSubscriberInterface, Att
       if (
         !empty($attachment_values['name'])
         && !empty($name_parts = explode('.', $attachment_values['name']))
-        && end($name_parts) != $file_extension
+        && end($name_parts) !== $file_extension
       ) {
         $attachment_values['name'] .= '.' . $file_extension;
       }

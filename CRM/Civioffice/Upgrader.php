@@ -73,7 +73,6 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
    * Support Live Snippets.
    *
    * @return TRUE on success
-   * @throws Exception
    */
   public function upgrade_0006(): bool {
     // Create/synchronise the Live Snippets option group.
@@ -161,12 +160,6 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
     return TRUE;
   }
 
-  public function upgrade_0011(): bool {
-    E::schema()->createEntityTable('schema/CiviofficeDocumentEditor.entityType.php');
-
-    return TRUE;
-  }
-
   /**
    * Move uploaded document templates from $config->uploadDir to
    * $config->customFileUploadDir. The core "Clean-up Temporary Data and Files"
@@ -202,6 +195,12 @@ class CRM_Civioffice_Upgrader extends CRM_Extension_Upgrader_Base {
       }
     }
     @rmdir($legacy);
+
+    return TRUE;
+  }
+
+  public function upgrade_0012(): bool {
+    E::schema()->createEntityTable('schema/CiviofficeDocumentEditor.entityType.php');
 
     return TRUE;
   }
