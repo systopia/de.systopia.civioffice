@@ -19,7 +19,15 @@ declare(strict_types = 1);
 
 namespace Civi\Civioffice;
 
+use FilesystemIterator;
+
 final class FilesystemUtil {
+
+  public static function isDirEmpty(string $path): bool {
+    $iterator = new FilesystemIterator($path);
+
+    return !$iterator->valid();
+  }
 
   public static function removeRecursive(string $path): void {
     if (!is_dir($path)) {
