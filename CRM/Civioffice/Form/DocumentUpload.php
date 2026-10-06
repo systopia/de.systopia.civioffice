@@ -112,11 +112,12 @@ class CRM_Civioffice_Form_DocumentUpload extends CRM_Core_Form {
       /** @var CRM_Civioffice_Document $document */
       $file_path = $this->document_store->getFolder() . DIRECTORY_SEPARATOR . $document->getName();
       $common_arg = $this->common ? '1' : '0';
+      $fileChangeTime = filectime($file_path);
       $list[] = [
         'name'          => $document->getName(),
         'mime_type'     => $document->getMimeType(),
         'size'          => E::ts('%1 MB', [1 => number_format(filesize($file_path) / 1024.0 / 1024.0, 2)]),
-        'upload_date'   => date('Y-m-d H:i:s', filectime($file_path)),
+        'upload_date'   => date('Y-m-d H:i:s', $fileChangeTime === FALSE ? time() : $fileChangeTime),
         'icon'          => CRM_Utils_File::getIconFromMimeType($document->getMimeType()),
         'delete_value'  => base64_encode($document->getName()),
         'download_link' => CRM_Utils_System::url(

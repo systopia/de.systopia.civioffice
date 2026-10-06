@@ -25,11 +25,6 @@ parameters:
 			path: CRM/Civioffice/AttachmentProvider.php
 
 		-
-			message: '#^Do not throw the \\Exception base class\.$#'
-			count: 1
-			path: CRM/Civioffice/AttachmentProvider.php
-
-		-
 			message: '#^Dynamic call to static method CRM_Civioffice_Configuration\:\:getDocumentRenderers\(\)\.$#'
 			identifier: staticMethod.dynamicCall
 			count: 2
@@ -38,12 +33,6 @@ parameters:
 		-
 			message: '#^Dynamic call to static method CRM_Civioffice_Configuration\:\:getDocumentStores\(\)\.$#'
 			identifier: staticMethod.dynamicCall
-			count: 1
-			path: CRM/Civioffice/AttachmentProvider.php
-
-		-
-			message: '#^Loose comparison via "\!\=" is not allowed\.$#'
-			identifier: notEqual.notAllowed
 			count: 1
 			path: CRM/Civioffice/AttachmentProvider.php
 
@@ -62,30 +51,6 @@ parameters:
 		-
 			message: '#^Method CRM_Civioffice_AttachmentProvider\:\:getAttachmentTypes\(\) has parameter \$event with no type specified\.$#'
 			identifier: missingType.parameter
-			count: 1
-			path: CRM/Civioffice/AttachmentProvider.php
-
-		-
-			message: '#^Offset ''document_renderer_uri'' does not exist on array\{path\: string, name\: string, extra\?\: mixed\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: CRM/Civioffice/AttachmentProvider.php
-
-		-
-			message: '#^Offset ''document_uri'' does not exist on array\{path\: string, name\: string, extra\?\: mixed\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: CRM/Civioffice/AttachmentProvider.php
-
-		-
-			message: '#^Offset ''live_snippets'' does not exist on array\{path\: string, name\: string, extra\?\: mixed\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: CRM/Civioffice/AttachmentProvider.php
-
-		-
-			message: '#^Offset ''target_mime_type'' does not exist on array\{path\: string, name\: string, extra\?\: mixed\}\.$#'
-			identifier: offsetAccess.notFound
 			count: 1
 			path: CRM/Civioffice/AttachmentProvider.php
 
@@ -330,12 +295,6 @@ parameters:
 			path: CRM/Civioffice/DocumentStore/LocalTemp.php
 
 		-
-			message: '#^Binary operation "\." between mixed and ''civioffice_documents'' results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: CRM/Civioffice/DocumentStore/Upload.php
-
-		-
 			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
 			identifier: equal.notAllowed
 			count: 2
@@ -546,17 +505,11 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$base64_file_name of method CRM_Civioffice_Form_DocumentUpload\:\:getFilePath\(\) expects string, mixed given\.$#'
 			identifier: argument.type
-			count: 2
-			path: CRM/Civioffice/Form/DocumentUpload.php
-
-		-
-			message: '#^Parameter \#2 \$mimeType of static method CRM_Utils_System\:\:download\(\) expects string, string\|false given\.$#'
-			identifier: argument.type
 			count: 1
 			path: CRM/Civioffice/Form/DocumentUpload.php
 
 		-
-			message: '#^Parameter \#2 \$timestamp of function date expects int\|null, int\<0, max\>\|false given\.$#'
+			message: '#^Parameter \#2 \$mimeType of static method CRM_Utils_System\:\:download\(\) expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: CRM/Civioffice/Form/DocumentUpload.php
@@ -617,12 +570,6 @@ parameters:
 		-
 			message: '#^PHPDoc tag @var for variable \$tabs has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
-
-		-
-			message: '#^Possibly invalid array key type mixed\.$#'
-			identifier: offsetAccess.invalidOffset
 			count: 1
 			path: CRM/Civioffice/Form/DocumentUpload/TabHeader.php
 
@@ -1100,7 +1047,7 @@ parameters:
 		-
 			message: '#^Binary operation "\." between mixed and ''civioffice_documents'' results in an error\.$#'
 			identifier: binaryOp.invalid
-			count: 2
+			count: 1
 			path: CRM/Civioffice/Upgrader.php
 
 		-

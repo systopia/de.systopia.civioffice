@@ -89,9 +89,6 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
     return $tokens;
   }
 
-  /**
-   * @throws \CRM_Core_Exception
-   */
   public function replaceHtmlToken(string $macroVariable, string $renderedTokenMessage): void {
     static $phpWord;
     if (!isset($phpWord)) {
