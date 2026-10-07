@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: CRM/Civioffice/AttachmentProvider.php
 msgid "CiviOffice Document"
@@ -107,6 +107,59 @@ msgstr ""
 "sie selbst hochgeladen haben. Der CiviCRM-interne Ordner für hochgeladene "
 "Dateien wird verwendet."
 
+#: CRM/Civioffice/Form/DocumentEditorSettings.php
+#: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+#: CRM/Civioffice/Form/LiveSnippet.php
+msgid "Invalid action."
+msgstr "Ungültige Aktion."
+
+#: CRM/Civioffice/Form/DocumentEditorSettings.php
+#: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+#: CRM/Civioffice/Form/LiveSnippet.php
+#: Civi/Civioffice/Api4/Action/ActivityType/GetFieldsAction.php
+#: Civi/Civioffice/Api4/Action/Document/GetFieldsAction.php
+#: Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php
+#: schema/CiviofficeDocumentEditor.entityType.php
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Name"
+msgstr "Name"
+
+#: CRM/Civioffice/Form/DocumentEditorSettings.php
+#: schema/CiviofficeDocumentEditor.entityType.php
+msgid "Enabled"
+msgstr "Aktiviert"
+
+#: CRM/Civioffice/Form/DocumentEditorSettings.php
+#: schema/CiviofficeDocumentEditor.entityType.php
+msgid "File Extensions"
+msgstr "Dateinamenerweiterungen"
+
+#: CRM/Civioffice/Form/DocumentEditorSettings.php
+#: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+#: CRM/Civioffice/Form/LiveSnippet.php
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Delete"
+msgstr "Löschen"
+
+#: CRM/Civioffice/Form/DocumentEditorSettings.php
+#: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+#: CRM/Civioffice/Form/LiveSnippet.php
+#: CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.php
+#: CRM/Civioffice/Form/Settings.php
+#: CRM/Civioffice/Form/UploadDocumentStore/UploadDocumentStoreSettings.php
+msgid "Save"
+msgstr "Speichern"
+
+#: CRM/Civioffice/Form/DocumentEditorSettings.php
+#: CRM/Civioffice/Form/DocumentFromSingleContact.php
+#: CRM/Civioffice/Form/DocumentRenderer/Settings.php
+#: CRM/Civioffice/Form/LiveSnippet.php
+#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
+msgid "Cancel"
+msgstr "Abbrechen"
+
 #: CRM/Civioffice/Form/DocumentFromSingleContact.php
 msgid "CiviOffice - Generate a Single Document"
 msgstr "CiviOffice - Einzelnes Dokument erzeugen"
@@ -140,20 +193,8 @@ msgid "Preview"
 msgstr "Vorschau"
 
 #: CRM/Civioffice/Form/DocumentFromSingleContact.php
-#: CRM/Civioffice/Form/DocumentRenderer/Settings.php
-#: CRM/Civioffice/Form/LiveSnippet.php
-#: ang/civiofficeSearchTasks/civiofficeSearchTaskRender.html
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: CRM/Civioffice/Form/DocumentFromSingleContact.php
 msgid "Rendering Error!"
 msgstr "Fehler beim Rendern!"
-
-#: CRM/Civioffice/Form/DocumentRenderer/Settings.php
-#: CRM/Civioffice/Form/LiveSnippet.php
-msgid "Invalid action."
-msgstr "Ungültige Aktion."
 
 #: CRM/Civioffice/Form/DocumentRenderer/Settings.php
 msgid "Missing document renderer ID."
@@ -162,31 +203,6 @@ msgstr "Fehlende Dokument-Renderer-ID."
 #: CRM/Civioffice/Form/DocumentRenderer/Settings.php
 msgid "Missing document renderer type."
 msgstr "Fehlender Dokument-Renderer-Typ."
-
-#: CRM/Civioffice/Form/DocumentRenderer/Settings.php
-#: CRM/Civioffice/Form/LiveSnippet.php
-#: Civi/Civioffice/Api4/Action/ActivityType/GetFieldsAction.php
-#: Civi/Civioffice/Api4/Action/Document/GetFieldsAction.php
-#: Civi/Civioffice/Api4/Action/Renderer/GetFieldsAction.php
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Name"
-msgstr "Name"
-
-#: CRM/Civioffice/Form/DocumentRenderer/Settings.php
-#: CRM/Civioffice/Form/LiveSnippet.php
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Delete"
-msgstr "Löschen"
-
-#: CRM/Civioffice/Form/DocumentRenderer/Settings.php
-#: CRM/Civioffice/Form/LiveSnippet.php
-#: CRM/Civioffice/Form/LocalDocumentStore/LocalDocumentStoreSettings.php
-#: CRM/Civioffice/Form/Settings.php
-#: CRM/Civioffice/Form/UploadDocumentStore/UploadDocumentStoreSettings.php
-msgid "Save"
-msgstr "Speichern"
 
 #: CRM/Civioffice/Form/DocumentUpload.php
 msgid "File \"%1\" has been deleted."
@@ -372,6 +388,7 @@ msgid "Local Universal Office Converter (unoconv) implementing PhpWord"
 msgstr "Lokaler Universal Office Converter (unoconv) mit PhpWord"
 
 #: Civi/Civioffice/Api4/Action/ActivityType/GetFieldsAction.php
+#: schema/CiviofficeDocumentEditor.entityType.php
 msgid "ID"
 msgstr "ID"
 
@@ -432,13 +449,23 @@ msgstr "Renderer-Typ"
 msgid "Is Active"
 msgstr "Ist aktiv"
 
+#: Civi/Civioffice/DocumentEditorType/CollaboraOnlineEditorType.php
 #: Civi/Civioffice/DocumentRendererType/CollaboraOnlineRendererType.php
 msgid "URL to Collabora Online"
 msgstr "URL zu Collabora Online"
 
+#: Civi/Civioffice/DocumentEditorType/CollaboraOnlineEditorType.php
+msgid "WOPISrc Hostname"
+msgstr "WOPISrc-Hostname"
+
+#: Civi/Civioffice/DocumentEditorType/CollaboraOnlineEditorType.php
 #: Civi/Civioffice/DocumentRendererType/CollaboraOnlineRendererType.php
 msgid "Invalid value"
 msgstr "Ungültiger Wert"
+
+#: Civi/Civioffice/DocumentEditorType/CollaboraOnlineEditorType.php
+msgid "Could not reach Collabora Online: %1"
+msgstr "Collabora Online nicht erreichbar: %1"
 
 #: Civi/Civioffice/DocumentRendererType/LocalUnoconvRendererType.php
 msgid "Path to the <code>unoconv</code> executable"
@@ -647,6 +674,51 @@ msgstr "Dokumente hochladen"
 msgid "Available Tokens"
 msgstr "Verfügbare Token"
 
+#: schema/CiviofficeDocumentEditor.entityType.php
+msgid "CiviofficeDocumentEditor"
+msgstr "CiviOffice-Dokument-Editore"
+
+#: schema/CiviofficeDocumentEditor.entityType.php
+msgid "CiviofficeDocumentEditors"
+msgstr "CiviOffice-Dokument-Editoren"
+
+#: schema/CiviofficeDocumentEditor.entityType.php
+msgid "Configurations of CiviOffice Document Editors."
+msgstr "Konfigurationen von CiviOffice-Dokument-Editoren."
+
+#: schema/CiviofficeDocumentEditor.entityType.php
+msgid "Unique CiviofficeDocumentEditor ID"
+msgstr "Eindeutige CiviOffice-Dokument-Editor-ID"
+
+#: schema/CiviofficeDocumentEditor.entityType.php
+msgid "The name of the editor."
+msgstr "Name des Editors."
+
+#: schema/CiviofficeDocumentEditor.entityType.php
+msgid "Is the editor enabled?"
+msgstr "Ist der Editor aktiviert?"
+
+#: schema/CiviofficeDocumentEditor.entityType.php
+msgid "File extensions that are handled by this editor."
+msgstr "Dateinamenerweiterungen, die von diesem Editor verarbeitet werden."
+
+#: schema/CiviofficeDocumentEditor.entityType.php
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Type"
+msgstr "Typ"
+
+#: schema/CiviofficeDocumentEditor.entityType.php
+msgid "The type of the editor."
+msgstr "Typ des Editor."
+
+#: schema/CiviofficeDocumentEditor.entityType.php
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#: schema/CiviofficeDocumentEditor.entityType.php
+msgid "The configuration for the specified editor type."
+msgstr "Konfiguration für den ausgewählten Editortyp."
+
 #: settings/civioffice.setting.php
 msgid "CiviOffice renderers."
 msgstr "CiviOffice-Renderer."
@@ -654,6 +726,31 @@ msgstr "CiviOffice-Renderer."
 #: settings/civioffice.setting.php
 msgid "CiviOffice Renderers"
 msgstr "CiviOffice-Renderer"
+
+#: templates/CRM/Civioffice/Form/DocumentEditorSettings.tpl
+msgid "Are you sure you want to delete this Document Editor?"
+msgstr "Sind Sie sicher, dass Sie diesen Dokumenteditor löschen möchten?"
+
+#: templates/CRM/Civioffice/Form/DocumentEditorSettings.tpl
+#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+#: templates/CRM/Civioffice/Form/LiveSnippet.tpl
+msgid "This action cannot be undone."
+msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
+
+#: templates/CRM/Civioffice/Form/DocumentEditorSettings.tpl
+msgid ""
+"Space separated list of file extensions to handle. If empty, all files "
+"supported by the editor type are handled. If an extension is already set in "
+"another editor, it will be removed from it. An editor without file "
+"extensions will be used only if there's no editor with a matching extension."
+msgstr ""
+"Leerzteichengetrennte Liste von zu verarbeitenden Dateinamenerweiterungen. "
+"Wenn leer, werden alle vom Editortyp unterstützten Dateien verarbeitet. Wenn "
+"eine Dateinamenerweiterung bereits in einem anderen Editor eingestellt ist, "
+"wird diese von dort entfernt. Ein Editor ohne Dateinamenerweiterungen wird "
+"nur verwendet, wenn kein Editor mit einer passenden Dateinamenwerweiterung "
+"vorhanden ist."
 
 #: templates/CRM/Civioffice/Form/DocumentFromSingleContact.tpl
 #: templates/CRM/Civioffice/Form/Task/CreateDocumentsTrait.tpl
@@ -663,11 +760,6 @@ msgstr "Aktivität"
 #: templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl
 msgid "Are you sure you want to delete this Document Renderer?"
 msgstr "Sind Sie sicher, dass Sie diesen Dokument-Renderer löschen möchten?"
-
-#: templates/CRM/Civioffice/Form/DocumentRenderer/Settings.tpl
-#: templates/CRM/Civioffice/Form/LiveSnippet.tpl
-msgid "This action cannot be undone."
-msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
 #: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/CollaboraOnline.tpl
 msgid "Please provide the URL to your Collabora Online system."
@@ -690,7 +782,7 @@ msgstr ""
 "zur gleichen Zeit laufen.) Die Datei wird automatisch am unten angezeigten "
 "Ort erstellt. Bitte beachten: Der Pfad muss auf allen CiviCRM-Umgebungen auf "
 "diesem Server gleich sein. Anderenfalls ist das Sperren nur für diese "
-"CiviCRM-Instanz aktiv."
+"CiviCRM-Instanz aktiv!"
 
 #: templates/CRM/Civioffice/Form/DocumentRenderer/Settings/LocalUnoconv.tpl
 msgid ""
@@ -720,6 +812,10 @@ msgstr "Aktionen"
 #: templates/CRM/Civioffice/Form/DocumentUpload.tpl
 msgid "Delete File"
 msgstr "Datei löschen"
+
+#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
+msgid "Are you sure you want to delete this document?"
+msgstr "Sind Sie sicher, dass Sie dieses Dokument löschen möchten?"
 
 #: templates/CRM/Civioffice/Form/DocumentUpload.tpl
 msgid "Download File"
@@ -833,8 +929,8 @@ msgid "Add %1 Document Renderer"
 msgstr "%1 Dokument-Renderer hinzufügen"
 
 #: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Type"
-msgstr "Typ"
+msgid "Operations"
+msgstr "Operationen"
 
 #: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Configure"
@@ -849,13 +945,22 @@ msgid "CiviOffice Document Editors"
 msgstr "CiviOffice-Dokument-Editoren"
 
 #: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Editors can be used to edit CiviOffice documents."
+msgid "Document editors can be used to view and edit documents."
 msgstr ""
-"Editoren können verwendet werden, um CiviOffice-Dokumente zu bearbeiten."
+"Editoren können verwendet werden, um CiviOffice-Dokumente anzuzeigen und zu "
+"bearbeiten."
 
 #: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "No document editors available"
-msgstr "Keine Dokumenteditoren verfügbar"
+msgid "Add %1 Document Editor"
+msgstr "%1 Dokument-Editor hinzufügen"
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "Active"
+msgstr "Aktiv"
+
+#: templates/CRM/Civioffice/Form/Settings.tpl
+msgid "No document editors available."
+msgstr "Keine Dokumenteditoren verfügbar."
 
 #: templates/CRM/Civioffice/Form/Settings.tpl
 msgid ""
@@ -868,10 +973,6 @@ msgstr ""
 #: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Current Default Content"
 msgstr "Derzeitiger Vorgabeinhalt"
-
-#: templates/CRM/Civioffice/Form/Settings.tpl
-msgid "Operations"
-msgstr "Operationen"
 
 #: templates/CRM/Civioffice/Form/Settings.tpl
 msgid "Edit"
@@ -907,6 +1008,18 @@ msgstr ""
 "Token nur verfügbar, wenn Dokumente für Zuwendungen generiert werden. "
 "Allgemeine Token, wie die Domäne oder das Datum, sind immer verfügbar."
 
-#: templates/CRM/Civioffice/Form/DocumentUpload.tpl
-msgid "Are you sure you want to delete this document?"
-msgstr "Sind Sie sicher, dass Sie dieses Dokument löschen möchten?"
+#: templates/Civi/Civioffice/DocumentEditor/CollaboraOnlineSettings.tpl
+msgid "The URL to your Collabora Online system."
+msgstr "Die URL zu Ihrem Collabora-Online-System."
+
+#: templates/Civi/Civioffice/DocumentEditor/CollaboraOnlineSettings.tpl
+msgid ""
+"This hostname will be used in the <code>WOPISrc</code> parameter instead of "
+"the CiviCRM hostname. Can be used for example when Collabora Online runs in "
+"a container on the same system and requires a different hostname/IP to "
+"access CiviCRM."
+msgstr ""
+"Dieser Hostname wird im Parameter <code>WOPISrc</code> anstelle des CiviCRM-"
+"Hostnamens verwendet. Dies kann beispielsweise verwendet werden, wenn "
+"Collabora Online in einem Container auf dem gleichen System läuft und einen "
+"anderen Hostnamen/IP für den Zugriff auf CiviCRM benötigt."
