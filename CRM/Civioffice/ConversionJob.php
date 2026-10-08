@@ -117,7 +117,20 @@ class CRM_Civioffice_ConversionJob {
     $destination_folder = $this->temp_store->getBaseFolder();
 
     // copy files from source to target and overwrite existing files on retry
-    shell_exec("cp -rf $source_folder/* $destination_folder");
+    if (!is_dir($destination_folder)
+      && !mkdir($destination_folder, 0777, TRUE)
+      && !is_dir($destination_folder)
+    ) {
+      throw new RuntimeException("Unable to create render output folder '$destination_folder'");
+    }
+    foreach (new DirectoryIterator($source_folder) as $file) {
+      if ($file->isDot()) {
+        continue;
+      }
+      if (!$file->isFile() || !copy($file->getPathname(), $destination_folder . DIRECTORY_SEPARATOR . $file->getFilename())) {
+        throw new RuntimeException("Unable to copy rendered file '{$file->getPathname()}'");
+      }
+    }
 
     if (!$this->temp_store->isReadOnly()) {
       $this->removeFilesAndFolder($source_folder);
