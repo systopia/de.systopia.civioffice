@@ -43,8 +43,9 @@ class CRM_Civioffice_DocumentStore_LocalTemp extends CRM_Civioffice_DocumentStor
     Civi::log()->debug('CiviOffice: Created local temp document store at: ' . $this->base_folder);
 
     register_shutdown_function(function () {
-      if (FilesystemUtil::isDirEmpty($this->getBaseFolder())) {
-        rmdir($this->getBaseFolder());
+      $folder = $this->getBaseFolder();
+      if (is_dir($folder) && FilesystemUtil::isDirEmpty($folder)) {
+        rmdir($folder);
       }
     });
   }
