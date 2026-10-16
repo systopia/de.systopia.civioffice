@@ -76,6 +76,44 @@ final class DocxUtilTest extends TestCase {
       EOD,
     ];
 
+    // Run without rPr element and run with empty rPr elements shall be combined.
+    yield [<<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="Normal"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Foo {place.</w:t>
+            </w:r>
+            <w:r>
+              <w:rPr/>
+              <w:t>holder</w:t>
+            </w:r>
+            <w:r>
+              <w:t>}</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD,
+      <<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="Normal"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Foo {place.holder}</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD,
+    ];
+
     // Run without rPr elements and additional content in first run shall be combined.
     yield [<<<EOD
       <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
@@ -356,10 +394,63 @@ final class DocxUtilTest extends TestCase {
               <w:t>Foo {place.</w:t>
             </w:r>
             <w:r>
-              <w:pPr>
+              <w:rPr>
                 <w:i/>
-              </w:pPr>
+              </w:rPr>
               <w:t>holder}</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD;
+    yield [$xml, $xml];
+
+    // Run with rPr element and run without rPr element shall not be combined.
+    $xml = <<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:t>Foo {place.</w:t>
+            </w:r>
+            <w:r>
+              <w:t>holder</w:t>
+            </w:r>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:t>}</w:t>
+            </w:r>
+          </w:p>
+        </w:body>
+      </w:document>
+      EOD;
+    yield [$xml, $xml];
+
+    // Run with rPr element and run with empty rPr element shall not be combined.
+    $xml = <<<EOD
+      <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:body>
+          <w:p>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:t>Foo {place.</w:t>
+            </w:r>
+            <w:r>
+              <w:rPr/>
+              <w:t>holder</w:t>
+            </w:r>
+            <w:r>
+              <w:rPr>
+                <w:b w:val="true"/>
+              </w:rPr>
+              <w:t>}</w:t>
             </w:r>
           </w:p>
         </w:body>

@@ -52,22 +52,23 @@ final class DocxUtil {
     }
 
     $rRegex = '<w:r(?: w:(rsidDel|rsidRPr|rsidR)="[^"]+")*>';
-    $rPrRegex = '<w:rPr>(?:(?!</w:rPr>).)*</w:rPr>';
+    $rPrRegex = '(<w:rPr>(?:(?!</w:rPr>).)*</w:rPr>|<w:rPr/>)';
     $tRegex = '<w:t(?: xml:space="[^"]*")?>';
     // Matches if two w:r with w:t have the same w:rPr (if any). The first w:r
     // may have content before w:t the second one, must not have content before w:t.
     // <whitespace>: Whitespace in first w:r before first element (used to preserve whitespace in the result).
     // <rPr>: The w:rPr element (if any).
     // <not_t>: Content in the first w:r before w:t (if any).
-    // <t1_tag>: The first opening w:t tag.
-    // <t1_content>: Content of first w:t.
-    // <t2_tag>: The second opening w:t tag.
-    // <t2_content>: Content of second w:t.
+    // <t_tag>: The opening w:t tag.
+    // <t_content>: Content of w:t.
     // <remaining>: Characters after second w:t. (Normally only white space and closing w:r tag.)
-    $regex =
+    $run1Regex =
       "#$rRegex(?<whitespace>\s*)(?<rPr>(?:$rPrRegex)?)(?<not_t>(?:(?!$tRegex).)*)"
-      . "(?<t1_tag>$tRegex)(?<t1_content>(?:(?!</w:t>).)*)</w:t>\s*</w:r>\s*"
-      . "$rRegex\s*\k<rPr>\s*(?<t2_tag>$tRegex)(?<t2_content>(?:(?!</w:t>).)*)</w:t>(?<remaining>.*)#s";
+      . "(?<t_tag>$tRegex)(?<t_content>(?:(?!</w:t>).)*)</w:t>\s*</w:r>#s";
+    // The second run must not have content before w:t.
+    $run2Regex =
+      "#$rRegex\s*(?<rPr>(?:$rPrRegex)?)\s*"
+      . "(?<t_tag>$tRegex)(?<t_content>(?:(?!</w:t>).)*)</w:t>(?<whitespace>\s*)</w:r>#s";
 
     // Find run that contains text.
     $run1 = XmlUtil::findContainingXmlBlock($xml, "/$tRegex/", 'w:r');
@@ -85,32 +86,38 @@ final class DocxUtil {
         continue;
       }
 
-      $runsSlice = XmlUtil::getSlice($xml, $run1['start'], $run2['end']);
+      $run1Slice = XmlUtil::getSlice($xml, $run1['start'], $run1['end']);
+      $run2Slice = XmlUtil::getSlice($xml, $run2['start'], $run2['end']);
 
-      $match = preg_match($regex, $runsSlice, $matches);
-      if (FALSE === $match) {
+      $run1Match = preg_match($run1Regex, $run1Slice, $run1Matches);
+      if (FALSE === $run1Match) {
         throw new \RuntimeException(preg_last_error_msg());
       }
 
-      if (0 === $match) {
+      $run2Match = preg_match($run2Regex, $run2Slice, $run2Matches);
+      if (FALSE === $run2Match) {
+        throw new \RuntimeException(preg_last_error_msg());
+      }
+
+      if (!self::canCombineRuns($run1Matches, $run2Matches)) {
         $run1 = $run2;
         continue;
       }
 
-      $t1Content = $matches['t1_content'];
-      $t2Content = $matches['t2_content'];
+      $t1Content = $run1Matches['t_content'];
+      $t2Content = $run2Matches['t_content'];
 
-      if ($matches['t1_tag'] === $matches['t2_tag']) {
-        $tTag = $matches['t1_tag'];
+      if ($run1Matches['t_tag'] === $run2Matches['t_tag']) {
+        $tTag = $run1Matches['t_tag'];
       }
       else {
-        $t1Content = self::toPreserveSpace($matches['t1_tag'], $t1Content);
-        $t2Content = self::toPreserveSpace($matches['t2_tag'], $t2Content);
+        $t1Content = self::toPreserveSpace($run1Matches['t_tag'], $t1Content);
+        $t2Content = self::toPreserveSpace($run2Matches['t_tag'], $t2Content);
         $tTag = '<w:t xml:space="preserve">';
       }
 
-      $runsCombined = "<w:r>{$matches['whitespace']}{$matches['rPr']}{$matches['not_t']}"
-      . "$tTag$t1Content$t2Content</w:t>{$matches['remaining']}";
+      $runsCombined = "<w:r>{$run1Matches['whitespace']}{$run1Matches['rPr']}{$run1Matches['not_t']}"
+        . "$tTag$t1Content$t2Content</w:t>{$run2Matches['whitespace']}</w:r>";
 
       $xml = XmlUtil::getSlice($xml, 0, $run1['start']) . $runsCombined . XmlUtil::getSlice($xml, $run2['end']);
       $run1['end'] = $run1['start'] + strlen($runsCombined);
@@ -230,6 +237,29 @@ final class DocxUtil {
     );
 
     return str_replace($emptyParagraph, '', $result);
+  }
+
+  /**
+   * @template T1 of array{rPr: string, ...}
+   * @template T2 of array{rPr: string, ...}
+   * @param array{}|T1 $run1Matches
+   * @param array{}|T2 $run2Matches
+   *
+   * @phpstan-assert-if-true T1 $run1Matches
+   * @phpstan-assert-if-true T2 $run2Matches
+   */
+  private static function canCombineRuns(array $run1Matches, array $run2Matches): bool {
+    if ([] === $run1Matches || [] === $run2Matches) {
+      return FALSE;
+    }
+
+    // If there's no rPr element we use <w:rPr/> so one run might have no rPr
+    // element and the other one an empty rPr element, but they'll still be
+    // combined.
+    $rPr1 = '' === $run1Matches['rPr'] ? '<w:rPr/>' : $run1Matches['rPr'];
+    $rPr2 = '' === $run2Matches['rPr'] ? '<w:rPr/>' : $run2Matches['rPr'];
+
+    return $rPr1 === $rPr2;
   }
 
   private static function toPreserveSpace(string $tTag, string $tContent): string {
