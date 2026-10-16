@@ -230,26 +230,33 @@ class PhpWordTemplateProcessor extends PhpWord\TemplateProcessor {
         $textRunStyle
       ) : $this->splitTextIntoTexts($block, $textRunStyle);
       if ($inheritStyle) {
-        /** @var list<string> $replaceXml */
-        $replaceXml = preg_replace_callback_array([
-          '#<w:pPr/>#' => fn() => $paragraphStyle,
-          '#<w:pPr(?:(?!<w:pPr).)*</w:pPr>#' => fn(array $matches) => StyleMerger::mergeStyles(
+        $pattern = [];
+        if ('' !== $paragraphStyle && '<w:pPr/>' !== $paragraphStyle) {
+          $pattern['#<w:pPr/>#'] = fn() => $paragraphStyle;
+          $pattern['#<w:pPr(?:(?!<w:pPr).)*</w:pPr>#'] = fn(array $matches) => StyleMerger::mergeStyles(
             $matches[0], $paragraphStyle
-          ),
+          );
+        }
+        if ('' !== $textRunStyle && '<w:rPr/>' !== $textRunStyle) {
           // <w:pPr> may contain <w:rPr> itself so we have to match for <w:rPr> inside <w:r>
-          '#<w:r><w:rPr/>(?:(?!<w:r>).)*</w:r>#' => fn(array $matches) => str_replace(
+          $pattern['#<w:r><w:rPr/>(?:(?!<w:r>).)*</w:r>#'] = fn(array $matches) => str_replace(
             '<w:rPr/>', $textRunStyle, $matches[0]
-          ),
-          '#<w:r>(<w:rPr(?:(?!<w:rPr).)*</w:rPr>)(?:(?!<w:r>).)*</w:r>#' => fn(array $matches) => preg_replace(
+          );
+          $pattern['#<w:r>(<w:rPr(?:(?!<w:rPr).)*</w:rPr>)(?:(?!<w:r>).)*</w:r>#'] = fn(array $matches) => preg_replace(
             '#<w:rPr.*</w:rPr>#',
             StyleMerger::mergeStyles($matches[1], $textRunStyle),
             $matches[0]
-          ),
-        ], $replaceXml);
+          );
+        }
+        /** @var list<string> $replaceXml */
+        $actualReplaceXml = preg_replace_callback_array($pattern, $replaceXml);
+      }
+      else {
+        $actualReplaceXml = $replaceXml;
       }
 
       $partXml = XmlUtil::replaceXmlBlock($partXml, $search, $parts, $blockType);
-      $partXml = XmlUtil::replaceXmlBlock($partXml, $search, implode('', $replaceXml), $blockType);
+      $partXml = XmlUtil::replaceXmlBlock($partXml, $search, implode('', $actualReplaceXml), $blockType);
     }
 
     return $partXml;
