@@ -89,6 +89,7 @@ class CRM_Civioffice_Form_DocumentUpload_TabHeader {
     }
 
     // Load requested tab.
+    /** @var string $current */
     $current = CRM_Utils_Request::retrieve(
       'selectedChild',
       'Alphanumeric'

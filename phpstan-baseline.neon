@@ -626,7 +626,7 @@ parameters:
 			path: CRM/Civioffice/Form/Download.php
 
 		-
-			message: '#^Only booleans are allowed in an if condition, int given\.$#'
+			message: '#^Only booleans are allowed in an if condition, int\<0, max\> given\.$#'
 			identifier: if.condNotBoolean
 			count: 1
 			path: CRM/Civioffice/Form/Download.php
