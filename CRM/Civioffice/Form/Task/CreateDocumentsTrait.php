@@ -133,21 +133,7 @@ trait CRM_Civioffice_Form_Task_CreateDocumentsTrait {
    */
   public function getTemplateFileName(): string {
     // Instead of separate templates for each class using the trait, provide a generic template for the trait.
-    $ext = CRM_Extension_System::singleton()->getMapper();
-    if ($ext->isExtensionClass(__TRAIT__)) {
-      $filename = $ext->getTemplateName(__TRAIT__);
-      $tplname = $ext->getTemplatePath(__TRAIT__) . DIRECTORY_SEPARATOR . $filename;
-    }
-    else {
-      $tplname = strtr(
-            __TRAIT__,
-            [
-              '_' => DIRECTORY_SEPARATOR,
-              '\\' => DIRECTORY_SEPARATOR,
-            ]
-        ) . '.tpl';
-    }
-    return $tplname;
+    return CRM_Utils_System::getTemplateForClass(__TRAIT__);
   }
 
   /**
