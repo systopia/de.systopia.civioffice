@@ -22,7 +22,7 @@
         }
     },
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-zip": "*",
         "beberlei/assert": "^3",
         "civicrm/civicrm-core": ">=6.15",
