@@ -77,8 +77,6 @@
     "conflict": {
         "pear/mail_mime": "<1.10.2",
         "pear/pear-core-minimal": "<1.10.16",
-        "phpseclib/phpseclib": "<2.0.12 || 3.0.0 || 3.0.1",
-        "phpseclib/phpseclib2_compat": "<1.0.2",
         "psr/http-message": "<1.0.1",
         "symfony/polyfill-php82": "<1.28"
     },

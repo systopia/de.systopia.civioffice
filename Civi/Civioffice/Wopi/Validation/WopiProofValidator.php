@@ -22,8 +22,6 @@ namespace Civi\Civioffice\Wopi\Validation;
 
 use Civi\Civioffice\Wopi\Util\DotNetTimeConverter;
 use Civi\Civioffice\Wopi\WopiProofKey;
-use phpseclib\Crypt\RSA;
-use phpseclib\Math\BigInteger;
 
 /**
  * Validates a WOPI proof as described in the specification.
@@ -46,18 +44,18 @@ final class WopiProofValidator {
     }
 
     $expectedProof = $this->getExpectedProof($proofValidatorInput);
-    $rsa = $this->createRsa($proofKey);
-    $oldRsa = $this->createRsa($oldProofKey);
+    $publicKey = $this->createPublicKey($proofKey);
+    $oldPublicKey = $this->createPublicKey($oldProofKey);
 
     $proof = (string) base64_decode($proofValidatorInput->proof, TRUE);
     $oldProof = (string) base64_decode($proofValidatorInput->oldProof, TRUE);
 
     // The X-WOPI-Proof value using the current public key.
-    return $rsa->verify($expectedProof, $proof)
+    return openssl_verify($expectedProof, $proof, $publicKey, OPENSSL_ALGO_SHA256) === 1
       // The X-WOPI-ProofOld value using the current public key.
-      || $rsa->verify($expectedProof, $oldProof)
+      || openssl_verify($expectedProof, $oldProof, $publicKey, OPENSSL_ALGO_SHA256) === 1
       // The X-WOPI-Proof value using the old public key.
-      || $oldRsa->verify($expectedProof, $proof);
+      || openssl_verify($expectedProof, $proof, $oldPublicKey, OPENSSL_ALGO_SHA256) === 1;
   }
 
   private function getExpectedProof(ProofValidatorInput $proofValidatorInput): string {
@@ -84,33 +82,62 @@ final class WopiProofValidator {
   }
 
   /**
-   * Construct the RSA public key from modulus and exponent.
+   * Construct an OpenSSL RSA public key from modulus and exponent.
    *
    * @throws \InvalidArgumentException
    */
-  private function createRsa(WopiProofKey $key): RSA {
+  private function createPublicKey(WopiProofKey $key): \OpenSSLAsymmetricKey {
     $modulus = base64_decode($key->modulus, TRUE);
-    if (FALSE === $modulus) {
+    if (FALSE === $modulus || '' === $modulus) {
       throw new \InvalidArgumentException('Invalid modulus in WOPI proof public key');
     }
 
     $exponent = base64_decode($key->exponent, TRUE);
-    if (FALSE === $exponent) {
+    if (FALSE === $exponent || '' === $exponent) {
       throw new \InvalidArgumentException('Invalid exponent in WOPI proof public key');
     }
 
-    $rsa = new RSA();
-    if (!$rsa->loadKey([
-      'e' => new BigInteger($exponent, 256),
-      'n' => new BigInteger($modulus, 256),
-    ])) {
+    // Encode SubjectPublicKeyInfo DER from RSA (n, e) and wrap as PEM.
+    $rsaPublicKey = self::derEncode(0x30, self::derInteger($modulus) . self::derInteger($exponent));
+    // OID rsaEncryption with NULL parameters.
+    $algorithmIdentifier = "\x30\x0d\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x01\x01\x05\x00";
+    $subjectPublicKeyInfo = self::derEncode(
+      0x30,
+      $algorithmIdentifier . self::derEncode(0x03, "\x00" . $rsaPublicKey)
+    );
+    $pem = "-----BEGIN PUBLIC KEY-----\n"
+      . chunk_split(base64_encode($subjectPublicKeyInfo), 64, "\n")
+      . "-----END PUBLIC KEY-----\n";
+
+    $publicKey = openssl_pkey_get_public($pem);
+    if (FALSE === $publicKey) {
       throw new \InvalidArgumentException('Invalid WOPI proof public key');
     }
 
-    $rsa->setSignatureMode(RSA::SIGNATURE_PKCS1);
-    $rsa->setHash('sha256');
+    return $publicKey;
+  }
 
-    return $rsa;
+  private static function derInteger(string $unsignedBytes): string {
+    $bytes = ltrim($unsignedBytes, "\x00");
+    if ('' === $bytes) {
+      $bytes = "\x00";
+    }
+    elseif (ord($bytes[0]) >= 0x80) {
+      $bytes = "\x00" . $bytes;
+    }
+    return self::derEncode(0x02, $bytes);
+  }
+
+  private static function derEncode(int $tag, string $content): string {
+    $len = strlen($content);
+    if ($len < 0x80) {
+      $lenEncoded = pack('C', $len);
+    }
+    else {
+      $lenBytes = ltrim(pack('N', $len), "\x00");
+      $lenEncoded = pack('C', 0x80 | strlen($lenBytes)) . $lenBytes;
+    }
+    return pack('C', $tag) . $lenEncoded . $content;
   }
 
   /**
