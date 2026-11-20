@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace Civi\Civioffice\Wopi\Validation;
 
+use Civi\Civioffice\Wopi\Util\DerEncoder;
 use Civi\Civioffice\Wopi\Util\DotNetTimeConverter;
 use Civi\Civioffice\Wopi\WopiProofKey;
 
@@ -97,47 +98,13 @@ final class WopiProofValidator {
       throw new \InvalidArgumentException('Invalid exponent in WOPI proof public key');
     }
 
-    // Encode SubjectPublicKeyInfo DER from RSA (n, e) and wrap as PEM.
-    $rsaPublicKey = self::derEncode(0x30, self::derInteger($modulus) . self::derInteger($exponent));
-    // OID rsaEncryption with NULL parameters.
-    $algorithmIdentifier = "\x30\x0d\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x01\x01\x05\x00";
-    $subjectPublicKeyInfo = self::derEncode(
-      0x30,
-      $algorithmIdentifier . self::derEncode(0x03, "\x00" . $rsaPublicKey)
-    );
-    $pem = "-----BEGIN PUBLIC KEY-----\n"
-      . chunk_split(base64_encode($subjectPublicKeyInfo), 64, "\n")
-      . "-----END PUBLIC KEY-----\n";
-
+    $pem = DerEncoder::encodeRsaPublicKeyPem($modulus, $exponent);
     $publicKey = openssl_pkey_get_public($pem);
     if (FALSE === $publicKey) {
       throw new \InvalidArgumentException('Invalid WOPI proof public key');
     }
 
     return $publicKey;
-  }
-
-  private static function derInteger(string $unsignedBytes): string {
-    $bytes = ltrim($unsignedBytes, "\x00");
-    if ('' === $bytes) {
-      $bytes = "\x00";
-    }
-    elseif (ord($bytes[0]) >= 0x80) {
-      $bytes = "\x00" . $bytes;
-    }
-    return self::derEncode(0x02, $bytes);
-  }
-
-  private static function derEncode(int $tag, string $content): string {
-    $len = strlen($content);
-    if ($len < 0x80) {
-      $lenEncoded = pack('C', $len);
-    }
-    else {
-      $lenBytes = ltrim(pack('N', $len), "\x00");
-      $lenEncoded = pack('C', 0x80 | strlen($lenBytes)) . $lenBytes;
-    }
-    return pack('C', $tag) . $lenEncoded . $content;
   }
 
   /**
